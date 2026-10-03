@@ -1,3 +1,5 @@
+**Bàng thuật ngữ**
+
 | Thuật ngữ | Định nghĩa đề xuất |
 | :--- | :--- |
 | **Clause** | Một Điều tách từ văn bản, gồm `id`, `title`, `content`. |
