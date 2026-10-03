@@ -31,10 +31,10 @@ class Clause:
 ### 1.2 AlignedPair (Cặp điều khoản đã căn chỉnh)
 ```
 class AlignedPair:
-    pair_id: str               # Vd: "Điều 1 -> Điều 1" hoặc "None -> Điều 2"
+    pair_key: str               # Vd: "Điều 1 -> Điều 1" hoặc "None -> Điều 2"
     align_type: str            # CHỈ ĐƯỢC DÙNG: "PAIRED", "ADDED", "DELETED"
-    v1_clause: Clause | None   # None nếu align_type là "ADDED"
-    v2_clause: Clause | None   # None nếu align_type là "DELETED"
+    v1: Clause | None   # None nếu align_type là "ADDED"
+    v2: Clause | None   # None nếu align_type là "DELETED"
 ```
 
 ### 1.3 SemanticDiffResult (Kết quả phân tích ngữ nghĩa)
