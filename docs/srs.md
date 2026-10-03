@@ -7,37 +7,68 @@
 | **Meaningful change** | Thay đổi làm đổi nội dung (số liệu, tính chất nghĩa vụ như "phải" thành "có thể"). Đổi cách diễn đạt thì **không** tính. |
 | **Critical change** | Thay đổi có thể ảnh hưởng trực tiếp đến quyền, nghĩa vụ, chế tài/tiền hoặc thời hạn (bao gồm các điều khoản mới được bổ sung (`ADDED`), điều khoản bị bãi bỏ (`DELETED`), hoặc `PAIRED` có thay đổi trọng yếu). |
 
-## FR-01 — Tách điều khoản (parser)
-- Đầu vào : text của một văn bản (str)
-- Đầu ra  : List[Clause]  với Clause = {id, title, content}
-- Quy tắc : mỗi "Điều N" ở đầu dòng là một Clause
-- Ví dụ   : "Điều 1. Phạm vi\nNội dung" -> [{id:"Điều 1", title:"Phạm vi", content:"Nội dung"}]
-- Nghiệm thu: văn bản có câu "theo quy định tại Điều 5." giữa dòng KHÔNG bị tách thành một Điều mới
+# SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
 
-## FR-02 — Ghép cặp (align_versions)
-- Đầu vào : 2 danh sách List[Clause] (từ bản cũ và bản mới)[cite: 3]
-- Đầu ra  : List[AlignedPair][cite: 3]
-- Quy tắc : Dựa vào `id` của Clause (vd: "Điều 1") để ghép cặp. Trạng thái của AlignedPair sẽ là PAIRED (có ở cả 2), ADDED (chỉ có ở bản mới), hoặc DELETED (chỉ có ở bản cũ).
-- Ví dụ   : Bản cũ có "Điều 1", "Điều 2"; bản mới có "Điều 1", "Điều 3" -> [{Điều 1: PAIRED}, {Điều 2: DELETED}, {Điều 3: ADDED}]
-- Nghiệm thu: Không được bỏ sót điều khoản nào; tổng số Clause đầu vào phải được ánh xạ đầy đủ vào danh sách AlignedPair.
+Hệ thống hoạt động theo mô hình Pipeline tuần tự: `Raw Text` -> `[Parser]` -> `Clauses` -> `[Aligner]` -> `AlignedPairs` -> `[SemanticDiff]` -> `DiffResults` -> `[Scorer]` -> `FinalReport`.
 
-## FR-03 — So sánh ngữ nghĩa (run_semantic_diff)
-- Đầu vào : AlignedPair[cite: 3]
-- Đầu ra  : SemanticDiffResult[cite: 3]
-- Quy tắc : Phân tích và trích xuất sự khác biệt về mặt ngữ nghĩa giữa 2 điều khoản trong cặp PAIRED.
-- Ví dụ   : Đầu vào là cặp PAIRED của "Điều 1" -> Đầu ra là SemanticDiffResult chứa danh sách các cụm từ bị xóa/thêm và vị trí thay đổi.
-- Nghiệm thu: Nhận diện đúng sự thay đổi kể cả khi cấu trúc câu bị đảo ngược, không bị treo (crash) nếu một trong hai nội dung bị rỗng.
+Dưới đây là Data Contract (Hợp đồng dữ liệu) quy định bắt buộc định dạng Input/Output giữa các module. Mọi thay đổi đều phải được Nhóm trưởng phê duyệt.
 
-## FR-04 — Phân loại và chấm điểm (scorer)
-- Đầu vào : AlignedPair + SemanticDiffResult[cite: 3]
-- Đầu ra  : ScoringResult = {category, significance, is_critical}[cite: 3]
-- Quy tắc : không đổi nghĩa -> STYLISTIC_EDIT/LOW; bị xóa -> CRITICAL (is_critical=true)[cite: 3]
-- Ví dụ   : "30 ngày" -> "15 ngày" => OBLIGATION_OR_METRIC_CHANGE, CRITICAL, true[cite: 3]
-- Nghiệm thu: Sửa lỗi chính tả không làm thay đổi nghĩa (ví dụ: "sữ liệu" -> "dữ liệu") phải được phân loại đúng vào STYLISTIC_EDIT.
+# SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
 
-## FR-05 — Đánh giá (evaluate_predictions)
-- Đầu vào : kết quả dự đoán + ground truth[cite: 3]
-- Đầu ra  : 4 chỉ số[cite: 3]
-- Quy tắc : So khớp kết quả phân loại của hệ thống (`is_critical`, `category`) với nhãn thực tế do chuyên gia đánh giá (ground truth) để tính độ chính xác mô hình.
-- Ví dụ   : Đưa vào 100 dự đoán, có 80 dự đoán đúng nhãn -> Trả về các chỉ số (ví dụ: Precision, Recall, F1, Accuracy).
-- Nghiệm thu: Tính toán các chỉ số chính xác và không bị chia cho 0 (ZeroDivisionError) khi tập dữ liệu test bị trống hoặc thiếu nhãn.
+Hệ thống hoạt động theo mô hình Pipeline tuần tự: `Raw Text` -> `[Parser]` -> `Clauses` -> `[Aligner]` -> `AlignedPairs` -> `[SemanticDiff]` -> `DiffResults` -> `[Scorer]` -> `FinalReport`.
+
+Dưới đây là Data Contract (Hợp đồng dữ liệu) quy định bắt buộc định dạng Input/Output giữa các module. Mọi thay đổi đều phải được Nhóm trưởng phê duyệt.
+
+## 1. Data Structures (Cấu trúc dữ liệu dùng chung)
+
+### 1.1 Clause (Điều khoản đơn lẻ)
+```
+class Clause:
+    id: str       # BẮT BUỘC có chữ "Điều " ở trước. Vd: "Điều 1", "Điều 2a"
+    title: str    # Tiêu đề điều khoản. Vd: "Phạm vi áp dụng" (Nếu không có, để chuỗi rỗng "")
+    content: str  # Nội dung chi tiết (Đã lược bỏ ký tự xuống dòng thừa)
+```
+### 1.2 AlignedPair (Cặp điều khoản đã căn chỉnh)
+```
+class AlignedPair:
+    pair_id: str               # Vd: "Điều 1 -> Điều 1" hoặc "None -> Điều 2"
+    align_type: str            # CHỈ ĐƯỢC DÙNG: "PAIRED", "ADDED", "DELETED"
+    v1_clause: Clause | None   # None nếu align_type là "ADDED"
+    v2_clause: Clause | None   # None nếu align_type là "DELETED"
+```
+
+### 1.3 SemanticDiffResult (Kết quả phân tích ngữ nghĩa)
+```
+class SemanticDiffResult:
+    is_meaningful_change: bool # True: Đổi nghĩa pháp lý / False: Sửa văn phong
+    diff_details: str          # Giải thích ngắn gọn lý do
+```
+
+### 1.4 ScoringResult (Kết quả phân loại & chấm điểm)
+```
+class ScoringResult:
+    category: str       # Vd: "OBLIGATION_OR_METRIC_CHANGE", "STYLISTIC_EDIT", "CLAUSE_ADDED"
+    significance: str   # CHỈ ĐƯỢC DÙNG: "LOW", "MEDIUM", "HIGH", "CRITICAL"
+    is_critical: bool   # Flag bắt buộc để tính Critical Change Recall
+```
+
+### 2. Functional Requirements (Đặc tả Module)
+**FR-01 — Tách điều khoản (Parser)**
+Input: text_v1 (str), text_v2 (str)
+Output: List[Clause]
+Acceptance Criteria: Không được tách sai khi trong nội dung có câu trích dẫn "theo quy định tại Điều N...".
+
+**FR-02 — Căn chỉnh (Version Aligner)**
+Input: v1_list: List[Clause], v2_list: List[Clause]
+Output: List[AlignedPair]
+Acceptance Criteria: Tổng số điều khoản ở bản cũ bị bãi bỏ (DELETED) và các cặp ghép được (PAIRED) phải bằng đúng số lượng v1_list.
+
+**FR-03 & FR-04 — Semantic Diff & Scorer**
+Input: Một đối tượng AlignedPair
+Output: Đối tượng đó được bổ sung 2 thuộc tính SemanticDiffResult và ScoringResult.
+Acceptance Criteria: Những thay đổi chỉ là sửa lỗi chính tả (vd: "sữ liệu" -> "dữ liệu") bắt buộc trả về is_meaningful_change = False và significance = LOW.
+
+**FR-05 — Đánh giá hệ thống (Evaluator)**
+Input: Danh sách kết quả dự đoán của toàn bộ Pipeline và danh sách Ground Truth.
+Output: Dictionary chứa: Precision, Recall, Change_F1, Critical_Change_Recall.
+Acceptance Criteria: Xử lý ngoại lệ ZeroDivisionError nếu tập mẫu test rỗng hoặc không có lỗi Critical nào trong bộ Ground Truth.
