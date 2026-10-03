@@ -1,7 +1,7 @@
 # BRD — Legal Document Change Detection
 
 ## 1. Vấn đề
-- Khi một văn bản pháp lý/hợp đồng có phiên bản mới, người đọc phải tự so
+- Khi một văn bản quy phạm pháp luật có phiên bản mới, người đọc phải tự so
 sánh từng điều khoản, dễ bỏ sót thay đổi quan trọng (ví dụ thời hạn thanh
 toán từ 30 ngày thành 15 ngày).
 
@@ -21,14 +21,24 @@ văn bản mà còn thay đổi về mặt ngữ nghĩa pháp lý và đánh d�
 (đo trên bộ dữ liệu có nhãn, tách riêng khỏi dữ liệu dùng để phát triển)
 
 ## 5. Trong phạm vi
-- Văn bản quy phạm pháp luật (VBQPPL) Việt Nam (Luật, Nghị định, Thông tư, Quyết định)
-- Văn bản tiếng Việt, cấu trúc theo "Điều" "Khoản"
-- So sánh 2 phiên bản của 1 văn bản quy phạm pháp luật
+- VBQPPL Việt Nam bằng tiếng Việt, có cấu trúc theo Điều.
+- So sánh hai phiên bản đầy đủ của cùng một văn bản;
+  người dùng xác định bản cũ và bản mới.
+- Nhận file DOCX và PDF có lớp chữ.
+- Bản đầu tiên ghép và so sánh ở cấp Điều, giữ nội dung
+  Khoản/Điểm trong từng Điều.
+- Phát hiện thay đổi chữ, phân tích đổi nghĩa và đánh giá
+  mức độ theo bộ tiêu chí được nhóm thống nhất.
+- Trả bằng chứng cũ/mới, giải thích và cảnh báo cần kiểm tra.
 
 ## 6. Ngoài phạm vi
-- Xử lý OCR văn bản scan/ảnh, tự động gom văn bản sửa đổi rải rác,
-so sánh tài liệu phi cấu trúc ví dụ: PDF scan cần OCR, tư vấn pháp lý,
-ngôn ngữ khác tiếng Việt
+- PDF scan/ảnh và OCR.
+- Dựng phiên bản đầy đủ từ văn bản chỉ ghi nội dung sửa đổi.
+- Tự động gom các văn bản sửa đổi rải rác.
+- Hợp đồng, tài liệu phi cấu trúc và ngôn ngữ khác tiếng Việt.
+- Tự động xử lý chắc chắn các trường hợp tách/gộp Điều;
+  bản đầu chỉ cảnh báo để kiểm tra.
+- Tư vấn pháp lý và lưu lịch sử so sánh trong bản đầu tiên.
 
 ## 7. Giả định và rủi ro
 -  Xáo trộn số thứ tự Điều/Khoản do bãi bỏ hoặc chèn mới,
