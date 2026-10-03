@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Clause** | Một Điều trong một phiên bản, gồm định danh, nhãn Điều, tiêu đề, nội dung và vị trí nguồn |
 | **Aligned pair** | Một cặp điều khoản v1–v2 tương ứng, hoặc một điều chỉ có ở một bên. Có 3 loại: `PAIRED`, `ADDED`, `DELETED`. |
-| **Meaningful change** | Một Điều trong một phiên bản, gồm định danh, nhãn Điều, tiêu đề, nội dung và vị trí nguồn |
+| **Meaningful change** | Thay đổi làm đổi nội dung quy định; sửa diễn đạt chỉ được coi là không đổi nghĩa khi giữ nguyên nội dung. |
 | **Critical change** | Thay đổi nghĩa đáp ứng tiêu chí CRITICAL trong bộ tiêu chí nhóm thống nhất; thêm/xóa Điều không tự động là critical |
 
 # SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
@@ -150,6 +150,10 @@ Quy định:
 - blocks giữ thứ tự nội dung trong tài liệu, bao gồm nội dung bảng.
 - Parser dùng blocks để tách Điều và lưu source_refs.
 - Không đọc được nội dung thì báo lỗi, không trả văn bản rỗng hợp lệ.
+- source_ref phải duy nhất trong từng phiên bản.
+- Khi truy nguồn, dùng đồng thời version_id và source_ref.
+- source_refs của v1 chỉ tra trong ExtractedDocument bản cũ;
+  source_refs của v2 chỉ tra trong ExtractedDocument bản mới.
 
 ### 1.6 TextDiffResult (Đầu ra Text Diff)
 
@@ -187,7 +191,7 @@ class PairResult:
     alignment: AlignedPair
     text_diff: TextDiffResult | None
     semantic_diff: SemanticDiffResult | None
-    scoring: list[ScoringResult]
+    scoring: list[ScoringResult] | None
 
 class ProcessingIssue:
     stage: str
@@ -214,6 +218,13 @@ Quy định:
 - Cảnh báo ghép hoặc phân tích chưa chắc chắn phải giữ tới báo cáo.
 - Chỉ thông báo "Không có thay đổi" khi status = SUCCESS,
   không còn phần chưa xác định và mọi TextDiffResult.changes đều rỗng.
+- scoring = None: bước chấm mức độ chưa hoàn tất hoặc thất bại;
+  phải có lỗi tương ứng.
+- scoring = []: bước chấm mức độ đã hoàn tất nhưng không có
+  SemanticChange nào để chấm.
+- Nếu is_meaningful_change = None, không được tự chấm LOW;
+  significance và is_critical phải là None, needs_review = True.
+- Cảnh báo từ Aligner phải được giữ tới kết quả chấm mức độ.
 
   
 ## 2. Functional Requirements
@@ -268,7 +279,7 @@ Evaluator:
 | Yêu cầu | Giữ đúng thứ tự; không nhầm câu dẫn chiếu “theo Điều 5…” thành đầu một Điều |
 | Lỗi | Không tìm được Điều nào thì báo lỗi để kiểm tra |
 
-Ví dụ đầu vào: 
+Ví dụ nội dung chữ trong các blocks: 
 ```
 Điều 1. Phạm vi điều chỉnh
 Văn bản này quy định về...
@@ -300,7 +311,7 @@ Mỗi AlignedPair có ba trường chính:
 |---|---|
 | Đầu vào | Một `AlignedPair` do Aligner trả về |
 | Xử lý | So sánh tiêu đề và nội dung của hai Điều |
-| Đầu ra | Danh sách đoạn chữ thay đổi, gồm loại thay đổi, đoạn cũ và đoạn mới |
+| Đầu ra | TextDiffResult theo mục 1.6 |
 | Loại thay đổi | `INSERT`: thêm; `DELETE`: xóa; `REPLACE`: thay thế |
 | Điều thêm/xóa toàn bộ | Ghi nhận toàn bộ nội dung phía tương ứng |
 
@@ -406,6 +417,14 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 | Quản lý file | File tải lên chỉ dùng để xử lý; bản đầu tiên không yêu cầu lưu lịch sử. File tạm phải được xóa sau xử lý |
 | Bảo mật | Không ghi toàn bộ nội dung tài liệu vào log. Nếu dùng API bên ngoài, phải thống nhất việc gửi dữ liệu và quản lý khóa API |
 | Đo hiệu năng | Ghi nhận thời gian xử lý và kích thước tài liệu; chỉ chốt mục tiêu tốc độ sau khi đo trên bộ tài liệu mẫu và môi trường xác định |
+
+- Reader phải trích xuất toàn bộ nội dung có thể đọc được.
+- Phần nằm ngoài các Điều, như lời mở đầu, chữ ký hoặc phụ lục,
+  chưa được so sánh trong bản đầu tiên.
+- Báo cáo phải nêu rõ giới hạn này; “Không có thay đổi”
+  chỉ áp dụng cho các Điều đã xử lý.
+- Nếu không xử lý hết nội dung thuộc một Điều, phải báo
+  PARTIAL hoặc FAILED, không báo SUCCESS.
 
 ## 7. Quy định dữ liệu trao đổi giữa các module
 
