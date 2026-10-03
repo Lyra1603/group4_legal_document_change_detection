@@ -9,7 +9,7 @@ def classify_and_score(pair: AlignedPair, sem_diff: SemanticDiffResult) -> Scori
         return {"category": "STYLISTIC_EDIT", "significance": "LOW", "is_critical": False}
 
     if pair["align_type"] == "ADDED":
-        return {"category": "CLAUSE_ADDED", "significance": "MEDIUM", "is_critical": False}
+        return {"category": "CLAUSE_ADDED", "significance": "MEDIUM", "is_critical": True}
     if pair["align_type"] == "DELETED":
         return {"category": "CLAUSE_DELETED", "significance": "HIGH", "is_critical": True}
 
