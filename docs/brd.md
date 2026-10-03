@@ -39,6 +39,8 @@ văn bản mà còn thay đổi về mặt ngữ nghĩa pháp lý và đánh d�
 - Tự động xử lý chắc chắn các trường hợp tách/gộp Điều;
   bản đầu chỉ cảnh báo để kiểm tra.
 - Tư vấn pháp lý và lưu lịch sử so sánh trong bản đầu tiên.
+- So sánh nội dung ngoài các Điều, bao gồm lời mở đầu,
+  chữ ký và phụ lục trong bản đầu tiên.
 
 ## 7. Giả định và rủi ro
 -  Xáo trộn số thứ tự Điều/Khoản do bãi bỏ hoặc chèn mới,
