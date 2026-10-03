@@ -1,9 +1,9 @@
-**Group 4 – Legal Document Change Detection**
+<h1 align="center">Group 4 – Legal Document Change Detection</h1>
 
 * **Đề tài:** Project 7 – Legal Document Change Detection (Engineering / R&D – ★★★)
 * **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản pháp luật/hợp đồng, phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
 
-🔗 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
+**Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
 1. [Business Requirements Document (BRD)](docs/brd.md)
 2. [System Requirements Specification (SRS)](docs/srs.md)
 
