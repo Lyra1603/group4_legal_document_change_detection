@@ -1,7 +1,7 @@
 <h1 align="center">Group 4 – Legal Document Change Detection</h1>
 
 * **Đề tài:** Project 7 – Legal Document Change Detection (Engineering / R&D )
-* **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản quy phạm pháp luật Việt Nam., phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
+* **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản quy phạm pháp luật Việt Nam, phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
 
 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
 1. Business Requirements Document (BRD): brd.md
@@ -42,26 +42,43 @@ các bước xử lý. Legal Knowledge Base chưa thuộc kiến trúc tối thi
 Chưa chốt việc dùng LLM/API ngoài hoặc công nghệ frontend.
 
 ## 2. Mục tiêu Hệ thống & Chỉ số Nghiệm thu (Targets)
-- Change Detection F1: >= 0.90 (Phát hiện chính xác điều khoản bị đổi nghĩa).
-- Critical Change Recall: >= 95% (Không bỏ sót các thay đổi trọng yếu về quyền, nghĩa vụ, thời hạn, chế tài tài chính).
+- Change F1 ≥ 0,90: đo khả năng phát hiện từng thay đổi nghĩa.
+- Critical Change Recall ≥ 0,95: tìm đúng ít nhất 95% thay đổi
+  được gán nhãn CRITICAL theo bộ tiêu chí thống nhất.
+- Đo trên bộ kiểm thử độc lập; đây là mục tiêu, chưa phải kết quả đạt được.
 
 ## 3. Cấu trúc Thư mục Dự án
 ```
 group4_legal_document_change_detection/
 ├── docs/                       # Tài liệu đặc tả BRD và SRS
-├── data/                       # Chứa data/raw, data/dev_set, data/test_set
+├── data/                       # cấu trúc dự kiến: data/raw, data/dev_set, data/test_set
 ├── src/
 │   ├── schemas.py              # Cấu trúc dữ liệu hiện tại; cần cập nhật theo SRS
-│   ├── parser/                 # Tách Điều/Khoản (FR-01)
-│   ├── aligner/                # Module Version Aligner (FR-02)
-│   ├── semantic_diff/          # Module Semantic Diff Engine (FR-03)
-│   ├── classifier_scorer/      # Module Change Classifier & Scorer (FR-04)
-│   ├── evaluation/             # Script tính toán F1, Recall (FR-05)
-│   └── pipeline.py             # Luồng tích hợp End-to-End nối 4 module
+│   ├── parser/                 # Tách cấp Điều
+│   ├── aligner/                # Module Version Aligner 
+│   ├── semantic_diff/          # Module Semantic Diff Engine 
+│   ├── classifier_scorer/      # Module Change Classifier & Scorer
+│   ├── evaluation/             # Script tính toán F1, Recall
+│   └── pipeline.py             # Pipeline baseline hiện tại; cần cập nhật theo SRS
 ├── backend/                    # API Server (Python FastAPI)
 ├── frontend/                   # Giao diện Web UI
 └── requirements.txt            # Danh sách thư viện cần cài đặt
 ```
+
+## Hiện trạng triển khai
+
+> **Lưu ý:** SRS và Minimum Architecture mô tả thiết kế mục tiêu hoàn chỉnh của hệ thống. Mã nguồn hiện tại trong repository mới dừng lại ở mức **baseline** để kiểm thử luồng cơ bản:
+
+- **API & Input:** API hiện chỉ nhận 2 chuỗi text thô (`raw strings`), chưa hỗ trợ upload file tài liệu trực tiếp.
+- **Thành phần còn thiếu:** Chưa tách riêng module `Reader`, `Text Diff` chuyên biệt và chưa xây dựng giao diện người dùng (UI/Frontend).
+- **Data Schemas:** `schemas.py` chưa đồng bộ đầy đủ theo hợp đồng dữ liệu (data contract) mới nhất.
+- **Logic xử lý:** Các module `Semantic Diff` và `Scorer` mới áp dụng các rule-based đơn giản, chưa tích hợp NLP chuyên sâu.
+- **Đánh giá (Evaluator):** Module `Evaluator` cần tiếp tục cập nhật để đo lường đầy đủ các loại lỗi và hỗ trợ đánh giá chi tiết trên từng thay đổi (fine-grained diff evaluation).
+- **Bộ dữ liệu nghiệm thu:** Chưa hoàn thiện bộ benchmark/dataset chuẩn để chứng minh hệ thống đạt các mục tiêu nghiệm thu đề ra.
+
+*Dự kiến bổ sung `python-docx` khi phát triển phân hệ trích xuất văn bản Word (`.docx`). Hiện tại dự án chưa tích hợp API AI thương mại bên ngoài.*
+
+---
 
 ## 4. Hướng dẫn Cài đặt & Chạy thử (Quick Start)
 - Bước 1: Cài đặt thư viện môi trường
