@@ -1,7 +1,7 @@
 <h1 align="center">Group 4 – Legal Document Change Detection</h1>
 
 * **Đề tài:** Project 7 – Legal Document Change Detection (Engineering / R&D )
-* **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản pháp luật/hợp đồng, phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
+* **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản quy phạm pháp luật Việt Nam., phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
 
 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
 1. Business Requirements Document (BRD): brd.md
@@ -10,19 +10,36 @@
 
 ---
 
-## 1. Sơ đồ Kiến trúc Tối thiểu (Minimum Architecture)
+## 1. Minimum Architecture dự kiến
+
+Các module xử lý nằm trong một backend Python.
+Pipeline điều phối Reader, Parser, Aligner, Text Diff,
+Semantic Diff và Classifier & Scorer.
 
 ```mermaid
 flowchart TD
-    A["1. Web UI (React/Next.js)"] --> B["2. Backend API (FastAPI)"]
-    B --> C["3. Document Parser (PyMuPDF)"]
-    C --> D["4. Version Aligner (Retrieval & Alignment)"]
-    D --> E[("5. Legal Knowledge Base")]
-    E --> F["6. Semantic Diff Engine (Baseline/NLP)"]
-    F --> G["7. Change Classifier & Scorer (LLM)"]
-    G --> H["8. Evaluation & Logging (F1 >= 0.90)"]
-    H --> B
+    UI["Web UI"] --> API["Backend API"]
+    API --> P["Pipeline"]
+
+    subgraph Processing["Các module do Pipeline điều phối"]
+        R["Reader: đọc riêng hai file"] --> PA["Parser: Tách Điều, giữ Khoản/Điểm trong nội dung"]
+        PA --> A["Aligner: ghép hai bản"]
+        A --> T["Text Diff"]
+        T --> S["Semantic Diff"]
+        S --> C["Classifier & Scorer"]
+    end
+
+    P --> R
+    C --> Report["ComparisonReport"]
+    Report --> API
+
+    Report -. "Khi kiểm thử" .-> E["Evaluator"]
+    GT["Ground truth"] --> E
 ```
+
+Evaluator chạy riêng khi kiểm thử. Logging ghi nhận xuyên suốt
+các bước xử lý. Legal Knowledge Base chưa thuộc kiến trúc tối thiểu.
+Chưa chốt việc dùng LLM/API ngoài hoặc công nghệ frontend.
 
 ## 2. Mục tiêu Hệ thống & Chỉ số Nghiệm thu (Targets)
 - Change Detection F1: >= 0.90 (Phát hiện chính xác điều khoản bị đổi nghĩa).
@@ -34,7 +51,7 @@ group4_legal_document_change_detection/
 ├── docs/                       # Tài liệu đặc tả BRD và SRS
 ├── data/                       # Chứa data/raw, data/dev_set, data/test_set
 ├── src/
-│   ├── schemas.py              # Định nghĩa JSON Schema (Data Contract)
+│   ├── schemas.py              # Cấu trúc dữ liệu hiện tại; cần cập nhật theo SRS
 │   ├── parser/                 # Tách Điều/Khoản (FR-01)
 │   ├── aligner/                # Module Version Aligner (FR-02)
 │   ├── semantic_diff/          # Module Semantic Diff Engine (FR-03)
