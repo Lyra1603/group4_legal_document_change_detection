@@ -2,70 +2,248 @@
 
 | Thuật ngữ | Định nghĩa đề xuất |
 | :--- | :--- |
-| **Clause** | Một Điều tách từ văn bản, gồm `id`, `title`, `content`. |
+| **Clause** | Một Điều trong một phiên bản, gồm định danh, nhãn Điều, tiêu đề, nội dung và vị trí nguồn |
 | **Aligned pair** | Một cặp điều khoản v1–v2 tương ứng, hoặc một điều chỉ có ở một bên. Có 3 loại: `PAIRED`, `ADDED`, `DELETED`. |
-| **Meaningful change** | Thay đổi làm đổi nội dung (số liệu, tính chất nghĩa vụ như "phải" thành "có thể"). Đổi cách diễn đạt thì **không** tính. |
-| **Critical change** | Thay đổi có thể ảnh hưởng trực tiếp đến quyền, nghĩa vụ, chế tài/tiền hoặc thời hạn (bao gồm các điều khoản mới được bổ sung (`ADDED`), điều khoản bị bãi bỏ (`DELETED`), hoặc `PAIRED` có thay đổi trọng yếu). |
+| **Meaningful change** | Một Điều trong một phiên bản, gồm định danh, nhãn Điều, tiêu đề, nội dung và vị trí nguồn |
+| **Critical change** | Thay đổi nghĩa đáp ứng tiêu chí CRITICAL trong bộ tiêu chí nhóm thống nhất; thêm/xóa Điều không tự động là critical |
 
 # SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
 
-Hệ thống hoạt động theo mô hình Pipeline tuần tự: `Raw Text` -> `[Parser]` -> `Clauses` -> `[Aligner]` -> `AlignedPairs` -> `[SemanticDiff]` -> `DiffResults` -> `[Scorer]` -> `FinalReport`.
+Hệ thống so sánh hai phiên bản đầy đủ của cùng một VBQPPL Việt Nam.
+Người dùng cung cấp bản cũ và bản mới dưới dạng `.docx` hoặc PDF có
+lớp chữ. Không hỗ trợ PDF scan hoặc dựng bản mới từ văn bản sửa đổi.
+
+Luồng xử lý:
+Hai file → Reader → Parser → Aligner → Text Diff → Semantic Diff
+→ Classifier & Scorer → Báo cáo kết quả.
+
+Reader và Parser chạy riêng cho từng phiên bản. Aligner nhận kết quả
+của cả hai phiên bản để ghép các Điều tương ứng.
+
+Bản đầu tiên ghép và so sánh ở cấp Điều; giữ nội dung Khoản/Điểm
+bên trong từng Điều. Chỉ hỗ trợ ghép một Điều với một Điều;
+trường hợp nghi ngờ tách/gộp hoặc ghép mơ hồ phải cảnh báo kiểm tra.
+
+Pipeline điều phối các module. Backend API nhận yêu cầu từ giao diện,
+gọi Pipeline và trả báo cáo để giao diện hiển thị.
+
+Evaluator chạy riêng khi kiểm thử, đối chiếu kết quả với đáp án chuẩn;
+không nằm trong luồng so sánh thông thường của người dùng.
 
 Dưới đây là Data Contract (Hợp đồng dữ liệu) quy định bắt buộc định dạng Input/Output giữa các module. Mọi thay đổi đều phải được Nhóm trưởng phê duyệt.
 
 ## 1. Data Structures (Cấu trúc dữ liệu dùng chung)
 
-### 1.1 Clause (Điều khoản đơn lẻ)
-```
+### 1.1 Clause (Một Điều trong văn bản)
+
+```python
 class Clause:
-    id: str       # BẮT BUỘC có chữ "Điều " ở trước. Vd: "Điều 1", "Điều 2a"
-    title: str    # Tiêu đề điều khoản. Vd: "Phạm vi áp dụng" (Nếu không có, để chuỗi rỗng "")
-    content: str  # Nội dung chi tiết (Đã lược bỏ ký tự xuống dòng thừa)
+    unit_id: str            # Định danh duy nhất trong phiên bản
+    id: str                 # Nhãn Điều, ví dụ: "Điều 5"
+    title: str              # Không có tiêu đề thì để ""
+    content: str            # Giữ nội dung Khoản/Điểm và thứ tự
+    source_refs: list[str]  # Vị trí nguồn chứa Điều này
 ```
-### 1.2 AlignedPair (Cặp điều khoản đã căn chỉnh)
-```
+
+Quy định:
+- `unit_id` phân biệt các Điều trong từng phiên bản, ví dụ:
+  `v1:article_5` và `v2:article_6`.
+- `id` là nhãn trong tài liệu; có thể thay đổi khi đánh lại số Điều.
+- `source_refs` tham chiếu các vị trí do Reader ghi nhận:
+  trang PDF hoặc đoạn/bảng Word; một Điều có thể trải qua nhiều vị trí.
+- Không xóa ngắt dòng phân chia Khoản/Điểm khi chuẩn hóa nội dung.
+  
+### 1.2 AlignedPair (Cặp Điều được căn chỉnh)
+
+```python
 class AlignedPair:
-    pair_key: str               # Vd: "Điều 1 -> Điều 1" hoặc "None -> Điều 2"
-    align_type: str            # CHỈ ĐƯỢC DÙNG: "PAIRED", "ADDED", "DELETED"
-    v1: Clause | None   # None nếu align_type là "ADDED"
-    v2: Clause | None   # None nếu align_type là "DELETED"
+    pair_key: str              # Định danh cặp trong lần so sánh
+    align_type: str            # PAIRED | ADDED | DELETED
+    v1: Clause | None          # Điều bản cũ
+    v2: Clause | None          # Điều bản mới
+    needs_review: bool
+    review_reason: str         # Để "" khi không cần kiểm tra
 ```
+
+Quy định:
+- PAIRED: có cả v1 và v2.
+- ADDED: v1 = None, có v2.
+- DELETED: có v1, v2 = None.
+- pair_key được tạo từ unit_id hai phía, không chỉ từ số Điều.
+- Mỗi Điều ở mỗi phiên bản xuất hiện đúng một lần trong kết quả.
+- Ghép mơ hồ hoặc nghi ngờ tách/gộp Điều:
+  needs_review = True và ghi rõ review_reason.
+- Khi needs_review = True, việc ghép hoặc thêm/xóa chỉ là
+  kết quả tạm thời; không được hiển thị như kết luận đã xác nhận.
 
 ### 1.3 SemanticDiffResult (Kết quả phân tích ngữ nghĩa)
-```
+
+```python
+class SemanticChange:
+    change_id: str             # Định danh thay đổi trong lần so sánh
+    is_meaningful_change: bool | None
+    diff_details: str
+    old_quote: str | None      # None khi không có phía cũ
+    new_quote: str | None      # None khi không có phía mới
+    needs_review: bool
+    review_reason: str
+
 class SemanticDiffResult:
-    is_meaningful_change: bool # True: Đổi nghĩa pháp lý / False: Sửa văn phong
-    diff_details: str          # Giải thích ngắn gọn lý do
+    pair_key: str
+    changes: list[SemanticChange]
+    needs_review: bool
+    review_reason: str
 ```
 
-### 1.4 ScoringResult (Kết quả phân loại & chấm điểm)
+Quy định:
+- Một cặp Điều có thể có nhiều SemanticChange, ví dụ:
+  một thay đổi thời hạn và một thay đổi chủ thể.
+- is_meaningful_change:
+  True = đổi nghĩa; False = không đổi nghĩa;
+  None = chưa đủ căn cứ kết luận.
+- Kết luận chưa xác định phải có needs_review = True.
+- Bằng chứng phải lấy từ tiêu đề hoặc nội dung hai Điều tương ứng.
+- Cảnh báo từ Aligner phải được giữ trong kết quả.
+- changes rỗng chỉ biểu thị không có thay đổi sau khi so sánh
+  thành công; không dùng để che giấu lỗi hoặc phần chưa xử lý.
+
+### 1.4 ScoringResult (Phân loại và chấm từng thay đổi)
+
 ```
 class ScoringResult:
-    category: str       # Vd: "OBLIGATION_OR_METRIC_CHANGE", "STYLISTIC_EDIT", "CLAUSE_ADDED"
-    significance: str   # CHỈ ĐƯỢC DÙNG: "LOW", "MEDIUM", "HIGH", "CRITICAL"
-    is_critical: bool   # Flag bắt buộc để tính Critical Change Recall
+    change_id: str             # Tham chiếu SemanticChange
+    category: str | None
+    significance: str | None  # LOW | MEDIUM | HIGH | CRITICAL
+    is_critical: bool | None
+    reason: str
+    needs_review: bool
+    review_reason: str
 ```
 
-## 2. Functional Requirements (Đặc tả Module)
-**FR-01 — Tách điều khoản (Parser)**
-Input: text_v1 (str), text_v2 (str)
-Output: List[Clause]
-Acceptance Criteria: Không được tách sai khi trong nội dung có câu trích dẫn "theo quy định tại Điều N...".
+Quy định:
+- Mỗi SemanticChange có một ScoringResult tương ứng.
+- Khi xác định được mức độ:
+  is_critical = True khi và chỉ khi significance = CRITICAL.
+- Chỉ sửa văn phong, không đổi nghĩa: significance = LOW.
+- Thêm/xóa Điều không tự động được coi là CRITICAL.
+- Chưa đủ căn cứ chấm mức độ:
+  significance = None, is_critical = None,
+  needs_review = True và ghi rõ lý do.
+- category được phép là None nếu chưa phân loại được.
+- Chấm mức độ theo bộ tiêu chí và ví dụ nhóm đã thống nhất.
 
-**FR-02 — Căn chỉnh (Version Aligner)**
-Input: v1_list: List[Clause], v2_list: List[Clause]
-Output: List[AlignedPair]
-Acceptance Criteria: Tổng số điều khoản ở bản cũ bị bãi bỏ (DELETED) và các cặp ghép được (PAIRED) phải bằng đúng số lượng v1_list.
+### 1.5 ExtractedDocument (Đầu ra Reader)
 
-**FR-03 & FR-04 — Semantic Diff & Scorer**
-Input: Một đối tượng AlignedPair
-Output: Đối tượng đó được bổ sung 2 thuộc tính SemanticDiffResult và ScoringResult.
-Acceptance Criteria: Những thay đổi chỉ là sửa lỗi chính tả (vd: "sữ liệu" -> "dữ liệu") bắt buộc trả về is_meaningful_change = False và significance = LOW.
+```
+class SourceBlock:
+    source_ref: str       # Ví dụ: "pdf:page_1" hoặc "docx:paragraph_5"
+    text: str
 
-**FR-05 — Đánh giá hệ thống (Evaluator)**
-Input: Danh sách kết quả dự đoán của toàn bộ Pipeline và danh sách Ground Truth.
-Output: Dictionary chứa: Precision, Recall, Change_F1, Critical_Change_Recall.
-Acceptance Criteria: Xử lý ngoại lệ ZeroDivisionError nếu tập mẫu test rỗng hoặc không có lỗi Critical nào trong bộ Ground Truth.
+class ExtractedDocument:
+    version_id: str       # "v1" hoặc "v2" trong lần so sánh
+    filename: str
+    file_type: str        # DOCX | PDF_TEXT
+    blocks: list[SourceBlock]
+```
+
+Quy định:
+- blocks giữ thứ tự nội dung trong tài liệu, bao gồm nội dung bảng.
+- Parser dùng blocks để tách Điều và lưu source_refs.
+- Không đọc được nội dung thì báo lỗi, không trả văn bản rỗng hợp lệ.
+
+### 1.6 TextDiffResult (Đầu ra Text Diff)
+
+```
+class TextChange:
+    field: str           # title | content
+    type: str            # INSERT | DELETE | REPLACE
+    old_text: str
+    new_text: str
+    old_start: int
+    old_end: int
+    new_start: int
+    new_end: int
+
+class TextDiffResult:
+    pair_key: str
+    changes: list[TextChange]
+```
+
+Quy định:
+- Vị trí tính theo ký tự trong trường title/content, bắt đầu từ 0;
+  khoảng [start, end) bao gồm start và không bao gồm end.
+- INSERT: old_text = ""; DELETE: new_text = "".
+- Vị trí phải khớp chính xác chuỗi của Clause được trả trong báo cáo.
+- Điều thêm/xóa toàn bộ được biểu diễn bằng INSERT/DELETE
+  cho các trường tương ứng; phía không tồn tại dùng chuỗi rỗng.
+- Hai Điều giống nhau có changes = [].
+- Đánh lại số Điều được thể hiện qua AlignedPair,
+  không tính là thay đổi nội dung.
+
+### 1.7 ComparisonReport (Báo cáo tổng hợp)
+
+```
+class PairResult:
+    alignment: AlignedPair
+    text_diff: TextDiffResult | None
+    semantic_diff: SemanticDiffResult | None
+    scoring: list[ScoringResult]
+
+class ProcessingIssue:
+    stage: str
+    code: str
+    message: str
+    pair_key: str | None
+
+class ComparisonReport:
+    comparison_id: str
+    status: str           # SUCCESS | PARTIAL | FAILED
+    results: list[PairResult]
+    warnings: list[ProcessingIssue]
+    errors: list[ProcessingIssue]
+```
+
+Quy định:
+- SUCCESS: các bước xử lý đã hoàn tất; vẫn có thể có kết quả
+  cần người kiểm tra.
+- PARTIAL: chỉ hoàn tất một phần; phải chỉ rõ phần chưa xử lý.
+- FAILED: không tạo được báo cáo so sánh có thể sử dụng.
+- Kết quả chưa được xử lý dùng None và ghi lỗi tương ứng;
+  không thay bằng danh sách rỗng để biểu thị không có thay đổi.
+- Mỗi ScoringResult tham chiếu change_id trong SemanticDiffResult.
+- Cảnh báo ghép hoặc phân tích chưa chắc chắn phải giữ tới báo cáo.
+- Chỉ thông báo "Không có thay đổi" khi status = SUCCESS,
+  không còn phần chưa xác định và mọi TextDiffResult.changes đều rỗng.
+
+  
+## 2. Functional Requirements
+
+| Mã | Chức năng | Đầu vào → đầu ra | Tiêu chí nghiệm thu tối thiểu |
+|---|---|---|---|
+| FR-01 | Reader | Một file → ExtractedDocument | Đọc DOCX/PDF text, giữ thứ tự và vị trí nguồn; không đọc được phải báo lỗi |
+| FR-02 | Parser | Một ExtractedDocument → list[Clause] | Tách cấp Điều; giữ Khoản/Điểm; không nhầm dẫn chiếu thành đầu Điều; không tìm được Điều phải báo lỗi |
+| FR-03 | Aligner | Hai list[Clause] → list[AlignedPair] | Mỗi Điều mỗi phía xuất hiện đúng một lần; hỗ trợ đánh lại số; ghép mơ hồ/tách/gộp phải cảnh báo |
+| FR-04 | Text Diff | Một AlignedPair → TextDiffResult | Chỉ ra phần thêm/xóa/thay thế trong tiêu đề và nội dung; vị trí khớp chuỗi nguồn |
+| FR-05 | Semantic Diff | AlignedPair và TextDiffResult → SemanticDiffResult | Phân tích từng thay đổi với đầy đủ ngữ cảnh; có bằng chứng; chưa đủ căn cứ phải đánh dấu kiểm tra |
+| FR-06 | Classifier & Scorer | AlignedPair và SemanticDiffResult → list[ScoringResult] | Chấm từng thay đổi theo tiêu chí; is_critical nhất quán với significance; có lý do |
+| FR-07 | Evaluator | Báo cáo dự đoán và đáp án chuẩn → chỉ số đánh giá | Tính cả thay đổi bỏ sót và dự đoán sai; không bỏ qua do ghép sai hoặc thiếu kết quả |
+| FR-08 | Upload và xem kết quả | Hai file → báo cáo hiển thị | Chọn rõ cũ/mới; hiển thị chữ thay đổi, phân tích, mức độ, cảnh báo và lỗi |
+
+Mục tiêu đánh giá: Change F1 ≥ 0,90 và Critical Change Recall ≥ 0,95
+trên bộ kiểm thử độc lập. Đây là mục tiêu nghiệm thu, chưa phải
+chất lượng đã được chứng minh của mã nguồn hiện tại.
+
+Evaluator:
+- Đối chiếu ở cấp từng thay đổi theo quy tắc gán nhãn thống nhất.
+- Dự đoán và nhãn chuẩn được ghép một-một; không tính trùng.
+- Nhãn chuẩn không được tìm thấy phải tính là bỏ sót.
+- Thay đổi nghĩa dự đoán không có nhãn chuẩn tương ứng phải tính
+  là phát hiện sai sau khi kiểm tra tính đầy đủ của nhãn chuẩn.
+- Một thay đổi critical chỉ được tính tìm đúng khi đối chiếu đúng
+  thay đổi và dự đoán is_critical = True.
+- Kết quả cần kiểm tra chưa được giải quyết không tính là tìm đúng.
+- Mẫu số bằng 0 trả null kèm lý do; không báo đạt mục tiêu.
+- Báo số mẫu kiểm thử và số kết quả cần kiểm tra cùng các chỉ số.
 
 ## 3. Thiết kế module
 ### 3.1 Module Reader(đọc file)
@@ -74,7 +252,7 @@ Acceptance Criteria: Xử lý ngoại lệ ZeroDivisionError nếu tập mẫu t
 |---|---|
 | Nhận vào | Một file `.docx` hoặc PDF có lớp chữ |
 | Công việc | Đọc nội dung chữ theo thứ tự trong tài liệu |
-| Trả ra | Nội dung văn bản đã trích xuất |
+| Đầu ra | Nội dung văn bản đã trích xuất (ExtractedDocument) |
 | Khi không đọc được chữ | Báo lỗi, không coi là văn bản rỗng hợp lệ |
 - Thư viện dự kiến:
   + PyMuPDF đọc PDF: đã có trong requirements.txt của branch.
@@ -84,9 +262,9 @@ Acceptance Criteria: Xử lý ngoại lệ ZeroDivisionError nếu tập mẫu t
   
 | Nội dung | Quy định |
 |---|---|
-| Đầu vào | Nội dung chữ do Reader trả về của **một văn bản** |
+| Đầu vào |Một ExtractedDocument |
 | Xử lý | Nhận diện và tách từng Điều |
-| Đầu ra | Danh sách Điều; mỗi Điều có `id`, `title`, `content` |
+| Đầu ra | list[Clause] |
 | Yêu cầu | Giữ đúng thứ tự; không nhầm câu dẫn chiếu “theo Điều 5…” thành đầu một Điều |
 | Lỗi | Không tìm được Điều nào thì báo lỗi để kiểm tra |
 
@@ -96,22 +274,6 @@ Ví dụ đầu vào:
 Văn bản này quy định về...
 Điều 2. Đối tượng áp dụng
 Áp dụng đối với...
-```
-
-Đầu ra(JSON):
-```
-[
-  {
-    "id": "Điều 1",
-    "title": "Phạm vi điều chỉnh",
-    "content": "Văn bản này quy định về..."
-  },
-  {
-    "id": "Điều 2",
-    "title": "Đối tượng áp dụng",
-    "content": "Áp dụng đối với..."
-  }
-]
 ```
 
 ### 3.3 Module Aligner - ghép các Điều tương ứng giữa bản cũ và bản mới.
@@ -132,24 +294,6 @@ Mỗi AlignedPair có ba trường chính:
 | `v1` | Điều bản cũ; bằng `null` nếu thêm mới |
 | `v2` | Điều bản mới; bằng `null` nếu bị xóa |
 
-Ví dụ một cặp ghép được:
-```
-{
-  "pair_key": "Điều 5 -> Điều 6",
-  "align_type": "PAIRED",
-  "v1": {
-    "id": "Điều 5",
-    "title": "Thời hạn",
-    "content": "Phải nộp trong 30 ngày."
-  },
-  "v2": {
-    "id": "Điều 6",
-    "title": "Thời hạn",
-    "content": "Phải nộp trong 15 ngày."
-  }
-}
-```
-
 ### 3.4 Module Text Diff — tìm những đoạn chữ thay đổi: Sau khi Aligner ghép đúng hai Điều, Text Diff chỉ ra chữ nào được thêm, xóa hoặc thay thế.
 
 | Nội dung | Quy định |
@@ -163,20 +307,6 @@ Ví dụ một cặp ghép được:
 Ví dụ:
 - Cũ: “Phải nộp trong 30 ngày.”
 - Mới: “Phải nộp trong 15 ngày.”
-Kết quả minh họa(JSON):
-```
-{
-  "pair_key": "Điều 5 -> Điều 6",
-  "changes": [
-    {
-      "field": "content",
-      "type": "REPLACE",
-      "old_text": "30",
-      "new_text": "15"
-    }
-  ]
-}
-```
 
 ### 3.5 Module Semantic Diff — xác định thay đổi có làm đổi nghĩa hay không.
 
@@ -184,21 +314,10 @@ Kết quả minh họa(JSON):
 |---|---|
 | Đầu vào | Một `AlignedPair` và kết quả Text Diff; giữ đầy đủ nội dung hai Điều để hiểu ngữ cảnh |
 | Xử lý | Phân biệt sửa cách diễn đạt với thay đổi nội dung, như quyền, nghĩa vụ, chủ thể, điều kiện, thời hạn hoặc chế tài |
-| Đầu ra | Kết luận có đổi nghĩa không, giải thích và trích đoạn cũ/mới làm bằng chứng |
+| Đầu ra | SemanticDiffResult chứa danh sách SemanticChange |
 | Chưa đủ căn cứ | Đánh dấu cần kiểm tra; không tự kết luận là sửa văn phong |
 | Ranh giới trách nhiệm | Mức độ nghiêm trọng do module Scorer xử lý sau |
 
-Ví dụ đầu ra đề xuất(JSON):
-```
-{
-  "pair_key": "Điều 5 -> Điều 6",
-  "is_meaningful_change": true,
-  "diff_details": "Thời hạn nộp giảm từ 30 xuống 15 ngày.",
-  "old_quote": "Phải nộp trong 30 ngày.",
-  "new_quote": "Phải nộp trong 15 ngày.",
-  "needs_review": false
-}
-```
 Quy định thêm: khi needs_review = true, cho phép is_meaningful_change = null để biểu thị chưa xác định.
 
 Tiêu chí nghiệm thu tối thiểu:
@@ -213,7 +332,7 @@ Tiêu chí nghiệm thu tối thiểu:
 |---|---|
 | Đầu vào | `AlignedPair` và kết quả Semantic Diff |
 | Xử lý | Xác định loại thay đổi và mức độ theo bộ tiêu chí thống nhất của nhóm |
-| Đầu ra | `category`, `significance`, `is_critical`, `reason`, `needs_review` |
+| Đầu ra | list[ScoringResult], một kết quả cho mỗi SemanticChange|
 | Yêu cầu | Mức độ phải có lý do dựa trên nội dung và bằng chứng của thay đổi |
 
 Các loại thay đổi ban đầu có thể gồm: sửa văn phong, thay đổi quyền/nghĩa vụ, chủ thể, thời hạn, chế tài, thêm Điều hoặc xóa Điều.
@@ -225,17 +344,6 @@ Quy tắc cần ghi rõ:
 - Thêm/xóa Điều không tự động được coi là CRITICAL.
 - Chưa đủ căn cứ → needs_review = true, significance và is_critical để null.
 - Bộ tiêu chí phân biệt các mức phải có ví dụ được nhóm thống nhất trước khi đánh giá hệ thống.
-
-Ví dụ cấu trúc kết quả(JSON):
-```
-{
-  "category": "STYLISTIC_EDIT",
-  "significance": "LOW",
-  "is_critical": false,
-  "reason": "Sửa lỗi chính tả, giữ nguyên nội dung quy định.",
-  "needs_review": false
-}
-```
 
 ### 3.7 Module Evaluator — đo hệ thống làm đúng đến đâu: Evaluator đối chiếu kết quả dự đoán với ground truth: đáp án do người gán nhãn và kiểm tra trước.
 
@@ -312,6 +420,20 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 | Semantic Diff → Scorer | Danh sách thay đổi; mỗi thay đổi có `change_id`, kết luận đổi nghĩa, giải thích, bằng chứng cũ/mới và `needs_review` |
 | Pipeline → giao diện | `comparison_id`, trạng thái xử lý, danh sách kết quả, cảnh báo và lỗi |
 
+
+## 8. Các quyết định cần chốt trước triển khai/nghiệm thu
+
+- Bộ tiêu chí LOW/MEDIUM/HIGH/CRITICAL, kèm ví dụ có nhãn.
+- Danh mục category và quy tắc gán nhãn từng thay đổi.
+- Quy tắc đối chiếu dự đoán với ground truth, bao gồm trường hợp
+  một thay đổi được diễn đạt hoặc chia nhỏ khác nhau.
+- Bộ dữ liệu phát triển và kiểm thử độc lập.
+- Giới hạn dung lượng, thời gian xử lý và môi trường đo hiệu năng.
+- Thuật toán Semantic Diff; có sử dụng mô hình hoặc API ngoài không.
+- Công nghệ frontend.
+
+Các mục chưa chốt không được coi là yêu cầu đã được triển khai
+hoặc tiêu chí nghiệm thu đã được xác nhận.
 
 
 
