@@ -172,7 +172,7 @@ Chất lượng của hệ thống được đo lường định lượng trên 
 * **Thiếu dữ liệu nhãn:** Tập dữ liệu có nhãn hạn chế $\rightarrow$ Sử dụng kỹ thuật Few-shot Prompting kết hợp RAG Vector Search.
 
 ---
-## BỔ SUNG: KIẾN TRÚC BẤT ĐỒNG BỘ (ASYNC ARCHITECTURE ) nếu chin
+## BỔ SUNG: THÔNG TIN KIẾN TRÚC BẤT ĐỒNG BỘ (ASYNC ARCHITECTURE ) 
 * Hệ thống bắt buộc triển khai theo mô hình xử lý bất đồng bộ (Asynchronous Event-Driven Architecture) dựa trên các lý do kỹ thuật sau:Phân loại Workload nặng (Heavy Compute Workload): Văn bản pháp luật có dung lượng rất lớn (hàng trăm trang như Bộ luật Dân sự, Luật Đất đai). Xử lý đồng bộ (Sync) sẽ gây quá tải CPU/GPU và gây lỗi 504 Gateway Timeout.
 * Giải quyết tình trạng nghẽn hàng chờ: Message Queue (Redis) làm vùng đệm nhận request, Worker (Celery) rút từng nhiệm vụ ra chạy ngầm giúp giao diện không bị treo đơ.
 * Cơ chế tự thử lại (Retry Mechanism & Fault Tolerance): Cho phép tự động gọi lại API kết nối với IPA AI nếu mạng bị ngắt kết nối giữa chừng mà không bắt người dùng phải thao tác lại từ đầu.
