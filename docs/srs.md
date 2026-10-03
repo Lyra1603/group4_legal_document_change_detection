@@ -1,4 +1,4 @@
-**Bàng thuật ngữ**
+**Bảng thuật ngữ**
 
 | Thuật ngữ | Định nghĩa đề xuất |
 | :--- | :--- |
@@ -6,12 +6,6 @@
 | **Aligned pair** | Một cặp điều khoản v1–v2 tương ứng, hoặc một điều chỉ có ở một bên. Có 3 loại: `PAIRED`, `ADDED`, `DELETED`. |
 | **Meaningful change** | Thay đổi làm đổi nội dung (số liệu, tính chất nghĩa vụ như "phải" thành "có thể"). Đổi cách diễn đạt thì **không** tính. |
 | **Critical change** | Thay đổi có thể ảnh hưởng trực tiếp đến quyền, nghĩa vụ, chế tài/tiền hoặc thời hạn (bao gồm các điều khoản mới được bổ sung (`ADDED`), điều khoản bị bãi bỏ (`DELETED`), hoặc `PAIRED` có thay đổi trọng yếu). |
-
-# SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
-
-Hệ thống hoạt động theo mô hình Pipeline tuần tự: `Raw Text` -> `[Parser]` -> `Clauses` -> `[Aligner]` -> `AlignedPairs` -> `[SemanticDiff]` -> `DiffResults` -> `[Scorer]` -> `FinalReport`.
-
-Dưới đây là Data Contract (Hợp đồng dữ liệu) quy định bắt buộc định dạng Input/Output giữa các module. Mọi thay đổi đều phải được Nhóm trưởng phê duyệt.
 
 # SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
 
