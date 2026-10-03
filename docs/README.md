@@ -4,8 +4,9 @@
 * **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản pháp luật/hợp đồng, phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
 
 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
-1. [Business Requirements Document (BRD)](docs/brd.md)
-2. [System Requirements Specification (SRS)](docs/srs.md)
+1. Business Requirements Document (BRD): brd.md
+2. System Requirements Specification (SRS): srs.md
+3. Mã nguồn
 
 ---
 
