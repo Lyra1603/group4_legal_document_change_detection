@@ -4,9 +4,10 @@
 * **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản quy phạm pháp luật Việt Nam, phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
 
 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
-1. Business Requirements Document (BRD): brd.md
-2. System Requirements Specification (SRS): srs.md
-3. Mã nguồn
+1. [BRD](brd.md): mục tiêu và phạm vi.
+2. [SRS](srs.md): yêu cầu và hợp đồng dữ liệu.
+3. [Architecture](architecture.md): tổ chức hệ thống và phân công.
+4. Mã nguồn: baseline hiện tại.
 
 ---
 
