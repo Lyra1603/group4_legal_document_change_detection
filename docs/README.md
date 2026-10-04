@@ -6,7 +6,8 @@
 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
 1. [BRD](brd.md): mục tiêu và phạm vi.
 2. [SRS](srs.md): yêu cầu và hợp đồng dữ liệu.
-3. [Architecture](architecture.md): tổ chức hệ thống và phân công.
+3. Architecture: đang được review trên nhánh `bachdung/docs`;
+   sẽ bổ sung sau khi merge PR kiến trúc.
 4. Mã nguồn: baseline hiện tại.
 
 ---
