@@ -389,7 +389,7 @@ Ví dụ: đáp án có 10 thay đổi trọng yếu, hệ thống tìm đúng 8
 |---|---|
 | Chọn đầu vào | Người dùng chọn hai file `.docx` hoặc PDF có lớp chữ, xác định rõ **bản cũ / bản mới** |
 | Bắt đầu so sánh | Người dùng nhấn “So sánh”; hệ thống kiểm tra file rồi chạy pipeline |
-| Trạng thái xử lý | Hiển thị đang xử lý, hoàn thành hoặc thất bại |
+| Trạng thái xử lý | Hiển thị đang xử lý, hoàn thành, hoàn thành một phần hoặc thất bại; phân biệt hoàn thành với kết quả còn cần kiểm tra |
 | Xem kết quả | Hiển thị các Điều tương ứng, đoạn cũ/mới và phần chữ thay đổi |
 | Xem phân tích | Mỗi thay đổi có kết luận đổi nghĩa, loại thay đổi, mức độ và lý do |
 | Cần kiểm tra | Hiển thị rõ các kết quả `needs_review = true`; mức độ chưa xác định ghi “Chưa xác định” |
@@ -450,6 +450,9 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 - Giới hạn dung lượng, thời gian xử lý và môi trường đo hiệu năng.
 - Thuật toán Semantic Diff; có sử dụng mô hình hoặc API ngoài không.
 - Công nghệ frontend.
+- Chọn xử lý đồng bộ hay bất đồng bộ cho bản đầu.
+- Nếu dùng bất đồng bộ: chốt trạng thái job, timeout, retry
+  và thời hạn giữ file/kết quả tạm trong API contract.
 
 Các mục chưa chốt không được coi là yêu cầu đã được triển khai
 hoặc tiêu chí nghiệm thu đã được xác nhận.
