@@ -1,8 +1,21 @@
-#  SOFTWARE ARCHITECTURE & BUSINESS REQUIREMENTS SPECIFICATION
+# SOFTWARE ARCHITECTURE
+
 **Project:** Project 7 — Legal Document Change Detection
-**Architecture Level:** Level 5 — AI Application (RAG & Reasoning)
-**Document Version:** 1.0.0
-**Author:** Bạch Công Dũng (Architecture & Documentation Owner)
+**Document Version:** 1.1.0
+**Status:** Bản đề xuất đồng bộ với SRS, chờ nhóm xác nhận
+**Author:** Bạch Công Dũng
+**Project Leader:** Dương Đức Anh
+**Related Document:** [Software Requirements Specification](srs.md)
+
+Tài liệu này mô tả cách tổ chức các thành phần, luồng xử lý,
+trách nhiệm module và các lựa chọn triển khai của hệ thống.
+
+Phạm vi, yêu cầu chức năng, tiêu chí nghiệm thu và hợp đồng dữ liệu
+chi tiết được quy định trong SRS. Architecture sử dụng cùng tên
+module và cấu trúc dữ liệu với SRS.
+
+Việc sử dụng RAG, IPA AI và kiến trúc xử lý nền được ghi rõ là
+lựa chọn cần xác nhận ở các phần tương ứng.
 
 ---
 
@@ -24,155 +37,372 @@ Khi một văn bản pháp lý hoặc hợp đồng có phiên bản mới, ngư
 
 ---
 
-## 2. PHẠM VI BÀI TOÁN & GIỚI HẠN (SYSTEM BOUNDARY)
+### 2. PHẠM VI VÀ GIỚI HẠN
 
-### 2.1. Trong phạm vi (In-Scope)
-* **Loại văn bản:** Các văn bản Quy phạm pháp luật (VBQPPL) Việt Nam (Luật, Nghị định, Thông tư, Quyết định).
-* **Đặc điểm:** Văn bản tiếng Việt, có cấu trúc phân cấp chuẩn theo "Điều", "Khoản", "Điểm".
-* **Tác vụ:** So sánh 2 phiên bản của cùng 1 văn bản (Văn bản gốc $V_1$ vs Văn bản sửa đổi, bổ sung, thay thế $V_2$). Nhận diện sự biến đổi về nghĩa vụ, thời hạn, mức phạt và phạm vi trách nhiệm.
+### 2.1. Trong phạm vi
 
-### 2.2. Ngoài phạm vi (Out-of-Scope)
-* Xử lý OCR đối với DOCX và PDF có lớp text nếu đó là phạm vi nhóm chốt; không hỗ trợ PDF scan trong MVP.
-* Phân biệt không nhận văn bản độc lập không có bản trước với vẫn phát hiện thêm/xóa điều khoản trong cặp V1/V2.
-* Tự động gom nhóm các văn bản sửa đổi nằm rải rác từ nhiều nguồn khác nhau.
-* Tư vấn pháp lý tự động hoặc xử lý các văn bản phi cấu trúc, văn bản bằng ngôn ngữ khác ngoài tiếng Việt.
+- So sánh hai phiên bản đầy đủ của cùng một VBQPPL Việt Nam
+  bằng tiếng Việt, được người dùng xác định rõ là bản cũ V1
+  và bản mới V2.
+- Định dạng đầu vào: DOCX và PDF có lớp chữ.
+- Bản đầu tiên tách, căn chỉnh và so sánh ở cấp Điều.
+  Nội dung Khoản/Điểm được giữ bên trong từng Điều.
+- Hỗ trợ ghép một Điều với một Điều; nhận diện Điều thêm mới,
+  bị xóa và được đánh lại số.
+- Trường hợp ghép mơ hồ hoặc nghi ngờ tách/gộp Điều phải
+  được đánh dấu cần kiểm tra.
+- Phát hiện thay đổi chữ, phân tích thay đổi nghĩa, phân loại
+  và đánh giá mức tác động theo bộ tiêu chí nhóm thống nhất.
+- Kết quả phải giữ được bằng chứng và vị trí nguồn.
 
+### 2.2. Ngoài phạm vi của bản đầu
+
+- OCR và PDF scan dạng ảnh.
+- Dựng phiên bản mới từ văn bản chỉ liệt kê nội dung sửa đổi.
+- Tự động tổng hợp nhiều văn bản sửa đổi thành một phiên bản đầy đủ.
+- Tự động giải quyết căn chỉnh một-nhiều hoặc nhiều-một.
+- So sánh phần nằm ngoài các Điều, như lời mở đầu, chữ ký
+  và phụ lục.
+- Tư vấn pháp lý tự động, hợp đồng và văn bản ngoài phạm vi
+  VBQPPL tiếng Việt đã chọn.
+
+Reader vẫn trích xuất toàn bộ nội dung có thể đọc được, bao gồm
+bảng. Parser xác định phần thuộc các Điều để đưa vào so sánh.
+Báo cáo phải nêu rõ phần ngoài phạm vi; kết luận “Không có thay đổi”
+chỉ áp dụng cho các Điều đã xử lý.
 ---
 
 ## 3. SƠ ĐỒ KIẾN TRÚC TỔNG THỂ (SYSTEM ARCHITECTURE)
 
-### 3.1. Sơ đồ (Diagram)
+### 3.1. Kiến trúc logic
+
 ```mermaid
 flowchart TD
-    UI["Giao diện demo"] --> API["Backend API và trạng thái job"]
-    API --> RUN["Pipeline hoặc worker"]
-    RUN --> PARSE["Parser"]
-    PARSE --> ALIGN["Căn chỉnh điều khoản"]
-    ALIGN --> DIFF["Semantic diff"]
-    DIFF --> SCORE["Phân loại và mức tác động"]
-    SCORE --> STORE["Kho kết quả"]
-    STORE --> API
-    SCORE -.-> IPA["IPA adapter nếu được yêu cầu"]
-    IPA -.-> STORE
+    UI["Giao diện"] -->|"Gửi hai file"| API["Backend API"]
+    API -->|"Yêu cầu so sánh"| PIPE["Pipeline"]
+    PIPE -->|"ComparisonReport"| API
+    API -->|"Báo cáo hoặc trạng thái xử lý"| UI
+    PIPE --> CORE["Các module xử lý"]
+    PIPE --> TEMP["File và kết quả tạm"]
+    GOLD["Nhãn chuẩn"] --> EVAL["Evaluator"]
+    PIPE -.->|"Báo cáo khi đánh giá"| EVAL
 ```
 
-### 3.2 Ranh giới module và cấu trúc thư mục
+Pipeline điều phối các module và tổng hợp báo cáo.
+Evaluator chạy riêng khi kiểm thử, không nằm trong luồng
+so sánh thông thường của người dùng.
 
+Sơ đồ mô tả quan hệ logic. Nếu chọn xử lý bất đồng bộ,
+Backend giao job qua Queue và Worker thực thi Pipeline;
+cách triển khai được mô tả tại mục 7.
+
+### 3.2. Luồng xử lý nghiệp vụ
+
+```mermaid
+flowchart TD
+    V1["File V1"] --> R1["Reader V1"]
+    V2["File V2"] --> R2["Reader V2"]
+    R1 --> P1["Parser V1"]
+    R2 --> P2["Parser V2"]
+    P1 --> A["Aligner"]
+    P2 --> A
+    A --> T["Text Diff"]
+    T --> S["Semantic Diff"]
+    A -->|"Cặp Điều đầy đủ"| S
+    S --> C["Classifier và Scorer"]
+    A -->|"Ngữ cảnh hai Điều"| C
+    C --> REPORT["Pipeline tổng hợp ComparisonReport"]
+```
+
+Pipeline giữ kết quả của các bước để tổng hợp báo cáo,
+bao gồm căn chỉnh, text diff, semantic diff, scoring,
+cảnh báo và lỗi.
+
+Các phần Text Diff, Semantic Diff và Scorer xử lý theo
+từng AlignedPair. Reader và Parser chạy riêng cho V1 và V2.
+
+### 3.3 Ranh giới module và cấu trúc thư mục
+*Lưu ý: các đường dẫn dưới đây là đề xuất tổ chức mã nguồn, cần đối chiếu
+với repo trước khi chốt. Đây không phải xác nhận các file đã tồn tại.
 ```text
-backend/main.py                    # Đức Anh
-src/schemas.py                     # Đức Anh hiện thực, Dũng đặc tả
-src/pipeline.py                    # Đức Anh
-src/parser/doc_parser.py           # Thọ
-src/aligner/version_aligner.py      # Thọ
-src/semantic_diff/diff_engine.py    # Ngọc Anh
-src/classifier_scorer/scorer.py     # Ngọc Anh
-src/integrations/ipa_adapter.py     # Đức Anh
-src/evaluation/evaluator.py         # Tuấn Anh
-frontend/                          # Tuấn Anh, demo tối thiểu
-tests/fixtures/                    # Fixture chung theo schema v1
-data/raw/                          # Dũng
-data/02_filtered_pairs/            # Dũng
-data/03_parsed_clauses/             # Parser và aligner
-data/04_semantic_diffs/             # Diff và scorer
-data/manifest.csv                  # Dũng
-data/gold/                         # Tuấn Anh điều phối nhãn chuẩn
-docs/                              # Tài liệu tổng quát và tài liệu module
+backend/main.py                    # Đức Anh: nhận yêu cầu, trả báo cáo
+src/schemas.py                     # Đức Anh: hiện thực hợp đồng theo SRS
+src/pipeline.py                    # Đức Anh: điều phối, tổng hợp báo cáo
+
+src/reader/document_reader.py      # Thọ: đọc DOCX/PDF text
+src/parser/doc_parser.py           # Thọ: tách các Điều
+src/aligner/version_aligner.py     # Thọ: ghép các Điều tương ứng
+
+src/text_diff/diff_engine.py       # Ngọc Anh: tìm thay đổi chữ
+src/semantic_diff/diff_engine.py   # Ngọc Anh: xác định thay đổi nghĩa
+src/classifier_scorer/scorer.py    # Ngọc Anh: phân loại, chấm tác động
+
+src/evaluation/evaluator.py        # Tuấn Anh: đánh giá với nhãn chuẩn
+frontend/                         # Tuấn Anh: giao diện demo tối thiểu
+
+tests/fixtures/                   # Dữ liệu mẫu theo hợp đồng chung
+data/raw/                         # Dũng: tài liệu nguồn
+data/02_filtered_pairs/           # Dũng: cặp tài liệu đã tuyển chọn
+data/manifest.csv                 # Dũng: metadata và thông tin tuyển chọn
+data/gold/                        # Tuấn Anh điều phối nhãn chuẩn
+docs/                             # Tài liệu chung và tài liệu module
 ```
-### 3.3 Tương tác giữa các module đề xuất
 
-- `parse_document(file_ref, metadata) -> ParsedDocument`
-- `align_versions(old_document, new_document) -> AlignedPair`
-- `detect_changes(aligned_pair) -> ChangeCandidates`
-- `classify_and_score(candidates) -> ChangeReport`
-- `evaluate(predictions, gold_labels) -> EvaluationReport`
-- `evaluate_ipa(report) -> IpaReport` chỉ dùng khi xác nhận đặc tả.
+Reader chịu trách nhiệm đọc file và ghi vị trí nguồn.
+Parser nhận ExtractedDocument, xác định ranh giới các Điều;
+không tự đọc lại file.
+
+Pipeline tổng hợp ComparisonReport từ kết quả các module.
+Các module xử lý không tự gọi giao diện hoặc cập nhật trạng thái job.
+
+IPA adapter và các thành phần Queue/Worker chỉ được bổ sung
+khi nhóm xác nhận phương án triển khai.
+### 3.4. Giao tiếp giữa các module
+
+Tên hàm dưới đây là đề xuất triển khai. Kiểu dữ liệu và quy tắc
+đầu vào/đầu ra tuân theo SRS mục 1 và mục 2.
+
+| Thành phần | Hàm đề xuất | Đầu vào | Đầu ra |
+| --- | --- | --- | --- |
+| Reader | read_document | File và version_id | ExtractedDocument |
+| Parser | parse_document | ExtractedDocument | list[Clause] |
+| Aligner | align_versions | Hai list[Clause] | list[AlignedPair] |
+| Text Diff | compute_text_diff | AlignedPair | TextDiffResult |
+| Semantic Diff | detect_semantic_changes | AlignedPair và TextDiffResult | SemanticDiffResult |
+| Classifier & Scorer | classify_and_score | AlignedPair và SemanticDiffResult | list[ScoringResult] |
+| Pipeline | run_comparison | Hai file và thông tin lần so sánh | ComparisonReport |
+| Evaluator | evaluate | Báo cáo dự đoán và nhãn chuẩn | Các chỉ số và kết quả đối chiếu |
+
+Mỗi module phải có thể kiểm thử riêng bằng dữ liệu mẫu đúng
+hợp đồng. Khi module phía trước chưa hoàn thành, dùng fixture
+hoặc mock tương ứng để tiếp tục phát triển.
+
+Không duy trì một bộ hợp đồng khác với SRS. Nếu cần thay đổi,
+nhóm phải cập nhật hợp đồng, schema và dữ liệu mẫu cùng nhau.
 
 
 
-### 3.4 Enum thống nhất
+### 3.5. Quy ước dữ liệu dùng chung
 
-- `alignment_status`: matched, added, removed, ambiguous.
-- `change_kind`: unchanged, editorial, substantive, uncertain.
-- `change_types`: deadline, obligation, sanction, scope, condition_exception, amount, other; là danh sách có thể nhiều nhãn.
-- `significance`: LOW, MEDIUM, HIGH, CRITICAL; null cho unchanged hoặc khi chưa đủ cơ sở đánh giá. Không dùng song song MAJOR/MINOR.
-- `job.status`: queued, running, succeeded, failed. Với runner tối thiểu vẫn giữ cùng API contract.
+Định nghĩa chi tiết nằm trong SRS mục 1. Architecture chỉ tóm tắt
+các quy ước cần thiết để hiểu luồng xử lý.
 
-### 3.5 Mẫu bàn giao tối thử để kiểm tra tích hợp
+- Clause đại diện một Điều, gồm:
+  unit_id, id, title, content và source_refs.
+- AlignedPair gồm pair_key, align_type, v1, v2,
+  needs_review và review_reason.
+- align_type nhận PAIRED, ADDED hoặc DELETED.
+- Ghép mơ hồ được biểu diễn bằng needs_review = true;
+  loại ghép khi đó chỉ là kết quả tạm thời.
+- Một AlignedPair có thể sinh nhiều SemanticChange.
+- is_meaningful_change nhận true, false hoặc null.
+  null biểu thị chưa đủ căn cứ và phải có cảnh báo kiểm tra.
+- Mỗi SemanticChange có một ScoringResult tương ứng.
+- category là một giá trị hoặc null theo hợp đồng SRS hiện tại;
+  danh mục giá trị cần nhóm thống nhất.
+- significance nhận LOW, MEDIUM, HIGH, CRITICAL hoặc null.
+- Chỉ đổi diễn đạt: significance = LOW.
+- Chưa xác định có đổi nghĩa:
+  significance = null và is_critical = null.
+- comparison_id định danh lần so sánh;
+  pair_key định danh cặp Điều;
+  change_id định danh từng thay đổi.
+- ComparisonReport.status nhận SUCCESS, PARTIAL hoặc FAILED.
+- None/null biểu thị phần chưa xử lý hoặc chưa xác định theo
+  từng trường; danh sách rỗng chỉ dùng khi bước tương ứng đã
+  hoàn thành nhưng không có kết quả cần ghi nhận.
+- Cảnh báo phải được giữ xuyên suốt đến báo cáo và giao diện.
 
- *lưu ý:Mẫu sau là ví dụ tự tạo dùng kiểm tra tích hợp, không phải dữ liệu pháp luật thật.
+Nếu dùng job bất đồng bộ, trạng thái job được định nghĩa riêng
+trong API contract; không đồng nhất trạng thái job với
+ComparisonReport.status.
+
+### 3.6. Ví dụ AlignedPair
+
+Ví dụ tự tạo để minh họa hợp đồng, không phải văn bản pháp luật thật.
+Các source_refs phải tồn tại trong ExtractedDocument của phiên bản
+tương ứng khi dùng làm fixture chạy được.
 
 ```json
 {
-  "schema_version": "1.0",
-  "pair_id": "demo_001",
-  "alignments": [{
-    "alignment_id": "demo_001_a1",
-    "alignment_status": "matched",
-    "alignment_confidence": 1.0,
-    "old_clause": {"clause_id": "v1_c1", "path": "Điều 1/Khoản 1", "text": "Thời hạn thanh toán là 30 ngày.", "source_ref": {"file": "demo_v1.txt", "paragraph_index": 1}},
-    "new_clause": {"clause_id": "v2_c1", "path": "Điều 1/Khoản 1", "text": "Thời hạn thanh toán là 15 ngày.", "source_ref": {"file": "demo_v2.txt", "paragraph_index": 1}}
-  }]
+  "pair_key": "v1:article_5|v2:article_6",
+  "align_type": "PAIRED",
+  "v1": {
+    "unit_id": "v1:article_5",
+    "id": "Điều 5",
+    "title": "Thời hạn thực hiện",
+    "content": "1. Hồ sơ phải được nộp trong thời hạn 30 ngày.",
+    "source_refs": ["docx:paragraph_12", "docx:paragraph_13"]
+  },
+  "v2": {
+    "unit_id": "v2:article_6",
+    "id": "Điều 6",
+    "title": "Thời hạn thực hiện",
+    "content": "1. Hồ sơ phải được nộp trong thời hạn 15 ngày.",
+    "source_refs": ["docx:paragraph_15", "docx:paragraph_16"]
+  },
+  "needs_review": false,
+  "review_reason": ""
 }
 ```
----
-## 5. WORKFLOW & PHÂN CÔNG NHÂN SỰ (5 MEMBERS)
 
-### 5.1) WORKFLOW
-Người dùng tải V1 và V2 → API kiểm tra đầu vào và tạo job → parser trích xuất và tách điều khoản → aligner ghép điều khoản tương ứng → semantic diff phát hiện thay đổi → classifier và scorer gán nhãn → lưu báo cáo → API trả trạng thái và kết quả cho giao diện. UI luôn truy cập dữ liệu qua API.
+Trong ví dụ, thay đổi số Điều được thể hiện ở AlignedPair.
+Text Diff so sánh title/content và xác định thay đổi
+“30 ngày” thành “15 ngày”.
 
-Data collection diễn ra trước và song song với phát triển, phục vụ dữ liệu demo và đánh giá; đây không phải bước bắt buộc mỗi lần người dùng tải file. Bộ đánh giá chạy riêng trên dữ liệu có nhãn. IPA AI được đặt sau báo cáo qua adapter riêng, chờ xác nhận đặc tả và yêu cầu môn học.
 
-### 5.2) PHÂN CÔNG CÔNG VIỆC SONG SONG, CÁC MODULE
-đầu tiên chốt schema v1 và bộ JSON mẫu. Sau đó mỗi người dùng fixture hoặc mock thay cho module chưa hoàn thành. Ghép bản tối thiểu ngay khi mỗi module chạy được, rồi cải thiện chất lượng. Phụ thuộc dữ liệu khi chạy vẫn tồn tại, nhưng việc viết và thử từng module không phải chờ toàn bộ pipeline.
+## 4. WORKFLOW VÀ PHÂN CÔNG
 
-| Thành viên | Phần chịu trách nhiệm chính |
+### 4.1. Workflow
+
+1. Người dùng chọn hai file và xác định bản cũ V1, bản mới V2.
+2. Backend kiểm tra đầu vào và chuyển yêu cầu cho Pipeline.
+3. Reader đọc từng file, tạo ExtractedDocument.
+4. Parser tách từng phiên bản thành list[Clause] ở cấp Điều.
+5. Aligner nhận hai danh sách và tạo list[AlignedPair].
+6. Với từng AlignedPair:
+   - Text Diff tìm đoạn chữ thêm, xóa hoặc thay thế.
+   - Semantic Diff phân tích thay đổi nghĩa với ngữ cảnh hai Điều.
+   - Classifier & Scorer phân loại và chấm từng SemanticChange.
+7. Pipeline tổng hợp ComparisonReport, giữ các cảnh báo và lỗi.
+8. Backend trả báo cáo để giao diện hiển thị.
+
+Nếu sử dụng async, Backend giao job cho Worker chạy Pipeline
+và giao diện lấy trạng thái/kết quả qua API.
+
+Data collection chạy độc lập với luồng so sánh, phục vụ tạo dữ liệu
+phát triển, demo và đánh giá. Evaluator chạy riêng trên báo cáo
+và nhãn chuẩn.
+
+### 4.2. Phân công dự kiến
+
+| Thành viên | Trách nhiệm chính |
 | --- | --- |
-| Bạch Công Dũng | Kiến trúc, tài liệu tổng quát, chọn lọc dữ liệu |
-| Dương Đức Anh | Nhóm trưởng, backend, orchestration và tích hợp |
-| Bùi Quang Thọ | Trích xuất, tách cấu trúc và căn chỉnh điều khoản |
-| Đoàn Ngọc Anh | Semantic diff, phân loại và mức độ tác động |
-| Đỗ Tuấn Anh | Đánh giá độc lập, kiểm thử và giao diện demo |
+| Bạch Công Dũng | Kiến trúc, tài liệu tổng quát, metadata và tuyển chọn dữ liệu; phối hợp đặc tả hợp đồng |
+| Dương Đức Anh | Nhóm trưởng, Backend, Pipeline, hiện thực schema, tổng hợp báo cáo và tích hợp |
+| Bùi Quang Thọ | Reader, Parser và Aligner |
+| Đoàn Ngọc Anh | Text Diff, Semantic Diff, Classifier & Scorer |
+| Đỗ Tuấn Anh | Evaluator, kiểm thử độc lập và giao diện demo |
 
-### 5.3 Quy tắc phối hợp
+### 4.3. Quy tắc phối hợp
 
-- Dũng thiết kế hợp đồng, Đức Anh quản lý triển khai và phiên bản. Thay đổi field/nhãn phải cập nhật schema, fixture và thông báo trước khi merge; thay đổi không tương thích phải tăng phiên bản.
-
-- Mỗi người có thư mục module riêng, một nhánh làm việc và PR nhỏ. Không đồng thời sửa file dùng chung khi chưa phân người phụ trách. Người làm module chịu trách nhiệm kiểm thử của module; Đức Anh chịu trách nhiệm luồng ghép; Tuấn Anh kiểm tra độc lập.
-
-- Bộ fixture bắt buộc gồm không đổi, chỉ đổi diễn đạt, đổi thời hạn/số tiền/phủ định, thêm/xóa, đổi số điều và alignment mơ hồ. Fixture dùng chung phục vụ tích hợp; dữ liệu test có nhãn được giữ riêng.
-
-- Bàn giao gồm mã chạy được, input/output mẫu, lệnh kiểm tra, lỗi đã biết và PR. Nếu bị chặn bởi dữ liệu hoặc API ngoài, dùng mock để tiếp tục và ghi rõ giới hạn.
-
-
-
----
-
-## 6. MỤC TIÊU CHẤT LƯƠNG & ĐÁNH GIÁ (EVALUATION TARGETS) ĐỀ XUẤT
-
-Chất lượng của hệ thống được đo lường định lượng trên bộ dữ liệu kiểm thử có nhãn độc lập (tách biệt hoàn toàn khỏi dữ liệu huấn luyện/phát triển):
-* **Change Detection F1-Score:** $\ge 0.90$ (Đảm bảo độ chính xác tổng thể khi phát hiện thay đổi).
-* **Critical Change Recall:** $\ge 95\%$ (Tối thiểu hóa rủi ro bỏ sót các thay đổi pháp lý quan trọng).
-
-*   Đơn vị chính là một sự kiện thay đổi ở cặp điều khoản đã đối soát, gồm thêm/xóa. Positive là substantive; editorial và unchanged là negative. Đối chiếu dự đoán với nhãn chuẩn theo vị trí/điều khoản gốc và mới; không chỉ dùng alignment_id do model sinh ra. Phải tính cả thay đổi bị mất vì parsing hoặc alignment.
-
-*  Ví Dụ: Precision = TP/(TP+FP); Recall = TP/(TP+FN); F1 = 2PR/(P+R). Critical recall = số thay đổi CRITICAL chuẩn được phát hiện là substantive / tổng thay đổi CRITICAL chuẩn. Báo thêm recall phát hiện và gán đúng CRITICAL. Accuracy phân loại tính trên cặp substantive được đối chiếu đúng, kèm số ca và độ bao phủ.
+- SRS là nguồn tham chiếu chính cho hợp đồng dữ liệu hiện tại.
+- Dũng và Đức Anh phối hợp cập nhật tài liệu; các chủ module
+  review phần đầu vào/đầu ra liên quan trước khi chốt.
+- Thay đổi hợp đồng phải được nhóm trưởng phê duyệt, cập nhật
+  schema và fixture, đồng thời thông báo các module liên quan.
+- Mỗi module có dữ liệu mẫu, cách chạy riêng và kiểm thử riêng.
+- Bộ fixture gồm không đổi, đổi diễn đạt, đổi nghĩa, thêm/xóa,
+  đánh lại số Điều và ghép mơ hồ.
+- Dữ liệu test có nhãn được giữ riêng với dữ liệu dùng chỉnh thuật toán.
+- Bàn giao gồm mã nguồn, input/output mẫu, cách kiểm tra,
+  giới hạn đã biết và PR.
 
 ---
 
-## 7. GIẢ ĐỊNH VÀ RỦI RO HỆ THỐNG (ASSUMPTIONS & RISKS)
+## 5. YÊU CẦU CHẤT LƯỢNG ẢNH HƯỞNG ĐẾN KIẾN TRÚC
 
-### 7.1. Giả định (Assumptions)
-* Các văn bản đầu vào tuân thủ đúng định dạng cấu trúc VBQPPL của Việt Nam.
-* Hệ thống có kết nối mạng ổn định trong quá trình giao tiếp API với IPA AI.
+Các mục tiêu trong SRS:
 
-### 7.2. Rủi ro kỹ thuật & Phương án xử lý (Risks & Mitigations)
-* **Xáo trộn cấu trúc:** Số thứ tự Điều/Khoản bị đánh số lại do bãi bỏ hoặc chèn mới $\rightarrow$ Xử lý bằng thuật toán Alignment.
-* **Dữ liệu thô lỗi:** Định dạng thực tế không đồng nhất (thiếu ngắt dòng, ký tự lạ) $\rightarrow$ Xử lý qua bộ lọc Data Cleaning .
-* **Dung lượng lớn:** Văn bản dài hàng trăm trang gây tràn bộ nhớ $\rightarrow$ Xử lý bằng kiến trúc bất đồng bộ (Async Queue & Background Worker), cần bổ sung giới hạn.
-* **Thiếu dữ liệu nhãn:** Tập dữ liệu có nhãn hạn chế $\rightarrow$ Sử dụng kỹ thuật Few-shot Prompting kết hợp RAG Vector Search.
+- Change F1 ≥ 0,90.
+- Critical Change Recall ≥ 0,95 trên bộ kiểm thử độc lập.
+
+Đây là các ngưỡng SRS đang nêu cho nghiệm thu, chưa phải chất lượng
+đã được chứng minh. Nhóm cần xác nhận trước khi dùng làm tiêu chí
+nghiệm thu chính thức.
+
+Evaluator tuân theo các nguyên tắc:
+
+- Đối chiếu ở cấp từng thay đổi; dự đoán và nhãn chuẩn được
+  ghép một-một, không tính trùng.
+- Thay đổi chuẩn bị bỏ sót vẫn phải được tính, kể cả khi nguyên nhân
+  đến từ Reader, Parser hoặc Aligner.
+- Một thay đổi CRITICAL chỉ được tính tìm đúng khi đối chiếu
+  đúng thay đổi và dự đoán is_critical = true.
+- Kết quả cần kiểm tra chưa được giải quyết không tính là tìm đúng.
+- Mẫu số bằng 0 trả null kèm lý do.
+- Báo số mẫu và số kết quả cần kiểm tra cùng các chỉ số.
+
+Để hỗ trợ đánh giá, các module phải giữ định danh, bằng chứng,
+vị trí nguồn và cảnh báo đến ComparisonReport.
+
+Định nghĩa yêu cầu xem SRS. Quy trình tạo nhãn, chia dữ liệu và
+cách tính chi tiết được hoàn thiện trong Evaluation Plan.
 
 ---
-## BỔ SUNG: THÔNG TIN KIẾN TRÚC BẤT ĐỒNG BỘ (ASYNC ARCHITECTURE ) 
-* Hệ thống bắt buộc triển khai theo mô hình xử lý bất đồng bộ (Asynchronous Event-Driven Architecture) dựa trên các lý do kỹ thuật sau:Phân loại Workload nặng (Heavy Compute Workload): Văn bản pháp luật có dung lượng rất lớn (hàng trăm trang như Bộ luật Dân sự, Luật Đất đai). Xử lý đồng bộ (Sync) sẽ gây quá tải CPU/GPU và gây lỗi 504 Gateway Timeout.
-* Giải quyết tình trạng nghẽn hàng chờ: Message Queue (Redis) làm vùng đệm nhận request, Worker (Celery) rút từng nhiệm vụ ra chạy ngầm giúp giao diện không bị treo đơ.
-* Cơ chế tự thử lại (Retry Mechanism & Fault Tolerance): Cho phép tự động gọi lại API kết nối với IPA AI nếu mạng bị ngắt kết nối giữa chừng mà không bắt người dùng phải thao tác lại từ đầu.
+
+### 6. GIẢ ĐỊNH VÀ RỦI RO
+
+### 6.1. Giả định
+
+- Người dùng cung cấp hai bản đầy đủ tương ứng và xác định rõ cũ/mới.
+- File thuộc định dạng hỗ trợ và có nội dung chữ trích xuất được.
+- Không giả định tiêu đề Điều được đánh dấu bằng Word Heading.
+- Việc sử dụng mô hình hoặc API ngoài cần được nhóm xác nhận.
+  Yêu cầu kết nối mạng chỉ áp dụng khi lựa chọn đó được sử dụng.
+
+### 6.2. Rủi ro và phương án xử lý
+
+| Rủi ro | Phương án |
+| --- | --- |
+| Đọc thiếu hoặc sai thứ tự nội dung | Reader giữ thứ tự và vị trí nguồn; kiểm thử trên file có bảng và nhiều trang |
+| Parser nhận nhầm câu dẫn chiếu là đầu Điều | Kiểm tra ranh giới, cấu trúc và các ca dẫn chiếu trong fixture |
+| Phụ lục bị gộp vào Điều cuối | Parser nhận diện điểm kết thúc phần Điều và phần ngoài phạm vi |
+| Đánh lại số, ghép mơ hồ hoặc tách/gộp | Aligner kết hợp số Điều, tiêu đề và nội dung; cảnh báo phần chưa chắc chắn |
+| File lớn hoặc tác vụ kéo dài | Giới hạn dung lượng, thời gian, bộ nhớ và mức đồng thời; xử lý theo đơn vị phù hợp |
+| Thiếu nhãn chuẩn | Gán nhãn có hướng dẫn, đối soát bất đồng và duy trì tập test độc lập |
+| Semantic Diff chưa đủ căn cứ | Trả kết luận chưa xác định và needs_review; không tự coi là không đổi nghĩa |
+| Module phân tích hoặc chấm điểm thất bại | Giữ lỗi và phần chưa xử lý trong ComparisonReport; dùng PARTIAL hoặc FAILED phù hợp |
+| API ngoài gặp lỗi nếu được sử dụng | Timeout, retry có giới hạn và báo phần chưa hoàn tất |
+| Hai module dùng hợp đồng khác nhau | Kiểm tra schema, fixture chung và review thay đổi trước khi tích hợp |
+
+Few-shot, embedding hoặc RAG là các lựa chọn cải thiện thuật toán,
+không thay thế dữ liệu nhãn chuẩn để đánh giá.
+
+---
+## 7. PHƯƠNG ÁN TRIỂN KHAI VÀ CÁC QUYẾT ĐỊNH CẦN CHỐT
+
+### 7.1. Pipeline và phương án xử lý bất đồng bộ
+
+Pipeline quy định thứ tự gọi các module.
+Worker là thành phần có thể thực thi Pipeline ở nền.
+
+Nếu nhóm chọn async, luồng triển khai gồm:
+
+1. Backend nhận và lưu tạm hai file, tạo job.
+2. Backend đưa job vào Queue và trả mã theo dõi.
+3. Worker lấy job và thực thi Pipeline.
+4. Worker lưu ComparisonReport và cập nhật trạng thái job.
+5. Giao diện lấy trạng thái và báo cáo qua Backend API.
+
+Job chỉ mang định danh và tham chiếu tới file cần xử lý.
+Worker phải truy cập được các file đó.
+
+Redis làm broker và Celery làm hệ thống worker là phương án
+công nghệ đề xuất, chưa phải yêu cầu bắt buộc đã xác nhận.
+
+Async giúp tách thời gian xử lý khỏi request nhận việc.
+Nó không tự giảm nhu cầu CPU, bộ nhớ hoặc chi phí gọi mô hình.
+
+### 7.2. Quản lý file và kết quả
+
+- Bản đầu không yêu cầu lưu lịch sử lâu dài.
+- File tạm phải còn tồn tại trong thời gian tác vụ cần sử dụng,
+  kể cả khi retry.
+- Kết quả tạm phải tồn tại đủ lâu để giao diện lấy báo cáo.
+- Thời điểm xóa file và kết quả phải được quy định thống nhất
+  với SRS và API contract.
+- Không ghi toàn bộ nội dung tài liệu vào log.
+
+### 7.3. Các quyết định còn mở
+
+- Chọn xử lý đồng bộ hay async cho bản đầu.
+- Nếu dùng async: công nghệ Queue/Worker, trạng thái job,
+  timeout, retry và thời hạn lưu kết quả.
+- Có dùng embedding, LLM hoặc RAG không; dùng để giải quyết bước nào.
+- IPA AI có phải yêu cầu bắt buộc không; đặc tả và quyền truy cập.
+- Công nghệ frontend và nơi lưu file/kết quả tạm.
+- Giới hạn dung lượng, thời gian xử lý và môi trường đo hiệu năng.
+
+Sau khi chốt, cập nhật architecture, các hành vi liên quan trong SRS
+và hợp đồng API. Thành phần chưa chốt không được mô tả là đã triển khai.
