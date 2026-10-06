@@ -81,7 +81,7 @@ flowchart TD
     UI["Giao diện"] -->|"Gửi hai file"| API["Backend API"]
     API -->|"Yêu cầu so sánh"| PIPE["Pipeline"]
     PIPE -->|"ComparisonReport"| API
-    API -->|"Báo cáo hoặc trạng thái xử lý"| UI
+    API -->|"Báo cáo hoặc lỗi trong cùng request"| UI
     PIPE --> CORE["Các module xử lý"]
     PIPE --> TEMP["File và kết quả tạm"]
     GOLD["Nhãn chuẩn"] --> EVAL["Evaluator"]
@@ -92,9 +92,9 @@ Pipeline điều phối các module và tổng hợp báo cáo.
 Evaluator chạy riêng khi kiểm thử, không nằm trong luồng
 so sánh thông thường của người dùng.
 
-Sơ đồ mô tả quan hệ logic. Nếu chọn xử lý bất đồng bộ,
-Backend giao job qua Queue và Worker thực thi Pipeline;
-cách triển khai được mô tả tại mục 7.
+Các module thuộc cùng một backend và gọi nhau qua hàm Python.
+Backend chờ Pipeline hoàn tất rồi trả kết quả trong cùng HTTP request.
+Bản đầu không sử dụng Queue/Worker; chính sách vận hành nằm ở mục 7.
 
 ### 3.2. Luồng xử lý nghiệp vụ
 
@@ -123,7 +123,7 @@ từng AlignedPair. Reader và Parser chạy riêng cho V1 và V2.
 
 ### 3.3 Ranh giới module và cấu trúc thư mục
 *Lưu ý: các đường dẫn dưới đây là đề xuất tổ chức mã nguồn, cần đối chiếu
-với repo trước khi chốt. Đây không phải xác nhận các file đã tồn tại.
+với repo trước khi chốt. Đây không phải xác nhận các file đã tồn tại.*
 ```text
 backend/main.py                    # Đức Anh: nhận yêu cầu, trả báo cáo
 src/schemas.py                     # Đức Anh: hiện thực hợp đồng theo SRS
@@ -153,7 +153,8 @@ Parser nhận ExtractedDocument, xác định ranh giới các Điều;
 không tự đọc lại file.
 
 Pipeline tổng hợp ComparisonReport từ kết quả các module.
-Các module xử lý không tự gọi giao diện hoặc cập nhật trạng thái job.
+Các module xử lý không tự gọi giao diện hoặc phụ thuộc HTTP.
+Backend quản lý vòng đời request và file tạm; Pipeline điều phối nghiệp vụ.
 
 IPA adapter và các thành phần Queue/Worker chỉ được bổ sung
 khi nhóm xác nhận phương án triển khai.
@@ -213,9 +214,9 @@ các quy ước cần thiết để hiểu luồng xử lý.
   hoàn thành nhưng không có kết quả cần ghi nhận.
 - Cảnh báo phải được giữ xuyên suốt đến báo cáo và giao diện.
 
-Nếu dùng job bất đồng bộ, trạng thái job được định nghĩa riêng
-trong API contract; không đồng nhất trạng thái job với
-ComparisonReport.status.
+comparison_id chỉ định danh lần so sánh, không phải mã job để truy vấn sau.
+ComparisonReport.status mô tả mức hoàn tất của báo cáo, không phải mã HTTP.
+Bản đầu không cung cấp trạng thái job hoặc API polling.
 
 ### 3.6. Ví dụ AlignedPair
 
@@ -256,7 +257,7 @@ Text Diff so sánh title/content và xác định thay đổi
 ### 4.1. Workflow
 
 1. Người dùng chọn hai file và xác định bản cũ V1, bản mới V2.
-2. Backend kiểm tra đầu vào và chuyển yêu cầu cho Pipeline.
+2. Backend kiểm tra đầu vào, cấp comparison_id, lưu file tạm riêng cho lần so sánh và gọi Pipeline trong cùng request.
 3. Reader đọc từng file, tạo ExtractedDocument.
 4. Parser tách từng phiên bản thành list[Clause] ở cấp Điều.
 5. Aligner nhận hai danh sách và tạo list[AlignedPair].
@@ -265,10 +266,11 @@ Text Diff so sánh title/content và xác định thay đổi
    - Semantic Diff phân tích thay đổi nghĩa với ngữ cảnh hai Điều.
    - Classifier & Scorer phân loại và chấm từng SemanticChange.
 7. Pipeline tổng hợp ComparisonReport, giữ các cảnh báo và lỗi.
-8. Backend trả báo cáo để giao diện hiển thị.
+8. Backend trả báo cáo hoặc lỗi trong cùng request để giao diện hiển thị; giải phóng tài nguyên và dọn file tạm khi không còn tác vụ sử dụng.
 
-Nếu sử dụng async, Backend giao job cho Worker chạy Pipeline
-và giao diện lấy trạng thái/kết quả qua API.
+Giao diện chờ phản hồi, hiển thị đang xử lý và ngăn gửi lặp khi request còn chạy.
+Không hiển thị phần trăm tiến độ giả; không tự gửi lại yêu cầu so sánh khi timeout.
+Mất kết nối không đồng nghĩa Pipeline đã dừng; chính sách thời gian chạy xem mục 7.
 
 Data collection chạy độc lập với luồng so sánh, phục vụ tạo dữ liệu
 phát triển, demo và đánh giá. Evaluator chạy riêng trên báo cáo
@@ -362,47 +364,80 @@ không thay thế dữ liệu nhãn chuẩn để đánh giá.
 ---
 ## 7. PHƯƠNG ÁN TRIỂN KHAI VÀ CÁC QUYẾT ĐỊNH CẦN CHỐT
 
-### 7.1. Pipeline và phương án xử lý bất đồng bộ
+### 7.1. Quyết định triển khai bản đầu
 
-Pipeline quy định thứ tự gọi các module.
-Worker là thành phần có thể thực thi Pipeline ở nền.
+- Dùng request đồng bộ: API nhận hai file, gọi Pipeline, chờ kết quả và trả phản hồi trong cùng request.
+- Tổ chức một backend chia module; mỗi module có thể kiểm thử độc lập qua hàm và schema chung.
+- Không triển khai Redis, Celery, Queue/Worker, API tạo job hoặc polling cho bản đầu.
+- Pipeline giữ giao diện run_comparison; không phụ thuộc HTTP, giao diện hoặc hạ tầng hàng đợi.
+- Xử lý các cặp Điều tuần tự ở bản đầu để dễ kiểm thử và kiểm soát chi phí; chỉ tăng mức đồng thời sau khi đo và đặt giới hạn.
+- Request đồng bộ là cách trả kết quả cho client; không bắt buộc mọi thao tác I/O trong mã nguồn phải blocking. Nếu dùng framework async, không chạy tác vụ blocking/CPU nặng trực tiếp trên event loop.
 
-Nếu nhóm chọn async, luồng triển khai gồm:
+Lý do: phạm vi demo nhỏ, không OCR, không lưu lịch sử lâu dài; ưu tiên
+hoàn thiện và đánh giá luồng so sánh. Đây là quyết định về độ đơn giản
+triển khai, không phải khẳng định Pipeline luôn chạy nhanh.
 
-1. Backend nhận và lưu tạm hai file, tạo job.
-2. Backend đưa job vào Queue và trả mã theo dõi.
-3. Worker lấy job và thực thi Pipeline.
-4. Worker lưu ComparisonReport và cập nhật trạng thái job.
-5. Giao diện lấy trạng thái và báo cáo qua Backend API.
+### 7.2. API và giao diện
 
-Job chỉ mang định danh và tham chiếu tới file cần xử lý.
-Worker phải truy cập được các file đó.
+API dự kiến: POST /comparisons, nhận multipart/form-data với hai file
+v1 và v2; trả ComparisonReport sau khi hoàn tất. Tên trường và cấu trúc
+lỗi phải được chốt trong docs/api-contract.md trước khi tích hợp frontend.
 
-Redis làm broker và Celery làm hệ thống worker là phương án
-công nghệ đề xuất, chưa phải yêu cầu bắt buộc đã xác nhận.
+- comparison_id dùng liên kết log và báo cáo; không có cam kết truy vấn lại kết quả bằng mã này.
+- Backend phân biệt lỗi kiểm tra đầu vào, lỗi toàn bộ lần so sánh và lỗi riêng từng cặp Điều.
+- Nếu một số cặp lỗi nhưng vẫn tổng hợp được báo cáo, giữ bằng chứng, cảnh báo và phần chưa xử lý; dùng PARTIAL theo SRS.
+- Không biến lỗi Semantic Diff thành kết luận không có thay đổi hoặc danh sách rỗng giả.
+- API contract quy định rõ ánh xạ HTTP status, error body và ComparisonReport.status; không dùng ba trường hợp SUCCESS/PARTIAL/FAILED làm mã HTTP.
+- Giao diện có trạng thái chờ, báo cáo và lỗi; ngăn gửi lặp khi đang chờ. Không tự retry toàn bộ POST.
+- Không cung cấp chức năng hủy tác vụ hoặc tiếp tục xem job sau khi tải lại trang trong bản đầu.
 
-Async giúp tách thời gian xử lý khỏi request nhận việc.
-Nó không tự giảm nhu cầu CPU, bộ nhớ hoặc chi phí gọi mô hình.
+### 7.3. Giới hạn, timeout và xử lý lỗi
 
-### 7.2. Quản lý file và kết quả
+Trước khi tích hợp API thật, nhóm phải chốt giới hạn dung lượng mỗi file,
+số Điều/nội dung được xử lý, số request so sánh đồng thời và ngân sách
+thời gian xử lý. Ghi giá trị, đơn vị và môi trường đo trong SRS và
+docs/development-guide.md; architecture không tự đặt ngưỡng chưa đo.
 
-- Bản đầu không yêu cầu lưu lịch sử lâu dài.
-- File tạm phải còn tồn tại trong thời gian tác vụ cần sử dụng,
-  kể cả khi retry.
-- Kết quả tạm phải tồn tại đủ lâu để giao diện lấy báo cáo.
-- Thời điểm xóa file và kết quả phải được quy định thống nhất
-  với SRS và API contract.
-- Không ghi toàn bộ nội dung tài liệu vào log.
+- Kiểm tra dung lượng/định dạng sớm; sau Reader/Parser kiểm tra giới hạn nội dung và khả năng trích xuất.
+- Khi đủ số tác vụ cho phép, từ chối yêu cầu mới bằng lỗi được đặc tả; không tạo hàng đợi nền ngầm không giới hạn.
+- Đặt timeout cho từng lần gọi API ngoài và deadline cho toàn bộ Pipeline. Retry lỗi tạm thời có giới hạn, nằm trong deadline còn lại.
+- Kiểm tra deadline giữa các bước/cặp Điều; timeout của HTTP hoặc việc đóng trang không tự dừng mã đang chạy.
+- Tác vụ thư viện không hỗ trợ ngắt cần được giới hạn đầu vào hoặc cô lập nếu phải bảo đảm dừng cứng; không tuyên bố có hard timeout khi chỉ dừng chờ phản hồi.
+- Cấu hình thời gian chờ của client/server/proxy theo ngân sách xử lý, có thời gian dự phòng để trả lỗi và dọn tài nguyên.
+- Khi hết ngân sách, chỉ trả PARTIAL nếu đã tạo được báo cáo hợp lệ theo SRS; nếu không, trả lỗi/FAILED theo API contract. Không để request chờ vô hạn.
+- Đo thời gian Reader, Parser, Aligner, Text Diff, Semantic Diff, Scorer và tổng Pipeline; ghi số Điều/cặp cần phân tích và số lần gọi mô hình.
 
-### 7.3. Các quyết định còn mở
+### 7.4. Quản lý file và kết quả
 
-- Chọn xử lý đồng bộ hay async cho bản đầu.
-- Nếu dùng async: công nghệ Queue/Worker, trạng thái job,
-  timeout, retry và thời hạn lưu kết quả.
-- Có dùng embedding, LLM hoặc RAG không; dùng để giải quyết bước nào.
-- IPA AI có phải yêu cầu bắt buộc không; đặc tả và quyền truy cập.
-- Công nghệ frontend và nơi lưu file/kết quả tạm.
-- Giới hạn dung lượng, thời gian xử lý và môi trường đo hiệu năng.
+- Mỗi lần so sánh dùng thư mục tạm riêng gắn comparison_id; không dùng nguyên tên file do client cung cấp làm đường dẫn lưu.
+- File tạm chỉ xóa sau khi các tác vụ sử dụng file đã kết thúc, kể cả khi request mất kết nối hoặc có retry API ngoài.
+- Dọn tài nguyên trong cơ chế finally hoặc tương đương; bổ sung dọn file sót do tiến trình dừng bất thường, bảo đảm không xóa file đang được dùng.
+- Báo cáo trả trực tiếp trong response; bản đầu không yêu cầu database hay lưu lịch sử lâu dài.
+- Nếu kết quả được ghi ra file tạm để tạo response, giữ file đến khi gửi xong rồi dọn.
+- Không ghi toàn bộ nội dung tài liệu vào log; log định danh, thời gian, bước xử lý và lỗi cần thiết.
 
-Sau khi chốt, cập nhật architecture, các hành vi liên quan trong SRS
-và hợp đồng API. Thành phần chưa chốt không được mô tả là đã triển khai.
+### 7.5. Các quyết định còn cần chốt
+
+- Công nghệ backend/frontend và phiên bản môi trường chạy.
+- Phương pháp Semantic Diff, embedding/LLM nếu có; vai trò cụ thể và cách gọi mô hình.
+- IPA AI có bắt buộc không; đặc tả và quyền truy cập. RAG chỉ bổ sung khi có nhu cầu đã xác định.
+- Giới hạn đầu vào, số request đồng thời, timeout/retry và môi trường đo hiệu năng.
+- Danh mục category, quy tắc severity và cách tạo nhãn chuẩn.
+- Tên trường API, mã HTTP, error body, dữ liệu mẫu và cách xử lý PARTIAL/FAILED.
+
+Định dạng đầu vào hiện giữ PDF có lớp chữ và DOCX như mục 2.1 của bản
+được cung cấp. Nếu nhóm chốt chỉ PDF, cần sửa đồng thời SRS, BRD,
+README, Reader, ví dụ source_refs và dữ liệu mẫu; không tự xem DOCX
+là đã bị loại khỏi phạm vi.
+
+### 7.6. Điều kiện xem xét lại quyết định
+
+Đo trên các cặp tài liệu đại diện: ngắn/dài, ít/nhiều thay đổi, có bảng,
+đánh lại số Điều và ghép mơ hồ. Nếu thời gian thường vượt ngân sách
+chờ, không ổn định do mô hình/API ngoài, hoặc phát sinh yêu cầu theo dõi
+tiến độ và lấy kết quả sau khi tải lại trang, nhóm xem xét job bất đồng bộ.
+
+Khi thay đổi, giữ hợp đồng nghiệp vụ của Pipeline; bổ sung hợp đồng job,
+Queue/Worker, nơi lưu trạng thái/kết quả và vòng đời file. Cập nhật SRS,
+architecture và API contract cùng nhau. Đây là hướng mở rộng, không
+thuộc các thành phần phải xây dựng cho bản đầu.
