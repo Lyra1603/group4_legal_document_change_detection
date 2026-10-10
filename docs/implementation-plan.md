@@ -1,10 +1,10 @@
 # KẾ HOẠCH TRIỂN KHAI DỰ ÁN
 
 **Dự án:** Legal Document Change Detection  
-**Phiên bản kế hoạch:** 1.2.0  
+**Phiên bản kế hoạch:** 1.3.0  
 **Thời gian thực hiện:** Cuối tuần 5 đến hết tuần 13  
 **Người điều phối:** Dương Đức Anh  
-**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md)
+**Tài liệu liên quan:** [BRD](brd.md), [SRS 1.2.0](srs.md), [Architecture 1.2.0](architecture.md)  
 
 ## 1. Mục tiêu
 
@@ -28,7 +28,9 @@ Kế hoạch mô tả mục tiêu, trách nhiệm và đầu ra. Tên công ngh�
 - Hỗ trợ PDF có lớp chữ và DOCX; giữ vị trí nguồn của nội dung trích xuất.
 - Phân tách và so sánh ở cấp Điều; giữ nội dung Khoản/Điểm bên trong Điều.
 - Nhận diện cặp Điều tương ứng, Điều thêm/xóa và đánh lại số; cảnh báo khi ghép mơ hồ hoặc nghi ngờ tách/gộp.
-- Báo cáo gồm thay đổi chữ, kết luận thay đổi nghĩa, loại thay đổi, mức tác động, giải thích, bằng chứng và cảnh báo.
+- Báo cáo nhận diện hai file bằng old_document/new_document, hiển thị rõ bản cũ V1, bản mới V2 và chiều so sánh, kể cả khi trùng tên file.
+- Báo cáo gồm thay đổi chữ, kết luận thay đổi nghĩa, nhãn tổng thể, mức tác động, giải thích, bằng chứng và cảnh báo; mỗi SemanticChange có danh sách ChangeAspect theo 8 nhóm trong SRS.
+- Mỗi khía cạnh có nhóm trường, nội dung cũ/mới, diễn giải ý nghĩa chuyển đổi, bằng chứng và cảnh báo. UI hiển thị vị trí nguồn của Điều ở đúng phiên bản; không chỉ dùng màu để truyền đạt kết quả.
 - Phân biệt kết luận không có thay đổi với trường hợp chưa xử lý hoặc chưa xác định được.
 
 ### 2.2. Giới hạn
@@ -41,9 +43,12 @@ Không thực hiện OCR, dựng phiên bản đầy đủ từ văn bản chỉ
 
 Pipeline gọi lần lượt Reader → Parser → Aligner → Text Diff → Semantic Diff → Classifier & Scorer rồi tổng hợp ComparisonReport. Các module dùng hợp đồng dữ liệu chung. Evaluator chạy riêng khi kiểm thử và đánh giá.
 
+Backend ghi nhận DocumentIdentity của V1/V2 và truyền cùng file cho Pipeline. Semantic Diff tạo aspects; Classifier & Scorer chọn category và chấm toàn bộ SemanticChange. Pipeline giữ đầy đủ khía cạnh, bằng chứng, vị trí nguồn và tổng hợp cảnh báo đến báo cáo theo Architecture 1.2.0.
+
 ## 3. Danh mục lựa chọn kỹ thuật
 
-Đây là phương án triển khai được chọn cho kế hoạch. Khi đổi công nghệ, cập nhật dòng tương ứng và các dependency/cấu hình/hướng dẫn chạy liên quan. Giữ hợp đồng module/API để hạn chế ảnh hưởng đến các phần khác; việc thay thư viện vẫn cần sửa và kiểm thử phần triển khai bị tác động.
+Bảng dưới đây là phương án kỹ thuật được đề xuất để các thành viên lựa chọn
+
 
 | STT | Thành phần | Lựa chọn | Lý do và ranh giới |
 | --- | --- | --- | --- |
@@ -56,7 +61,7 @@ Pipeline gọi lần lượt Reader → Parser → Aligner → Text Diff → Sem
 | 7 | Aligner | Số Điều + tiêu đề + độ tương đồng nội dung; difflib làm baseline | Ghép một-một có kiểm soát; trường hợp cạnh tranh/mơ hồ cần review |
 | 8 | Text Diff | Python difflib | Xác định thêm/xóa/thay thế ở mức token; giữ dấu câu và số liệu |
 | 9 | Semantic Diff | Quy tắc nghiệp vụ kết hợp Sentence Transformers; mô hình `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` chạy local | Baseline rules-only để đối chiếu; embedding hỗ trợ nhận diện diễn đạt, không tự quyết định ý nghĩa pháp lý |
-| 10 | Classifier & Scorer | Bộ quy tắc có cấu hình, theo guideline gán nhãn | Đánh giá từng SemanticChange; giải thích gắn bằng chứng và tiêu chí |
+| 10 | Classifier & Scorer | Bộ quy tắc có cấu hình, theo guideline gán nhãn | Đọc aspects, chọn category tổng thể và chấm từng SemanticChange; không tạo lại aspects hoặc chấm riêng từng khía cạnh |
 | 11 | Dữ liệu | File nguồn + CSV manifest + JSON nhãn/kết quả | Dễ kiểm tra và tái lập; file upload nằm trong thư mục tạm riêng |
 | 12 | Kiểm thử | pytest cho backend/evaluator; Vitest và React Testing Library cho UI; GitHub Actions cho kiểm tra tự động | Kiểm thử hành vi, contract và các trường hợp lỗi quan trọng |
 | 13 | Môi trường phát triển | venv + pip; Node.js 22.12 trở lên thuộc nhánh 22 LTS + npm | Khóa phiên bản dependency đã kiểm tra; lưu package-lock.json và requirements có phiên bản |
@@ -65,6 +70,10 @@ Pipeline gọi lần lượt Reader → Parser → Aligner → Text Diff → Sem
 ### 3.1. Nguyên tắc triển khai phần ngữ nghĩa
 
 - Phân tích các đoạn thay đổi kèm ngữ cảnh và giữ liên kết với toàn bộ cặp Điều.
+- Semantic Diff tạo SemanticChange với giải thích tổng thể và aspects theo SRS mục 1.3: nhóm trường, nội dung cũ/mới, interpretation, bằng chứng và cảnh báo. Danh mục 8 nhóm là hợp đồng dữ liệu; đo khả năng nhận diện thực tế từng nhóm, không mặc định baseline nhận diện tốt tất cả.
+- Các khía cạnh cùng mô tả một thay đổi quy định được nhóm chung; thay đổi độc lập được tách theo guideline. Không nhân bản cùng một biến đổi vào nhiều nhóm; quy tắc ranh giới theo SRS.
+- Classifier & Scorer chọn category tổng thể từ các nhóm đã xác định; WORDING_ONLY khi chỉ đổi diễn đạt, null khi chưa chọn được nhãn. Một SemanticChange có một ScoringResult; không cộng mức độ theo số khía cạnh.
+- Giữ cảnh báo từ khía cạnh lên các cấp kết quả. aspects rỗng phải được đọc cùng is_meaningful_change và needs_review; không tự suy ra không đổi nghĩa. Nội dung hoặc bằng chứng chưa xác định phải được phân biệt với phía không tồn tại.
 - Với Điều dài, chia đoạn có ánh xạ nguồn theo giới hạn tokenizer; không cắt bỏ âm thầm phần cuối khi tạo embedding.
 - Kiểm tra riêng số tiền, thời hạn, chủ thể, quyền/nghĩa vụ, phủ định và điều kiện áp dụng. Độ tương đồng cao không đủ kết luận không đổi nghĩa.
 - Giải thích bằng mẫu có bằng chứng; không yêu cầu mô hình embedding sinh văn bản giải thích.
@@ -74,7 +83,8 @@ Pipeline gọi lần lượt Reader → Parser → Aligner → Text Diff → Sem
 
 ### 3.2. Cấu hình vận hành ban đầu
 
-Các giá trị sau là ngân sách triển khai để kiểm thử, không phải hiệu năng đã chứng minh. Chúng nằm trong một file cấu hình và được hiệu chỉnh sau đo tuần 8; API contract và hướng dẫn chạy tham chiếu cùng cấu hình.
+Các giá trị cấu hình dưới đây là đề xuất ban đầu để thử nghiệm,
+chưa phải giới hạn đã được nhóm xác nhận hoặc hiệu năng đã đo.
 
 | Tham số | Giá trị kế hoạch |
 | --- | --- |
@@ -92,11 +102,13 @@ Deadline được kiểm tra giữa các bước/đoạn xử lý. Timeout reque
 
 | Thành viên | Phụ trách chính | Đầu ra bàn giao | Kiểm tra chéo |
 | --- | --- | --- | --- |
-| Dương Đức Anh | Tài liệu tổng quát, schema, API, Pipeline và tích hợp | Contract, môi trường chạy, báo cáo tổng hợp và quản lý lỗi | Tuấn Anh kiểm thử API/UI; Thọ review dữ liệu |
+| Dương Đức Anh | Tài liệu tổng quát, schema, API, Pipeline và tích hợp | Contract có ChangeAspect/DocumentIdentity, môi trường chạy, báo cáo giữ đủ aspects/metadata và quản lý lỗi | Tuấn Anh kiểm thử API/UI; Thọ review dữ liệu |
 | Bùi Quang Thọ | Reader, Parser, Aligner | Module đọc/tách/ghép, fixture, test và source refs | Dũng đối chiếu nguồn; Đức Anh review contract |
-| Đoàn Ngọc Anh | Text Diff, Semantic Diff, Classifier & Scorer | Baseline, phương pháp ngữ nghĩa, quy tắc chấm và test | Tuấn Anh/Dũng đối chiếu nhãn; Đức Anh review tích hợp |
-| Bạch Công Dũng | Architecture, dữ liệu và manifest, phối hợp guideline | Cặp tài liệu, nguồn, nhãn được review và các ca khó | Thọ kiểm tra khả năng đọc; Tuấn Anh kiểm tra dữ liệu đánh giá |
-| Đỗ Tuấn Anh | Frontend, Evaluator, điều phối kiểm thử | UI, chương trình đánh giá, test report và metric | Đức Anh review UI/API; Ngọc Anh kiểm tra ví dụ tính metric |
+| Đoàn Ngọc Anh | Text Diff, Semantic Diff, Classifier & Scorer | Baseline và phương pháp ngữ nghĩa tạo aspects, quy tắc chọn category/chấm tổng thể và test | Tuấn Anh/Dũng đối chiếu nhãn; Đức Anh review tích hợp |
+| Bạch Công Dũng | Architecture, dữ liệu và manifest, phối hợp guideline | Cặp tài liệu, nguồn, guideline cho 8 nhóm và nhãn khía cạnh được review, các ca khó | Thọ kiểm tra khả năng đọc; Tuấn Anh kiểm tra dữ liệu đánh giá |
+| Đỗ Tuấn Anh | Frontend, Evaluator, điều phối kiểm thử | UI hiển thị khía cạnh/vị trí nguồn, Evaluator với nhãn có aspects, test report và metric | Đức Anh review UI/API; Ngọc Anh kiểm tra ví dụ tính metric |
+
+Tuấn Anh điều phối nhãn chuẩn và cách đánh giá; Dũng quản lý dữ liệu/manifest, phối hợp guideline; Ngọc Anh review khả năng phân tích và ranh giới khía cạnh.
 
 Mỗi chủ module tự viết test phù hợp. Cả nhóm tham gia gán nhãn và kiểm tra chéo để giảm tải cho người phụ trách đánh giá. Mọi task có một người chịu trách nhiệm cuối cùng và một người review; người phối hợp được ghi trong issue.
 
@@ -107,14 +119,14 @@ Mỗi chủ module tự viết test phù hợp. Cả nhóm tham gia gán nhãn v
 | Tài liệu | Nội dung cần có ở mốc bàn giao |
 | --- | --- |
 | `brd.md` | Mục tiêu, phạm vi và đầu ra sản phẩm |
-| `srs.md` | Yêu cầu, data contract, trạng thái lỗi/cảnh báo và tiêu chí chất lượng |
-| `architecture.md` | Ranh giới module, luồng dữ liệu và request đồng bộ |
-| `mplementation-plan.md` | Công nghệ, phân công, tiến độ và tiêu chí hoàn thành |
-| `api-contract.md` | Upload, response mẫu, lỗi HTTP và cách biểu diễn SUCCESS/PARTIAL/FAILED |
+| `srs.md` | SRS 1.2.0: ChangeAspect, 8 nhóm trường, DocumentIdentity, trạng thái/cảnh báo và tiêu chí chất lượng |
+| `architecture.md` | Architecture 1.2.0: ranh giới tạo khía cạnh/chấm tổng thể, luồng dữ liệu và request đồng bộ |
+| `implementation-plan.md` | Công nghệ, phân công, tiến độ và tiêu chí hoàn thành |
+| `api-contract.md` | Upload, response mẫu có old_document/new_document và aspects, lỗi HTTP và SUCCESS/PARTIAL/FAILED |
 | `development-guide.md` | Môi trường, dependency, lệnh chạy/test và cấu hình |
 | `workflow.md` | Nhận task, branch, PR, review, kiểm thử và merge |
-| `data-annotation-guide.md` | Bản đầu: chọn cặp, nguồn, category/severity và ví dụ gán nhãn |
-| `test-evaluation-plan.md` | Bản đầu: nhóm test case, chia dữ liệu, đối chiếu và cách tính metric |
+| `data-annotation-guide.md` | Bản đầu: chọn cặp/nguồn, 8 nhóm khía cạnh, ví dụ ranh giới, chia/gộp SemanticChange, chọn category và severity; Dũng phối hợp Tuấn Anh/Ngọc Anh |
+| `test-evaluation-plan.md` | Bản đầu: test case, chia dữ liệu, matching có xét thiếu/sai khía cạnh, metric và đánh giá giải thích/khả năng hiểu báo cáo; Tuấn Anh chủ trì |
 | README gốc | Giới thiệu, thứ tự đọc tài liệu và hướng dẫn bắt đầu |
 
 Guideline và evaluation plan được hoàn thiện bằng pilot tuần 6, rồi cố định quy tắc trước đánh giá độc lập. Cuối tuần 5 không yêu cầu thuật toán hoặc dữ liệu đánh giá đã hoàn thành.
@@ -127,12 +139,12 @@ Guideline và evaluation plan được hoàn thiện bằng pilot tuần 6, rồ
 
 **Mục tiêu:** các thành viên chạy được dự án và phát triển song song theo cùng contract.
 
-- Đức Anh dựng môi trường, hiện thực schema, API upload và Pipeline bằng mock; trả báo cáo đúng hợp đồng.
+- Đức Anh dựng môi trường, hiện thực schema có ChangeAspect/DocumentIdentity, API upload và Pipeline bằng mock; báo cáo giữ metadata V1/V2, aspects và cảnh báo theo SRS 1.2.0.
 - Thọ triển khai Reader PDF/DOCX, Parser cấp Điều; phát triển Aligner baseline bằng fixture.
-- Ngọc Anh triển khai Text Diff và baseline ngữ nghĩa/chấm điểm trên cặp Điều mẫu.
-- Tuấn Anh dựng form V1/V2 và màn hình báo cáo bằng mock; tạo khung Evaluator với ca tính tay.
-- Dũng tuyển chọn cặp tài liệu, lập manifest; tổ chức pilot gán nhãn cùng nhóm.
-- Nhóm hoàn thiện guideline và tạo fixture cho không đổi, đổi nghĩa, thêm/xóa, đánh lại số và ghép mơ hồ.
+- Ngọc Anh triển khai Text Diff và baseline ngữ nghĩa tạo aspects/chấm tổng thể trên cặp Điều mẫu; ghi rõ nhóm nhận diện được và trường hợp chưa xác định.
+- Tuấn Anh dựng form V1/V2 và báo cáo mock hiển thị từng khía cạnh, bằng chứng, vị trí nguồn; tạo khung Evaluator cấp SemanticChange với ca tính tay và nhãn có aspects.
+- Dũng tuyển chọn cặp tài liệu, lập manifest; phối hợp Tuấn Anh tổ chức pilot gán nhãn khía cạnh theo 8 nhóm cùng nhóm.
+- Nhóm hoàn thiện guideline và tạo fixture cho không đổi, đổi diễn đạt, đổi nghĩa, thêm/xóa, đánh lại số, ghép mơ hồ; có một thay đổi nhiều khía cạnh, khía cạnh chưa rõ và file trùng tên.
 
 **Đầu ra:** repo chạy được theo hướng dẫn; upload nhận hai file; mock report hiển thị trên UI; Reader/Parser có test trên file thật; các module còn lại có đầu vào/đầu ra mẫu.
 
@@ -143,9 +155,9 @@ Guideline và evaluation plan được hoàn thiện bằng pilot tuần 6, rồ
 **Mục tiêu:** so sánh hai tài liệu thật và trả báo cáo qua giao diện.
 
 - Thọ hoàn thiện Aligner; kiểm tra thêm/xóa, đánh lại số và ghép mơ hồ.
-- Ngọc Anh hoàn thiện baseline Text Diff/Semantic Diff/Scorer với bằng chứng và trạng thái chưa xác định.
-- Đức Anh nối các module thật vào Pipeline, giữ định danh/source refs, tổng hợp cảnh báo và lỗi.
-- Tuấn Anh kết nối UI với API thật, hiển thị cũ/mới và kết quả; hoàn thiện Evaluator trên bộ nhỏ đã review.
+- Ngọc Anh hoàn thiện baseline Text Diff/Semantic Diff/Scorer với aspects, bằng chứng, category tổng thể và trạng thái chưa xác định; kiểm tra tránh ghi trùng khía cạnh.
+- Đức Anh nối các module thật vào Pipeline, giữ metadata hai file, định danh/source refs và aspects; tổng hợp cảnh báo từ khía cạnh cùng lỗi đến báo cáo.
+- Tuấn Anh kết nối UI với API thật, hiển thị cũ/mới và từng khía cạnh; hoàn thiện Evaluator trên bộ nhỏ đã review, không đếm mỗi aspect thành một thay đổi độc lập.
 - Dũng cùng nhóm mở rộng dữ liệu, đối chiếu lỗi trích xuất/căn chỉnh và rà soát nhãn.
 
 **Đầu ra:** luồng file → Reader → Parser → Aligner → Diff → Scorer → UI không dùng mock ở các bước nghiệp vụ; có số đo baseline trên dev set.
@@ -156,11 +168,11 @@ Guideline và evaluation plan được hoàn thiện bằng pilot tuần 6, rồ
 
 **Mục tiêu:** đo, cải thiện lỗi quan trọng và kiểm soát tài nguyên.
 
-- Ngọc Anh tích hợp phương pháp ngữ nghĩa tại mục 9 trong bảng công nghệ, so sánh với rules-only trên cùng dev set.
+- Ngọc Anh tích hợp phương pháp ngữ nghĩa tại mục 9 trong bảng công nghệ, so sánh với rules-only trên cùng dev set; ghi kết quả theo 8 nhóm, lỗi thiếu/sai khía cạnh và giới hạn nhận diện.
 - Thọ sửa lỗi đọc, tách và ghép có ảnh hưởng lớn; bổ sung regression test.
 - Đức Anh đo thời gian từng module, hiệu chỉnh cấu hình, xử lý file tạm, quá tải và deadline.
-- Tuấn Anh hoàn thiện hiển thị PARTIAL, cảnh báo và vị trí nguồn; chạy kiểm thử tích hợp.
-- Dũng hoàn thiện manifest, nhãn và danh sách ca khó; nhóm cố định cách đánh giá và tập test độc lập.
+- Tuấn Anh hoàn thiện hiển thị PARTIAL, cảnh báo từng khía cạnh và vị trí nguồn đúng V1/V2; kiểm tra tên file trùng, phân biệt category với field_group và chạy kiểm thử tích hợp.
+- Dũng hoàn thiện manifest, nhãn có khía cạnh và ca khó; Tuấn Anh cùng nhóm cố định cách matching, xử lý thiếu/sai khía cạnh và tập test độc lập; ghi độ bao phủ 8 nhóm.
 
 **Đầu ra:** báo cáo thử nghiệm dev, cấu hình vận hành, bộ regression và phiên bản tích hợp để kiểm thử mở rộng.
 
@@ -174,7 +186,7 @@ Guideline và evaluation plan được hoàn thiện bằng pilot tuần 6, rồ
 - Đức Anh kiểm tra API/Pipeline, giới hạn, deadline, dọn file và chạy đồng thời; sửa lỗi tích hợp.
 - Thọ kiểm thử layout, bảng, ranh giới Điều và các ca căn chỉnh khó; bổ sung regression test.
 - Ngọc Anh phân tích lỗi ngữ nghĩa/chấm điểm trên dev set, ưu tiên bỏ sót thay đổi quan trọng.
-- Dũng rà soát nguồn, manifest và nhãn; cả nhóm thử thao tác upload, đọc báo cáo, tìm bằng chứng và hiểu cảnh báo.
+- Dũng rà soát nguồn, manifest và nhãn; Tuấn Anh điều phối thử nghiệm nhận diện cũ/mới, giải thích thay đổi bằng lời của người tham gia, tìm bằng chứng/vị trí nguồn và hiểu cảnh báo. Ghi độ đúng, thời gian, lỗi diễn giải và phản hồi; nêu rõ nếu thành viên nhóm đóng vai người dùng.
 
 **Đầu ra:** báo cáo kiểm thử tích hợp, danh sách lỗi có mức ưu tiên và người xử lý; các cải tiến UI được kiểm tra lại.
 
@@ -187,7 +199,7 @@ Guideline và evaluation plan được hoàn thiện bằng pilot tuần 6, rồ
 - Chủ module sửa lỗi ưu tiên từ tuần 9 và chạy lại regression; không mở rộng phạm vi chức năng.
 - Ngọc Anh hoàn thiện quy tắc/ngưỡng trên dev set, ghi so sánh phương pháp với baseline trên cùng dữ liệu.
 - Đức Anh đo lại thời gian/tài nguyên, chốt cấu hình vận hành và đóng gói phiên bản ứng viên.
-- Tuấn Anh kiểm tra Evaluator bằng ca tính tay; cùng Dũng kiểm tra split, phiên bản nhãn và quy tắc đối chiếu.
+- Tuấn Anh kiểm tra Evaluator bằng ca tính tay có nhiều khía cạnh, thiếu/sai khía cạnh; cùng Dũng kiểm tra split, phiên bản nhãn và quy tắc đối chiếu đã cố định.
 - Cả nhóm review acceptance criteria, cập nhật hướng dẫn chạy và xác nhận các giới hạn cần công bố.
 
 **Đầu ra:** phiên bản ứng viên gắn commit/tag, cấu hình và dependency cố định; bộ test độc lập có phiên bản; báo cáo thử nghiệm dev.
@@ -198,7 +210,7 @@ Guideline và evaluation plan được hoàn thiện bằng pilot tuần 6, rồ
 
 **Mục tiêu:** có kết quả chất lượng tái lập được cho phiên bản ứng viên.
 
-- Tuấn Anh chạy đánh giá trên test set; báo số mẫu, TP/FP/FN, F1, Critical Change Recall và trường hợp chưa xác định.
+- Tuấn Anh chạy đánh giá trên test set; báo số mẫu, TP/FP/FN cấp SemanticChange, F1, Critical Change Recall, trường hợp chưa xác định và lỗi khía cạnh theo nhóm; tổng hợp đánh giá giải thích/khả năng hiểu báo cáo theo Evaluation Plan.
 - Cả nhóm kiểm tra acceptance criteria, trường hợp lỗi và chạy lại trên máy khác.
 - Dũng tổng hợp minh chứng dữ liệu; Đức Anh tổng hợp phiên bản, giới hạn và báo cáo kỹ thuật.
 - Chủ module phân tích lỗi; phân biệt lỗi cần sửa để bàn giao với hạn chế thuật toán cần công bố.
@@ -243,17 +255,17 @@ Các mã là mã lập kế hoạch, được dùng khi tạo issue. Task có th
 | Mã | Công việc | Chủ trì | Phụ thuộc để tích hợp | Mốc |
 | --- | --- | --- | --- | --- |
 | PL-01 | Bàn giao tài liệu tổng quát | Đức Anh | Review của nhóm | Cuối tuần 5 |
-| PL-02 | Môi trường, schema và fixture | Đức Anh | PL-01 | Tuần 6 |
+| PL-02 | Môi trường, schema và fixture có ChangeAspect/DocumentIdentity | Đức Anh | PL-01 | Tuần 6 |
 | PL-03 | Reader và Parser | Thọ | PL-02, dữ liệu mẫu | Tuần 6 |
 | PL-04 | Aligner | Thọ | PL-03 | Tuần 7 |
 | PL-05 | Text Diff | Ngọc Anh | PL-02; PL-04 khi tích hợp | Tuần 6–7 |
-| PL-06 | Semantic Diff và Scorer baseline | Ngọc Anh | PL-05, guideline | Tuần 7 |
-| PL-07 | API và Pipeline | Đức Anh | PL-02; PL-03 đến PL-06 khi tích hợp | Tuần 6–7 |
-| PL-08 | Giao diện chọn file và báo cáo | Tuấn Anh | API contract; PL-07 khi tích hợp | Tuần 6–7 |
-| PL-09 | Dữ liệu, manifest và nhãn chuẩn | Dũng; Tuấn Anh phối hợp | Guideline; review của nhóm | Tuần 6–8 |
-| PL-10 | Evaluator | Tuấn Anh | Schema, quy tắc đo và nhãn mẫu | Tuần 6–7 |
+| PL-06 | Semantic Diff tạo aspects và Scorer baseline chấm tổng thể | Ngọc Anh | PL-05, guideline | Tuần 7 |
+| PL-07 | API/Pipeline giữ metadata hai file, aspects và cảnh báo | Đức Anh | PL-02; PL-03 đến PL-06 khi tích hợp | Tuần 6–7 |
+| PL-08 | Giao diện chọn file và báo cáo khía cạnh/bằng chứng/vị trí nguồn | Tuấn Anh | API contract; PL-07 khi tích hợp | Tuần 6–7 |
+| PL-09 | Dữ liệu, manifest và nhãn chuẩn có khía cạnh | Dũng; Tuấn Anh phối hợp | Guideline; review của nhóm | Tuần 6–8 |
+| PL-10 | Evaluator cấp SemanticChange có kiểm tra khía cạnh | Tuấn Anh | Schema, quy tắc đo và nhãn mẫu | Tuần 6–7 |
 | PL-11 | Cải thiện chất lượng và hiệu năng | Chủ module; Đức Anh điều phối | Luồng tích hợp, PL-09, PL-10 | Tuần 8–10 |
-| PL-12 | Kiểm thử toàn hệ thống và sửa lỗi | Tuấn Anh; các chủ module | Luồng tích hợp, PL-09, PL-10 | Tuần 9–10 |
+| PL-12 | Kiểm thử toàn hệ thống, diễn giải/khả năng hiểu báo cáo và sửa lỗi | Tuấn Anh; các chủ module | Luồng tích hợp, PL-09, PL-10 | Tuần 9–10 |
 | PL-13 | Chốt phiên bản ứng viên | Đức Anh; cả nhóm | PL-11, PL-12 | Cuối tuần 10 |
 | PL-14 | Đánh giá độc lập và nghiệm thu nội bộ | Tuấn Anh; cả nhóm | PL-13, tập test cố định | Tuần 11 |
 | PL-15 | Đóng gói, báo cáo và diễn tập demo | Đức Anh; cả nhóm | PL-14 | Tuần 12 |
@@ -265,6 +277,8 @@ Các mã là mã lập kế hoạch, được dùng khi tạo issue. Task có th
 
 Dũng quản lý manifest liên kết V1/V2, nguồn, phiên bản, định dạng, phạm vi và split. Fixture tự tạo phục vụ test kỹ thuật được phân biệt với tài liệu thật dùng đánh giá. Nhãn quan trọng có người review độc lập và ghi lý do giải quyết bất đồng.
 
+Nhãn chuẩn lưu SemanticChange và các khía cạnh kỳ vọng theo SRS, gồm nhóm, nội dung trước/sau, diễn giải và bằng chứng. Tuấn Anh điều phối nhãn chuẩn; Dũng phối hợp tuyển chọn, ghi độ bao phủ 8 nhóm và các trường hợp chưa xác định. Phân biệt số cặp tài liệu, số thay đổi và số khía cạnh; không dùng số khía cạnh thay cho số thay đổi.
+
 Chia dữ liệu theo nhóm văn bản/chuỗi phiên bản để tránh cùng nội dung hoặc cặp chồng lặp xuất hiện ở cả dev và test. Chọn quy mô sau pilot theo năng lực gán nhãn, ghi số lượng trong evaluation plan; số lượng không thay thế độ đa dạng ca kiểm thử.
 
 ### 8.2. Ca kiểm thử bắt buộc
@@ -274,12 +288,18 @@ Chia dữ liệu theo nhóm văn bản/chuỗi phiên bản để tránh cùng n
 - Điều nhiều trang, bảng, câu dẫn chiếu chứa chữ “Điều”, phụ lục sau Điều cuối.
 - Thiếu file, file rỗng/hỏng/sai định dạng/scan, vượt giới hạn và hệ thống bận.
 - Module lỗi, deadline, báo cáo một phần và kết luận chưa xác định.
-- UI hiển thị đúng source refs/cảnh báo, không gửi lặp và không nhầm null với không có thay đổi.
+- Một SemanticChange có nhiều khía cạnh; nhiều thay đổi độc lập trong một Điều; khía cạnh cùng nhóm nhưng nội dung khác nhau; không nhân bản một biến đổi vào nhiều nhóm.
+- Đối chiếu field_group, giá trị cũ/mới, diễn giải và bằng chứng đúng phía; phân biệt thiếu căn cứ với phía không tồn tại; cảnh báo được giữ từ khía cạnh đến UI.
+- Chỉ đổi diễn đạt với aspects rỗng; chưa xác định với aspects rỗng; category tổng thể khác với danh sách nhóm của khía cạnh; mức độ không tăng theo số khía cạnh.
+- Hai file trùng tên vẫn phân biệt được V1/V2; nhiều vị trí nguồn của một Điều; Điều thêm/xóa chỉ có nguồn phía tồn tại.
+- UI hiển thị đủ khía cạnh và đúng source refs/cảnh báo, không chỉ dùng màu, không gửi lặp và không nhầm null hoặc aspects rỗng với không có thay đổi. Vị trí là của Điều; bản đầu không bắt buộc nhúng trình xem file.
 
 ### 8.3. Đánh giá
 
 - Mục tiêu: Change F1 ≥ 0,90 và Critical Change Recall ≥ 0,95 theo SRS. Đây là mục tiêu cần kiểm chứng bằng thực nghiệm.
-- Đối chiếu từng thay đổi một-một, không đếm trùng; lỗi bỏ sót từ Reader/Parser/Aligner vẫn được tính đầu-cuối.
+- Đối chiếu từng SemanticChange một-một, không đếm trùng hoặc tính mỗi ChangeAspect thành một thay đổi độc lập; lỗi bỏ sót từ Reader/Parser/Aligner vẫn được tính đầu-cuối.
+- Quy tắc matching xử lý thiếu/sai khía cạnh phải cố định trước đánh giá. Không tính đúng chỉ vì trùng field_group; ghi riêng lỗi nhóm, nội dung trước/sau, diễn giải và bằng chứng, kèm số mẫu từng nhóm.
+- Kiểm tra chất lượng giải thích và khả năng hiểu báo cáo theo SRS mục 4; F1/Critical Change Recall không thay thế đánh giá này. Evaluation Plan chốt người tham gia, quy mô, cách chấm và ngưỡng trước thử nghiệm; ghi giới hạn khi nhóm tự đóng vai người dùng. Hoạt động này nằm ngoài luồng so sánh, không thêm module phản hồi.
 - Không tính kết quả chưa xác định là đúng; mẫu số bằng 0 trả null và lý do.
 - Báo số mẫu, số thay đổi CRITICAL, các lỗi và giới hạn của tập đánh giá.
 - Lưu commit, dependency, mô hình, cấu hình, dữ liệu, môi trường và lệnh chạy.
@@ -313,7 +333,7 @@ Các tài liệu bổ sung theo tiến trình: mẫu bug report trước tuần 
 
 ## 11. Nguồn kỹ thuật tham khảo
 
-- [FastAPI — Request Files]
+- [FastAPI — Request Files](https://fastapi.tiangolo.com/tutorial/request-files/)
 - [React — Build a React app from Scratch](https://react.dev/learn/build-a-react-app-from-scratch)
 - [Vite — Getting Started](https://vite.dev/guide/)
 - [PyMuPDF — Text extraction](https://pymupdf.readthedocs.io/en/latest/recipes-text.html)
