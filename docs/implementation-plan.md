@@ -43,7 +43,10 @@ Pipeline gọi lần lượt Reader → Parser → Aligner → Text Diff → Sem
 
 ## 3. Danh mục lựa chọn kỹ thuật
 
-Đây là phương án triển khai được chọn cho kế hoạch. Khi đổi công nghệ, cập nhật dòng tương ứng và các dependency/cấu hình/hướng dẫn chạy liên quan. Giữ hợp đồng module/API để hạn chế ảnh hưởng đến các phần khác; việc thay thư viện vẫn cần sửa và kiểm thử phần triển khai bị tác động.
+Bảng dưới đây là phương án kỹ thuật đề xuất để nhóm review.
+Các lựa chọn chưa được nhóm xác nhận không được xem là quyết
+định triển khai chính thức. Sau khi thống nhất, nhóm cập nhật
+trạng thái lựa chọn trong SRS, Architecture và README.
 
 | STT | Thành phần | Lựa chọn | Lý do và ranh giới |
 | --- | --- | --- | --- |
@@ -74,7 +77,8 @@ Pipeline gọi lần lượt Reader → Parser → Aligner → Text Diff → Sem
 
 ### 3.2. Cấu hình vận hành ban đầu
 
-Các giá trị sau là ngân sách triển khai để kiểm thử, không phải hiệu năng đã chứng minh. Chúng nằm trong một file cấu hình và được hiệu chỉnh sau đo tuần 8; API contract và hướng dẫn chạy tham chiếu cùng cấu hình.
+Các giá trị cấu hình dưới đây là đề xuất ban đầu để thử nghiệm,
+chưa phải giới hạn đã được nhóm xác nhận hoặc hiệu năng đã đo.
 
 | Tham số | Giá trị kế hoạch |
 | --- | --- |
@@ -109,7 +113,7 @@ Mỗi chủ module tự viết test phù hợp. Cả nhóm tham gia gán nhãn v
 | `brd.md` | Mục tiêu, phạm vi và đầu ra sản phẩm |
 | `srs.md` | Yêu cầu, data contract, trạng thái lỗi/cảnh báo và tiêu chí chất lượng |
 | `architecture.md` | Ranh giới module, luồng dữ liệu và request đồng bộ |
-| `mplementation-plan.md` | Công nghệ, phân công, tiến độ và tiêu chí hoàn thành |
+| `implementation-plan.md` | Công nghệ, phân công, tiến độ và tiêu chí hoàn thành |
 | `api-contract.md` | Upload, response mẫu, lỗi HTTP và cách biểu diễn SUCCESS/PARTIAL/FAILED |
 | `development-guide.md` | Môi trường, dependency, lệnh chạy/test và cấu hình |
 | `workflow.md` | Nhận task, branch, PR, review, kiểm thử và merge |
@@ -313,7 +317,7 @@ Các tài liệu bổ sung theo tiến trình: mẫu bug report trước tuần 
 
 ## 11. Nguồn kỹ thuật tham khảo
 
-- [FastAPI — Request Files]
+- [FastAPI — Request Files](https://fastapi.tiangolo.com/tutorial/request-files/)
 - [React — Build a React app from Scratch](https://react.dev/learn/build-a-react-app-from-scratch)
 - [Vite — Getting Started](https://vite.dev/guide/)
 - [PyMuPDF — Text extraction](https://pymupdf.readthedocs.io/en/latest/recipes-text.html)

@@ -14,8 +14,9 @@ Phạm vi, yêu cầu chức năng, tiêu chí nghiệm thu và hợp đồng d�
 chi tiết được quy định trong SRS. Architecture sử dụng cùng tên
 module và cấu trúc dữ liệu với SRS.
 
-Việc sử dụng RAG, IPA AI và kiến trúc xử lý nền được ghi rõ là
-lựa chọn cần xác nhận ở các phần tương ứng.
+Bản đầu sử dụng request đồng bộ. API AI bên ngoài và RAG
+không thuộc kiến trúc tối thiểu; chỉ bổ sung sau khi nhóm
+xác nhận nhu cầu và phương án triển khai.
 
 ---
 
@@ -156,7 +157,7 @@ Pipeline tổng hợp ComparisonReport từ kết quả các module.
 Các module xử lý không tự gọi giao diện hoặc phụ thuộc HTTP.
 Backend quản lý vòng đời request và file tạm; Pipeline điều phối nghiệp vụ.
 
-IPA adapter và các thành phần Queue/Worker chỉ được bổ sung
+Adapter gọi API AI bên ngoài và các thành phần Queue/Worker chỉ được bổ sung
 khi nhóm xác nhận phương án triển khai.
 ### 3.4. Giao tiếp giữa các module
 
@@ -424,7 +425,7 @@ docs/development-guide.md; architecture không tự đặt ngưỡng chưa đo.
 
 - Công nghệ backend/frontend và phiên bản môi trường chạy.
 - Phương pháp Semantic Diff, embedding/LLM nếu có; vai trò cụ thể và cách gọi mô hình.
-- IPA AI có bắt buộc không; đặc tả và quyền truy cập. RAG chỉ bổ sung khi có nhu cầu đã xác định.
+- API AI có bắt buộc không; đặc tả và quyền truy cập. RAG chỉ bổ sung khi có nhu cầu đã xác định.
 - Giới hạn đầu vào, số request đồng thời, timeout/retry và môi trường đo hiệu năng.
 - Danh mục category, quy tắc severity và cách tạo nhãn chuẩn.
 - Tên trường API, mã HTTP, error body, dữ liệu mẫu và cách xử lý PARTIAL/FAILED.

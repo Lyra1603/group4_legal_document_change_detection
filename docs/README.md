@@ -7,11 +7,17 @@
 1. [BRD](brd.md): mục tiêu và phạm vi.
 2. [SRS](srs.md): yêu cầu và hợp đồng dữ liệu.
 3. [Architecture](architecture.md): thiết kế module và luồng xử lý.
-4. Mã nguồn: baseline hiện tại.
+4. [Implementation Plan](implementation-plan.md): công nghệ,
+   phân công và tiến độ triển khai.
+5. Mã nguồn: baseline hiện tại.
 
 ---
 
 ## 1. Minimum Architecture dự kiến
+
+Thiết kế mục tiêu của bản đầu sử dụng request đồng bộ: backend xử lý hai file và
+trả ComparisonReport trong cùng request; không dùng job nền
+hoặc API polling.
 
 Các module xử lý nằm trong một backend Python.
 Pipeline điều phối Reader, Parser, Aligner, Text Diff,
@@ -98,6 +104,4 @@ uvicorn backend.main:app --reload
 ```
 - Truy cập API Docs tại: http://127.0.0.1:8000/docs
 
-Bản đầu sử dụng request đồng bộ: backend xử lý hai file và
-trả ComparisonReport trong cùng request; không dùng job nền
-hoặc API polling.
+

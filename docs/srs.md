@@ -425,7 +425,7 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
   chỉ áp dụng cho các Điều đã xử lý.
 - Nếu không xử lý hết nội dung thuộc một Điều, phải báo
   PARTIAL hoặc FAILED, không báo SUCCESS.
-  - Bản đầu sử dụng request đồng bộ: backend nhận hai file,
+- Bản đầu sử dụng request đồng bộ: backend nhận hai file,
   chạy Pipeline và trả báo cáo trong cùng request.
 - Không sử dụng job nền hoặc API polling trong bản đầu.
 - Giao diện hiển thị đang xử lý, ngăn gửi lặp và không tự
