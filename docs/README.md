@@ -6,8 +6,7 @@
 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
 1. [BRD](brd.md): mục tiêu và phạm vi.
 2. [SRS](srs.md): yêu cầu và hợp đồng dữ liệu.
-3. Architecture: đang được review trên nhánh `bachdung/docs`;
-   sẽ bổ sung sau khi merge PR kiến trúc.
+3. [Architecture](architecture.md): thiết kế module và luồng xử lý.
 4. Mã nguồn: baseline hiện tại.
 
 ---
@@ -98,3 +97,7 @@ python -m src.pipeline
 uvicorn backend.main:app --reload
 ```
 - Truy cập API Docs tại: http://127.0.0.1:8000/docs
+
+Bản đầu sử dụng request đồng bộ: backend xử lý hai file và
+trả ComparisonReport trong cùng request; không dùng job nền
+hoặc API polling.

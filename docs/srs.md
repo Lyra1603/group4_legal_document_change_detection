@@ -425,6 +425,13 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
   chỉ áp dụng cho các Điều đã xử lý.
 - Nếu không xử lý hết nội dung thuộc một Điều, phải báo
   PARTIAL hoặc FAILED, không báo SUCCESS.
+  - Bản đầu sử dụng request đồng bộ: backend nhận hai file,
+  chạy Pipeline và trả báo cáo trong cùng request.
+- Không sử dụng job nền hoặc API polling trong bản đầu.
+- Giao diện hiển thị đang xử lý, ngăn gửi lặp và không tự
+  gửi lại yêu cầu so sánh khi timeout.
+- Giới hạn đầu vào, thời gian xử lý và cách trả lỗi được
+  quy định trong API contract và cấu hình triển khai.
 
 ## 7. Quy định dữ liệu trao đổi giữa các module
 
@@ -450,9 +457,6 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 - Giới hạn dung lượng, thời gian xử lý và môi trường đo hiệu năng.
 - Thuật toán Semantic Diff; có sử dụng mô hình hoặc API ngoài không.
 - Công nghệ frontend.
-- Chọn xử lý đồng bộ hay bất đồng bộ cho bản đầu.
-- Nếu dùng bất đồng bộ: chốt trạng thái job, timeout, retry
-  và thời hạn giữ file/kết quả tạm trong API contract.
 
 Các mục chưa chốt không được coi là yêu cầu đã được triển khai
 hoặc tiêu chí nghiệm thu đã được xác nhận.
