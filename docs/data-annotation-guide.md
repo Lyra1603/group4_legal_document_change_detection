@@ -1,14 +1,16 @@
 # HƯỚNG DẪN TUYỂN CHỌN DỮ LIỆU VÀ GÁN NHÃN
 
 **Dự án:** Legal Document Change Detection  
-**Phiên bản:** 1.0.1  
-**Ngày cập nhật:** 10/10/2026  
+**Phiên bản:** 1.1.0  
+**Ngày cập nhật:** 13/10/2026  
 **Trạng thái:** Bản đầu để nhóm review và kiểm chứng qua pilot tuần 6  
 **Related Documents:** [BRD](brd.md), [SRS 1.2.0](srs.md), [Architecture 1.2.0](architecture.md), [Implementation Plan 1.3.0](implementation-plan.md), [Evaluation Plan — tài liệu dự kiến](test-evaluation-plan.md)
 
 ## 1. Mục đích và tài liệu tham chiếu
 
-Hướng dẫn này giúp các thành viên chọn đúng cặp dữ liệu và tạo đáp án tham chiếu nhất quán cho phát triển, kiểm thử và đánh giá. Đáp án được lập từ hai đầu vào đã kiểm tra; không lấy kết quả thuật toán làm nhãn chuẩn.
+Hướng dẫn này giúp các thành viên chọn đúng cặp dữ liệu và tạo đáp án tham chiếu nhất quán cho phát triển, kiểm thử và đánh giá. Đáp án được lập từ tài liệu nguồn và cặp trước/sau đã kiểm tra; không lấy kết quả thuật toán làm nhãn chuẩn.
+
+V1 là bản đầy đủ trước thay đổi; V2 là bản đầy đủ sau thay đổi; S là văn bản chứa chỉ dẫn sửa đổi V1. Hai loại dữ liệu đầu vào gồm FULL_FULL (V1 + V2) và FULL_AMENDMENT (V1 + S). FULL_FULL đi vào luồng so sánh sau khi đọc và chuẩn hóa; FULL_AMENDMENT cần dựng và kiểm tra V2 trước khi sử dụng luồng so sánh chung. Dựng V2 tự động là chức năng đề xuất; dữ liệu tham chiếu được dựng thủ công và review độc lập. Phạm vi chức năng triển khai được quy định tại SRS và Architecture.
 
 SRS mục 1.3–1.4 sở hữu cấu trúc SemanticChange, ChangeAspect, ScoringResult và danh mục mã. Tài liệu này quy định cách đọc, điền, chia/gộp, chọn nhãn và review trong thực tế; không định nghĩa lại schema API. Phạm vi theo BRD/SRS; luồng phần mềm theo Architecture; công thức chỉ số, matching và phân chia dữ liệu theo Evaluation Plan.
 
@@ -22,11 +24,14 @@ Nguồn chính là file Word (`.doc`, `.docx`) và PDF tải trực tiếp từ 
 
 | Tình huống | Cách xử lý |
 | --- | --- |
-| Hai trạng thái đầy đủ của cùng văn bản, xác định được chiều cũ/mới | Nhận sau kiểm tra nội dung, phạm vi và mốc phiên bản |
-| Một bản đầy đủ và văn bản chỉ liệt kê sửa đổi | Lưu nguồn; người chuẩn bị dựng bản đầy đủ theo mục 2.4 trước khi nhận thành cặp |
+| Hai trạng thái đầy đủ của cùng văn bản, xác định được chiều cũ/mới | Gắn FULL_FULL; nhận sau kiểm tra nội dung, phạm vi và mốc phiên bản |
+| Một bản đầy đủ và văn bản chỉ liệt kê sửa đổi | Gắn FULL_AMENDMENT; giữ V1 và S; dựng V2 tham chiếu theo mục 2.4 và review trước khi dùng làm đáp án chuẩn |
+| Bản đầy đủ và bản hợp nhất sau sửa đổi | Kiểm tra những lần sửa đổi được tích hợp, mốc trạng thái và phạm vi trước khi nhận thành FULL_FULL |
+| Văn bản cũ và văn bản mới thay thế | Xác minh quan hệ thay thế; ghi các thay đổi cấu trúc, số Điều có thể gây khó khăn cho căn chỉnh |
 | PDF và Word cùng một trạng thái nội dung | Hai dạng thể hiện của một nguồn; không tự gọi là V1/V2 |
-| PDF có lớp chữ | Có thể làm đầu vào hệ thống sau kiểm tra trích xuất và giới hạn công bố |
-| Word `.doc`, `.docx` | Giữ làm nguồn và phục vụ chuẩn bị dữ liệu; xuất PDF có lớp chữ, kiểm tra lại theo mục 2.3 trước khi đưa vào hệ thống |
+| DOCX | Định dạng chính của dữ liệu so sánh; kiểm tra nội dung và cấu trúc trước khi nhận |
+| PDF có lớp chữ | Nguồn phụ; chuyển sang DOCX và kiểm tra theo mục 2.3; nhận PDF trực tiếp trên UI là khả năng đề xuất cần xác định trong SRS |
+| Word `.doc` | Giữ bản gốc; chuyển thực sự sang DOCX và kiểm tra nội dung |
 | Scan, file hỏng/mật khẩu, thiếu phần Điều, sai cặp | Loại khỏi bộ so sánh hợp lệ; có thể lưu riêng làm ca kiểm thử lỗi |
 | Mơ hồ về chuỗi sửa đổi, mốc áp dụng hoặc nguồn không khớp | Tạm giữ để review; không sử dụng như cặp pháp lý đã xác minh |
 
@@ -34,7 +39,7 @@ Không tự suy ra phiên bản từ ngày tải, ngày lưu file hoặc số th
 
 ### 2.2. Đặc điểm tài liệu nguồn và cách đặt tên file
 
-Tài liệu nguồn có thể được cung cấp dưới dạng Word (`.doc`, `.docx`) hoặc PDF. Một văn bản có thể có nhiều định dạng với cùng trạng thái nội dung; khác định dạng không đồng nghĩa khác phiên bản. Phạm vi đầu vào hệ thống hiện tại là hai PDF có lớp văn bản, không xử lý OCR; Word được dùng để lưu nguồn, đối chiếu và chuẩn bị dữ liệu.
+Tài liệu nguồn có thể được cung cấp dưới dạng Word (`.doc`, `.docx`) hoặc PDF. Một văn bản có thể có nhiều định dạng với cùng trạng thái nội dung; khác định dạng không đồng nghĩa khác phiên bản. DOCX là định dạng chính; PDF có lớp văn bản là nguồn phụ được chuyển sang DOCX, không xử lý OCR. Vai trò trước/sau do vị trí tải file xác định, không được suy đoán chỉ từ tên file. Kịch bản đề xuất gồm hai ô tải: văn bản trước và văn bản sau hoặc văn bản sửa đổi; loại file thứ hai được lựa chọn là bản đầy đủ hoặc văn bản sửa đổi.
 
 Cấu trúc thường gặp gồm thông tin cơ quan ban hành, số/ký hiệu, địa danh và ngày tháng, tên văn bản, phần căn cứ, nội dung chia theo Chương/Mục/Điều/Khoản/Điểm, phần ký và phụ lục. Tùy loại văn bản, một số thành phần có thể không xuất hiện. Tài liệu có thể chứa bảng, chú thích, số trang, đầu/chân trang và Điều có hậu tố chữ. Văn bản hợp nhất có thể kèm thông tin văn bản gốc, các lần sửa đổi và mốc áp dụng khác nhau. Không mặc định mọi tài liệu có cùng bố cục hoặc đầy đủ mọi cấp cấu trúc.
 
@@ -48,19 +53,19 @@ Tên file nguồn có thể chứa số/ký hiệu, năm, chữ viết tắt lo�
 | `.pdf`, `.doc`, `.docx` | Biểu thị định dạng tệp, không chứng minh khác biệt nội dung hoặc phiên bản pháp lý |
 | Hậu tố như `(1)`, `(2)` | Có thể phát sinh khi tải/lưu bản sao; không coi là số lần sửa đổi |
 
-Giữ nguyên tên tệp tải về trong `original_filename`. Quy ước tên nội bộ của nhóm tách biệt với tên nguồn: `<pair_id>__v1__source.pdf`, `<pair_id>__v2__derived.pdf`, `<pair_id>__v2__synthetic.pdf`. Bản Word phục vụ biên soạn có thể lưu riêng với phần mở rộng tương ứng. Không sửa nội dung file gốc để đổi nhãn. Dùng số/ký hiệu, tên, cơ quan, ngày và nguồn để nhận diện văn bản; dùng SHA-256 để nhận diện chính xác tệp, không coi hash là danh tính pháp lý.
+Giữ nguyên tên tệp tải về trong `original_filename`. Quy ước tên nội bộ của nhóm tách biệt với tên nguồn: `<document_key>_v1.docx`, `<document_key>_v2.docx`; văn bản sửa đổi được lưu riêng dưới tên `<document_key>_amendment.docx`. Tên v1/v2 hỗ trợ quản lý dữ liệu, không phải điều kiện để hệ thống nhận diện thứ tự. Không sửa nội dung file gốc để đổi nhãn. Dùng số/ký hiệu, tên, cơ quan, ngày và nguồn để nhận diện văn bản; dùng SHA-256 để nhận diện chính xác tệp, không coi hash là danh tính pháp lý.
 
 ### 2.3. Lưu file, chuyển định dạng và manifest
 
-Sử dụng các vị trí dữ liệu trong Architecture: `data/raw/` cho nguồn; `data/02_filtered_pairs/` cho cặp đầu vào đã chọn; `data/manifest.csv` cho metadata; `data/gold/` cho nhãn. Nhật ký dựng/chuyển file và review được lưu kèm cặp hoặc nhãn, không ghi đè nguồn.
+`data/` nằm ngang cấp với `docs/`. Các cặp được tổ chức theo mục đích: `data/T1/T1-001/`, `data/T1/T1-002/`...; ý nghĩa T1 và các mục đích khác được mô tả trong `data/README.md`. Mỗi thư mục cặp có hai DOCX v1/v2 và README ghi nguồn, phạm vi sửa đổi, cách tạo V2, nhật ký và trạng thái review. Với FULL_AMENDMENT, lưu thêm S; nhãn JSON có thể lưu dưới tên `gold.json` khi định dạng đã được thống nhất. Giữ bản tải về trong `data/raw/` hoặc vị trí nguồn được ghi rõ; không ghi đè file nguồn. `data/manifest.csv` tổng hợp metadata. Các cặp nhỏ dùng chung có thể đưa lên GitHub; bỏ qua file tạm Word `~$...docx`. Cặp phục vụ nhiều mục đích được tham chiếu bằng mã ổn định, tránh tạo các bản sao sửa lệch nhau.
 
-Word `.doc` là định dạng cũ; nếu cần chỉnh sửa, mở bằng Word/LibreOffice và lưu thành `.docx`. Đổi phần mở rộng đơn thuần không chuyển định dạng. Bản Word dùng làm đầu vào so sánh phải được xuất thành PDF có lớp văn bản; việc lưu DOCX chỉ là bước chuẩn bị, không mở rộng phạm vi Reader. Ghi phần mềm, phiên bản, thời điểm, tên/hash trước và sau mỗi lần chuyển; review số Điều, thứ tự Khoản/Điểm, bảng, ký tự số và chú thích. PDF nguồn dùng trực tiếp được nếu trích xuất chữ đạt kiểm tra và không vượt giới hạn.
+Word `.doc` là định dạng cũ; nếu cần chỉnh sửa, mở bằng Word/LibreOffice và lưu thành `.docx`. Đổi phần mở rộng đơn thuần không chuyển định dạng. PDF có lớp văn bản được chuyển sang DOCX trước khi so sánh. Chuyển đổi không bảo đảm bố cục và cấu trúc giống DOCX nguồn hoàn toàn; cần kiểm tra chữ, số liệu, dấu phủ định, đơn vị, thứ tự đọc và quan hệ hàng/cột. Sai khác font hoặc cỡ chữ có thể chấp nhận nếu không ảnh hưởng nội dung và cấu trúc phân tích. Ghi phần mềm, phiên bản, thời điểm, tên/hash trước và sau mỗi lần chuyển; review số Điều, thứ tự Khoản/Điểm, bảng, ký tự số và chú thích. Giữ PDF nguồn và liên kết với DOCX chuyển đổi. Việc chuyển PDF trực tiếp khi upload sử dụng cùng bước chuẩn bị cho mỗi file, dù PDF ở phía trước, phía sau hay cả hai phía.
 
 Manifest có thể dùng một dòng cho mỗi tệp; các tệp cùng cặp dùng chung pair_id. Bộ cột tối thiểu đề xuất:
 
 | Nhóm | Cột cần ghi |
 | --- | --- |
-| Liên kết | pair_id, lineage_id, role (`v1`/`v2`/`reference`), format, local_path |
+| Liên kết | pair_id, lineage_id, input_type (`FULL_FULL`/`FULL_AMENDMENT`), role (`v1`/`v2`/`amendment`/`reference`), format, local_path |
 | Nguồn | original_filename, source_page_url, source_file_url, downloaded_at, sha256 |
 | Văn bản | document_number, document_title, issuing_body, document_date, content_state_note |
 | Nguồn gốc dữ liệu | origin (`SOURCE`/`CONVERTED`/`DERIVED_REAL`/`SYNTHETIC`), parent_files, construction_log |
@@ -72,7 +77,7 @@ Tài liệu có thể dài và chứa nhiều phụ lục; số trang không ph�
 
 ### 2.4. Dựng V2 từ V1 và chỉ dẫn sửa đổi
 
-Đây là bước chuẩn bị dữ liệu do người thực hiện, ngoài Pipeline phần mềm.
+Dựng thủ công tạo V2 tham chiếu cho chuẩn bị dữ liệu. Dựng tự động là chức năng đề xuất để xử lý FULL_AMENDMENT trước luồng so sánh; không lấy V2 tự động sinh làm đáp án chuẩn. Đầu vào của bước dựng là V1 đầy đủ và S; đầu ra gồm V2, các thao tác đã áp dụng, bằng chứng từ S và danh sách chỉ dẫn chưa xử lý. Nếu còn chỉ dẫn chưa giải quyết ảnh hưởng phạm vi so sánh, kết quả phải được ghi là chưa hoàn chỉnh và cần review.
 
 1. Chọn V1 đầy đủ phản ánh trạng thái trước đợt sửa đổi; kiểm tra các sửa đổi trước đó và nguồn tương ứng.
 2. Chọn văn bản sửa đổi và mốc áp dụng; tách đúng chỉ dẫn liên quan văn bản mục tiêu khi một văn bản sửa nhiều văn bản.
@@ -83,9 +88,34 @@ Tài liệu có thể dài và chứa nhiều phụ lục; số trang không ph�
 
 Văn bản có thể chứa nhiều mốc hiệu lực hoặc quy định chuyển tiếp. Ngày ban hành/ngày lập bản hợp nhất không đủ để xác nhận toàn bộ nội dung cùng có hiệu lực tại một thời điểm. Ghi `content_state_note` theo những mốc được kiểm tra; hệ thống so sánh nội dung không tự xác minh hiệu lực.
 
+#### 2.4.1. Quy tắc thao tác dựng V2
+
+Các quy tắc dưới đây chuyển chỉ dẫn sửa đổi thành thao tác chuẩn bị dữ liệu. Chúng không phải danh mục mẫu câu bắt buộc duy nhất của pháp luật.
+
+| Chỉ dẫn | Thao tác | Điểm cần kiểm tra |
+| --- | --- | --- |
+| Sửa Điều/Khoản/Điểm và cung cấp toàn bộ nội dung mới | Thay toàn bộ đơn vị được chỉ định bằng nội dung mới | Giữ các đơn vị khác; bỏ ngoặc kép ngoài cùng dùng để trích nội dung thay thế |
+| Bổ sung Điều/Khoản/Điểm | Chèn nội dung theo vị trí và số hiệu được chỉ định | Không tự đánh lại số các phần giữ nguyên |
+| Bổ sung từ/cụm từ | Chèn vào vị trí trong phạm vi được chỉ định | Kiểm tra cụm làm mốc và trường hợp xuất hiện nhiều lần |
+| Thay từ/cụm từ | Thay nội dung cũ bằng nội dung mới trong đúng phạm vi | Không thay toàn file nếu chỉ dẫn có giới hạn hoặc ngoại lệ |
+| Bãi bỏ Điều/Khoản/Điểm | Không giữ nội dung đã bị bãi bỏ như quy định còn áp dụng; giữ số hiệu, ghi trạng thái bãi bỏ và căn cứ trong hồ sơ | Phân biệt xóa nội dung quy định với xóa mất dấu vết cấu trúc; không tự đánh lại số |
+| Thay phụ lục/biểu mẫu | Thay đúng thành phần của văn bản đích | Giữ đầy đủ bản nguồn; gán nhãn theo phạm vi so sánh đã quy định |
+
+Một văn bản sửa nhiều văn bản phải được lọc theo văn bản đích. Số Điều chứa chỉ dẫn trong S khác số Điều đích trong V1; Điều được trích trong nội dung thay thế không trở thành Điều độc lập của S. Nhiều lần sửa đổi cần xác định trạng thái nền, thứ tự và mốc áp dụng. Không tự cập nhật mọi dẫn chiếu, phần căn cứ hoặc ngày hiệu lực gốc nếu không có chỉ dẫn tương ứng. Không suy ra mức mở rộng/thu hẹp của danh mục chỉ từ việc đổi số hiệu văn bản được dẫn.
+
+Chưa tìm được vị trí đích duy nhất, thiếu nội dung mới, chỉ dẫn có ngoại lệ chưa xác định hoặc thiếu nguồn trong chuỗi sửa đổi thì phải review; không đoán để hoàn tất V2.
+
+#### 2.4.2. Căn cứ kỹ thuật và giới hạn mẫu diễn đạt
+
+[Điều 66, 69–70 Nghị định 78/2025/NĐ-CP](https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-dinh-78-2025-nd-cp-quy-dinh-chi-tiet-mot-so-dieu-luat-ban-hanh-van-ban-quy-pham-phap-luat-119250408202647634.htm), đọc cùng các sửa đổi tại Nghị định 187/2025/NĐ-CP, quy định xác định rõ đích sửa; cấu trúc tên văn bản sửa đổi; thứ tự trình bày; cách đánh số phần bổ sung; bảo toàn thứ tự phần không bị tác động; bố cục khi sửa nhiều văn bản. Đây là yêu cầu soạn thảo, không phải một thuật toán dựng V2.
+
+Không mặc định có một mẫu câu duy nhất cho mọi chỉ dẫn, hoặc một lệnh cấm chung dùng từ “sửa” thay cho “sửa đổi”. Không coi mọi câu có “sửa đổi” là thay toàn bộ đơn vị, và không coi dấu ngoặc kép là điều kiện duy nhất để nhận diện nội dung thay thế. Mỗi thao tác được xác định từ toàn bộ chỉ dẫn: văn bản đích, vị trí, nội dung cũ/mới, phạm vi và ngoại lệ. Những cách diễn đạt khác nhau chỉ được xử lý khi các thành phần này đủ rõ.
+
+Bản dựng nghiên cứu được phân biệt với văn bản hợp nhất chính thức. Kỹ thuật trình bày hợp nhất được quy định tại [Nghị định 250/2026/NĐ-CP](https://thuvienphapluat.vn/van-ban/Bo-may-hanh-chinh/Nghi-dinh-250-2026-ND-CP-huong-dan-trinh-bay-van-ban-hop-nhat-713150.aspx); phần bị bãi bỏ có thể được thể hiện bằng số hiệu, trạng thái và chú thích. Không tự gán hiệu lực mới chỉ vì đã dựng hoặc hợp nhất nội dung.
+
 ### 2.5. Tạo cặp giả định phục vụ pilot
 
-Chọn một văn bản đầy đủ đã kiểm tra làm nền, tạo bản sao V1_SYNTHETIC_BASE và V2_SYNTHETIC rồi sửa có kiểm soát tại các Điều đã chọn. Giữ file nguồn riêng; đặt tên/metadata để không nhầm V2 giả định với tài liệu chính thức. Dùng nhật ký nêu từng sửa đổi giả định và review như mục 2.4; đánh dấu cặp là SYNTHETIC và ghi nguồn gốc từng tệp. Xuất cả hai bản thành PDF có lớp văn bản và kiểm tra lại trước khi chạy toàn Pipeline.
+Chọn một văn bản đầy đủ đã kiểm tra làm nền, tạo bản sao V1_SYNTHETIC_BASE và V2_SYNTHETIC rồi sửa có kiểm soát tại các Điều đã chọn. Giữ file nguồn riêng; đặt tên/metadata để không nhầm V2 giả định với tài liệu chính thức. Dùng nhật ký nêu từng sửa đổi giả định và review như mục 2.4; đánh dấu cặp là SYNTHETIC và ghi nguồn gốc từng tệp. Lưu cả hai bản đầy đủ dưới dạng DOCX và kiểm tra lại trước khi chạy toàn Pipeline.
 
 Mỗi ca mục 7 là một cặp/fixture riêng nếu không ghi rõ tổ hợp. Trích đoạn trong hướng dẫn chỉ minh họa; muốn test toàn Pipeline phải áp dụng vào các bản đầy đủ và kiểm tra lại. Hai định dạng của cùng nội dung không tự trở thành cặp có thay đổi. Các cặp cùng văn bản nền/chuỗi sửa đổi phải cùng lineage_id để Evaluation Plan không chia các biến thể gần trùng vào cả dev và test. Không dùng kết quả trên cặp giả định để tuyên bố chất lượng trên sửa đổi pháp luật thực tế.
 
@@ -101,6 +131,8 @@ Mỗi ca mục 7 là một cặp/fixture riêng nếu không ghi rõ tổ hợp.
 | 6 | Chọn category tổng thể và severity theo mục 5 | ScoringResult cùng lý do/cảnh báo |
 | 7 | Kiểm tra quote, nguồn, tính nhất quán; gửi review | Nhãn dự thảo và checklist |
 | 8 | Review, giải quyết bất đồng, cố định phiên bản | Nhãn được chấp nhận hoặc vẫn chưa giải quyết |
+
+Với FULL_AMENDMENT, kiểm tra S, nhật ký thao tác và V2 tham chiếu trước khi gán nhãn. V2 do chức năng tự động dựng phải được đối chiếu với V2 tham chiếu đã review độc lập.
 
 Người gán nhãn phải đọc ngữ cảnh đủ để hiểu điều kiện, ngoại lệ, chủ thể, hành vi và đơn vị tính. Chỉ dẫn sửa đổi hoặc nhật ký giả định giúp tìm vị trí nhưng không thay việc phân tích ý nghĩa. Nhãn chuẩn lập độc lập với dự đoán; ID của gold và prediction không cần giống nhau, matching theo Evaluation Plan.
 
@@ -142,7 +174,7 @@ Một biến đổi chỉ có một nhóm; các biến đổi khác nhau của c
 
 - old_value/new_value mô tả đúng nội dung trước/sau, giữ đủ đơn vị và điều kiện. Quote là nguyên văn trong title/content ở đúng phía, không thay bằng câu diễn giải.
 - interpretation trả lời “đã đổi thế nào”: ví dụ “hạ ngưỡng kích hoạt nghĩa vụ báo cáo từ quá 30 phút xuống quá 15 phút”; không chỉ viết “thời gian thay đổi”. diff_details tổng hợp các khía cạnh.
-- Dùng quote ngắn đủ căn cứ ở cấp aspect và đoạn ngữ cảnh đủ ở cấp change. Dẫn vị trí Điều/Khoản/Điểm phục vụ gán nhãn; source_refs của Clause theo Reader. Không tự tạo tham chiếu trang/vị trí nếu chưa kiểm tra PDF đầu vào thực tế.
+- Dùng quote ngắn đủ căn cứ ở cấp aspect và đoạn ngữ cảnh đủ ở cấp change. Dẫn vị trí Điều/Khoản/Điểm phục vụ gán nhãn; source_refs của Clause theo Reader. Không tự tạo tham chiếu đoạn/bảng/vị trí nếu chưa kiểm tra DOCX thực tế; nếu nguồn là PDF, giữ cả tham chiếu nguồn PDF khi đã xác minh.
 - None do phía không tồn tại khác None do chưa biết. interpretation phải nói rõ; chưa biết phải needs_review và có review_reason. Không tìm thấy không đồng nghĩa không có quy định.
 - Giữ cảnh báo ghép mơ hồ từ Aligner. Nếu một khía cạnh có bằng chứng đổi nghĩa và một khía cạnh khác chưa rõ, có thể true kèm cảnh báo theo SRS; chấm severity chỉ khi đủ căn cứ tổng thể.
 
@@ -152,7 +184,13 @@ Một biến đổi chỉ có một nhóm; các biến đổi khác nhau của c
 
 Phần mở đầu, chữ ký/xác thực và phụ lục nằm ngoài phạm vi so sánh. Chú thích có thể trích lại Điều của văn bản sửa đổi; không coi Điều trong chú thích là Điều mới của thân văn bản. Tách chú thích biên tập khỏi nội dung quy định; giữ nguồn để kiểm tra. Nếu Reader/Parser gộp nhầm hoặc không xác định được ranh giới, ghi lỗi/cảnh báo để xử lý, không dùng nhãn sai làm gold.
 
-Một thay đổi chỉ có trong phụ lục được ghi là ngoài phạm vi, không gán cho Điều dẫn chiếu như nội dung Điều đã đổi. Số trang nguồn PDF tính theo trang vật lý file từ 1, không dùng số in trên trang nếu khác. Word/PDF có thể khác bố cục; source_refs phải phản ánh PDF thực tế được đưa vào hệ thống, không sao chép vị trí từ bản Word hoặc PDF khác.
+Một thay đổi chỉ có trong phụ lục được ghi là ngoài phạm vi, không gán cho Điều dẫn chiếu như nội dung Điều đã đổi. Số trang nguồn PDF tính theo trang vật lý file từ 1, không dùng số in trên trang nếu khác. Word/PDF có thể khác bố cục; source_refs phải phản ánh DOCX thực tế và giữ liên kết nguồn khi chuyển đổi, không sao chép vị trí giữa hai định dạng.
+
+### 4.6. Phần khác biệt và ngữ cảnh giữ nguyên
+
+Text diff xác định vùng thay đổi; phân tích ngữ nghĩa và mức độ phải sử dụng toàn bộ quy định trước/sau liên quan, cùng định nghĩa, điều kiện, ngoại lệ và dẫn chiếu cần thiết trong nguồn có sẵn. Phần giữ nguyên có thể quyết định cách hiểu phần thay đổi. Thiếu ngữ cảnh dẫn chiếu ngoài đầu vào thì ghi giới hạn, không tự suy diễn.
+
+Không chạy text diff thông thường giữa toàn văn V1 và S để kết luận phần bị thêm/xóa: nội dung không được nhắc trong S không có nghĩa đã bị xóa khỏi V1. FULL_AMENDMENT được đưa về cặp V1/V2 sau bước dựng và kiểm tra. Với loại này, lưu riêng bằng chứng chỉ dẫn trong S và bằng chứng nội dung trước/sau trong V1/V2; câu chỉ dẫn không thay thế quote nội dung V2. Nhật ký được lưu trong hồ sơ dữ liệu, không tự thêm trường vào schema API.
 
 ## 5. Tiêu chí chọn nhãn tổng thể và mức độ
 
@@ -192,6 +230,10 @@ Dũng điều phối nguồn, manifest và guideline; Tuấn Anh điều phối 
 - [ ] category theo quy tắc; severity có lý do; null/rỗng/cảnh báo đúng nghĩa.
 - [ ] Định danh và tham chiếu hợp lệ; một ScoringResult cho mỗi change_id.
 - [ ] V2 dựng/giả định có nhật ký và người review; không nhầm nguồn thật.
+- [ ] FULL_AMENDMENT đã kiểm tra đủ chỉ dẫn, đúng văn bản/vị trí đích, chuỗi sửa đổi và mốc áp dụng; chỉ dẫn chưa giải quyết được ghi rõ.
+- [ ] Không sửa nhầm văn bản khác, mất phần giữ nguyên hoặc nhầm số Điều của S với Điều đích.
+- [ ] Ngữ cảnh giữ nguyên, định nghĩa và ngoại lệ cần thiết được sử dụng khi phân tích.
+- [ ] V2 tự động dựng được đối chiếu với V2 tham chiếu đã review độc lập.
 - [ ] Nhãn được kiểm tra độc lập với dự đoán; có phiên bản và giới hạn.
 
 ### 6.2. Xử lý bất đồng
@@ -214,7 +256,7 @@ Chỉ đưa vào bộ đánh giá xác định khi nguồn/cặp được kiểm
 
 Toàn bộ nội dung trước và sau trong mục này là ví dụ tự xây dựng để minh họa cách gán nhãn, không trích từ một văn bản pháp luật cụ thể và không mô tả quy định đang có hiệu lực. Số Điều và chủ thể trong ví dụ chỉ là định danh giả định; vị trí trang phải xác định khi tạo fixture thực tế.
 
-Mỗi ca giả định độc lập, trừ EX-03 cố ý chứa hai khía cạnh trong cùng nghĩa vụ. Chỉ áp dụng đúng sửa đổi đã mô tả; giữ ngữ cảnh ngoài đoạn trích. Với fixture, quote phải khớp chuỗi Clause thực tế sau chuẩn hóa; khi xuất PDF phải xác minh lại source_refs.
+Mỗi ca giả định độc lập, trừ EX-03 cố ý chứa hai khía cạnh trong cùng nghĩa vụ. Chỉ áp dụng đúng sửa đổi đã mô tả; giữ ngữ cảnh ngoài đoạn trích. Với fixture, quote phải khớp chuỗi Clause thực tế sau chuẩn hóa; khi tạo hoặc chuyển DOCX phải xác minh lại source_refs.
 
 ### 7.2. Các ca tham chiếu
 
@@ -297,7 +339,7 @@ ScoringResult tương ứng, vẫn chấm một lần cho toàn bộ thay đổi
 ]
 ```
 
-Hai khối là SemanticDiffResult và list[ScoringResult], không phải ComparisonReport đầy đủ. Khi tạo fixture toàn Pipeline, thêm AlignedPair/Clause, TextDiffResult, metadata hai file và source_refs theo SRS. Vị trí bằng chứng ở cả V1 và V2 phải được kiểm tra sau khi dựng PDF; không gán sẵn số trang từ ví dụ minh họa.
+Hai khối là SemanticDiffResult và list[ScoringResult], không phải ComparisonReport đầy đủ. Khi tạo fixture toàn Pipeline, thêm AlignedPair/Clause, TextDiffResult, metadata hai file và source_refs theo SRS. Vị trí bằng chứng ở cả V1 và V2 phải được kiểm tra sau khi dựng DOCX; không gán sẵn số trang từ ví dụ minh họa.
 
 ### 7.4. Mẫu hồ sơ gán nhãn cho mỗi cặp
 
@@ -311,3 +353,17 @@ Hai khối là SemanticDiffResult và list[ScoringResult], không phải Compari
 | Phiên bản | label_version; guideline_version; trạng thái nhãn; split theo Evaluation Plan |
 
 Metadata quản lý nằm trong hồ sơ/manifest, không thêm vào schema API nếu SRS chưa quy định. Tuấn Anh chốt định dạng gold với Evaluator trong Evaluation Plan; Đức Anh hiện thực schema chung. JSON ở mục 7.3 là mẫu cấu trúc để nhóm bắt đầu fixture tuần 6; bộ ví dụ và tiêu chí pilot được review trước khi dùng làm gold đánh giá cuối.
+
+### 7.5. Ví dụ giả định dựng V2 và giữ ngữ cảnh
+
+V1 có Điều 2 gồm hai khoản: khoản 1 quy định “Tổ chức A phải nộp báo cáo”; khoản 2 quy định “Báo cáo quy định tại khoản 1 được nộp trong 10 ngày”. S chỉ dẫn: “Sửa đổi khoản 1 Điều 2 như sau: ‘1. Tổ chức A và tổ chức B phải nộp báo cáo.’”.
+
+| Nhật ký thao tác | Nội dung |
+| --- | --- |
+| Đích | Khoản 1 Điều 2 của văn bản V1 |
+| Thao tác | Thay toàn bộ khoản 1 bằng nội dung mới |
+| Nội dung giữ nguyên | Tiêu đề Điều 2, khoản 2 và các phần khác |
+| V2 | Điều 2 vẫn có hai khoản; khoản 1 thêm tổ chức B, khoản 2 giữ thời hạn 10 ngày |
+| Review | Đối chiếu chỉ dẫn trong S, nội dung khoản 1 mới và phần được giữ nguyên |
+
+Phân tích chỉ riêng cụm “tổ chức B” không đủ mô tả nghĩa vụ. Đọc cả hai khoản cho thấy tổ chức B được bổ sung vào chủ thể phải nộp báo cáo với thời hạn 10 ngày; thời hạn này không phải thay đổi mới. Bộ ví dụ có thể dùng cùng V1/V2 cho FULL_FULL và V1/S cho FULL_AMENDMENT, với V2 tham chiếu đã review dùng để kiểm tra bước dựng.
