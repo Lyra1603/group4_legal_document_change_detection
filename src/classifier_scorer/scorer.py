@@ -1,4 +1,8 @@
-from src.schemas import AlignedPair, SemanticDiffResult, ScoringResult
+from src.schemas import (
+    LegacyAlignedPair as AlignedPair,
+    LegacySemanticDiffResult as SemanticDiffResult,
+    LegacyScoringResult as ScoringResult,
+)
 
 def classify_and_score(pair: AlignedPair, sem_diff: SemanticDiffResult) -> ScoringResult:
     """

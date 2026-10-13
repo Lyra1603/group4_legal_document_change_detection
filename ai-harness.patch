@@ -1,0 +1,467 @@
+diff --git a/.gitignore b/.gitignore
+index fb394e5..8c646d7 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -2,4 +2,5 @@ __pycache__/
+ *.pyc
+ .env
+ 
+-.vscode/
+\ No newline at end of file
++.vscode/
++.venv/
+diff --git a/AGENTS.md b/AGENTS.md
+new file mode 100644
+index 0000000..eda5a81
+--- /dev/null
++++ b/AGENTS.md
+@@ -0,0 +1,33 @@
++# Hướng dẫn cho AI coding agent
++
++## Bắt đầu
++- Đọc `harness/progress.md`, chạy `python scripts/harness.py status`.
++- Chọn một task trong `harness/tasks.json`; làm một task mỗi lượt.
++- Kiểm tra `git status` trước khi sửa; giữ các thay đổi đang có của người dùng.
++- Đọc đúng mục tài liệu liên quan, không cần đọc toàn bộ docs mỗi lượt.
++
++## Nguồn tham chiếu
++- Nhu cầu và phạm vi: `docs/brd.md`.
++- Hợp đồng dữ liệu, null, cảnh báo và trạng thái: `docs/srs.md`.
++- Ranh giới module và request đồng bộ: `docs/architecture.md`.
++- Công nghệ đề xuất và phân công: `docs/implementation-plan.md`.
++- Dữ liệu, nhãn và tiêu chí pilot: `docs/data-annotation-guide.md`.
++- Cách làm việc và xác minh: `docs/ai-workflow.md`.
++
++## Ràng buộc dự án
++- Hai phiên bản đầy đủ của cùng VBQPPL tiếng Việt; không OCR, hợp đồng hoặc tự dựng V2 trong Pipeline.
++- So sánh cấp Điều, giữ nội dung Khoản/Điểm; ghép mơ hồ/tách/gộp phải cảnh báo.
++- Giữ định danh, bằng chứng, vị trí nguồn và cảnh báo xuyên suốt Pipeline.
++- Không đổi null/lỗi thành danh sách rỗng hoặc kết luận không có thay đổi.
++- SRS sở hữu schema. Nếu docs mâu thuẫn về định dạng đầu vào, nêu điểm cần chốt trước khi hiện thực phần bị ảnh hưởng.
++- Công nghệ trong kế hoạch là đề xuất; ghi rõ dependency mới và lý do khi cần thêm.
++- Không lấy chỉ số từ baseline hiện tại làm bằng chứng đạt F1/Critical Recall mục tiêu.
++
++## Kết thúc task
++- Chạy `python scripts/harness.py check` và kiểm thử hành vi của task.
++- `check` chỉ kiểm tra harness/cú pháp/luồng baseline, không chứng nhận đáp ứng SRS.
++- Chạy `python scripts/harness.py verify TASK_ID` khi có bộ test của task.
++- Giải thích ngắn: sửa gì, dữ liệu vào/ra, lệnh kiểm tra, kết quả và giới hạn.
++- Cập nhật task và `harness/progress.md`; chưa chạy hoặc thất bại thì ghi rõ.
++- Không sửa test/tiêu chí chỉ để biến lỗi thành pass. Có thay đổi tiêu chí phải giải thích căn cứ.
++- Commit/push theo yêu cầu người dùng; không force push hoặc merge main nếu chưa được yêu cầu.
+diff --git a/docs/README.md b/docs/README.md
+index a5376be..c1fa91c 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -11,6 +11,10 @@
+    phân công và tiến độ triển khai.
+ 5. Mã nguồn: baseline hiện tại.
+ 
++**Làm việc với AI:** bắt đầu từ [AGENTS.md](../AGENTS.md) và
++[hướng dẫn harness](ai-workflow.md). Chạy `python scripts/harness.py status`
++để xem task tuần 6 và `python scripts/harness.py check` để kiểm tra baseline.
++
+ ---
+ 
+ ## 1. Minimum Architecture dự kiến
+diff --git a/docs/ai-workflow.md b/docs/ai-workflow.md
+new file mode 100644
+index 0000000..e75fd00
+--- /dev/null
++++ b/docs/ai-workflow.md
+@@ -0,0 +1,77 @@
++# Làm việc với AI bằng harness tối thiểu
++
++Harness ở đây là bộ hướng dẫn, công cụ kiểm tra và thông tin bàn giao để coding agent làm đúng task. Nó hỗ trợ phát triển dự án; không phải mô hình AI phân tích thay đổi pháp lý trong sản phẩm.
++
++## 1. Ba lệnh cần nhớ
++
++Chạy ở thư mục repo (Windows có thể dùng `py` thay `python`):
++
++```bash
++python scripts/harness.py status
++python scripts/harness.py check
++python scripts/harness.py verify W6-SCHEMA
++```
++
++- `status`: xem nhánh, thay đổi hiện có và danh sách task.
++- `check`: kiểm tra cấu trúc task, cú pháp Python và smoke test luồng text baseline.
++- `verify TASK_ID`: chạy bộ behavioral test unittest của task. Thiếu test, zero tests, mọi test bị skip hoặc test thất bại thì không pass.
++- Harness dùng thư viện chuẩn Python; không cần thêm package hay API key.
++- `check` pass không có nghĩa đáp ứng SRS hoặc đạt F1. `verify` pass cũng cần review nội dung test và phạm vi thực sự đã bao phủ.
++- Danh sách test_file là vị trí dự kiến để tạo test, không khẳng định repo đã có bộ kiểm thử mới. Với UI, wrapper Python có thể gọi test runner frontend; lỗi/missing runner phải làm test thất bại, không skip để báo pass.
++
++## 2. Một phiên làm việc
++
++1. AI đọc AGENTS.md, progress.md, chạy status và chọn một task.
++2. Đọc đúng mục SRS/Architecture có liên quan; nói bằng lời dữ liệu vào/ra và những file sẽ sửa.
++3. Hiện thực task; dùng fixture khi phần của thành viên khác chưa xong.
++4. Kiểm tra hành vi: đầu vào mẫu, kết quả mong đợi, lỗi và cảnh báo. Chạy check và verify.
++5. Đưa thay đổi cùng kết quả chạy cho người phụ trách review.
++6. Cập nhật progress.md: đã làm, lệnh đã chạy, kết quả, phần còn mock và bước tiếp theo.
++
++Task có trạng thái todo → in_progress → review → done; blocked dùng khi vướng quyết định/dependency. Mỗi nhánh chỉ có một in_progress. done phải có evidence và reviewer; không viết đã xong khi chỉ có file code. Task W6-SCHEMA nên bắt đầu trước các task tiêu thụ schema; các thành viên vẫn làm song song trên nhánh riêng với fixture đã thống nhất.
++
++Lệnh verify không tự sửa trạng thái. Người phụ trách ghi command, commit hoặc diff thực tế đã kiểm tra, kết quả và giới hạn trong evidence/progress; reviewer kiểm tra trước khi chuyển done. JSON và test vẫn sửa được bởi người có quyền repo: đây là quy trình hỗ trợ, không phải cơ chế chống giả mạo hay đánh giá độc lập.
++
++## 3. Prompt bắt đầu dành cho Đức Anh
++
++> Đọc AGENTS.md và harness/progress.md, chạy python scripts/harness.py status. Làm task W6-SCHEMA theo đúng SRS hiện tại. Trước khi sửa, giải thích bằng ví dụ Điều cũ 30 ngày → mới 15 ngày: dữ liệu cần có những trường nào và các module sẽ dùng chúng ra sao. Tạo schema và fixture; viết test hành vi cho dữ liệu hợp lệ, null/chưa xác định và báo cáo PARTIAL. Chạy check và verify W6-SCHEMA. Báo kết quả thật, phần chưa triển khai và cập nhật bàn giao. Giải thích mỗi thay đổi để tôi hiểu được code.
++
++Với task của người khác, thay TASK_ID và đọc đúng phần tài liệu của module. Không yêu cầu AI “làm toàn bộ hệ thống” trong một lượt.
++
++## 4. Các bài giảng và cách áp dụng
++
++Repo tham khảo: [WalkingLabs — Learn Harness Engineering](https://github.com/walkinglabs/learn-harness-engineering/tree/main/docs/vi/lectures). Nội dung dưới đây là diễn giải phục vụ dự án, không chép nguyên bộ bài giảng.
++
++| Bài | Ý chính | Áp dụng ở repo này |
++| --- | --- | --- |
++| [01](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-01-why-capable-agents-still-fail/index.md) | Mô hình mạnh vẫn có thể thực thi sai | Quan sát lỗi trước khi đổi mô hình. |
++| [02](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-02-what-a-harness-actually-is/index.md) | Hướng dẫn, công cụ, môi trường, trạng thái, phản hồi | AGENTS + script + Python + progress + tests. |
++| [03](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-03-why-the-repository-must-become-the-system-of-record/index.md) | Thông tin cần thiết phải có trong repo | SRS/Architecture và bàn giao có thể đọc lại. |
++| [04](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-04-why-one-giant-instruction-file-fails/index.md) | Tệp hướng dẫn ngắn, dẫn đến tài liệu đúng | AGENTS làm bản đồ, không nhét toàn bộ SRS. |
++| [05](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-05-why-long-running-tasks-lose-continuity/index.md) | Giữ liên tục giữa các phiên | progress ghi task, kiểm tra và bước sau. |
++| [06](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-06-why-initialization-needs-its-own-phase/index.md) | Khởi tạo và kiểm tra môi trường trước khi code | status/check phát hiện code baseline và phần còn thiếu. |
++| [07](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-07-why-agents-overreach-and-under-finish/index.md) | Giới hạn một task có đầu ra rõ | Một in_progress mỗi nhánh. |
++| [08](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-08-why-feature-lists-are-harness-primitives/index.md) | Task có hành vi, xác minh và trạng thái | tasks.json có acceptance và test_file. |
++| [09](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-09-why-agents-declare-victory-too-early/index.md) | Đòi bằng chứng trước khi tuyên bố hoàn thành | Không pass khi test chưa có; review trước done. |
++| [10](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-10-why-end-to-end-testing-changes-results/index.md) | Kiểm tra xuyên ranh giới module | Task upload/UI cần test tích hợp ngoài unit test. |
++| [11](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-11-why-observability-belongs-inside-the-harness/index.md) | Quan sát lỗi và runtime | Lệnh trả lỗi rõ; ghi số test và giới hạn. |
++| [12](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-12-why-every-session-must-leave-a-clean-state/index.md) | Bàn giao cuối phiên và trạng thái tái lập | Để lại lệnh chạy và vấn đề, không xóa thay đổi người dùng. |
++| [13](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-13-loop-engineering/index.md) | Vòng lặp có mục tiêu và điều kiện dừng | Để sau khi kiểm tra/task đã ổn định. |
++| [14](https://github.com/walkinglabs/learn-harness-engineering/blob/main/docs/vi/lectures/lecture-14-graph-engineering/index.md) | Định tuyến công việc và phụ thuộc | depends_on mô tả các task cần schema; chưa cần framework đồ thị. |
++
++Đọc trước **02 → 04 → 07 → 08 → 09**, sau đó 05/06/10/12 khi bắt đầu code. Bài 13/14 dành cho giai đoạn đã có task và kiểm chứng ổn định; hiện không triển khai vòng lặp tự động hoặc multi-agent.
++
++## 5. Hiểu tác dụng bằng ví dụ
++
++Không có harness: “Làm backend” → AI dễ đổi schema, bổ sung nhiều công nghệ, rồi báo xong dù UI chưa dùng được.
++
++Với harness: W6-SCHEMA → đọc mục dữ liệu SRS → tạo một báo cáo mẫu → chạy test null/PARTIAL → người phụ trách review → bàn giao để UI/API sử dụng. Bạn có thể mở fixture và thấy cụ thể vì sao mỗi trường tồn tại.
++
++## 6. Giới hạn và việc tiếp theo
++
++- Đây là starter harness cho code baseline; chưa có CI enforcement, môi trường frontend hay bộ test nghiệm thu pháp lý.
++- Khi schema/Pipeline chuyển sang SRS mới, thay smoke baseline bằng smoke của hợp đồng mới cùng task tích hợp, không giữ assertion cho output cũ.
++- docs chưa thống nhất PDF-only hay DOCX/PDF. Chốt trước task Reader/API thật.
++- Không đưa khóa API/nội dung tài liệu đầy đủ vào ghi chú bàn giao hoặc log.
++- Benchmark chất lượng legal diff dùng dữ liệu/nhãn và Evaluator riêng. Harness kiểm tra coding không thay thế Evaluation Plan.
++- Mỗi thay đổi nên được người phụ trách giải thích và chạy lại; AI hỗ trợ để nhóm hiểu và kiểm soát triển khai.
+diff --git a/harness/progress.md b/harness/progress.md
+new file mode 100644
+index 0000000..2344f0b
+--- /dev/null
++++ b/harness/progress.md
+@@ -0,0 +1,27 @@
++# Bàn giao phiên làm việc
++
++## Trạng thái khởi tạo
++- Base: nhánh `ducanh/docs`, commit `89d4712`.
++- Có 6 docs và 3 cặp DOCX mẫu; code vẫn là baseline.
++- Harness này hỗ trợ lập trình với AI; không thay thế Semantic Diff trong sản phẩm.
++- Chưa có task tuần 6 nào được xác nhận hoàn thành bởi harness.
++
++## Vấn đề đã biết
++- SRS/BRD hỗ trợ DOCX và PDF text; Annotation Guide mục 2.2 lại ghi chỉ PDF. Cần nhóm chốt trước task Reader/API thật.
++- Schema code chưa theo SRS mới có ChangeAspect/DocumentIdentity.
++- API baseline nhận hai chuỗi text; chưa có upload, Reader, Text Diff riêng hoặc UI.
++- Evaluator baseline chưa đủ để nghiệm thu chất lượng; smoke test không đo metric.
++- Scorer baseline có nhánh DELETED trả HIGH nhưng is_critical=true; cần xử lý trong task Scorer.
++
++## Task nên bắt đầu
++- W6-SCHEMA: tạo schema theo SRS và fixture báo cáo giả định để các thành viên phát triển song song.
++
++## Mẫu cập nhật sau mỗi phiên
++- Task và commit/diff được kiểm tra:
++- Hành vi đã thực hiện:
++- Lệnh kiểm tra và kết quả:
++- Phần còn mock/chưa xử lý:
++- Vấn đề đang chặn:
++- Bước tiếp theo:
++
++Giữ ghi chú ngắn, phản ánh code thực tế; không ghi dữ liệu đầu vào đầy đủ hoặc bí mật.
+diff --git a/harness/tasks.json b/harness/tasks.json
+new file mode 100644
+index 0000000..bf72d2c
+--- /dev/null
++++ b/harness/tasks.json
+@@ -0,0 +1,114 @@
++{
++  "version": 1,
++  "note": "Task tuần 6 để hỗ trợ coding agent; không thay thế SRS hoặc bảng phân công nhóm. Test files là đầu ra cần tạo, hiện chưa tồn tại.",
++  "tasks": [
++    {
++      "id": "W6-SCHEMA",
++      "owner": "Đức Anh",
++      "title": "Schema và fixture theo SRS",
++      "depends_on": [],
++      "acceptance": [
++        "Schema có ChangeAspect, DocumentIdentity và ComparisonReport theo SRS.",
++        "Fixture có SUCCESS, PARTIAL và chưa xác định; null khác danh sách rỗng."
++      ],
++      "test_file": "tests/test_schema_contract.py",
++      "status": "todo",
++      "evidence": [],
++      "reviewer": null
++    },
++    {
++      "id": "W6-UPLOAD",
++      "owner": "Đức Anh",
++      "title": "Upload đồng bộ và báo cáo mock",
++      "depends_on": [
++        "W6-SCHEMA"
++      ],
++      "acceptance": [
++        "POST /api/compare nhận hai file doc_v1/doc_v2 theo định dạng nhóm chốt.",
++        "Thiếu/sai file có lỗi rõ; report mock giữ nhận diện hai file và cảnh báo."
++      ],
++      "test_file": "tests/test_upload_contract.py",
++      "status": "todo",
++      "evidence": [],
++      "reviewer": null
++    },
++    {
++      "id": "W6-READER",
++      "owner": "Thọ",
++      "title": "Reader và Parser trên file thật",
++      "depends_on": [
++        "W6-SCHEMA"
++      ],
++      "acceptance": [
++        "Trích xuất và tách Điều, giữ vị trí nguồn và Khoản/Điểm.",
++        "Không nhầm dẫn chiếu thành đầu Điều; không đọc được hoặc không có Điều phải báo lỗi."
++      ],
++      "test_file": "tests/test_reader_parser.py",
++      "status": "todo",
++      "evidence": [],
++      "reviewer": null
++    },
++    {
++      "id": "W6-DIFF",
++      "owner": "Ngọc Anh",
++      "title": "Text Diff với vị trí đúng",
++      "depends_on": [
++        "W6-SCHEMA"
++      ],
++      "acceptance": [
++        "INSERT/DELETE/REPLACE có offset khớp chuỗi Clause.",
++        "Có ca không đổi, thêm/xóa và thay số; không dùng text diff tự kết luận đổi nghĩa."
++      ],
++      "test_file": "tests/test_text_diff.py",
++      "status": "todo",
++      "evidence": [],
++      "reviewer": null
++    },
++    {
++      "id": "W6-UI",
++      "owner": "Tuấn Anh",
++      "title": "Giao diện upload và báo cáo mock",
++      "depends_on": [
++        "W6-UPLOAD"
++      ],
++      "acceptance": [
++        "Hiển thị cũ/mới, bằng chứng, mức chưa xác định, PARTIAL và cảnh báo.",
++        "Không gửi lặp khi chờ; có kiểm tra tích hợp từ form đến báo cáo."
++      ],
++      "test_file": "tests/test_ui_integration.py",
++      "status": "todo",
++      "evidence": [],
++      "reviewer": null
++    },
++    {
++      "id": "W6-DATA",
++      "owner": "Dũng",
++      "title": "Manifest và một cặp nhãn pilot",
++      "depends_on": [],
++      "acceptance": [
++        "Nguồn và quá trình dựng V2 được ghi nhận, không gọi bản dựng là bản chính thức.",
++        "Một cặp có nhãn và review chéo, guideline_version và limitations."
++      ],
++      "test_file": "tests/test_data_manifest.py",
++      "status": "todo",
++      "evidence": [],
++      "reviewer": null
++    },
++    {
++      "id": "W6-EVAL",
++      "owner": "Tuấn Anh",
++      "title": "Evaluator với đáp án tính tay",
++      "depends_on": [
++        "W6-SCHEMA"
++      ],
++      "acceptance": [
++        "Ca tính tay bao gồm TP/FP/FN và critical bị bỏ sót.",
++        "Không đếm aspect thành thay đổi riêng; mẫu số 0 trả null và lý do."
++      ],
++      "test_file": "tests/test_evaluator_contract.py",
++      "status": "todo",
++      "evidence": [],
++      "reviewer": null
++    }
++  ]
++}
+diff --git a/scripts/harness.py b/scripts/harness.py
+new file mode 100644
+index 0000000..aee9145
+--- /dev/null
++++ b/scripts/harness.py
+@@ -0,0 +1,111 @@
++"""Small, dependency-free coding harness. Run from any directory."""
++import argparse
++import ast
++import json
++import subprocess
++import sys
++import unittest
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++TASKS = ROOT / "harness/tasks.json"
++
++
++def load_tasks():
++    data = json.loads(TASKS.read_text(encoding="utf-8"))
++    tasks = data["tasks"]
++    ids = [t["id"] for t in tasks]
++    if len(set(ids)) != len(ids):
++        raise ValueError("Duplicate task IDs")
++    known = set(ids)
++    for task in tasks:
++        if task["status"] not in {"todo", "in_progress", "blocked", "review", "done"}:
++            raise ValueError(f"Invalid status: {task['id']}")
++        if not task["acceptance"] or not task["test_file"]:
++            raise ValueError(f"Missing acceptance/test_file: {task['id']}")
++        if not set(task["depends_on"]).issubset(known):
++            raise ValueError(f"Unknown dependency: {task['id']}")
++        path = (ROOT / task["test_file"]).resolve()
++        if not path.is_relative_to(ROOT / "tests") or path.suffix != ".py":
++            raise ValueError(f"Test must be a Python file under tests/: {task['id']}")
++        if task["status"] == "done" and not task.get("evidence"):
++            raise ValueError(f"done requires evidence and reviewer: {task['id']}")
++        if task["status"] == "done" and not task.get("reviewer"):
++            raise ValueError(f"done requires reviewer: {task['id']}")
++    if sum(t["status"] == "in_progress" for t in tasks) > 1:
++        raise ValueError("This branch supports one in_progress task at a time")
++    return tasks
++
++
++def status(tasks):
++    result = subprocess.run(["git", "status", "--short", "--branch"], cwd=ROOT)
++    if result.returncode:
++        raise RuntimeError("Cannot read git state")
++    for task in tasks:
++        print(f"{task['id']}: {task['status']} | {task['owner']} | {task['title']}")
++
++
++def check(tasks):
++    files = sorted((ROOT / "src").rglob("*.py"))
++    files += sorted((ROOT / "backend").rglob("*.py"))
++    files += sorted((ROOT / "scripts").rglob("*.py"))
++    for path in files:
++        ast.parse(path.read_text(encoding="utf-8-sig"), filename=str(path))
++    print(f"PASS: harness manifest and syntax ({len(files)} Python files)")
++    sys.path.insert(0, str(ROOT))
++    from src.pipeline import run_pipeline
++    old = "Điều 1. Thời hạn nộp hồ sơ\nTổ chức phải nộp hồ sơ trong 30 ngày."
++    new = "Điều 1. Thời hạn nộp hồ sơ\nTổ chức phải nộp hồ sơ trong 15 ngày."
++    report = run_pipeline(old, new)
++    if not isinstance(report, list) or len(report) != 1:
++        raise RuntimeError("Baseline smoke: expected one aligned pair")
++    pair = report[0]
++    if pair["align_type"] != "PAIRED" or not pair["semantic_diff"]["is_meaningful_change"]:
++        raise RuntimeError("Baseline smoke: deadline change was not detected")
++    print("PASS: existing text baseline smoke (synthetic deadline example)")
++    print("NOT VERIFIED: upload, new SRS schema, UI or legal accuracy metrics.")
++    print("When Pipeline changes, update this smoke to the reviewed new contract.")
++
++
++def verify(tasks, task_id):
++    matches = [t for t in tasks if t["id"] == task_id]
++    if not matches:
++        raise ValueError(f"Unknown task: {task_id}")
++    task = matches[0]
++    path = ROOT / task["test_file"]
++    if not path.is_file():
++        raise RuntimeError(f"BLOCKED: missing {task['test_file']}; write behavioral tests before claiming completion")
++    sys.path.insert(0, str(ROOT))
++    suite = unittest.defaultTestLoader.discover(str(path.parent), pattern=path.name)
++    if suite.countTestCases() == 0:
++        raise RuntimeError("BLOCKED: test discovery found zero tests")
++    result = unittest.TextTestRunner(verbosity=2).run(suite)
++    if not result.wasSuccessful() or result.testsRun == len(result.skipped):
++        raise RuntimeError("Verification failed or every test was skipped")
++    print(f"PASS: {task_id} behavioral tests; human review still required.")
++    print("Record command, commit/diff, test count and limitations in progress.md.")
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("action", choices=["status", "check", "verify"])
++    parser.add_argument("task_id", nargs="?")
++    args = parser.parse_args()
++    try:
++        tasks = load_tasks()
++        if args.action == "status":
++            status(tasks)
++        elif args.action == "check":
++            check(tasks)
++        elif not args.task_id:
++            parser.error("verify requires TASK_ID")
++        else:
++            verify(tasks, args.task_id)
++    except (ValueError, KeyError, OSError, RuntimeError, ImportError, SyntaxError) as exc:
++        print(f"FAIL: {exc}", file=sys.stderr)
++        return 1
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/tests/test_harness.py b/tests/test_harness.py
+new file mode 100644
+index 0000000..6b73069
+--- /dev/null
++++ b/tests/test_harness.py
+@@ -0,0 +1,42 @@
++"""Verify completion gates, independently of the legal-diff implementation."""
++import importlib.util
++import json
++import tempfile
++import unittest
++from pathlib import Path
++from unittest.mock import patch
++
++spec = importlib.util.spec_from_file_location("coding_harness", Path(__file__).resolve().parents[1] / "scripts/harness.py")
++harness = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(harness)
++
++
++class HarnessGates(unittest.TestCase):
++    def test_missing_task_tests_cannot_pass(self):
++        with tempfile.TemporaryDirectory() as folder:
++            with patch.object(harness, "ROOT", Path(folder)):
++                with self.assertRaisesRegex(RuntimeError, "BLOCKED"):
++                    harness.verify([{"id": "EXAMPLE", "test_file": "tests/missing.py"}], "EXAMPLE")
++
++    def test_zero_tests_cannot_pass(self):
++        with tempfile.TemporaryDirectory() as folder:
++            root = Path(folder)
++            (root / "tests").mkdir()
++            (root / "tests/test_zero_gate.py").write_text("# No tests\n")
++            with patch.object(harness, "ROOT", root):
++                with self.assertRaisesRegex(RuntimeError, "zero tests"):
++                    harness.verify([{"id": "EXAMPLE", "test_file": "tests/test_zero_gate.py"}], "EXAMPLE")
++
++    def test_done_without_review_is_rejected(self):
++        data = json.loads(harness.TASKS.read_text(encoding="utf-8"))
++        data["tasks"][0].update(status="done", evidence=["test ran"], reviewer=None)
++        with tempfile.TemporaryDirectory() as folder:
++            path = Path(folder) / "tasks.json"
++            path.write_text(json.dumps(data), encoding="utf-8")
++            with patch.object(harness, "TASKS", path):
++                with self.assertRaisesRegex(ValueError, "reviewer"):
++                    harness.load_tasks()
++
++
++if __name__ == "__main__":
++    unittest.main()

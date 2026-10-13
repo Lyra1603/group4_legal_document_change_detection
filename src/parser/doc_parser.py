@@ -1,6 +1,6 @@
 import re
 from typing import List
-from src.schemas import Clause
+from src.schemas import LegacyClause as Clause
 
 def parse_clauses(text: str) -> List[Clause]:
     """

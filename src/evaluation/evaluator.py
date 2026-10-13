@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from src.schemas import AlignedPair
+from src.schemas import LegacyAlignedPair as AlignedPair
 
 def evaluate_predictions(predictions: List[AlignedPair], ground_truth: Dict[str, Dict[str, bool]]) -> Dict[str, Any]:
     """

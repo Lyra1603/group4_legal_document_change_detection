@@ -12,8 +12,13 @@
         "Fixture có SUCCESS, PARTIAL và chưa xác định; null khác danh sách rỗng."
       ],
       "test_file": "tests/test_schema_contract.py",
-      "status": "todo",
-      "evidence": [],
+      "status": "review",
+      "evidence": [
+        "harness verify W6-SCHEMA: 48 tests OK",
+        "harness check: baseline smoke PASS (9 Python files + deadline 30→15)",
+        "Dataclass schema in src/schemas.py; legacy TypedDict aliases for baseline compat",
+        "Fixtures in tests/fixtures.py: SUCCESS, PARTIAL, undetermined, ADDED, DELETED"
+      ],
       "reviewer": null
     },
     {

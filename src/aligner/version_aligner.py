@@ -1,6 +1,6 @@
 from difflib import SequenceMatcher
 from typing import List
-from src.schemas import Clause, AlignedPair
+from src.schemas import LegacyClause as Clause, LegacyAlignedPair as AlignedPair
 
 def align_versions(clauses_v1: List[Clause], clauses_v2: List[Clause], threshold: float = 0.45) -> List[AlignedPair]:
     """
