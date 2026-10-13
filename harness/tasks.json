@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "note": "Task tuần 6 để hỗ trợ coding agent; không thay thế SRS hoặc bảng phân công nhóm. Test files là đầu ra cần tạo, hiện chưa tồn tại.",
+  "tasks": [
+    {
+      "id": "W6-SCHEMA",
+      "owner": "Đức Anh",
+      "title": "Schema và fixture theo SRS",
+      "depends_on": [],
+      "acceptance": [
+        "Schema có ChangeAspect, DocumentIdentity và ComparisonReport theo SRS.",
+        "Fixture có SUCCESS, PARTIAL và chưa xác định; null khác danh sách rỗng."
+      ],
+      "test_file": "tests/test_schema_contract.py",
+      "status": "todo",
+      "evidence": [],
+      "reviewer": null
+    },
+    {
+      "id": "W6-UPLOAD",
+      "owner": "Đức Anh",
+      "title": "Upload đồng bộ và báo cáo mock",
+      "depends_on": [
+        "W6-SCHEMA"
+      ],
+      "acceptance": [
+        "POST /api/compare nhận hai file doc_v1/doc_v2 theo định dạng nhóm chốt.",
+        "Thiếu/sai file có lỗi rõ; report mock giữ nhận diện hai file và cảnh báo."
+      ],
+      "test_file": "tests/test_upload_contract.py",
+      "status": "todo",
+      "evidence": [],
+      "reviewer": null
+    },
+    {
+      "id": "W6-READER",
+      "owner": "Thọ",
+      "title": "Reader và Parser trên file thật",
+      "depends_on": [
+        "W6-SCHEMA"
+      ],
+      "acceptance": [
+        "Trích xuất và tách Điều, giữ vị trí nguồn và Khoản/Điểm.",
+        "Không nhầm dẫn chiếu thành đầu Điều; không đọc được hoặc không có Điều phải báo lỗi."
+      ],
+      "test_file": "tests/test_reader_parser.py",
+      "status": "todo",
+      "evidence": [],
+      "reviewer": null
+    },
+    {
+      "id": "W6-DIFF",
+      "owner": "Ngọc Anh",
+      "title": "Text Diff với vị trí đúng",
+      "depends_on": [
+        "W6-SCHEMA"
+      ],
+      "acceptance": [
+        "INSERT/DELETE/REPLACE có offset khớp chuỗi Clause.",
+        "Có ca không đổi, thêm/xóa và thay số; không dùng text diff tự kết luận đổi nghĩa."
+      ],
+      "test_file": "tests/test_text_diff.py",
+      "status": "todo",
+      "evidence": [],
+      "reviewer": null
+    },
+    {
+      "id": "W6-UI",
+      "owner": "Tuấn Anh",
+      "title": "Giao diện upload và báo cáo mock",
+      "depends_on": [
+        "W6-UPLOAD"
+      ],
+      "acceptance": [
+        "Hiển thị cũ/mới, bằng chứng, mức chưa xác định, PARTIAL và cảnh báo.",
+        "Không gửi lặp khi chờ; có kiểm tra tích hợp từ form đến báo cáo."
+      ],
+      "test_file": "tests/test_ui_integration.py",
+      "status": "todo",
+      "evidence": [],
+      "reviewer": null
+    },
+    {
+      "id": "W6-DATA",
+      "owner": "Dũng",
+      "title": "Manifest và một cặp nhãn pilot",
+      "depends_on": [],
+      "acceptance": [
+        "Nguồn và quá trình dựng V2 được ghi nhận, không gọi bản dựng là bản chính thức.",
+        "Một cặp có nhãn và review chéo, guideline_version và limitations."
+      ],
+      "test_file": "tests/test_data_manifest.py",
+      "status": "todo",
+      "evidence": [],
+      "reviewer": null
+    },
+    {
+      "id": "W6-EVAL",
+      "owner": "Tuấn Anh",
+      "title": "Evaluator với đáp án tính tay",
+      "depends_on": [
+        "W6-SCHEMA"
+      ],
+      "acceptance": [
+        "Ca tính tay bao gồm TP/FP/FN và critical bị bỏ sót.",
+        "Không đếm aspect thành thay đổi riêng; mẫu số 0 trả null và lý do."
+      ],
+      "test_file": "tests/test_evaluator_contract.py",
+      "status": "todo",
+      "evidence": [],
+      "reviewer": null
+    }
+  ]
+}

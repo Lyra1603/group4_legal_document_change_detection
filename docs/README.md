@@ -11,6 +11,10 @@
    phân công và tiến độ triển khai.
 5. Mã nguồn: baseline hiện tại.
 
+**Làm việc với AI:** bắt đầu từ [AGENTS.md](../AGENTS.md) và
+[hướng dẫn harness](ai-workflow.md). Chạy `python scripts/harness.py status`
+để xem task tuần 6 và `python scripts/harness.py check` để kiểm tra baseline.
+
 ---
 
 ## 1. Minimum Architecture dự kiến
