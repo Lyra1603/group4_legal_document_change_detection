@@ -38,9 +38,17 @@ def load_tasks():
 
 
 def status(tasks):
-    result = subprocess.run(["git", "status", "--short", "--branch"], cwd=ROOT)
+    result = subprocess.run(
+        ["git", "status", "--short", "--branch"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
     if result.returncode:
-        raise RuntimeError("Cannot read git state")
+        raise RuntimeError(f"Cannot read git state: {result.stderr.strip()}")
+    print(result.stdout, end="")
     for task in tasks:
         print(f"{task['id']}: {task['status']} | {task['owner']} | {task['title']}")
 
@@ -87,6 +95,9 @@ def verify(tasks, task_id):
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["status", "check", "verify"])
     parser.add_argument("task_id", nargs="?")
