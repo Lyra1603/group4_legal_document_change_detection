@@ -1,9 +1,8 @@
 # SOFTWARE ARCHITECTURE
 
 **Project:** Project 7 — Legal Document Change Detection
-**Document Version:** 1.2.0
-**Last Updated:** 10/10/2026
-**Status:** Bản đề xuất đồng bộ với SRS 1.2.0, chờ nhóm xác nhận
+**Document Version:** 1.3.0
+**Last Updated:** 14/10/2026
 **Author:** Bạch Công Dũng
 **Project Leader:** Dương Đức Anh
 **Related Document:** [Software Requirements Specification](srs.md)
@@ -13,7 +12,7 @@ trách nhiệm module và các lựa chọn triển khai của hệ thống.
 
 Phạm vi, yêu cầu chức năng, tiêu chí nghiệm thu và hợp đồng dữ liệu
 chi tiết được quy định trong SRS. Architecture sử dụng cùng tên
-module và cấu trúc dữ liệu với SRS 1.2.0; SRS là nguồn định nghĩa
+module và cấu trúc dữ liệu với SRS 1.3.0; SRS là nguồn định nghĩa
 chi tiết cho hợp đồng, Architecture mô tả trách nhiệm và cách sử dụng.
 
 Bản đầu sử dụng request đồng bộ. API AI bên ngoài và RAG
@@ -25,10 +24,10 @@ xác nhận nhu cầu và phương án triển khai.
 ## 1. VẤN ĐỀ VÀ MỤC TIÊU DỰ ÁN (PROBLEM & OBJECTIVES)
 
 ### 1.1. Thực trạng & Vấn đề (Problem Statement)
-Khi cần đối chiếu hai phiên bản đầy đủ của cùng một văn bản quy phạm pháp luật tiếng Việt, người đọc phải rà soát các Điều để xác định nội dung được thêm, xóa hoặc sửa. Quá trình này tốn nhiều thời gian và rất dễ bỏ sót các thay đổi quan trọng (ví dụ: thay đổi thời hạn thanh toán từ 30 ngày thành 15 ngày, hoặc tăng mức phạt vi phạm, thay đổi ngữ nghĩa các cụm từ(tối thiểu,tối đa,....) ).
+Khi nhận văn bản sửa đổi (S), người đọc phải xác định từng yêu cầu sửa đổi, bổ sung hoặc bãi bỏ và liên kết với đúng nội dung của văn bản ban đầu (V1). Việc giải thích thay đổi cần thông tin tổng quát, ngữ cảnh liên quan và tài liệu được dẫn chiếu khi cần. Quá trình này tốn nhiều thời gian và rất dễ bỏ sót các thay đổi quan trọng (ví dụ: thay đổi thời hạn thanh toán từ 30 ngày thành 15 ngày, hoặc tăng mức phạt vi phạm, thay đổi ngữ nghĩa các cụm từ(tối thiểu,tối đa,....) ).
 
 ### 1.2. Mục tiêu hệ thống (Project Objectives)
-* Tự động phát hiện các điều khoản bị thay đổi giữa hai phiên bản văn bản.
+* Trích yêu cầu sửa đổi trong S và xác định nội dung bị tác động trong V1, đến Điều/Khoản/Điểm hoặc cụm từ được chỉ định.
 * Phân biệt **thay đổi văn phong/diễn đạt** và **thay đổi ngữ nghĩa pháp lý** khi có đủ căn cứ; thể hiện rõ kết quả chưa xác định và nhu cầu kiểm tra.
 * Tự động đánh giá mức độ quan trọng và gán nhãn rủi ro cho các biến đổi pháp lý.
 
@@ -43,35 +42,27 @@ Khi cần đối chiếu hai phiên bản đầy đủ của cùng một văn b�
 
 ### 2.1. Trong phạm vi
 
-- So sánh hai phiên bản đầy đủ của cùng một VBQPPL Việt Nam
-  bằng tiếng Việt, được người dùng xác định rõ là bản cũ V1
-  và bản mới V2.
-- Định dạng đầu vào: DOCX và PDF có lớp chữ.
-- Bản đầu tiên tách, căn chỉnh và so sánh ở cấp Điều.
-  Nội dung Khoản/Điểm được giữ bên trong từng Điều.
-- Hỗ trợ ghép một Điều với một Điều; nhận diện Điều thêm mới,
-  bị xóa và được đánh lại số.
-- Trường hợp ghép mơ hồ hoặc nghi ngờ tách/gộp Điều phải
-  được đánh dấu cần kiểm tra.
-- Phát hiện thay đổi chữ, phân tích thay đổi nghĩa, phân loại
-  và đánh giá mức tác động theo bộ tiêu chí nhóm thống nhất.
-- Kết quả phải giữ được bằng chứng và vị trí nguồn.
+- Hai tài liệu chính: văn bản ban đầu V1 và văn bản sửa đổi S có nội dung tác động đến V1; S không phải bản đầy đủ sau sửa đổi V2.
+- DOCX là định dạng chính; hỗ trợ PDF có lớp chữ. Tài liệu tham chiếu do người dùng cung cấp ngay từ đầu hoặc bổ sung theo yêu cầu.
+- Reader đọc từng tài liệu; Parser nhận diện Điều, giữ cấu trúc Khoản/Điểm và nội dung bảng cùng vị trí nguồn.
+- Trích từng yêu cầu sửa đổi, bổ sung, bãi bỏ trong S; phân biệt văn bản đích và liên kết đến đúng Điều/Khoản/Điểm hoặc cụm từ của V1. S có thể sửa nhiều văn bản; chỉ phân tích tác động đến V1 được chọn và ghi rõ phần thuộc văn bản khác.
+- Phân tích phần thay đổi với thông tin tổng quát của V1 và ngữ cảnh liên quan như định nghĩa, điều kiện, ngoại lệ; không bắt buộc phân tích từng đoạn không thay đổi hoặc dựng toàn bộ V2.
+- Text Diff đối chiếu nội dung trước/sau cục bộ khi đủ căn cứ; Semantic Diff phân tích nghĩa, Classifier & Scorer phân loại và đánh giá mức tác động theo tiêu chí chung.
+- Trích thông tin hiệu lực và chuyển tiếp trong S, giữ phạm vi áp dụng, ngoại lệ và bằng chứng; không tự xác minh hiệu lực thực tế.
+- Nhận diện nội dung dẫn chiếu cần thiết; thông báo tài liệu còn thiếu. Người dùng có thể bổ sung để phân tích lại; nếu thiếu thì giữ kết quả đã xác định và giới hạn nhận định bị ảnh hưởng.
+- Kết quả giữ bằng chứng và vị trí nguồn trong đúng V1, S hoặc tài liệu tham chiếu.
 
 ### 2.2. Ngoài phạm vi của bản đầu
 
 - OCR và PDF scan dạng ảnh.
-- Dựng phiên bản mới từ văn bản chỉ liệt kê nội dung sửa đổi.
-- Tự động tổng hợp nhiều văn bản sửa đổi thành một phiên bản đầy đủ.
-- Tự động giải quyết căn chỉnh một-nhiều hoặc nhiều-một.
-- So sánh phần nằm ngoài các Điều, như lời mở đầu, chữ ký
-  và phụ lục.
-- Tư vấn pháp lý tự động, hợp đồng và văn bản ngoài phạm vi
-  VBQPPL tiếng Việt đã chọn.
+- Tạo bản V2 đầy đủ hoặc tự động tổng hợp nhiều văn bản sửa đổi thành bản hợp nhất.
+- Tự động giải quyết đầy đủ mọi chỉ dẫn tách/gộp hoặc yêu cầu có vị trí đích chưa xác định được.
+- So sánh toàn diện phần mở đầu, chữ ký và phụ lục. Nội dung đọc được ở các phần này, bao gồm bảng được dẫn chiếu, vẫn có thể làm ngữ cảnh hoặc bằng chứng.
+- Tự thu thập, cập nhật hoặc duy trì kho văn bản pháp luật dùng chung; tự xác minh tính chính thức và hiệu lực pháp lý thực tế.
+- Tư vấn pháp lý tự động, hợp đồng và văn bản ngoài phạm vi VBQPPL tiếng Việt đã chọn.
 
-Reader vẫn trích xuất toàn bộ nội dung có thể đọc được, bao gồm
-bảng. Parser xác định phần thuộc các Điều để đưa vào so sánh.
-Báo cáo phải nêu rõ phần ngoài phạm vi; kết luận “Không có thay đổi”
-chỉ áp dụng cho các Điều đã xử lý.
+Reader giữ toàn bộ nội dung có thể đọc được, bao gồm bảng và phần ngoài Điều, để phục vụ truy nguồn và lấy ngữ cảnh. Không diff toàn bộ V1 với S và không xem phần V1 không được nhắc đến là bị xóa. Báo cáo chỉ rõ phạm vi đã xử lý và phần còn thiếu.
+
 ---
 
 ## 3. SƠ ĐỒ KIẾN TRÚC TỔNG THỂ (SYSTEM ARCHITECTURE)
@@ -80,8 +71,8 @@ chỉ áp dụng cho các Điều đã xử lý.
 
 ```mermaid
 flowchart TD
-    UI["Giao diện"] -->|"Gửi hai file"| API["Backend API"]
-    API -->|"Yêu cầu so sánh"| PIPE["Pipeline"]
+    UI["Giao diện"] -->|"Gửi V1, S và tài liệu tham chiếu"| API["Backend API"]
+    API -->|"Yêu cầu phân tích"| PIPE["Pipeline"]
     PIPE -->|"ComparisonReport"| API
     API -->|"Báo cáo hoặc lỗi trong cùng request"| UI
     PIPE --> CORE["Các module xử lý"]
@@ -102,33 +93,27 @@ Bản đầu không sử dụng Queue/Worker; chính sách vận hành nằm ở
 
 ```mermaid
 flowchart TD
-    V1["File V1"] --> R1["Reader V1"]
-    V2["File V2"] --> R2["Reader V2"]
-    R1 --> P1["Parser V1"]
-    R2 --> P2["Parser V2"]
-    P1 --> A["Aligner"]
-    P2 --> A
-    A --> T["Text Diff"]
-    T --> S["Semantic Diff"]
-    A -->|"Cặp Điều đầy đủ"| S
-    S -->|"SemanticChange và các ChangeAspect"| C["Classifier và Scorer"]
-    A -->|"Ngữ cảnh hai Điều"| C
+    INPUT["V1, S và tài liệu tham chiếu nếu có"] --> R["Reader từng tài liệu"]
+    R --> P["Parser, giữ blocks và vị trí nguồn"]
+    P --> A["Trích yêu cầu sửa đổi và liên kết với V1"]
+    P --> K["Chuẩn bị ngữ cảnh và kiểm tra dẫn chiếu"]
+    A --> K
+    K --> T["Text Diff nếu đủ nội dung cục bộ"]
+    K --> S["Semantic Diff với ngữ cảnh và bằng chứng"]
+    T --> S
+    S --> C["Classifier và Scorer"]
     C --> REPORT["Pipeline tổng hợp ComparisonReport"]
+    A --> REPORT
+    K --> REPORT
 ```
 
-Pipeline giữ kết quả của các bước để tổng hợp báo cáo,
-bao gồm căn chỉnh, text diff, semantic diff, scoring,
-cảnh báo và lỗi.
+Pipeline giữ từng AmendmentItem, kết quả Text Diff nếu có, Semantic Diff, Scoring, thông tin hiệu lực/chuyển tiếp, nhu cầu tài liệu tham chiếu, cảnh báo và lỗi. Trích hiệu lực/chuyển tiếp thuộc bước xử lý S và gắn vào EffectInfo theo bằng chứng.
 
-Các phần Text Diff, Semantic Diff và Scorer xử lý theo
-từng AlignedPair. Reader và Parser chạy riêng cho V1 và V2.
+Reader và Parser chạy riêng cho từng tài liệu. Bước trích yêu cầu tạo AmendmentItem; bước ngữ cảnh bổ sung AnalysisContext và kiểm tra nội dung dẫn chiếu trong những file người dùng đã cung cấp. Nếu thiếu, tạo ReferenceRequirement với trạng thái MISSING hoặc UNRESOLVED; không tự tải tài liệu.
 
-Semantic Diff tạo các SemanticChange; mỗi thay đổi có giải thích tổng thể
-và danh sách aspects theo SRS mục 1.3. Module này xác định nhóm trường,
-nội dung cũ/mới, ý nghĩa chuyển đổi, bằng chứng và cảnh báo của từng khía cạnh.
-Classifier & Scorer đọc các khía cạnh để chọn category tổng thể và chấm
-mức độ của SemanticChange; không tạo lại aspects hoặc chấm riêng từng khía cạnh.
-Pipeline giữ nguyên cấu trúc này và tổng hợp cảnh báo đến báo cáo.
+Text Diff xử lý before_text/after_text của từng AmendmentItem khi đủ căn cứ. Nội dung sau có thể được trích từ S hoặc suy ra cục bộ từ chỉ dẫn rõ ràng; phải giữ after_basis, không gán nội dung suy ra thành trích dẫn nguyên văn. Nếu chưa xác định một phía, không chạy Text Diff nhưng vẫn giữ chỉ dẫn sửa đổi và phân tích được phần có căn cứ.
+
+Semantic Diff tạo SemanticChange và aspects theo SRS mục 1.3, sử dụng ngữ cảnh V1 và tài liệu tham chiếu có nguồn. Classifier & Scorer chọn category tổng thể và chấm mức độ của SemanticChange; không tạo lại aspects hoặc chấm riêng từng khía cạnh. Pipeline giữ cảnh báo đến báo cáo; không bắt buộc tạo V2 đầy đủ.
 
 ### 3.3 Ranh giới module và cấu trúc thư mục
 *Lưu ý: các đường dẫn dưới đây là đề xuất tổ chức mã nguồn, cần đối chiếu
@@ -140,7 +125,8 @@ src/pipeline.py                    # Đức Anh: điều phối, tổng hợp b�
 
 src/reader/document_reader.py      # Thọ: đọc DOCX/PDF text
 src/parser/doc_parser.py           # Thọ: tách các Điều
-src/aligner/version_aligner.py     # Thọ: ghép các Điều tương ứng
+src/amendment/amendment_linker.py  # Thọ: trích chỉ dẫn, liên kết V1, trích hiệu lực
+src/context/context_builder.py    # Chuẩn bị ngữ cảnh, kiểm tra tài liệu tham chiếu
 
 src/text_diff/diff_engine.py       # Ngọc Anh: tìm thay đổi chữ
 src/semantic_diff/diff_engine.py   # Ngọc Anh: xác định thay đổi nghĩa
@@ -151,15 +137,16 @@ frontend/                         # Tuấn Anh: giao diện demo tối thiểu
 
 tests/fixtures/                   # Dữ liệu mẫu theo hợp đồng chung
 data/raw/                         # Dũng: tài liệu nguồn
-data/02_filtered_pairs/           # Dũng: cặp tài liệu đã tuyển chọn
-data/manifest.csv                 # Dũng: metadata và thông tin tuyển chọn
+data/T1/T1-001/                   # Dũng: mẫu V1–S và references/ khi cần
+data/manifest.csv                 # Dũng: metadata, nguồn và thông tin tuyển chọn
 data/gold/                        # Tuấn Anh điều phối nhãn chuẩn
 docs/                             # Tài liệu chung và tài liệu module
 ```
 
 Reader chịu trách nhiệm đọc file và ghi vị trí nguồn.
-Parser nhận ExtractedDocument, xác định ranh giới các Điều;
-không tự đọc lại file.
+Parser nhận ExtractedDocument, xác định ranh giới các Điều, giữ Khoản/Điểm; không tự đọc lại file. Blocks ngoài Điều và bảng vẫn được giữ để bước ngữ cảnh truy xuất. Tài liệu tham chiếu không có nhãn Điều có thể được truy xuất theo blocks; không loại bỏ chỉ vì không tách được Điều.
+
+Bước trích yêu cầu/liên kết và bước ngữ cảnh dùng các hợp đồng SRS mục 1.2. context_builder là ranh giới trách nhiệm đề xuất; người phụ trách cụ thể được thống nhất khi phân công triển khai, không tạo một hợp đồng dữ liệu riêng.
 
 Pipeline tổng hợp ComparisonReport từ kết quả các module.
 Các module xử lý không tự gọi giao diện hoặc phụ thuộc HTTP.
@@ -174,13 +161,14 @@ Tên hàm dưới đây là đề xuất triển khai. Kiểu dữ liệu và qu
 
 | Thành phần | Hàm đề xuất | Đầu vào | Đầu ra |
 | --- | --- | --- | --- |
-| Reader | read_document | File và version_id | ExtractedDocument |
-| Parser | parse_document | ExtractedDocument | list[Clause] |
-| Aligner | align_versions | Hai list[Clause] | list[AlignedPair] |
-| Text Diff | compute_text_diff | AlignedPair | TextDiffResult |
-| Semantic Diff | detect_semantic_changes | AlignedPair và TextDiffResult | SemanticDiffResult với SemanticChange.aspects |
-| Classifier & Scorer | classify_and_score | AlignedPair và SemanticDiffResult | list[ScoringResult] |
-| Pipeline | run_comparison | Hai file, comparison_id và DocumentIdentity của V1/V2 do Backend cung cấp | ComparisonReport với old_document/new_document |
+| Reader | read_document | File, document_id và role | ExtractedDocument |
+| Parser | parse_document | ExtractedDocument | list[Clause]; blocks gốc được giữ để truy xuất |
+| Trích yêu cầu/liên kết | extract_and_link_amendments | V1 và S đã đọc/tách cấu trúc | list[AmendmentItem] với chỉ dẫn, vị trí đích và EffectInfo |
+| Ngữ cảnh/dẫn chiếu | prepare_context | AmendmentItem và các tài liệu đã cung cấp | AmendmentItem được bổ sung AnalysisContext và ReferenceRequirement |
+| Text Diff | compute_text_diff | AmendmentItem đủ nội dung trước/sau cục bộ | TextDiffResult |
+| Semantic Diff | detect_semantic_changes | AmendmentItem có context và TextDiffResult nếu có | SemanticDiffResult với SemanticChange.aspects |
+| Classifier & Scorer | classify_and_score | AmendmentItem và SemanticDiffResult | list[ScoringResult] |
+| Pipeline | run_comparison | V1, S, tài liệu tham chiếu nếu có, comparison_id và metadata do Backend cung cấp | ComparisonReport với base_document/amendment_document/reference_documents |
 | Evaluator | evaluate | Báo cáo dự đoán và nhãn chuẩn | Các chỉ số và kết quả đối chiếu |
 
 Mỗi module phải có thể kiểm thử riêng bằng dữ liệu mẫu đúng
@@ -199,15 +187,14 @@ các quy ước cần thiết để hiểu luồng xử lý.
 
 - Clause đại diện một Điều, gồm:
   unit_id, id, title, content và source_refs.
-- AlignedPair gồm pair_key, align_type, v1, v2,
-  needs_review và review_reason.
-- align_type nhận PAIRED, ADDED hoặc DELETED.
-- Ghép mơ hồ được biểu diễn bằng needs_review = true;
-  loại ghép khi đó chỉ là kết quả tạm thời.
-- Một AlignedPair có thể sinh nhiều SemanticChange; mỗi SemanticChange
+- AmendmentItem định danh từng yêu cầu bằng amendment_id; giữ operation, instruction, target_document, target_locator, target_unit_ids, applicability, before_text/after_text, after_basis, evidence, effect_info, context và cảnh báo theo SRS mục 1.2.
+- operation nhận AMEND, ADD, REPEAL hoặc UNRESOLVED. applicability nhận APPLIES, OTHER_DOCUMENT hoặc UNRESOLVED; yêu cầu sửa văn bản khác không được áp vào V1.
+- Liên kết mơ hồ dùng needs_review = true và lý do; một Điều V1 có thể được nhiều yêu cầu tham chiếu.
+- AnalysisContext giữ thông tin tổng quát, bằng chứng ngữ cảnh và ReferenceRequirement; EffectInfo giữ nội dung hiệu lực/chuyển tiếp và phạm vi áp dụng.
+- Một AmendmentItem có thể sinh nhiều SemanticChange; mỗi SemanticChange
   có danh sách ChangeAspect mô tả các khía cạnh của cùng thay đổi quy định.
 - ChangeAspect gồm aspect_id, field_group, old_value, new_value,
-  interpretation, old_quote, new_quote, needs_review và review_reason.
+  interpretation, evidence, old_quote, new_quote, needs_review và review_reason.
   aspect_id duy nhất trong SemanticChange; truy vết bằng change_id + aspect_id.
 - field_group dùng 8 nhóm trong SRS mục 1.3:
   SUBJECT_OBJECT; RIGHTS_DUTIES_ACTIONS; CONDITIONS_EXCEPTIONS;
@@ -216,7 +203,7 @@ các quy ước cần thiết để hiểu luồng xử lý.
   Tên tiếng Việt, định nghĩa và ranh giới phân nhóm theo SRS.
 - Chỉ ghi khía cạnh thay đổi hoặc cần xác minh; giữ nội dung không đổi
   làm ngữ cảnh. Không nhân bản một biến đổi vào nhiều nhóm.
-  Bằng chứng ở cả cấp thay đổi và khía cạnh phải thuộc đúng Clause V1/V2.
+  Bằng chứng ở cả cấp thay đổi và khía cạnh phải có EvidenceRef, xác định đúng document_id và source_refs của V1, S hoặc tài liệu tham chiếu.
 - is_meaningful_change nhận true, false hoặc null.
   null biểu thị chưa đủ căn cứ và phải có cảnh báo kiểm tra.
 - Mỗi SemanticChange có một ScoringResult tương ứng.
@@ -230,95 +217,133 @@ các quy ước cần thiết để hiểu luồng xử lý.
 - Chưa xác định có đổi nghĩa:
   significance = null và is_critical = null.
 - comparison_id định danh lần so sánh;
-  pair_key định danh cặp Điều;
+  amendment_id định danh yêu cầu sửa đổi;
   change_id định danh từng thay đổi.
 - ComparisonReport.status nhận SUCCESS, PARTIAL hoặc FAILED.
 - None/null và danh sách rỗng được hiểu theo từng trường trong SRS.
-  changes rỗng chỉ biểu thị không có thay đổi sau so sánh thành công;
+  TextDiffResult.changes rỗng chỉ nói hai chuỗi cục bộ không khác nhau; không phủ nhận chỉ dẫn sửa đổi hoặc thay đổi hiệu lực;
   không thay kết quả chưa xử lý bằng danh sách rỗng.
 - aspects = [] dùng khi chỉ đổi diễn đạt hoặc chưa xác định được khía cạnh;
   phải đọc cùng is_meaningful_change và needs_review, không tự suy ra không đổi nghĩa.
   Đổi nghĩa đã xác định phải có ít nhất một khía cạnh đổi nghĩa có căn cứ.
 - old_value/new_value hoặc quote bằng null phải được interpretation
   giải thích là không có nội dung tương ứng hay chưa xác định được;
-  trường hợp chưa xác định phải có cảnh báo theo SRS.
+  trường hợp chưa xác định phải có cảnh báo theo SRS. Riêng nội dung sau được suy ra có thể có new_quote = null nhưng phải giữ bằng chứng và giải thích phép suy ra; không tự coi là thiếu căn cứ nếu chỉ dẫn đã rõ.
 - Cảnh báo từ ChangeAspect được tổng hợp lên SemanticChange,
   SemanticDiffResult, ScoringResult và giữ đến báo cáo/giao diện.
   Cảnh báo chưa được giải quyết không được trình bày như kết luận chắc chắn.
-- ComparisonReport có old_document và new_document theo DocumentIdentity,
-  gồm version_id và filename; V1 luôn là bản cũ, V2 luôn là bản mới.
+- ComparisonReport có base_document, amendment_document và reference_documents theo DocumentIdentity, gồm document_id, role và filename; V1 là BASE, S là AMENDMENT, các tài liệu bổ sung là REFERENCE.
   Backend ghi nhận metadata từ đầu vào; Pipeline giữ trong mọi báo cáo,
   kể cả PARTIAL/FAILED. Tên file không xác nhận tên pháp lý hoặc hiệu lực.
+- Thiếu căn cứ tham chiếu cần cho phân tích tác động: báo PARTIAL, giữ thay đổi trực tiếp đã xác định và chỉ rõ nhu cầu bổ sung. Không biến nội dung chưa biết thành chuỗi rỗng để diff.
+- Chỉ thông báo không tìm thấy yêu cầu sửa đổi đối với V1 khi thỏa điều kiện SRS mục 1.7; không suy từ Text Diff rỗng.
 - Cảnh báo phải được giữ xuyên suốt đến báo cáo và giao diện.
 
 comparison_id chỉ định danh lần so sánh, không phải mã job để truy vấn sau.
 ComparisonReport.status mô tả mức hoàn tất của báo cáo, không phải mã HTTP.
 Bản đầu không cung cấp trạng thái job hoặc API polling.
 
-### 3.6. Ví dụ AlignedPair
+### 3.6. Ví dụ AmendmentItem
 
-Ví dụ tự tạo để minh họa hợp đồng, không phải văn bản pháp luật thật.
-Các source_refs phải tồn tại trong ExtractedDocument của phiên bản
-tương ứng khi dùng làm fixture chạy được.
+Ví dụ tự tạo để minh họa hợp đồng, không phải văn bản pháp luật thật. Các trích dẫn và source_refs phải khớp ExtractedDocument của đúng document_id khi dùng làm fixture chạy được. Giả định ví dụ đã cung cấp đủ ngữ cảnh và không có ngoại lệ liên quan.
 
 ```json
 {
-  "pair_key": "v1:article_5|v2:article_6",
-  "align_type": "PAIRED",
-  "v1": {
-    "unit_id": "v1:article_5",
-    "id": "Điều 5",
-    "title": "Thời hạn thực hiện",
-    "content": "1. Hồ sơ phải được nộp trong thời hạn 30 ngày.",
-    "source_refs": ["docx:paragraph_12", "docx:paragraph_13"]
+  "amendment_id": "amendment_1",
+  "operation": "AMEND",
+  "instruction": {
+    "document_id": "s",
+    "source_refs": [
+      "docx:paragraph_3"
+    ],
+    "quote": "Thay cụm từ ‘30 ngày’ bằng cụm từ ‘15 ngày’ tại khoản 1 Điều 5 của Văn bản A."
   },
-  "v2": {
-    "unit_id": "v2:article_6",
-    "id": "Điều 6",
-    "title": "Thời hạn thực hiện",
-    "content": "1. Hồ sơ phải được nộp trong thời hạn 15 ngày.",
-    "source_refs": ["docx:paragraph_15", "docx:paragraph_16"]
+  "target_document": "Văn bản A",
+  "target_locator": "khoản 1 Điều 5",
+  "target_unit_ids": [
+    "v1:article_5"
+  ],
+  "applicability": "APPLIES",
+  "before_text": "Hồ sơ phải được nộp trong thời hạn 30 ngày.",
+  "after_text": "Hồ sơ phải được nộp trong thời hạn 15 ngày.",
+  "after_basis": "DERIVED",
+  "evidence": [
+    {
+      "document_id": "v1",
+      "source_refs": [
+        "docx:paragraph_13"
+      ],
+      "quote": "1. Hồ sơ phải được nộp trong thời hạn 30 ngày."
+    },
+    {
+      "document_id": "s",
+      "source_refs": [
+        "docx:paragraph_3"
+      ],
+      "quote": "Thay cụm từ ‘30 ngày’ bằng cụm từ ‘15 ngày’ tại khoản 1 Điều 5 của Văn bản A."
+    }
+  ],
+  "effect_info": [
+    {
+      "text": "Văn bản này có hiệu lực từ ngày 01 tháng 01 năm 2030.",
+      "applies_to": "Toàn bộ nội dung sửa đổi của S trong ví dụ",
+      "evidence": [
+        {
+          "document_id": "s",
+          "source_refs": [
+            "docx:paragraph_8"
+          ],
+          "quote": "Văn bản này có hiệu lực từ ngày 01 tháng 01 năm 2030."
+        }
+      ],
+      "needs_review": false,
+      "review_reason": ""
+    }
+  ],
+  "context": {
+    "general_context": "Văn bản A quy định việc nộp hồ sơ của tổ chức.",
+    "evidence": [
+      {
+        "document_id": "v1",
+        "source_refs": [
+          "docx:paragraph_3"
+        ],
+        "quote": "Văn bản này quy định việc nộp hồ sơ của tổ chức."
+      }
+    ],
+    "references": []
   },
   "needs_review": false,
   "review_reason": ""
 }
 ```
 
-Trong ví dụ, thay đổi số Điều được thể hiện ở AlignedPair.
-Text Diff so sánh title/content và xác định thay đổi
-“30 ngày” thành “15 ngày”.
-Semantic Diff có thể tạo một SemanticChange với một ChangeAspect nhóm
-TIME_QUANTITY: old_value/old_quote = "30 ngày", new_value/new_quote =
-"15 ngày"; interpretation nêu việc rút ngắn thời hạn nộp hồ sơ.
-Scorer chấm mức độ theo guideline, không mặc định CRITICAL.
-Ví dụ một SemanticChange có nhiều khía cạnh xem SRS mục 1.3.
+Text Diff xác định “30 ngày” thành “15 ngày” trên hai chuỗi cục bộ. after_basis = DERIVED cho biết câu sau được suy ra từ chỉ dẫn thay cụm từ, không phải trích nguyên văn toàn câu từ S.
 
+Semantic Diff có thể tạo một SemanticChange với ChangeAspect nhóm TIME_QUANTITY, diễn giải rút ngắn thời hạn. old_quote có thể trích “30 ngày” từ V1 và new_quote trích “15 ngày” từ chỉ dẫn trong S; EvidenceRef giữ đúng nguồn. Thông tin hiệu lực nằm trong EffectInfo, không mặc định trở thành một thay đổi riêng nếu chưa có căn cứ đối chiếu. Scorer chấm theo guideline, không mặc định CRITICAL. Ví dụ nhiều khía cạnh xem SRS mục 1.3.
 
 ## 4. WORKFLOW VÀ PHÂN CÔNG
 
 ### 4.1. Workflow
 
-1. Người dùng chọn hai file và xác định bản cũ V1, bản mới V2.
-2. Backend kiểm tra đầu vào, cấp comparison_id, ghi nhận DocumentIdentity cho V1/V2, lưu file tạm riêng cho lần so sánh và truyền file cùng metadata cho Pipeline trong cùng request.
-3. Reader đọc từng file, tạo ExtractedDocument.
-4. Parser tách từng phiên bản thành list[Clause] ở cấp Điều.
-5. Aligner nhận hai danh sách và tạo list[AlignedPair].
-6. Với từng AlignedPair:
-   - Text Diff tìm đoạn chữ thêm, xóa hoặc thay thế.
-   - Semantic Diff phân tích thay đổi nghĩa với ngữ cảnh hai Điều; tạo SemanticChange và aspects chứa nhóm trường, nội dung trước/sau, diễn giải, bằng chứng và cảnh báo.
-   - Classifier & Scorer chọn category tổng thể từ các khía cạnh và chấm từng SemanticChange, giữ cảnh báo; không chấm riêng từng ChangeAspect.
-7. Pipeline tổng hợp ComparisonReport với old_document/new_document, các khía cạnh, bằng chứng, vị trí nguồn, cảnh báo và lỗi.
-8. Backend trả báo cáo hoặc lỗi trong cùng request để giao diện hiển thị; giải phóng tài nguyên và dọn file tạm khi không còn tác vụ sử dụng.
+1. Người dùng chọn văn bản gốc V1, văn bản sửa đổi S và tài liệu tham chiếu nếu có.
+2. Backend kiểm tra đầu vào, cấp comparison_id, ghi nhận DocumentIdentity với vai trò từng tài liệu, lưu file tạm và gọi Pipeline trong cùng request.
+3. Reader đọc từng file, tạo ExtractedDocument; Parser tách Điều, giữ cấu trúc Khoản/Điểm và blocks để truy xuất ngữ cảnh.
+4. Bước trích yêu cầu/liên kết tạo AmendmentItem, nhận diện văn bản đích, định vị nội dung trong V1 và trích thông tin hiệu lực/chuyển tiếp liên quan từ S. Yêu cầu sửa văn bản khác được ghi OTHER_DOCUMENT.
+5. Bước ngữ cảnh lấy thông tin tổng quát của V1, đoạn liên quan và tài liệu dẫn chiếu đã cung cấp; ghi rõ nội dung cần bổ sung nếu còn thiếu.
+6. Với từng yêu cầu liên quan đến V1:
+   - Text Diff chạy khi đủ nội dung trước/sau cục bộ; nội dung suy ra phải được đánh dấu.
+   - Semantic Diff phân tích phần thay đổi cùng ngữ cảnh và bằng chứng, tạo SemanticChange và aspects; giữ phần chưa xác định.
+   - Classifier & Scorer chọn category và chấm từng SemanticChange, giữ cảnh báo; không chấm riêng từng ChangeAspect.
+7. Pipeline tổng hợp ComparisonReport với base_document, amendment_document, reference_documents, từng AmendmentResult, nguồn, hiệu lực, tài liệu thiếu, cảnh báo và lỗi.
+8. Backend trả báo cáo trong cùng request, giải phóng tài nguyên và dọn file tạm khi không còn tác vụ sử dụng.
+9. Nếu cần tài liệu bổ sung, giao diện hiển thị yêu cầu về tài liệu và vị trí còn thiếu. Người dùng có thể chọn gửi bộ tài liệu tham chiếu đã bổ sung trong request đồng bộ mới; nếu không bổ sung, báo cáo hiện tại vẫn giữ các kết quả đã xác định.
 
-Giao diện hiển thị hai file và chiều V1 → V2, các Điều đối chiếu và từng
-khía cạnh của thay đổi cùng bằng chứng, vị trí nguồn và cảnh báo theo mục 7.2.
-Giao diện chờ phản hồi, hiển thị đang xử lý và ngăn gửi lặp khi request còn chạy.
-Không hiển thị phần trăm tiến độ giả; không tự gửi lại yêu cầu so sánh khi timeout.
-Mất kết nối không đồng nghĩa Pipeline đã dừng; chính sách thời gian chạy xem mục 7.
+Giao diện hiển thị đúng vai trò tài liệu, chỉ dẫn trong S, vị trí bị tác động trong V1 và từng khía cạnh của thay đổi. Giao diện giữ lựa chọn file trong phiên trang để gửi lại khi người dùng chủ động bổ sung; không yêu cầu lưu trạng thái xử lý hoặc kho tài liệu trên server.
 
-Data collection chạy độc lập với luồng so sánh, phục vụ tạo dữ liệu
-phát triển, demo và đánh giá. Evaluator chạy riêng trên báo cáo
-và nhãn chuẩn.
+Giao diện chờ phản hồi, hiển thị đang xử lý và ngăn gửi lặp khi request còn chạy. Không hiển thị phần trăm tiến độ giả; không tự gửi lại khi timeout. Mất kết nối không đồng nghĩa Pipeline đã dừng; chính sách thời gian chạy xem mục 7.
+
+Data collection chạy độc lập để tạo dữ liệu phát triển, demo và đánh giá. Evaluator chạy riêng trên báo cáo và nhãn chuẩn của cùng cặp V1–S với bộ tài liệu tham chiếu tương ứng.
 
 ### 4.2. Phân công dự kiến
 
@@ -326,7 +351,7 @@ và nhãn chuẩn.
 | --- | --- |
 | Bạch Công Dũng | Kiến trúc, tài liệu tổng quát, metadata và tuyển chọn dữ liệu; phối hợp đặc tả hợp đồng và guideline cho 8 nhóm khía cạnh |
 | Dương Đức Anh | Nhóm trưởng, Backend, Pipeline, hiện thực schema gồm ChangeAspect/DocumentIdentity, tổng hợp đầy đủ báo cáo và tích hợp |
-| Bùi Quang Thọ | Reader, Parser và Aligner |
+| Bùi Quang Thọ | Reader, Parser; trích yêu cầu sửa đổi, liên kết với V1 và trích thông tin hiệu lực/chuyển tiếp |
 | Đoàn Ngọc Anh | Text Diff, Semantic Diff tạo các khía cạnh; Classifier & Scorer chọn nhãn và chấm mức độ tổng thể |
 | Đỗ Tuấn Anh | Evaluator với nhãn chuẩn có khía cạnh, kiểm thử độc lập và giao diện hiển thị các khía cạnh/bằng chứng/cảnh báo |
 
@@ -339,9 +364,9 @@ và nhãn chuẩn.
   schema và fixture, đồng thời thông báo các module liên quan.
 - Mỗi module có dữ liệu mẫu, cách chạy riêng và kiểm thử riêng.
 - Bộ fixture gồm không đổi, đổi diễn đạt, đổi nghĩa, thêm/xóa,
-  đánh lại số Điều và ghép mơ hồ; bổ sung ca một thay đổi có nhiều
+  chỉ dẫn đánh lại số, liên kết mơ hồ, S sửa nhiều văn bản, đủ/thiếu tài liệu tham chiếu và hiệu lực có ngoại lệ; bổ sung ca một thay đổi có nhiều
   khía cạnh, khía cạnh chưa xác định, tránh trùng nhóm và file trùng tên.
-- Chủ module cập nhật fixture và test theo SRS 1.2.0. Tuấn Anh điều phối
+- Chủ module cập nhật fixture và test theo SRS 1.3.0. Tuấn Anh điều phối
   nhãn chuẩn có aspects; Dũng phối hợp guideline, các thành viên review
   cách chia/gộp, nhóm trường, nội dung trước/sau và bằng chứng.
 - Dữ liệu test có nhãn được giữ riêng với dữ liệu dùng chỉnh thuật toán.
@@ -369,19 +394,20 @@ Evaluator tuân theo các nguyên tắc:
   cách xử lý thiếu/sai khía cạnh trước đánh giá. Không tính đúng chỉ vì
   trùng field_group; ghi riêng lỗi nhóm, giá trị, diễn giải và bằng chứng.
 - Thay đổi chuẩn bị bỏ sót vẫn phải được tính, kể cả khi nguyên nhân
-  đến từ Reader, Parser hoặc Aligner.
+  đến từ Reader, Parser, trích yêu cầu hoặc liên kết.
 - Một thay đổi CRITICAL chỉ được tính tìm đúng khi đối chiếu
   đúng thay đổi và dự đoán is_critical = true.
 - Kết quả cần kiểm tra chưa được giải quyết không tính là tìm đúng.
 - Mẫu số bằng 0 trả null kèm lý do.
 - Báo số mẫu và số kết quả cần kiểm tra cùng các chỉ số.
+- Kiểm tra riêng liên kết vị trí đích, thông tin hiệu lực và yêu cầu bổ sung tài liệu. Nhãn chuẩn phản ánh đúng tài liệu được cung cấp; mẫu thiếu căn cứ được đánh giá theo khả năng nhận diện giới hạn, không yêu cầu kết luận dựa trên tài liệu ẩn.
 
 Để hỗ trợ đánh giá, các module phải giữ định danh, bằng chứng,
 vị trí nguồn và cảnh báo đến ComparisonReport.
 
 Ngoài chỉ số phát hiện, kiểm tra chất lượng diff_details, interpretation,
 bằng chứng và lý do chấm theo SRS mục 4. Thử nghiệm khả năng hiểu báo cáo
-gồm nhận diện cũ/mới, tìm vị trí nguồn, giải thích thay đổi và nhận biết
+gồm nhận diện vai trò V1/S/tài liệu tham chiếu, tìm vị trí nguồn, giải thích thay đổi và nhận biết
 giới hạn/cảnh báo; ghi độ đúng, thời gian, lỗi diễn giải và phản hồi.
 Đây là đánh giá ngoài luồng so sánh, không thêm module phản hồi vào sản phẩm.
 
@@ -395,7 +421,7 @@ nếu thành viên nhóm đóng vai người dùng phải ghi rõ giới hạn.
 
 ### 6.1. Giả định
 
-- Người dùng cung cấp hai bản đầy đủ tương ứng và xác định rõ cũ/mới.
+- Người dùng cung cấp đúng V1 và S, bổ sung tài liệu tham chiếu cần thiết; việc đọc thành công không xác nhận tính chính thức hoặc hiệu lực thực tế.
 - File thuộc định dạng hỗ trợ và có nội dung chữ trích xuất được.
 - Không giả định tiêu đề Điều được đánh dấu bằng Word Heading.
 - Việc sử dụng mô hình hoặc API ngoài cần được nhóm xác nhận.
@@ -407,8 +433,10 @@ nếu thành viên nhóm đóng vai người dùng phải ghi rõ giới hạn.
 | --- | --- |
 | Đọc thiếu hoặc sai thứ tự nội dung | Reader giữ thứ tự và vị trí nguồn; kiểm thử trên file có bảng và nhiều trang |
 | Parser nhận nhầm câu dẫn chiếu là đầu Điều | Kiểm tra ranh giới, cấu trúc và các ca dẫn chiếu trong fixture |
-| Phụ lục bị gộp vào Điều cuối | Parser nhận diện điểm kết thúc phần Điều và phần ngoài phạm vi |
-| Đánh lại số, ghép mơ hồ hoặc tách/gộp | Aligner kết hợp số Điều, tiêu đề và nội dung; cảnh báo phần chưa chắc chắn |
+| Phụ lục bị gộp vào Điều cuối | Parser phân biệt ranh giới Điều và phụ lục; vẫn giữ blocks phụ lục cho ngữ cảnh khi cần |
+| Nhầm số Điều trong S với vị trí đích, hoặc chỉ dẫn tách/gộp mơ hồ | Kiểm tra văn bản đích, Điều/Khoản/Điểm và nội dung; cảnh báo vị trí chưa chắc chắn |
+| Thiếu hoặc sai phiên bản tài liệu dẫn chiếu | Kiểm tra nội dung cần đọc; báo ReferenceRequirement còn thiếu/chưa rõ, giữ kết quả trực tiếp và giới hạn phân tích tác động |
+| Gán sai hiệu lực chung cho thay đổi có ngoại lệ | Giữ EffectInfo cùng phạm vi và bằng chứng; cảnh báo phần chưa xác định |
 | File lớn hoặc tác vụ kéo dài | Giới hạn dung lượng, thời gian, bộ nhớ và mức đồng thời; xử lý theo đơn vị phù hợp |
 | Thiếu nhãn chuẩn | Gán nhãn có hướng dẫn, đối soát bất đồng và duy trì tập test độc lập |
 | Semantic Diff chưa đủ căn cứ | Trả kết luận chưa xác định và needs_review; không tự coi là không đổi nghĩa |
@@ -424,11 +452,11 @@ không thay thế dữ liệu nhãn chuẩn để đánh giá.
 
 ### 7.1. Quyết định triển khai bản đầu
 
-- Dùng request đồng bộ: API nhận hai file, gọi Pipeline, chờ kết quả và trả phản hồi trong cùng request.
+- Dùng request đồng bộ: API nhận V1, S và tài liệu tham chiếu nếu có, gọi Pipeline, chờ kết quả và trả phản hồi trong cùng request.
 - Tổ chức một backend chia module; mỗi module có thể kiểm thử độc lập qua hàm và schema chung.
 - Không triển khai Redis, Celery, Queue/Worker, API tạo job hoặc polling cho bản đầu.
 - Pipeline giữ giao diện run_comparison; không phụ thuộc HTTP, giao diện hoặc hạ tầng hàng đợi.
-- Xử lý các cặp Điều tuần tự ở bản đầu để dễ kiểm thử và kiểm soát chi phí; chỉ tăng mức đồng thời sau khi đo và đặt giới hạn.
+- Xử lý các yêu cầu sửa đổi tuần tự ở bản đầu để dễ kiểm thử và kiểm soát chi phí; chỉ tăng mức đồng thời sau khi đo và đặt giới hạn.
 - Request đồng bộ là cách trả kết quả cho client; không bắt buộc mọi thao tác I/O trong mã nguồn phải blocking. Nếu dùng framework async, không chạy tác vụ blocking/CPU nặng trực tiếp trên event loop.
 
 Lý do: phạm vi demo nhỏ, không OCR, không lưu lịch sử lâu dài; ưu tiên
@@ -438,22 +466,23 @@ triển khai, không phải khẳng định Pipeline luôn chạy nhanh.
 ### 7.2. API và giao diện
 
 API upload dự kiến: POST /api/compare, nhận multipart/form-data
-với hai file doc_v1 và doc_v2; trả ComparisonReport trong cùng
-request. Cấu trúc phản hồi, mã HTTP và lỗi được quy định trong
+với hai file chính doc_v1 và doc_s, cùng danh sách reference_files nếu có; trả ComparisonReport trong cùng request. Tên trường là đề xuất, cần chốt trong API contract. Cấu trúc phản hồi, mã HTTP và lỗi được quy định trong
 docs/api-contract.md.
 
 Đây là giao diện mục tiêu; API baseline hiện tại vẫn nhận
 hai chuỗi text và chưa hỗ trợ upload file.
 
-- Báo cáo theo SRS 1.2.0 giữ old_document/new_document và SemanticChange.aspects; API không làm phẳng hoặc bỏ khía cạnh khi trả JSON.
-- Giao diện lấy tên file từ metadata báo cáo, luôn kèm bản cũ V1 / bản mới V2 và chiều so sánh, kể cả khi hai tên file giống nhau.
+- Báo cáo theo SRS 1.3.0 giữ base_document/amendment_document/reference_documents, AmendmentItem và SemanticChange.aspects; API không làm phẳng hoặc bỏ khía cạnh khi trả JSON.
+- Giao diện lấy tên file từ metadata báo cáo, luôn kèm vai trò văn bản gốc V1 / văn bản sửa đổi S / tài liệu tham chiếu, kể cả khi hai tên file giống nhau.
 - Trong từng thay đổi, hiển thị giải thích tổng thể, category và mức độ; từng khía cạnh có tên nhóm tiếng Việt, nội dung cũ/mới, interpretation, bằng chứng và cảnh báo. Không dùng nhãn tổng thể thay cho danh sách khía cạnh.
-- Vị trí nguồn lấy từ Clause.source_refs của đúng phía; hiển thị nhãn trang PDF hoặc đoạn/bảng DOCX theo SRS mục 4. Ghi rõ đây là vị trí của Điều, không khẳng định vị trí chính xác từng quote khi chưa có ánh xạ chi tiết.
-- Điều có nhiều vị trí nguồn phải hiển thị đủ; Điều thêm/xóa chỉ có nguồn ở phía tồn tại. Người dùng tự đối chiếu file gốc; bản đầu không bắt buộc nhúng trình xem hoặc mở chính xác vị trí bằng một lần nhấn.
+- Vị trí nguồn lấy từ EvidenceRef của đúng document_id, hiển thị nhãn trang PDF hoặc đoạn/bảng DOCX theo SRS mục 4. Phân biệt nguồn chỉ dẫn trong S và vị trí đích V1; không khẳng định tọa độ chính xác từng quote khi chỉ có vị trí cấp Điều.
+- Nội dung có nhiều vị trí nguồn phải hiển thị đủ; bổ sung/bãi bỏ vẫn giữ chỉ dẫn trong S, nội dung trước/sau không tồn tại được phân biệt với chưa xác định. Người dùng tự đối chiếu file gốc; bản đầu không bắt buộc nhúng trình xem hoặc mở chính xác vị trí bằng một lần nhấn.
 - Không chỉ dùng màu để phân biệt loại thay đổi, mức độ hoặc cảnh báo; trường chưa xác định được hiển thị rõ cùng lý do, không suy ra không đổi từ aspects rỗng.
 - comparison_id dùng liên kết log và báo cáo; không có cam kết truy vấn lại kết quả bằng mã này.
-- Backend phân biệt lỗi kiểm tra đầu vào, lỗi toàn bộ lần so sánh và lỗi riêng từng cặp Điều.
-- Nếu một số cặp lỗi nhưng vẫn tổng hợp được báo cáo, giữ bằng chứng, cảnh báo và phần chưa xử lý; dùng PARTIAL theo SRS.
+- Backend phân biệt lỗi kiểm tra đầu vào, lỗi toàn bộ lần so sánh và lỗi riêng từng yêu cầu sửa đổi.
+- Nếu một số yêu cầu lỗi nhưng vẫn tổng hợp được báo cáo, giữ bằng chứng, cảnh báo và phần chưa xử lý; dùng PARTIAL theo SRS.
+- Hiển thị EffectInfo cùng phạm vi áp dụng; ReferenceRequirement chỉ rõ tài liệu và vị trí còn thiếu. Người dùng có thể bổ sung rồi chủ động gửi lại toàn bộ bộ file, tạo lần xử lý mới; server không lưu file chờ bổ sung.
+- Đổi dẫn chiếu A → B cần căn cứ cả A và B nếu chưa có trong đầu vào để kết luận tác động trước–sau; nếu thiếu, chỉ báo thay đổi trực tiếp và giới hạn.
 - Không biến lỗi Semantic Diff thành kết luận không có thay đổi hoặc danh sách rỗng giả.
 - API contract quy định rõ ánh xạ HTTP status, error body và ComparisonReport.status; không dùng ba trường hợp SUCCESS/PARTIAL/FAILED làm mã HTTP.
 - Giao diện có trạng thái chờ, báo cáo và lỗi; ngăn gửi lặp khi đang chờ. Không tự retry toàn bộ POST.
@@ -462,25 +491,25 @@ hai chuỗi text và chưa hỗ trợ upload file.
 ### 7.3. Giới hạn, timeout và xử lý lỗi
 
 Trước khi tích hợp API thật, nhóm phải chốt giới hạn dung lượng mỗi file,
-số Điều/nội dung được xử lý, số request so sánh đồng thời và ngân sách
+số tài liệu tham chiếu, số yêu cầu sửa đổi/nội dung được xử lý, số request so sánh đồng thời và ngân sách
 thời gian xử lý. Ghi giá trị, đơn vị và môi trường đo trong SRS và
 docs/development-guide.md; architecture không tự đặt ngưỡng chưa đo.
 
 - Kiểm tra dung lượng/định dạng sớm; sau Reader/Parser kiểm tra giới hạn nội dung và khả năng trích xuất.
 - Khi đủ số tác vụ cho phép, từ chối yêu cầu mới bằng lỗi được đặc tả; không tạo hàng đợi nền ngầm không giới hạn.
 - Đặt timeout cho từng lần gọi API ngoài và deadline cho toàn bộ Pipeline. Retry lỗi tạm thời có giới hạn, nằm trong deadline còn lại.
-- Kiểm tra deadline giữa các bước/cặp Điều; timeout của HTTP hoặc việc đóng trang không tự dừng mã đang chạy.
+- Kiểm tra deadline giữa các bước/yêu cầu sửa đổi; timeout của HTTP hoặc việc đóng trang không tự dừng mã đang chạy.
 - Tác vụ thư viện không hỗ trợ ngắt cần được giới hạn đầu vào hoặc cô lập nếu phải bảo đảm dừng cứng; không tuyên bố có hard timeout khi chỉ dừng chờ phản hồi.
 - Cấu hình thời gian chờ của client/server/proxy theo ngân sách xử lý, có thời gian dự phòng để trả lỗi và dọn tài nguyên.
 - Khi hết ngân sách, chỉ trả PARTIAL nếu đã tạo được báo cáo hợp lệ theo SRS; nếu không, trả lỗi/FAILED theo API contract. Không để request chờ vô hạn.
-- Đo thời gian Reader, Parser, Aligner, Text Diff, Semantic Diff, Scorer và tổng Pipeline; ghi số Điều/cặp cần phân tích và số lần gọi mô hình.
+- Đo thời gian Reader, Parser, trích yêu cầu/liên kết, chuẩn bị ngữ cảnh, Text Diff, Semantic Diff, Scorer và tổng Pipeline; ghi số tài liệu/yêu cầu cần phân tích và số lần gọi mô hình.
 
 ### 7.4. Quản lý file và kết quả
 
 - Mỗi lần so sánh dùng thư mục tạm riêng gắn comparison_id; không dùng nguyên tên file do client cung cấp làm đường dẫn lưu.
 - File tạm chỉ xóa sau khi các tác vụ sử dụng file đã kết thúc, kể cả khi request mất kết nối hoặc có retry API ngoài.
 - Dọn tài nguyên trong cơ chế finally hoặc tương đương; bổ sung dọn file sót do tiến trình dừng bất thường, bảo đảm không xóa file đang được dùng.
-- Báo cáo trả trực tiếp trong response; bản đầu không yêu cầu database hay lưu lịch sử lâu dài.
+- Báo cáo trả trực tiếp trong response; bản đầu không yêu cầu database, kho pháp luật dùng chung hay lưu lịch sử lâu dài. File tham chiếu tuân theo cùng vòng đời file tạm; không giữ file sau xử lý để chờ người dùng bổ sung.
 - Nếu kết quả được ghi ra file tạm để tạo response, giữ file đến khi gửi xong rồi dọn.
 - Không ghi toàn bộ nội dung tài liệu vào log; log định danh, thời gian, bước xử lý và lỗi cần thiết.
 
@@ -490,19 +519,16 @@ docs/development-guide.md; architecture không tự đặt ngưỡng chưa đo.
 - Phương pháp Semantic Diff, embedding/LLM nếu có; vai trò cụ thể và cách gọi mô hình.
 - API AI có bắt buộc không; đặc tả và quyền truy cập. RAG chỉ bổ sung khi có nhu cầu đã xác định.
 - Giới hạn đầu vào, số request đồng thời, timeout/retry và môi trường đo hiệu năng.
-- Ví dụ ranh giới 8 nhóm field_group, quy tắc chia/gộp SemanticChange và chọn category tổng thể từ aspects; danh mục mã theo SRS 1.2.0.
+- Ví dụ ranh giới 8 nhóm field_group, quy tắc chia/gộp SemanticChange và chọn category tổng thể từ aspects; danh mục mã theo SRS 1.3.0.
 - Quy tắc severity, nhãn chuẩn có khía cạnh, matching và tiêu chí đánh giá diễn giải/khả năng hiểu báo cáo.
 - Tên trường API, mã HTTP, error body, dữ liệu mẫu và cách xử lý PARTIAL/FAILED.
 
-Định dạng đầu vào hiện giữ PDF có lớp chữ và DOCX như mục 2.1 của bản
-được cung cấp. Nếu nhóm chốt chỉ PDF, cần sửa đồng thời SRS, BRD,
-README, Reader, ví dụ source_refs và dữ liệu mẫu; không tự xem DOCX
-là đã bị loại khỏi phạm vi.
+DOCX là đầu vào chính, PDF có lớp chữ là đầu vào hỗ trợ. Công cụ đọc trực tiếp hoặc chuyển đổi PDF trong Reader được lựa chọn khi triển khai; phải giữ khả năng truy nguồn và hợp đồng ExtractedDocument. Công nghệ cụ thể của từng module được thống nhất khi họp hoặc giao người phụ trách lựa chọn trong ràng buộc SRS và hợp đồng chung.
 
 ### 7.6. Điều kiện xem xét lại quyết định
 
 Đo trên các cặp tài liệu đại diện: ngắn/dài, ít/nhiều thay đổi, có bảng,
-đánh lại số Điều và ghép mơ hồ. Nếu thời gian thường vượt ngân sách
+chỉ dẫn đánh lại số, liên kết mơ hồ, đủ/thiếu tài liệu tham chiếu. Nếu thời gian thường vượt ngân sách
 chờ, không ổn định do mô hình/API ngoài, hoặc phát sinh yêu cầu theo dõi
 tiến độ và lấy kết quả sau khi tải lại trang, nhóm xem xét job bất đồng bộ.
 
