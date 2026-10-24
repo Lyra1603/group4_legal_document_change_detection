@@ -1,0 +1,31 @@
+{
+  "description": "Mẫu giả định cho hợp đồng Reader và Parser",
+  "extracted_document": {
+    "document_id": "v1",
+    "role": "BASE",
+    "filename": "sample_v1.docx",
+    "file_type": "DOCX",
+    "blocks": [
+      {
+        "source_ref": "docx:paragraph_1",
+        "text": "Điều 2. Thời hạn nộp báo cáo"
+      },
+      {
+        "source_ref": "docx:paragraph_2",
+        "text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+      }
+    ]
+  },
+  "expected_clauses": [
+    {
+      "unit_id": "v1:article_2",
+      "id": "Điều 2",
+      "title": "Thời hạn nộp báo cáo",
+      "content": "Doanh nghiệp phải nộp báo cáo trong 30 ngày.",
+      "source_refs": [
+        "docx:paragraph_1",
+        "docx:paragraph_2"
+      ]
+    }
+  ]
+}
