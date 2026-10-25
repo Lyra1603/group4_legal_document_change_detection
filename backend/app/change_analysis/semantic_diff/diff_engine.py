@@ -1,5 +1,5 @@
 import re
-from src.schemas import AlignedPair, SemanticDiffResult
+from backend.app.schemas.contracts import AlignedPair, SemanticDiffResult
 
 def run_semantic_diff(pair: AlignedPair) -> SemanticDiffResult:
     """

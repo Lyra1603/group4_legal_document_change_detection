@@ -1,4 +1,4 @@
-from src.schemas import AlignedPair, SemanticDiffResult, ScoringResult
+from backend.app.schemas.contracts import AlignedPair, SemanticDiffResult, ScoringResult
 
 def classify_and_score(pair: AlignedPair, sem_diff: SemanticDiffResult) -> ScoringResult:
     """

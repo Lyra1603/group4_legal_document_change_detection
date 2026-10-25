@@ -4,10 +4,10 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import json
-from src.parser.doc_parser import parse_clauses
-from src.aligner.version_aligner import align_versions
-from src.semantic_diff.diff_engine import run_semantic_diff
-from src.classifier_scorer.scorer import classify_and_score
+from backend.app.document_processing.parser.doc_parser import parse_clauses
+from backend.app.change_analysis.aligner.version_aligner import align_versions
+from backend.app.change_analysis.semantic_diff.diff_engine import run_semantic_diff
+from backend.app.change_analysis.classifier_scorer.scorer import classify_and_score
 from src.evaluation.evaluator import evaluate_predictions
 
 def run_pipeline(doc_v1_text: str, doc_v2_text: str):

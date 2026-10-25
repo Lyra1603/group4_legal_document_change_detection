@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from src.validation import validate_extracted_document
+from backend.app.schemas.validation import validate_extracted_document
 
 
 FIXTURE_PATH = (

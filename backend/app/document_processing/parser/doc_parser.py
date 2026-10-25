@@ -1,6 +1,6 @@
 import re
 from typing import List
-from src.schemas import Clause
+from backend.app.schemas.contracts import Clause
 
 def parse_clauses(text: str) -> List[Clause]:
     """

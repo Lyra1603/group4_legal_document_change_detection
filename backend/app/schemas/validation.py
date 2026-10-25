@@ -1,4 +1,4 @@
-from src.schemas import ExtractedDocument
+from backend.app.schemas.contracts import ExtractedDocument
 
 
 def validate_extracted_document(document: ExtractedDocument) -> None:

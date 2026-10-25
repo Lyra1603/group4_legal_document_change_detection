@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from src.pipeline import run_pipeline
+from backend.app.pipeline import run_pipeline
 
 app = FastAPI(title="Legal Document Change Detection API")
 
