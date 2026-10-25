@@ -1,0 +1,10 @@
+{
+  "sample_id": "T1-002",
+  "origin": "SYNTHETIC",
+  "split": "dev",
+  "baseline_pair_key": "Điều 1 -> Điều 1",
+  "operation": "AMEND",
+  "expected_meaningful_change": false,
+  "expected_critical": false,
+  "reason": "Cách diễn đạt thay đổi nhưng nội dung quy định không đổi."
+}

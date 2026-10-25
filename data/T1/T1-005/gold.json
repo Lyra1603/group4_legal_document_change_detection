@@ -1,0 +1,10 @@
+{
+  "sample_id": "T1-005",
+  "origin": "SYNTHETIC",
+  "split": "dev",
+  "baseline_pair_key": "Điều 3 -> None",
+  "operation": "REPEAL",
+  "expected_meaningful_change": true,
+  "expected_critical": true,
+  "reason": "Bãi bỏ toàn bộ chế tài phạt vi phạm là thay đổi có tác động pháp lý lớn trong fixture này."
+}

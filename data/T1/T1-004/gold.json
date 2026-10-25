@@ -1,0 +1,10 @@
+{
+  "sample_id": "T1-004",
+  "origin": "SYNTHETIC",
+  "split": "dev",
+  "baseline_pair_key": "None -> Điều 2",
+  "operation": "ADD",
+  "expected_meaningful_change": true,
+  "expected_critical": false,
+  "reason": "Một Điều mới được bổ sung; việc bổ sung không tự động được gán critical."
+}

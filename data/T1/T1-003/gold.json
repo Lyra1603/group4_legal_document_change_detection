@@ -1,0 +1,13 @@
+{
+  "sample_id": "T1-003",
+  "origin": "SYNTHETIC",
+  "split": "dev",
+  "baseline_pair_key": "Điều 2 -> Điều 2",
+  "operation": "AMEND",
+  "expected_meaningful_change": true,
+  "expected_critical": true,
+  "field_group": "TIME_QUANTITY",
+  "before_text": "30 ngày",
+  "after_text": "15 ngày",
+  "reason": "Thời hạn thanh toán bị rút ngắn từ 30 ngày xuống 15 ngày."
+}
