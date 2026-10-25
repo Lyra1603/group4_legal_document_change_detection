@@ -35,6 +35,34 @@ Evaluator chạy riêng để đối chiếu kết quả với nhãn chuẩn.
 Đây là kiến trúc mục tiêu. Pipeline baseline hiện tại chưa triển khai
 đầy đủ luồng này.
 
+```mermaid
+flowchart TD
+    UI["Giao diện"] --> API["API"]
+    API --> P["Pipeline"]
+
+    subgraph Modules["Các bước do Pipeline điều phối"]
+        R["Reader: đọc V1, S và tài liệu tham chiếu"]
+        PA["Parser: tách cấu trúc, giữ vị trí nguồn"]
+        A["Trích xuất chỉ dẫn sửa đổi và liên kết tới V1"]
+        CTX["Chuẩn bị nội dung trước/sau và ngữ cảnh"]
+        T["Text Diff"]
+        S["Semantic Diff"]
+        C["Classifier & Scorer"]
+
+        R --> PA --> A --> CTX --> T --> S --> C
+    end
+
+    P --> R
+    C --> REPORT["ComparisonReport: kết quả, bằng chứng, cảnh báo"]
+    REPORT --> API
+
+    REPORT -. "Khi đánh giá" .-> E["Evaluator"]
+    GT["Nhãn chuẩn"] --> E
+```
+
+Sơ đồ mô tả kiến trúc mục tiêu. Các bước xử lý chạy trong cùng
+backend Python; pipeline baseline hiện chưa triển khai đầy đủ.
+
 ## 2. Mục tiêu Hệ thống & Chỉ số Nghiệm thu (Targets)
 - Change F1 ≥ 0,90: đo khả năng phát hiện từng thay đổi nghĩa.
 - Critical Change Recall ≥ 0,95: tìm đúng ít nhất 95% thay đổi
