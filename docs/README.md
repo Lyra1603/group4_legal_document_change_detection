@@ -104,4 +104,19 @@ uvicorn backend.main:app --reload
 ```
 - Truy cập API Docs tại: http://127.0.0.1:8000/docs
 
+---
 
+## 5. Cập nhật phần việc của Đỗ Tuấn Anh
+
+Đã chuẩn bị một bộ dữ liệu mẫu nhỏ để phát triển và kiểm thử Evaluator. Bộ
+dữ liệu gồm 5 tình huống: không có thay đổi, chỉ thay đổi cách diễn đạt, thay
+đổi số liệu, bổ sung một Điều và bãi bỏ chế tài. Mỗi tình huống có văn bản V1,
+văn bản sửa đổi, nhãn kết quả dự kiến và ghi chú giải thích.
+
+Ngoài ra, đã tạo file manifest để quản lý các file mẫu và viết 4 test cho
+Evaluator, bao gồm kiểm tra Precision, Recall, F1, Critical Change Recall,
+false positive, false negative và trường hợp dữ liệu chưa đầy đủ. Kết quả kiểm
+thử hiện tại: **4/4 test passed**.
+
+Các dữ liệu trên là fixture tổng hợp phục vụ phát triển, chưa phải bộ dữ liệu
+đánh giá chính thức.
