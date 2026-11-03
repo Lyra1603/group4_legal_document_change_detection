@@ -75,11 +75,14 @@ class ScoringResult(TypedDict):
     significance: str
     is_critical: bool
 
+class BaselineSemanticDiffResult(TypedDict):
+    is_meaningful_change: bool
+    diff_details: str
 class AlignedPair(TypedDict):
     pair_key: str
     v1: Optional[Clause]
     v2: Optional[Clause]
     align_type: str
     similarity_score: float
-    semantic_diff: Optional[SemanticDiffResult]
+    semantic_diff: Optional[BaselineSemanticDiffResult]
     scoring: Optional[ScoringResult]

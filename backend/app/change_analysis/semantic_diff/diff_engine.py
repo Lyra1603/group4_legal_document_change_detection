@@ -1,7 +1,8 @@
 import re
-from backend.app.schemas.contracts import AlignedPair, SemanticDiffResult
+from backend.app.schemas.contracts import AlignedPair, BaselineSemanticDiffResult
 
-def run_semantic_diff(pair: AlignedPair) -> SemanticDiffResult:
+
+def run_semantic_diff(pair: AlignedPair) -> BaselineSemanticDiffResult:
     """
     Hiện tại: Bản Baseline dùng Rule/Regex bắt thay đổi số liệu và từ khóa pháp lý.
     Cần nâng cấp: Kết hợp NLP / LLM để bắt thay đổi ngữ nghĩa sâu hơn.
