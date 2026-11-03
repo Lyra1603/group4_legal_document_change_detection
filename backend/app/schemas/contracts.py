@@ -66,9 +66,35 @@ class AmendmentItem(TypedDict):
     needs_review: bool
     review_reason: str
 
-class SemanticDiffResult(TypedDict):
-    is_meaningful_change: bool
+class ChangeAspect(TypedDict):
+    aspect_id: str
+    field_group: Optional[str]
+    old_value: Optional[str]
+    new_value: Optional[str]
+    interpretation: str
+    evidence: list[EvidenceRef]
+    old_quote: Optional[str]
+    new_quote: Optional[str]
+    needs_review: bool
+    review_reason: str
+
+
+class SemanticChange(TypedDict):
+    change_id: str
+    is_meaningful_change: Optional[bool]
     diff_details: str
+    aspects: list[ChangeAspect]
+    evidence: list[EvidenceRef]
+    old_quote: Optional[str]
+    new_quote: Optional[str]
+    needs_review: bool
+    review_reason: str
+
+class SemanticDiffResult(TypedDict):
+    amendment_id: str
+    changes: list[SemanticChange]
+    needs_review: bool
+    review_reason: str
 
 class ScoringResult(TypedDict):
     category: str
@@ -78,6 +104,7 @@ class ScoringResult(TypedDict):
 class BaselineSemanticDiffResult(TypedDict):
     is_meaningful_change: bool
     diff_details: str
+
 class AlignedPair(TypedDict):
     pair_key: str
     v1: Optional[Clause]
