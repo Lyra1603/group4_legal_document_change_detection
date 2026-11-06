@@ -212,6 +212,45 @@ cho luồng V1 và S sẽ được cập nhật trong bước tích hợp tiếp
 
 Nhấn `Ctrl + C` tại terminal để dừng server.
 
+### 4.5. Đọc DOCX/PDF và tách Điều trong backend local
+
+Reader được tích hợp từ nhánh `feature/integrate-reader-parser`; parser mức
+Điều được điều chỉnh theo bản `feature/week6-reader-parser` để dùng schema
+backend và giữ nguồn. Dùng từ Python tại thư mục gốc:
+
+```python
+from backend.app.pipeline import read_and_parse_document
+
+result = read_and_parse_document("data/sample.docx", "v1", "BASE")
+document = result["document"]  # ExtractedDocument, giữ cả phần ngoài Điều
+clauses = result["clauses"]   # Clause có unit_id và source_refs
+```
+
+Thay `data/sample.docx` bằng file thực tế. Role hợp lệ là `BASE`,
+`AMENDMENT`, `REFERENCE`. `unit_id` có dạng `v1:article_2`.
+`source_refs` của Clause được tra trong `document.blocks` của cùng tài liệu.
+DOCX dùng `docx:paragraph_N` / `docx:table_N` (đếm riêng từ 1, đoạn rỗng vẫn
+được đếm); PDF dùng `pdf:page_N`. Nguồn chỉ đến đoạn/bảng/trang, chưa phải
+offset ký tự. Bảng trong Điều được giữ dạng chữ, không phân tích cấu trúc ô.
+
+Reader kiểm tra ExtractedDocument trước khi bàn giao. Parser báo
+`STRUCTURE_NOT_FOUND` khi không tìm được Điều và `AMBIGUOUS_STRUCTURE` khi
+trùng nhãn Điều. Parser này chưa hiểu trích dẫn, nhãn Word tự động hoặc cấu
+trúc Khoản/Điểm; nguồn ngoài Điều vẫn còn trong `document.blocks`.
+`legal_structure_parser.py` vẫn là công cụ nâng cao riêng, có schema/source
+ref khác; chưa nối vào entry point này. PDF có lớp chữ có Reader nhưng đợt
+kiểm thử này tập trung DOCX, chưa xác nhận toàn bộ đường xử lý PDF.
+
+API `/api/compare` vẫn nhận chuỗi V1/V2. Hàm mới chỉ đọc và tách cấu trúc,
+chưa thực hiện so sánh V1–S hay upload qua API. Pipeline chuỗi bổ sung
+`unit_id` theo tài liệu; `source_refs=[]` vì không có file nguồn.
+
+Chạy toàn bộ kiểm thử hiện có (test DOCX tự tạo file trong thư mục tạm):
+
+```bat
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py" -v
+```
+
 ## 5. Lưu ý khi tích hợp module
 
 Các module chính đã được chuyển từ `src/` sang `backend/app/`.
