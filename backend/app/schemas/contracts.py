@@ -1,4 +1,5 @@
-from typing import Optional, TypedDict
+from typing import Optional, Literal
+from typing_extensions import TypedDict
 
 class SourceBlock(TypedDict):
     source_ref: str
@@ -51,15 +52,15 @@ class AnalysisContext(TypedDict):
 
 class AmendmentItem(TypedDict):
     amendment_id: str
-    operation: str
+    operation: Literal['AMEND', 'ADD', 'REPEAL', 'UNRESOLVED']
     instruction: EvidenceRef
     target_document: str
     target_locator: str
     target_unit_ids: list[str]
-    applicability: str
+    applicability: Literal['APPLIES', 'OTHER_DOCUMENT', 'UNRESOLVED']
     before_text: Optional[str]
     after_text: Optional[str]
-    after_basis: str
+    after_basis: Literal['QUOTED', 'DERIVED', 'ABSENT', 'UNRESOLVED']
     evidence: list[EvidenceRef]
     effect_info: list[EffectInfo]
     context: AnalysisContext
@@ -96,7 +97,7 @@ class SemanticDiffResult(TypedDict):
     needs_review: bool
     review_reason: str
 
-class ScoringResult(TypedDict):
+class LegacyScoringResult(TypedDict):
     category: str
     significance: str
     is_critical: bool
@@ -112,4 +113,60 @@ class AlignedPair(TypedDict):
     align_type: str
     similarity_score: float
     semantic_diff: Optional[BaselineSemanticDiffResult]
-    scoring: Optional[ScoringResult]
+    scoring: Optional[LegacyScoringResult]
+
+
+class ScoringResult(TypedDict):
+    change_id: str
+    category: Optional[str]
+    significance: Optional[Literal['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']]
+    is_critical: Optional[bool]
+    reason: str
+    needs_review: bool
+    review_reason: str
+
+
+class TextChange(TypedDict):
+    type: Literal['INSERT', 'DELETE', 'REPLACE']
+    old_text: str
+    new_text: str
+    old_start: int
+    old_end: int
+    new_start: int
+    new_end: int
+
+
+class TextDiffResult(TypedDict):
+    amendment_id: str
+    changes: list[TextChange]
+
+
+class AmendmentResult(TypedDict):
+    amendment: AmendmentItem
+    text_diff: Optional[TextDiffResult]
+    semantic_diff: Optional[SemanticDiffResult]
+    scoring: Optional[list[ScoringResult]]
+
+
+class ProcessingIssue(TypedDict):
+    stage: str
+    code: str
+    message: str
+    amendment_id: Optional[str]
+
+
+class DocumentIdentity(TypedDict):
+    document_id: str
+    role: Literal['BASE', 'AMENDMENT', 'REFERENCE']
+    filename: str
+
+
+class ComparisonReport(TypedDict):
+    comparison_id: str
+    base_document: DocumentIdentity
+    amendment_document: DocumentIdentity
+    reference_documents: list[DocumentIdentity]
+    status: Literal['SUCCESS', 'PARTIAL', 'FAILED']
+    results: list[AmendmentResult]
+    warnings: list[ProcessingIssue]
+    errors: list[ProcessingIssue]
