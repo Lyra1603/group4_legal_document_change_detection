@@ -109,7 +109,17 @@ from backend.app.change_analysis.aligner.version_aligner import align_versions
 from backend.app.pipeline import run_pipeline
 ```
 
-## Hiện trạng triển khai
+## Backend local: API upload và hợp đồng mục tiêu
+
+Xem [API contract phát triển](api-contract.md) và
+[Development guide](development-guide.md) để chạy upload, cấu hình giới hạn,
+kiểm thử và nối adapter. Schema báo cáo theo SRS đã có runtime validation.
+`POST /api/comparisons` nhận file thật, quản lý file tạm và trả report;
+các adapter nghiệp vụ chưa bàn giao sẽ báo MODULE_NOT_CONFIGURED, không có
+mock trong server. Endpoint `/api/compare` bên dưới vẫn là baseline V1/V2.
+Phần hiện trạng baseline dưới đây không mô tả đầy đủ endpoint upload mới.
+
+## Hiện trạng baseline
 
 - Các module chính của baseline đã được chuyển vào backend/app/.
 - Schema đã bổ sung hợp đồng dữ liệu phục vụ Reader/Parser và chỉ dẫn
