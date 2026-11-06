@@ -84,6 +84,18 @@ class ReaderParserTests(unittest.TestCase):
         self.assertEqual(result[0]['v1']['source_refs'], [])
         self.assertTrue(result[0]['semantic_diff']['is_meaningful_change'])
 
+    def test_text_pdf_keeps_page_source(self):
+        import pymupdf
+        path = self.path.with_suffix('.pdf')
+        pdf = pymupdf.open()
+        pdf.new_page().insert_text((72, 72), 'Readable reference text')
+        pdf.save(path)
+        pdf.close()
+        result = read_and_parse_document(str(path), 'ref_1', 'REFERENCE')
+        self.assertEqual(result['document']['blocks'][0]['source_ref'], 'pdf:page_1')
+        self.assertIn('Readable reference text', result['document']['blocks'][0]['text'])
+        self.assertEqual(result['clauses'], [])
+
 
 if __name__ == '__main__':
     unittest.main()

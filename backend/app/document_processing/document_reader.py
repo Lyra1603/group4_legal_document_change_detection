@@ -18,7 +18,7 @@ from docx.table import Table
 from docx.text.paragraph import Paragraph
 
 try:
-    import fitz  # PyMuPDF
+    import pymupdf as fitz
 except ImportError:
     fitz = None
 
