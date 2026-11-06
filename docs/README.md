@@ -11,6 +11,15 @@
    phân công và tiến độ triển khai.
 5. Mã nguồn: baseline hiện tại.
 
+**Lịch và trạng thái đồng bộ 1.5.0:** hiện cuối tuần 9; hoàn tất cuối tuần 13
+để nộp đầu tuần 14 (chưa có ngày cụ thể). Xem
+[Implementation Plan](implementation-plan.md),
+[lộ trình tuần trên Google Docs](https://docs.google.com/document/d/1-pSaoPC-GJR6JSGDpmCwj1UOE9N0dSPO4hZCD3iPn9s/edit)
+và [phân công/tiến độ trên Google Sheets](https://docs.google.com/spreadsheets/d/1Fe9d8UHGrK9YG6j7BLtd0EwQQ7LA-CpPjvPzn6d3k48/edit).
+Tuần 10 tích hợp tối thiểu, tuần 11 chốt ứng viên, tuần 12 đánh giá, tuần 13
+đóng gói. Code riêng, mock và kiểm thử contract không phải bằng chứng hệ thống
+đã phân tích V1–S hoàn chỉnh. LightRAG là đề xuất thử nghiệm tùy chọn.
+
 ---
 
 ## 1. Kiến trúc mục tiêu
