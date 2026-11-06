@@ -1,5 +1,7 @@
-fastapi
-uvicorn
-pydantic
-pymupdf
-python-docx
+fastapi==0.143.0
+uvicorn==0.54.0
+pydantic==2.14.1
+pymupdf==1.28.2
+python-docx==1.2.0
+python-multipart==0.0.33
+typing_extensions==4.16.0
