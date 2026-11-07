@@ -26,10 +26,9 @@ Ngữ cảnh gồm thông tin tổng quát của V1 về phạm vi, đối tư�
 Pipeline điều phối các module. Backend API nhận yêu cầu từ giao diện,
 gọi Pipeline và trả báo cáo để giao diện hiển thị.
 
-Evaluator chạy riêng khi kiểm thử, đối chiếu kết quả với đáp án chuẩn;
-không nằm trong luồng so sánh thông thường của người dùng.
+Không triển khai Evaluator như một module/đầu việc độc lập. Kiểm thử chủ yếu do owner bên cung cấp và bên nhận tại từng điểm nối cùng thực hiện; Dũng điều phối đầu-cuối. Phép đo với đáp án chuẩn được thực hiện bằng kiểm thử/script trong `test/` khi cần, không mất trách nhiệm kiểm tra nghiệp vụ.
 
-Dưới đây là Data Contract (Hợp đồng dữ liệu) quy định bắt buộc định dạng Input/Output giữa các module. Mọi thay đổi đều phải được Nhóm trưởng phê duyệt.
+Các cấu trúc mục 1.1–1.6 là biểu diễn nội bộ dùng cho phân tích và nhãn tham chiếu; mục 1.7–1.8 quy định hợp đồng báo cáo/phiên mục tiêu. Không xuất hợp đồng báo cáo cũ song song như API chính thức. Hai owner chốt input/output, ý nghĩa null/rỗng/lỗi, nguồn và fixture trước khi code độc lập; Đức Anh phối hợp hiện thực schema dùng chung; Dũng điều phối tích hợp/Pipeline/API. Các tên trường mới ở mục 1.7–1.8 là đặc tả mục tiêu cần review bằng fixture trước khi đóng băng; danh mục bốn mã chưa được xác nhận, không tự đặt mã. Đổi contract phải có bên giao/nhận review, đồng bộ SRS/schema/fixture trước tích hợp.
 
 ## 1. Data Structures (Cấu trúc dữ liệu dùng chung)
 
@@ -48,8 +47,7 @@ Quy định:
 - `unit_id` phân biệt các Điều trong từng tài liệu, ví dụ:
   `v1:article_5`, `s:article_1` và `ref_1:article_6`.
 - `id` là nhãn trong tài liệu; có thể thay đổi khi đánh lại số Điều.
-- `source_refs` tham chiếu các vị trí do Reader ghi nhận:
-  trang PDF hoặc đoạn/bảng Word; một Điều có thể trải qua nhiều vị trí.
+- `source_refs` tham chiếu nguồn được Parser/adapter giữ lại. Implementation hiện dùng `block:N`; offset theo ký tự Python, khoảng `[start,end)`. Với PDF chuyển sang DOCX, nguồn hiện chỉ xác nhận trên DOCX chuyển đổi; không suy số trang PDF từ số block. Một Điều có thể trải qua nhiều vị trí.
 - Không xóa ngắt dòng phân chia Khoản/Điểm khi chuẩn hóa nội dung.
   
 ### 1.2 AmendmentItem và AnalysisContext
@@ -110,12 +108,14 @@ Quy định:
 - `references` chỉ ra nội dung dẫn chiếu cần thiết. Đổi dẫn chiếu A → B cần căn cứ cả A và B để phân tích tác động trước–sau nếu chưa có trong đầu vào. File có mặt nhưng chưa tìm được đúng nội dung vẫn là `UNRESOLVED`.
 - Ngữ cảnh tổng quát không thay thế việc đọc đoạn gốc, định nghĩa, điều kiện và ngoại lệ liên quan. Kết luận dựa trên tài liệu tham chiếu phải có `EvidenceRef` tương ứng.
 
-### 1.3 SemanticDiffResult (Kết quả phân tích ngữ nghĩa)
+### 1.3 SemanticDiffResult (Kết quả phân tích ngữ nghĩa nội bộ)
+
+Owner triển khai Semantic Diff là Tuấn Anh. Tám `field_group` dưới đây được giữ để mô tả khía cạnh và đối chiếu nhãn nội bộ, không thay cho bốn mã phân loại của `ReviewItem`. Khi xác định ngoài phạm vi bốn nhóm, giữ nguồn và lý do `OUT_OF_SCOPE`; không ép về nhãn có sẵn hoặc kết luận false/LOW.
 
 ```python
 class ChangeAspect:
     aspect_id: str             # Duy nhất trong SemanticChange
-    field_group: str | None    # Một trong 8 nhóm bên dưới; None nếu chưa rõ
+    field_group: str | None    # Một trong 8 nhóm nội bộ bên dưới; None nếu chưa rõ
     old_value: str | None      # Nội dung ngữ nghĩa trước thay đổi
     new_value: str | None      # Nội dung ngữ nghĩa sau thay đổi
     interpretation: str       # Giải thích sự chuyển đổi trước → sau
@@ -226,7 +226,9 @@ old_quote/new_quote là hai câu đầy đủ. Hành vi nộp báo cáo và tín
 bắt buộc không đổi nên chỉ giữ làm ngữ cảnh. Mức độ được chấm riêng
 theo guideline; ví dụ không mặc định là CRITICAL.
 
-### 1.4 ScoringResult (Phân loại và chấm từng thay đổi)
+### 1.4 ScoringResult (Phân loại và chấm từng thay đổi nội bộ)
+
+Tuấn Anh phụ trách Scorer. `category` nội bộ theo các quy tắc dưới đây không phải mã phân loại bốn nhóm của đầu ra. Bảng ánh xạ do Tuấn Anh phối hợp Dũng phụ trách tích hợp và Đức Anh ở schema/AI Adapter chốt trước khi đưa vào báo cáo.
 
 ```
 class ScoringResult:
@@ -265,11 +267,11 @@ Quy định:
   khiến chưa đủ căn cứ chấm mức độ tổng thể thì dùng None theo quy định trên.
 - Chấm mức độ theo bộ tiêu chí và ví dụ nhóm đã thống nhất.
 
-### 1.5 ExtractedDocument (Đầu ra Reader)
+### 1.5 ExtractedDocument (Biểu diễn nguồn qua adapter)
 
 ```
 class SourceBlock:
-    source_ref: str       # Ví dụ: "pdf:page_1" hoặc "docx:paragraph_5"
+    source_ref: str       # block:N; định dạng khác chỉ khi đã kiểm chứng mapping
     text: str
 
 class ExtractedDocument:
@@ -282,7 +284,7 @@ class ExtractedDocument:
 
 Quy định:
 - blocks giữ thứ tự nội dung trong tài liệu, bao gồm nội dung bảng.
-- Parser dùng blocks để tách Điều và lưu source_refs.
+- Parser hiện tự đọc DOCX; document_adapter ánh xạ cây và source_blocks sang biểu diễn chung, không bắt Parser đọc lại từ ExtractedDocument. Native Parser trả articles/outside/source_blocks/warnings/status/summary; node có children, segments, full_text và source_refs.
 - Không đọc được nội dung thì báo lỗi, không trả văn bản rỗng hợp lệ.
 - source_ref phải duy nhất trong từng tài liệu.
 - Khi truy nguồn, dùng đồng thời document_id và source_ref.
@@ -312,10 +314,10 @@ Quy định:
 - Chưa xác định được một phía: không chạy Text Diff, trả None ở báo cáo kèm cảnh báo. Không dùng chuỗi rỗng thay cho nội dung chưa biết.
 - Nội dung giống nhau có changes = []; chỉ dẫn sửa đổi và phân tích hiệu lực vẫn được giữ. Không diff toàn bộ V1 với S.
 
-### 1.7 ComparisonReport (Báo cáo tổng hợp)
+### 1.7 ComparisonReport và ReviewItem (Báo cáo mục tiêu)
 
 ```python
-class AmendmentResult:
+class AmendmentResult:          # Kết quả nội bộ để tổng hợp, không là envelope API
     amendment: AmendmentItem
     text_diff: TextDiffResult | None
     semantic_diff: SemanticDiffResult | None
@@ -329,28 +331,49 @@ class ProcessingIssue:
 
 class DocumentIdentity:
     document_id: str
-    role: str                 # BASE | AMENDMENT | REFERENCE
-    filename: str             # Không chứa đường dẫn lưu nội bộ
+    role: str                  # BASE | AMENDMENT | REFERENCE
+    filename: str              # Không chứa đường dẫn lưu nội bộ
+
+class ReviewItem:               # Đơn vị kiểm chứng, không chứa decision của người dùng
+    item_id: str
+    amendment: AmendmentItem
+    text_diff: TextDiffResult | None
+    semantic_change: SemanticChange | None
+    scoring: ScoringResult | None
+    classification_code: str | None  # Một trong bốn mã: danh mục còn chờ chốt
+    scope_status: str          # IN_SCOPE | OUT_OF_SCOPE | UNRESOLVED
+    needs_review: bool
+    review_reason: str
 
 class ComparisonReport:
     comparison_id: str
-    base_document: DocumentIdentity
-    amendment_document: DocumentIdentity
-    reference_documents: list[DocumentIdentity]
-    status: str               # SUCCESS | PARTIAL | FAILED
-    results: list[AmendmentResult]
+    documents: list[DocumentIdentity]
+    items: list[ReviewItem]
+    status: str                # SUCCESS | PARTIAL | FAILED
     warnings: list[ProcessingIssue]
     errors: list[ProcessingIssue]
 ```
 
-Quy định:
-- BASE có document_id = "v1"; AMENDMENT có document_id = "s"; mỗi REFERENCE có định danh riêng. Metadata được giữ kể cả báo cáo PARTIAL/FAILED. Tên file không xác nhận tên pháp lý hoặc hiệu lực; UI luôn hiển thị vai trò dù các file trùng tên.
-- SUCCESS: hoàn tất các bước trong phạm vi yêu cầu; vẫn có thể có nhận định cần kiểm tra. PARTIAL: một phần chưa xử lý hoặc chưa thể phân tích vì thiếu căn cứ; phải chỉ rõ phần bị ảnh hưởng. FAILED: không tạo được kết quả sử dụng được.
-- Thiếu tài liệu tham chiếu cần thiết cho phân tích tác động: PARTIAL, giữ thay đổi trực tiếp đã xác định và liệt kê nhu cầu bổ sung. Không chặn các kết quả khác.
-- Bước chưa thực hiện hoặc thất bại dùng None kèm lỗi/cảnh báo và lý do; không thay bằng danh sách rỗng. scoring = [] chỉ khi hoàn tất nhưng không có SemanticChange để chấm.
-- Mỗi ScoringResult tham chiếu change_id trong SemanticDiffResult của cùng AmendmentResult. Cảnh báo phải giữ đến báo cáo và kết quả chấm mức độ.
-- Nếu is_meaningful_change = None: significance và is_critical là None, needs_review = True; không tự chấm LOW.
-- Chỉ thông báo “Không tìm thấy yêu cầu sửa đổi đối với V1 trong S đã cung cấp” khi status = SUCCESS, đã xử lý đầy đủ S, không có yêu cầu APPLIES và không còn đối tượng/phần nội dung chưa xác định. Text Diff rỗng không đủ để đưa ra kết luận này.
+Quy định mục tiêu:
+- `documents` có đúng một BASE (`v1`), một AMENDMENT (`s`) và các REFERENCE có định danh riêng. Giữ vai trò/filename ngay cả PARTIAL/FAILED; tên file không xác nhận tên pháp lý hoặc hiệu lực.
+- Pipeline tổng hợp từ AmendmentResult nội bộ sang ReviewItem. Một SemanticChange được tách thành một mục kiểm chứng; scoring nếu có phải cùng change_id. Yêu cầu chưa tạo được SemanticChange vẫn có mục giữ chỉ dẫn, nguồn và lý do; không làm mất chỉ dẫn bằng mảng rỗng.
+- Mỗi item_id duy nhất trong comparison; không mặc định dùng item_id, số Điều hoặc thứ tự để ghép qua các lần chạy. Nguồn đi kèm phải đủ để frontend đọc bằng chứng sau khi backend dọn file.
+- Bốn mã classification_code cần được chốt tên, định nghĩa, ranh giới và fixture ánh xạ. Khi chưa chốt hoặc chưa xác định được nhóm, để null, scope_status = UNRESOLVED và ghi lý do; không coi đây là phân loại hoàn chỉnh. OUT_OF_SCOPE chỉ khi đã xác định nằm ngoài phạm vi; không tự đồng nhất với OTHER_DOCUMENT hoặc lỗi retrieval.
+- Không dùng tám field_group nội bộ hay category của ScoringResult làm danh mục bốn mã đầu ra. Khi ánh xạ, giữ giải thích, chi tiết và bằng chứng cần thiết; không mất các nội dung độc lập.
+- SUCCESS: xử lý đầy đủ yêu cầu trong phạm vi, vẫn có thể còn nhận định cần người kiểm tra. PARTIAL: còn phần chưa xử lý hoặc thiếu căn cứ ảnh hưởng phân tích; FAILED: không tạo được kết quả sử dụng được. Mỗi trường hợp phải có lý do phù hợp.
+- Bước chưa thực hiện/thất bại dùng null kèm cảnh báo/lỗi; không thay bằng danh sách rỗng. Thiếu tài liệu cần cho tác động: PARTIAL, giữ thay đổi trực tiếp đã xác định.
+- Chỉ thông báo không tìm thấy yêu cầu sửa V1 khi đã xử lý đầy đủ S, không có APPLIES và không còn nội dung chưa xác định. Text Diff rỗng không đủ để kết luận này.
+- Contract cũ base_document/amendment_document/reference_documents/results cần adapter/chuyển đổi; không mặc định frontend mục tiêu đọc được response cũ. Fixture báo cáo mục tiêu phải được hai bên review trước đổi API.
+
+### 1.8 ReviewRecord và đối chiếu sau bổ sung
+
+ReviewRecord là dữ liệu frontend trong phiên, tách khỏi báo cáo AI và nhãn gold. Trường mục tiêu tối thiểu: comparison_id, item_id, review_status (`UNREVIEWED`/`REVIEWED`/`RECHECK_REQUIRED`), decision, note và previous_record nếu có. Danh mục decision và thuật toán ghép cần được owner frontend, Semantic Diff và API chốt bằng fixture; không tự đặt một enum chưa thống nhất.
+
+- Lượt mới khởi tạo mục UNREVIEWED. Người dùng có thể ghi decision/note; nhận xét không ghi đè kết quả AI và không tự thành gold.
+- Bổ sung tài liệu: gửi lại V1/S cùng tham chiếu cũ/mới bằng request đồng bộ mới. Giữ báo cáo/nhận xét cũ, khóa sửa/lưu khi đang chờ; FAILED/timeout không thay báo cáo cũ.
+- PARTIAL có kết quả dùng được vẫn đối chiếu: mục mới UNREVIEWED; mục cũ có nội dung liên quan đổi RECHECK_REQUIRED, decision hiện tại null, previous_record giữ riêng. Chỉ giữ REVIEWED khi chứng minh nội dung liên quan không đổi.
+- Không ghép chắc chắn: giữ nhận xét cũ ở danh sách chưa đối chiếu. Chưa kiểm chứng được mapping thì yêu cầu kiểm tra lại mọi mục cũ nhận diện được, không gắn theo ID/số Điều/thứ tự một cách máy móc.
+- File, report/nguồn và nhận xét chỉ được giữ trong phiên frontend; chưa bảo đảm sau tải lại/đóng tab. Không bổ sung API lưu nhận xét, tài khoản hoặc database lịch sử ở đợt này.
 
 ## 2. Functional Requirements
 
@@ -360,9 +383,9 @@ Quy định:
 | FR-02 | Parser | Một ExtractedDocument → list[Clause] và blocks được giữ | Tách Điều, giữ Khoản/Điểm và nguồn; giữ bảng/ngữ cảnh ngoài Điều để truy xuất khi cần |
 | FR-03 | Trích yêu cầu và liên kết | V1, S đã phân tích cấu trúc → list[AmendmentItem] | Trích sửa/bổ sung/bãi bỏ; định vị văn bản và Điều/Khoản/Điểm; phân biệt yêu cầu sửa văn bản khác; cảnh báo đích chưa rõ |
 | FR-04 | Text Diff | AmendmentItem đủ nội dung cục bộ → TextDiffResult | Chỉ rõ thêm/xóa/thay thế; tọa độ khớp before_text/after_text; không diff toàn bộ V1 với S |
-| FR-05 | Semantic Diff | AmendmentItem có context và TextDiffResult nếu có → SemanticDiffResult | Phân tích thay đổi với ngữ cảnh và bằng chứng; trả aspects theo 8 nhóm; thiếu căn cứ phải cảnh báo |
+| FR-05 | Semantic Diff | AmendmentItem có context và TextDiffResult nếu có → SemanticDiffResult nội bộ | Tuấn Anh phân tích nghĩa/bằng chứng; bộ tổng hợp ánh xạ sang ReviewItem và bốn mã đầu ra, không ép nhãn khi chưa rõ |
 | FR-06 | Classifier & Scorer | AmendmentItem và SemanticDiffResult → list[ScoringResult] | Chọn nhãn và mức độ theo tiêu chí; is_critical nhất quán với significance; có lý do |
-| FR-07 | Evaluator | Báo cáo dự đoán và đáp án chuẩn → chỉ số đánh giá | Tính cả thay đổi bỏ sót và dự đoán sai; không bỏ qua do liên kết sai hoặc thiếu kết quả |
+| FR-07 | Kiểm thử chéo và đầu-cuối | Fixture/đáp án chuẩn, đầu ra thật và kết quả tích hợp | Hai owner kiểm tra hợp đồng và cách dùng; tính sai/bỏ sót khi đo, không triển khai Evaluator riêng |
 | FR-08 | Upload và xem kết quả | V1, S và tài liệu tham chiếu nếu có → báo cáo | Chọn đúng vai trò, hiển thị thay đổi, nguồn, hiệu lực, mức độ, tài liệu thiếu; cho phép bổ sung và phân tích lại |
 | FR-09 | Ngữ cảnh và dẫn chiếu | V1, yêu cầu sửa đổi, các tài liệu đã cung cấp → AnalysisContext | Giữ thông tin tổng quát và ngữ cảnh liên quan; tìm đúng nội dung dẫn chiếu, báo thiếu cụ thể; không tự thu thập tài liệu |
 | FR-10 | Hiệu lực và chuyển tiếp | S và yêu cầu sửa đổi → list[EffectInfo] | Giữ nội dung, phạm vi áp dụng và bằng chứng; ngoại lệ/chưa rõ phải cảnh báo; không tự xác minh hiệu lực thực tế |
@@ -371,7 +394,7 @@ Mục tiêu đánh giá: Change F1 ≥ 0,90 và Critical Change Recall ≥ 0,95
 trên bộ kiểm thử độc lập. Đây là mục tiêu nghiệm thu, chưa phải
 chất lượng đã được chứng minh của mã nguồn hiện tại.
 
-Evaluator:
+Kiểm thử và phép đo ngoài luồng người dùng:
 - Đối chiếu ở cấp từng SemanticChange theo quy tắc gán nhãn thống nhất;
   không đếm mỗi ChangeAspect thành một thay đổi độc lập. Nhãn chuẩn
   phải chứa các khía cạnh kỳ vọng; quy tắc matching quy định cách xử lý
@@ -389,35 +412,17 @@ Evaluator:
 - Kiểm tra riêng độ đúng của liên kết đích, trích hiệu lực và yêu cầu bổ sung tài liệu. Mẫu thiếu căn cứ được đánh giá theo khả năng nhận diện giới hạn; không ép gán tác động chưa có bằng chứng. Nhãn chuẩn phải phản ánh đúng bộ tài liệu cung cấp cho mẫu, không dùng tài liệu ẩn để yêu cầu hệ thống kết luận.
 
 ## 3. Thiết kế module
-### 3.1 Module Reader(đọc file)
+### 3.1 Xử lý đầu vào và adapter
 
-| | Reader |
-|---|---|
-| Nhận vào | Một file `.docx` hoặc PDF có lớp chữ |
-| Công việc | Đọc nội dung chữ theo thứ tự trong tài liệu |
-| Đầu ra | Nội dung văn bản đã trích xuất (ExtractedDocument) |
-| Khi không đọc được chữ | Báo lỗi, không coi là văn bản rỗng hợp lệ |
-- Thư viện dự kiến:
-  + PyMuPDF đọc PDF: đã có trong requirements.txt của branch.
-  + python-docx đọc Word: cần bổ sung khi triển khai.
- 
-### 3.2 Module Parser — tách văn bản thành các Điều: Reader trả về chữ trong file. Parser nhận phần chữ đó và xác định ranh giới từng Điều để các module sau có thể so sánh.
-  
-| Nội dung | Quy định |
-|---|---|
-| Đầu vào |Một ExtractedDocument |
-| Xử lý | Nhận diện và tách từng Điều |
-| Đầu ra | list[Clause] |
-| Yêu cầu | Giữ đúng thứ tự; không nhầm câu dẫn chiếu “theo Điều 5…” thành đầu một Điều |
-| Lỗi | V1 hoặc S không tìm được Điều: báo lỗi cấu trúc. Tài liệu tham chiếu có thể cung cấp bảng/đoạn qua blocks; không loại bỏ chỉ vì thiếu nhãn Điều |
+Thọ phụ trách `document_processing/`: giữ `pdf_to_docx.py`, `document_adapter.py`, `amendment_linker.py` và `parser/legal_structure_parser.py`. PDF có lớp chữ được chuyển sang DOCX khi cần, kiểm tra nội dung và giữ liên kết nguồn. Không thêm folder Reader riêng hoặc bắt refactor code hiện có để khớp sơ đồ cũ.
 
-Ví dụ nội dung chữ trong các blocks: 
-```
-Điều 1. Phạm vi điều chỉnh
-Văn bản này quy định về...
-Điều 2. Đối tượng áp dụng
-Áp dụng đối với...
-```
+Adapter chuẩn hóa output Parser để các bên nhận dùng được, giữ document_id, vai trò, filename, nguồn gốc và cảnh báo. Không đọc được chữ thì báo lỗi; không coi file rỗng là đầu vào hợp lệ.
+
+### 3.2 Parser cấu trúc văn bản
+
+Parser tự đọc DOCX, trả cây `articles`, `outside`, `source_blocks`, `warnings`, `status`, `summary`; node giữ `children`, `segments`, `full_text`, `source_refs`. Không nhầm câu dẫn chiếu thành đầu Điều. V1/S không có Điều: báo lỗi cấu trúc; tham chiếu không có Điều vẫn có thể dùng blocks/bảng.
+
+Thọ và bên nhận chốt cấu trúc JSON fixture, định danh, đơn vị đếm và mapping nguồn. `summary` đếm theo cây đã parse, không tự chứng minh không bỏ sót nội dung; phải đối chiếu số lượng và vị trí kỳ vọng được review độc lập từ mẫu nguồn. Cây Parser không phải knowledge graph hoặc payload LightRAG được chốt sẵn.
 
 ### 3.3 Module trích yêu cầu sửa đổi và liên kết
 
@@ -429,7 +434,7 @@ Văn bản này quy định về...
 | Yêu cầu | Một Điều có thể có nhiều yêu cầu; phân biệt số Điều trong S với vị trí đích; không coi nội dung không được nhắc đến là bãi bỏ |
 | Chưa rõ | Giữ chỉ dẫn nguồn, cảnh báo; không tự áp sửa đổi khi thiếu căn cứ |
 
-Bước chuẩn bị ngữ cảnh lấy thông tin tổng quát và nội dung liên quan từ V1, kiểm tra tài liệu dẫn chiếu người dùng cung cấp, tạo AnalysisContext. Nội dung hiệu lực/chuyển tiếp trong S được gắn qua EffectInfo; giữ ngoại lệ và phần chưa xác định. Các trách nhiệm này có thể được tách module khi triển khai nhưng phải giữ hợp đồng dữ liệu mục 1.2.
+Bước chuẩn bị ngữ cảnh lấy thông tin tổng quát và nội dung liên quan từ V1, kiểm tra tài liệu dẫn chiếu người dùng cung cấp, tạo AnalysisContext. Nội dung hiệu lực/chuyển tiếp trong S được gắn qua EffectInfo; giữ ngoại lệ và phần chưa xác định. Đức Anh phụ trách chuẩn bị context theo phân công hiện có, giữ hợp đồng dữ liệu mục 1.2; người gọi/tích hợp LightRAG bổ sung sau. Phương án LightRAG Server qua HTTP đã chốt; chi tiết LK-13 chốt sau các quyết định khác. Client quản lý nhập, sẵn sàng, truy vấn và dọn dữ liệu từng comparison; source_registry ánh xạ về nguyên văn. Chưa chốt endpoint/payload/release thì phải kiểm chứng, không tự coi kết quả retrieval là bằng chứng đúng hoặc mức tác động.
 
 ### 3.4 Module Text Diff — tìm những đoạn chữ thay đổi: Sau khi xác định nội dung trước/sau cục bộ, Text Diff chỉ ra chữ nào được thêm, xóa hoặc thay thế.
 
@@ -437,7 +442,7 @@ Bước chuẩn bị ngữ cảnh lấy thông tin tổng quát và nội dung l
 |---|---|
 | Đầu vào | Một `AmendmentItem` đủ căn cứ đối chiếu |
 | Xử lý | So sánh before_text và after_text cục bộ |
-| Đầu ra | TextDiffResult theo mục 1.6 |
+| Đầu ra | TextDiffResult theo mục 1.6; Ngọc Anh chủ trì |
 | Loại thay đổi | `INSERT`: thêm; `DELETE`: xóa; `REPLACE`: thay thế |
 | Điều thêm/xóa toàn bộ | Ghi nhận toàn bộ nội dung phía tương ứng |
 
@@ -451,7 +456,7 @@ Ví dụ:
 |---|---|
 | Đầu vào | Một `AmendmentItem`, AnalysisContext và kết quả Text Diff nếu có; giữ ngữ cảnh liên quan và bằng chứng |
 | Xử lý | Phân biệt sửa cách diễn đạt với thay đổi nội dung, như quyền, nghĩa vụ, chủ thể, điều kiện, thời hạn hoặc chế tài |
-| Đầu ra | SemanticDiffResult chứa danh sách SemanticChange; mỗi thay đổi có aspects theo hợp đồng mục 1.3 |
+| Đầu ra | SemanticDiffResult nội bộ theo mục 1.3; Tuấn Anh chủ trì, phối hợp tổng hợp ReviewItem theo mục 1.7 |
 | Chưa đủ căn cứ | Đánh dấu cần kiểm tra; không tự kết luận là sửa văn phong |
 | Ranh giới trách nhiệm | Semantic Diff xác định khía cạnh, field_group, nội dung trước/sau và diễn giải; Classifier & Scorer chọn nhãn tổng thể và chấm mức độ sau |
 
@@ -473,10 +478,10 @@ Tiêu chí nghiệm thu tối thiểu:
 |---|---|
 | Đầu vào | `AmendmentItem` và kết quả Semantic Diff |
 | Xử lý | Xác định loại thay đổi và mức độ theo bộ tiêu chí thống nhất của nhóm |
-| Đầu ra | list[ScoringResult], một kết quả cho mỗi SemanticChange|
+| Đầu ra | list[ScoringResult], một kết quả cho mỗi SemanticChange; Tuấn Anh chủ trì |
 | Yêu cầu | Mức độ phải có lý do dựa trên nội dung và bằng chứng của thay đổi |
 
-Nhãn tổng thể category dùng 8 mã nhóm tại mục 1.3 hoặc WORDING_ONLY theo mục 1.4; sửa/bổ sung/bãi bỏ được thể hiện ở operation, còn nội dung thay đổi được phân tích trong aspects.
+Nhãn tổng thể category nội bộ dùng 8 mã nhóm tại mục 1.3 hoặc WORDING_ONLY theo mục 1.4, không phải classification_code bốn nhóm đầu ra; sửa/bổ sung/bãi bỏ được thể hiện ở operation, còn nội dung thay đổi được phân tích trong aspects.
 
 Quy tắc cần ghi rõ:
 - significance nhận một trong bốn mức: LOW, MEDIUM, HIGH, CRITICAL.
@@ -486,7 +491,9 @@ Quy tắc cần ghi rõ:
 - Chưa đủ căn cứ → needs_review = true, significance và is_critical để null.
 - Bộ tiêu chí phân biệt các mức phải có ví dụ được nhóm thống nhất trước khi đánh giá hệ thống.
 
-### 3.7 Module Evaluator — đo hệ thống làm đúng đến đâu: Evaluator đối chiếu kết quả dự đoán với ground truth: đáp án do người gán nhãn và kiểm tra trước.
+### 3.7 Kiểm thử chéo và phép đo
+
+Không triển khai Evaluator độc lập, không giao Tuấn Anh đầu việc Evaluator. Owner module kiểm thử phần mình; hai owner tại điểm nối review input/output và chạy tích hợp. Dũng điều phối đầu-cuối; các owner phối hợp, Dũng hỗ trợ dữ liệu/nghiệp vụ và người khác review nhãn. Script phép đo nếu cần đặt trong `test/`, theo [Workflow](workflow.md). Các yêu cầu đo dưới đây vẫn được giữ, không thay bằng việc hai module chỉ chạy thông nhau.
 
 | Nội dung | Quy định |
 |---|---|
@@ -521,8 +528,9 @@ Ví dụ: đáp án có 10 thay đổi trọng yếu, hệ thống tìm đúng 8
 | Bắt đầu so sánh | Người dùng nhấn “So sánh”; hệ thống kiểm tra file rồi chạy pipeline |
 | Trạng thái xử lý | Hiển thị đang xử lý, hoàn thành, hoàn thành một phần hoặc thất bại; phân biệt hoàn thành với kết quả còn cần kiểm tra |
 | Xem kết quả | Hiển thị từng yêu cầu sửa đổi, vị trí đích và nội dung trước/sau cục bộ; đánh dấu nội dung sau được suy ra |
-| Nhận diện tài liệu | Hiển thị tên file từ base_document/amendment_document/reference_documents và vai trò V1 / S / tài liệu tham chiếu trong báo cáo, kể cả khi tên file giống nhau hoặc báo cáo chỉ hoàn tất một phần |
-| Xem phân tích | Mỗi SemanticChange có kết luận đổi nghĩa, giải thích tổng thể, category, mức độ và lý do; hiển thị từng ChangeAspect gồm tên nhóm tiếng Việt, nội dung cũ/mới, interpretation, bằng chứng và cảnh báo. Phân biệt nhãn tổng thể với nhóm của khía cạnh; không chỉ hiển thị category rồi ẩn các khía cạnh còn lại |
+| Nhận diện tài liệu | Hiển thị tên file và vai trò từ documents và vai trò V1 / S / tài liệu tham chiếu trong báo cáo, kể cả khi tên file giống nhau hoặc báo cáo chỉ hoàn tất một phần |
+| Xem phân tích | Hiển thị ReviewItem trong items: nội dung trước/sau, nhận định, phân loại bốn nhóm khi đã chốt, mức độ, giải thích, nguồn và cảnh báo; giữ chi tiết khía cạnh cần thiết, không dùng tám nhóm nội bộ làm bộ lọc bốn nhóm |
+| Kiểm chứng và nhận xét | Lưu ReviewRecord trong phiên, tách kết quả AI; đối chiếu sau bổ sung theo mục 1.8 |
 | Vị trí nguồn | Hiển thị EvidenceRef trong đúng V1, S hoặc tài liệu tham chiếu: trang PDF hoặc đoạn/bảng DOCX; luôn giữ nguồn chỉ dẫn trong S kể cả bãi bỏ |
 | Cần kiểm tra | Hiển thị rõ các kết quả `needs_review = true`; mức độ chưa xác định ghi “Chưa xác định” |
 | Không có thay đổi | Chỉ thông báo không tìm thấy yêu cầu sửa đổi đối với V1 theo mục 1.7; nếu chỉ sửa văn phong thì vẫn hiển thị phần sửa |
@@ -530,11 +538,8 @@ Ví dụ: đáp án có 10 thay đổi trọng yếu, hệ thống tìm đúng 8
 | Hiệu lực/chuyển tiếp | Hiển thị nội dung, phạm vi áp dụng và bằng chứng trong EffectInfo; phần chưa xác định phải có cảnh báo |
 
 Quy định hiển thị vị trí nguồn:
-- Chuyển source_refs thành nhãn dễ đọc, ví dụ `pdf:page_3` →
-  “Trang 3”, `docx:paragraph_12` → “Đoạn 12”, `docx:table_2` →
-  “Bảng 2”. Số trang PDF tính từ trang đầu file, bắt đầu từ 1;
-  đoạn và bảng DOCX được Reader đánh số riêng theo thứ tự xuất hiện,
-  bắt đầu từ 1, bao gồm đoạn rỗng trong danh sách đoạn.
+- Chuyển source_refs thành nhãn dễ đọc theo nguồn thực tế: `block:N` là khối trong DOCX đã parse, segments có offset ký tự Python `[start,end)`. Nếu frontend dùng chỉ số khác phải chuyển đổi và có fixture. Trang PDF chỉ hiển thị khi đã kiểm chứng mapping về PDF gốc; không suy từ số block hoặc ghi nhãn DOCX như trang PDF.
+
 - Một Điều có nhiều source_refs phải hiển thị đủ các vị trí;
   nhãn ghi rõ đây là vị trí của Điều, không khẳng định đó là vị trí
   chính xác của từng old_quote/new_quote khi chưa có ánh xạ chi tiết.
@@ -561,10 +566,9 @@ Kiểm tra chất lượng giải thích và khả năng hiểu báo cáo theo B
   chưa xác định và PARTIAL; loại thay đổi, mức độ và cảnh báo phải
   có nhãn chữ hoặc ký hiệu dễ hiểu, không chỉ phân biệt bằng màu.
 - Quy mô mẫu, người tham gia, cách chấm và ngưỡng chấp nhận được chốt
-  trong Evaluation Plan trước thử nghiệm. Nếu thành viên nhóm đóng
+  trong Workflow trước thử nghiệm. Nếu thành viên nhóm đóng
   vai luật sư/pháp chế hoặc sinh viên luật, phải ghi rõ giới hạn này.
-  Đây là hoạt động đánh giá ngoài luồng so sánh, không yêu cầu thêm
-  module hoặc chức năng thu thập phản hồi trong sản phẩm.
+  Đây là hoạt động đánh giá ngoài luồng so sánh. Nhận xét kiểm chứng trong phiên theo mục 1.8 là dữ liệu sản phẩm riêng; không tự chuyển thành dữ liệu nghiên cứu hoặc nhãn chuẩn.
 
 ## 5. Xử lý lỗi và cảnh báo
    
@@ -607,8 +611,8 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 
 | Dữ liệu | Nội dung tối thiểu |
 |---|---|
-| Reader → Parser | Nội dung trích xuất theo thứ tự, document_id, vai trò và vị trí nguồn; giữ bảng và blocks |
-| Parser → Trích yêu cầu/liên kết | Điều có định danh, cấu trúc Khoản/Điểm được giữ, nguồn của V1 và S |
+| Parser → Adapter | Cây articles/outside/source_blocks, nguồn, cảnh báo và summary; Parser tự đọc DOCX |
+| Adapter → Trích yêu cầu/liên kết | Điều có định danh, cấu trúc Khoản/Điểm được giữ, nguồn của V1 và S |
 | Trích yêu cầu/liên kết → Ngữ cảnh | AmendmentItem có chỉ dẫn, vị trí đích, nội dung cục bộ, bằng chứng và cảnh báo |
 | Ngữ cảnh → Text Diff/Semantic Diff | AmendmentItem kèm AnalysisContext, ReferenceRequirement và EffectInfo; Text Diff chỉ chạy khi đủ nội dung cục bộ |
 | Semantic Diff → Scorer | change_id, kết luận đổi nghĩa, diff_details, aspects, evidence và cảnh báo theo mục 1.3 |
@@ -630,3 +634,10 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 
 
 
+
+
+### Quy tắc phát triển và kiểm tra hợp đồng
+
+Luồng chạy có thứ tự không buộc các owner chờ nhau hoàn thành mới code. Mỗi điểm nối có input/output mẫu đã review, schema_version và kiểm tra tự động; JSON dùng lưu fixture, module trong backend có thể gọi hàm với object/dict. Không bắt mỗi bước ghi file JSON hoặc gọi HTTP. Bên nhận code với fixture/mock, bên giao tạo output thật theo cùng hợp đồng; hai bên kiểm tra chéo khi tích hợp. Các file bắt buộc và giới hạn sửa cấu trúc theo [Module](module.md); Git/PR theo [Workflow](workflow.md).
+
+Phân công chức năng theo LK-01 trong decision.md: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Change/Scorer; Dũng + Đức Anh AI Adapter. Hợp đồng còn mở không tự được coi đã đóng băng.

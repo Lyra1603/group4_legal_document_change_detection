@@ -2,9 +2,8 @@
 
 **Dự án:** Legal Document Change Detection  
 **Phiên bản:** 1.2.0  
-**Ngày cập nhật:** 14/10/2026  
 **Trạng thái:** Hướng dẫn phục vụ pilot và review nhãn  
-**Tài liệu liên quan:** [BRD](brd.md), [SRS 1.3.0](srs.md), [Architecture 1.3.0](architecture.md), [Evaluation Plan — tài liệu dự kiến](test-evaluation-plan.md)
+**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md), [Workflow](workflow.md)
 
 ## 1. Mục đích và phạm vi hướng dẫn
 
@@ -18,7 +17,7 @@ Một mẫu gồm văn bản ban đầu **V1**, văn bản sửa đổi **S** v�
 | Yêu cầu chức năng, mã nhãn và cấu trúc dữ liệu | SRS, đặc biệt mục 1.2–1.4 |
 | Module, luồng xử lý, API và lựa chọn triển khai | Architecture |
 | Tuyển chọn nguồn, quy tắc điền nhãn, ví dụ ranh giới và review | Hướng dẫn này |
-| Thiết kế phép thử, matching, công thức chỉ số và kế hoạch chia tập | Evaluation Plan |
+| Thiết kế phép thử, matching, công thức chỉ số và kế hoạch chia tập | Workflow |
 
 Đầu ra của hoạt động dữ liệu gồm file nguồn, bộ đầu vào của từng mẫu, manifest, nhãn tham chiếu có bằng chứng, hồ sơ review và phiên bản nhãn. Không định nghĩa lại schema API trong tài liệu này; các ví dụ chỉ minh họa cách điền theo SRS.
 
@@ -56,21 +55,26 @@ Giữ tên tải về trong `original_filename`. Tên nội bộ đề xuất:
 
 ### 2.3. Thư mục, chuyển định dạng và manifest
 
-`data/` nằm ngang cấp `docs/`. T1 là nhóm mục đích dữ liệu được giải thích trong `data/README.md`; từng mẫu có mã ổn định như T1-001.
+`data/` nằm ngang cấp `docs/`; giữ các folder chính theo cấu trúc đã chốt. Dùng `data/raw/case_*/` cho hồ sơ nguồn và bộ mẫu, `data/test_parser/` và `data/test_pdf_to_docx/` cho mẫu kiểm tra tương ứng. Fixture hợp đồng dùng `test/fixtures/`, không đổi thành `tests/`. Mã mẫu vẫn ổn định như T1-001; T1 là nhóm mục đích dữ liệu, không bắt buộc là folder chính.
 
 ```text
 data/
-  README.md
   manifest.csv
-  raw/                         # File nguồn giữ nguyên
-  T1/
-    T1-001/
+  raw/
+    case_T1-001/
       <document_key>_v1.docx
       <amendment_key>_amendment.docx
-      references/              # Tài liệu thực sự cung cấp cho mẫu, nếu có
-      README.md                # Nguồn, vai trò, giới hạn và trạng thái mẫu
-      gold.json                # Nhãn theo cấu trúc được thống nhất
-      review.md                # Bất đồng, quyết định và phiên bản nhãn
+      references/
+      README.md
+      gold.json
+      review.md
+  test_parser/
+  test_pdf_to_docx/
+test/
+  fixtures/
+    documents/
+    amendments/
+    reports/
 ```
 
 Tệp dùng chung có thể được tham chiếu bằng đường dẫn và hash thay vì sao chép; hồ sơ phải xác định chính xác bộ file đưa vào từng mẫu. Giữ file nguồn riêng, không ghi đè. Bộ mẫu nhỏ có thể đưa lên GitHub; bỏ qua tệp tạm Word `~$...docx`. V2 dựng sẵn chỉ lưu riêng như tài liệu đối chiếu nội bộ, ghi nguồn gốc, không đặt vào `references/` của mẫu nếu không chủ định cung cấp nó làm đầu vào.
@@ -124,7 +128,7 @@ Các biến thể cùng văn bản nền/chuỗi sửa đổi giữ chung `linea
 | 7 | Chọn category và significance theo mục 5 | ScoringResult cùng lý do/cảnh báo |
 | 8 | Kiểm tra độ bao phủ, nguồn và cấu trúc; review độc lập | Nhãn được chấp nhận hoặc hồ sơ bất đồng |
 
-Rà soát mọi yêu cầu trong S để tránh bỏ sót, nhưng chỉ phân tích ngữ nghĩa phần tác động đến V1 cùng ngữ cảnh cần thiết. Không phải gán một bản ghi cho mọi Điều không thay đổi của V1. Không dựa duy nhất vào vùng do thuật toán phát hiện. ID của nhãn chuẩn và dự đoán không bắt buộc giống nhau; cách matching thuộc Evaluation Plan.
+Rà soát mọi yêu cầu trong S để tránh bỏ sót, nhưng chỉ phân tích ngữ nghĩa phần tác động đến V1 cùng ngữ cảnh cần thiết. Không phải gán một bản ghi cho mọi Điều không thay đổi của V1. Không dựa duy nhất vào vùng do thuật toán phát hiện. ID của nhãn chuẩn và dự đoán không bắt buộc giống nhau; cách matching thuộc Workflow.
 
 ## 4. Quy tắc gán nhãn và các trường hợp dễ nhầm
 
@@ -143,9 +147,9 @@ Ví dụ: đổi chủ thể báo cáo sự cố và ngưỡng thời gian gián
 
 Nếu không thống nhất được ranh giới, ghi phương án và lý do để adjudication; khóa quy tắc sau pilot và cập nhật nhãn bị ảnh hưởng. Không thay cách chia để làm tăng chỉ số sau khi xem test.
 
-### 4.3. Ranh giới 8 nhóm
+### 4.3. Ranh giới 8 nhóm khía cạnh nội bộ
 
-Mã và cấu trúc theo SRS; bảng này hướng dẫn chọn nhóm ở ca giao nhau.
+Mã và cấu trúc theo SRS mục 1.3; bảng này giữ chi tiết khía cạnh nội bộ và ví dụ đã có. Không dùng tám nhóm này như bốn mã phân loại ReviewItem. Danh mục bốn mã, định nghĩa và mapping cần owner Semantic Diff/Scorer, Dũng và Đức Anh chốt bằng fixture; chưa có thì ghi chưa xác định, không tự đổi nhãn gold thành mã giả.
 
 | Trường hợp | Nhóm sử dụng | Quy tắc phân biệt |
 | --- | --- | --- |
@@ -202,9 +206,9 @@ Một ngày hiệu lực được nêu trong S không tự là thay đổi ngày
 
 ## 5. Tiêu chí chọn nhãn tổng thể và mức độ
 
-### 5.1. Chọn category tổng thể
+### 5.1. Chọn category tổng thể nội bộ
 
-category tóm tắt SemanticChange; giữ nguyên tất cả aspects. Chỉ chọn trong các field_group đã xác định có đổi nghĩa của thay đổi đó. Quy tắc pilot đề xuất: CONSEQUENCES_SANCTIONS → RIGHTS_DUTIES_ACTIONS → SUBJECT_OBJECT → CONDITIONS_EXCEPTIONS → PROCEDURE_AUTHORITY → TIME_QUANTITY → SCOPE_EFFECT_TRANSITION → DEFINITIONS_REFERENCES. Thứ tự này là quy ước trình bày của dự án, không phải thứ tự mức tác động pháp lý.
+category nội bộ tóm tắt SemanticChange; giữ nguyên tất cả aspects. Đây không phải classification_code bốn nhóm của ReviewItem. Không dùng kết quả ưu tiên nội bộ dưới đây để tự quyết định bốn mã đầu ra. Chỉ chọn trong các field_group đã xác định có đổi nghĩa của thay đổi đó. Quy tắc pilot đề xuất: CONSEQUENCES_SANCTIONS → RIGHTS_DUTIES_ACTIONS → SUBJECT_OBJECT → CONDITIONS_EXCEPTIONS → PROCEDURE_AUTHORITY → TIME_QUANTITY → SCOPE_EFFECT_TRANSITION → DEFINITIONS_REFERENCES. Thứ tự này là quy ước trình bày của dự án, không phải thứ tự mức tác động pháp lý.
 
 Ví dụ có SUBJECT_OBJECT và TIME_QUANTITY thì category = SUBJECT_OBJECT; reason vẫn giải thích cả việc mở rộng chủ thể và thay ngưỡng. Trường hợp đổi nội dung quyền/nghĩa vụ và chủ thể thì ưu tiên RIGHTS_DUTIES_ACTIONS. Chưa có nhóm được xác định đủ căn cứ thì category = null và cảnh báo; chỉ đổi diễn đạt thì WORDING_ONLY. Thứ tự ưu tiên phải được nhóm review qua pilot, ghi phiên bản trước sử dụng chung.
 
@@ -226,7 +230,7 @@ Chỉ đổi nghĩa đã xác định không gán LOW theo rubric hiện tại. 
 
 ## 6. Review, xử lý bất đồng và quản lý phiên bản nhãn
 
-Phân công nhân sự theo Architecture. Mỗi cặp có người gán nhãn và một người review khác; không tự review bản mình như kiểm tra độc lập. Khi có người có chuyên môn pháp luật tham gia, ghi rõ vai trò và phạm vi kiểm tra; không mặc định nhóm đã có chuyên gia.
+Phân công nhân sự theo Architecture và Module: Dũng quản lý dữ liệu/nhãn và review nghiệp vụ; Tuấn Anh phụ trách Semantic Change/Scorer, Ngọc Anh phụ trách Text Diff; Dũng điều phối tích hợp/API, Dũng + Đức Anh phụ trách AI Adapter; hai owner tại mỗi điểm nối kiểm tra chéo output và cách sử dụng. Không có Evaluator độc lập. Mỗi cặp có người gán nhãn và một người review khác; không tự review bản mình như kiểm tra độc lập. Khi có người có chuyên môn pháp luật tham gia, ghi rõ vai trò và phạm vi kiểm tra; không mặc định nhóm đã có chuyên gia.
 
 ### 6.1. Checklist review
 
@@ -247,13 +251,13 @@ Phân công nhân sự theo Architecture. Mỗi cặp có người gán nhãn v�
 
 Lưu hai phương án cùng đoạn nguồn, tiêu chí viện dẫn và lý do. Hai người đối chiếu; nếu chưa thống nhất, người điều phối nhãn mời người thứ ba xem xét, tham khảo giảng viên/người có chuyên môn khi có. Người quyết định ghi căn cứ và thay đổi cuối, không chỉ lấy đa số để xác nhận nội dung pháp lý.
 
-Trạng thái quản lý nhãn đề xuất: DRAFT → IN_REVIEW → ACCEPTED, hoặc UNRESOLVED khi chưa giải quyết. Đây là metadata gán nhãn, không phải ComparisonReport.status. ACCEPTED nghĩa là được chấp nhận theo quy trình dự án, không chứng nhận đúng pháp lý tuyệt đối. Nhãn còn bất đồng không được coi là gold xác định; giữ nguyên danh sách và để Evaluation Plan quy định cách báo cáo/đánh giá, không tự coi negative hoặc loại bỏ âm thầm.
+Trạng thái quản lý nhãn đề xuất: DRAFT → IN_REVIEW → ACCEPTED, hoặc UNRESOLVED khi chưa giải quyết. Đây là metadata gán nhãn, không phải ComparisonReport.status. ACCEPTED nghĩa là được chấp nhận theo quy trình dự án, không chứng nhận đúng pháp lý tuyệt đối. Nhãn còn bất đồng không được coi là gold xác định; giữ nguyên danh sách và để Workflow quy định cách báo cáo/đánh giá, không tự coi negative hoặc loại bỏ âm thầm.
 
 ### 6.3. Phiên bản và điều kiện sử dụng
 
 Lưu label_version, guideline_version, người/thời điểm gán và review, hash file V1/S và toàn bộ tài liệu tham chiếu được cung cấp, nhật ký quyết định. Sửa input thì review lại nhãn liên quan. Đổi guideline thì rà những nhãn chịu ảnh hưởng; giữ lịch sử thay vì ghi đè không dấu vết.
 
-Pilot tuần 6 có ví dụ không đổi, đổi diễn đạt, đổi nghĩa, nhiều khía cạnh, bổ sung/bãi bỏ, S sửa nhiều văn bản, hiệu lực có ngoại lệ, đủ/thiếu dẫn chiếu và chưa xác định; ghi độ thống nhất và ca bất đồng để chỉnh guideline. Quy mô cuối và split theo Evaluation Plan, không đặt số lượng tùy ý trong tài liệu này. Khóa nhãn test và quy tắc trước đánh giá; các biến thể cùng nguồn/chuỗi sửa đổi giữ chung nhóm split.
+Pilot tuần 6 có ví dụ không đổi, đổi diễn đạt, đổi nghĩa, nhiều khía cạnh, bổ sung/bãi bỏ, S sửa nhiều văn bản, hiệu lực có ngoại lệ, đủ/thiếu dẫn chiếu và chưa xác định; ghi độ thống nhất và ca bất đồng để chỉnh guideline. Quy mô cuối và split theo Workflow, không đặt số lượng tùy ý trong tài liệu này. Khóa nhãn test và quy tắc trước đánh giá; các biến thể cùng nguồn/chuỗi sửa đổi giữ chung nhóm split.
 
 Chỉ đưa vào bộ đánh giá khi bộ đầu vào được kiểm tra, nhãn được ACCEPTED và cấu trúc đã validate. ACCEPTED có thể bao gồm nhãn mong đợi “chưa đủ căn cứ” ở mẫu cố ý thiếu tài liệu nếu người review đã xác nhận giới hạn đó; khác với UNRESOLVED do người gán nhãn còn bất đồng. Báo riêng SYNTHETIC và DERIVED_REAL; số liệu từ mẫu giả định không đại diện tự động cho dữ liệu thực tế. Lỗi trích xuất/liên kết của hệ thống không làm thay đổi nhãn chuẩn đã kiểm tra bằng tài liệu nguồn.
 
@@ -397,7 +401,7 @@ ScoringResult cho cùng thay đổi:
 
 ```
 
-Hai khối minh họa cách điền nhãn ngữ nghĩa và mức độ, không phải hồ sơ đầy đủ. Chỉ dẫn, vị trí đích, ngữ cảnh, dẫn chiếu và hiệu lực phải được ghi trong AmendmentItem theo SRS; không tạo thêm schema ở đây. Mẫu không quyết định trước số lượng file hoặc số trang của dữ liệu thực tế.
+Hai khối minh họa cách điền nhãn ngữ nghĩa và mức độ nội bộ, không phải hồ sơ đầy đủ hoặc response API documents/items. Bộ fixture báo cáo phải có mapping sang ReviewItem theo SRS mục 1.7 sau khi contract được hai bên review. Chỉ dẫn, vị trí đích, ngữ cảnh, dẫn chiếu và hiệu lực phải được ghi trong AmendmentItem theo SRS; không tạo thêm schema ở đây. Mẫu không quyết định trước số lượng file hoặc số trang của dữ liệu thực tế.
 
 ### 7.4. Hồ sơ gán nhãn mỗi mẫu
 
@@ -409,12 +413,19 @@ Hai khối minh họa cách điền nhãn ngữ nghĩa và mức độ, không p
 | Căn cứ | Ngữ cảnh sử dụng, tài liệu được cung cấp, tài liệu còn thiếu, nguồn hiệu lực/chuyển tiếp |
 | Nhãn | AmendmentItem, SemanticDiffResult và ScoringResult theo SRS; nhãn chưa xác định có lý do |
 | Review | Người gán/review, phương án bất đồng, quyết định và căn cứ |
-| Phiên bản | label_version, guideline_version, trạng thái review, split theo Evaluation Plan |
+| Phiên bản | label_version, guideline_version, trạng thái review, split theo Workflow |
 
-Metadata quản lý lưu trong manifest/hồ sơ, không tự thêm vào API. Định dạng đóng gói gold.json và cách matching được thống nhất với Evaluation Plan; tên trường nghiệp vụ tuân theo SRS.
+Metadata quản lý lưu trong manifest/hồ sơ, không tự thêm vào API. Định dạng đóng gói gold.json và cách matching được thống nhất với Workflow; tên trường nghiệp vụ tuân theo SRS.
 
 ### 7.5. Ngữ cảnh giữ nguyên ảnh hưởng cách hiểu
 
 V1 có Điều 2 gồm khoản 1 “Tổ chức A phải nộp báo cáo” và khoản 2 “Báo cáo quy định tại khoản 1 được nộp trong 10 ngày”. S thay khoản 1 bằng “Tổ chức A và tổ chức B phải nộp báo cáo”.
 
 Gán AMEND, đích khoản 1 Điều 2, khía cạnh SUBJECT_OBJECT vì thêm tổ chức B. Giữ khoản 2 làm bằng chứng ngữ cảnh để giải thích nghĩa vụ nộp trong 10 ngày cũng liên quan đến chủ thể được bổ sung. Không gán TIME_QUANTITY như thời hạn vừa đổi; không cần dựng toàn bộ V2 để lập nhãn này.
+
+
+### 7.6. Fixture hợp đồng và dữ liệu phiên
+
+Fixture mỗi điểm nối lưu dưới `test/fixtures/`, có input, output mong đợi, phiên bản hợp đồng, căn cứ nguồn và hai owner review. Bên nhận dùng fixture để phát triển độc lập trước khi có output thật; output thật phải qua cùng kiểm tra. Các ca tối thiểu theo Workflow. Số Điều/Khoản/Điểm mong đợi phải được review từ nguồn độc lập, không chỉ chép summary của Parser làm đáp án.
+
+Nhãn chi tiết AmendmentItem/SemanticDiffResult/ScoringResult được giữ để phân tích lỗi; báo cáo API mục tiêu đóng gói ReviewItem trong documents/items. ReviewRecord và nhận xét người dùng trong phiên không tự là gold, không tự dùng để huấn luyện hoặc chấm điểm. Khi kiểm tra bổ sung tài liệu, có fixture nội dung không đổi, nội dung đổi, mục mới, không ghép được và lượt thất bại; không tự lấy quyết định cũ làm đáp án của lượt mới.

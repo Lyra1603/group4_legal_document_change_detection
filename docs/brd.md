@@ -32,7 +32,7 @@ Hệ thống được xây dựng để hỗ trợ tìm kiếm, đối chiếu v
 
 ## 3. Người dùng và các bên liên quan
 
-### 3.1. Luật sư và người làm pháp chế — nhóm sử dụng ưu tiên
+### 3.1. Luật sư và người làm pháp chế — nhóm sử dụng bổ sung
 
 **Công việc cần hỗ trợ:** Rà soát sự thay đổi của quy định trước khi cập nhật tài liệu nghiên cứu, quy trình nội bộ hoặc chuẩn bị nội dung tư vấn.
 
@@ -47,7 +47,7 @@ Hệ thống được xây dựng để hỗ trợ tìm kiếm, đối chiếu v
 
 **Giá trị mong đợi:** Giảm công sức tìm khác biệt và giúp tập trung vào thay đổi đáng chú ý. Mức độ tiết kiệm thời gian cần được đo bằng thử nghiệm, không được mặc định coi là đã đạt.
 
-### 3.2. Sinh viên luật và người nghiên cứu — nhóm sử dụng bổ sung
+### 3.2. Sinh viên luật và người nghiên cứu — nhóm sử dụng ưu tiên
 
 **Công việc cần hỗ trợ:** Học và nghiên cứu sự thay đổi của quy định thông qua đối chiếu văn bản gốc với nội dung sửa đổi.
 
@@ -109,6 +109,7 @@ Phân tích tập trung vào phần thay đổi, sử dụng thông tin tổng q
 - Bằng chứng và vị trí nguồn trong V1, S và tài liệu tham chiếu được sử dụng.
 - Thông tin hiệu lực và chuyển tiếp được nêu trong S, kèm phạm vi áp dụng và căn cứ; phần chưa xác định phải được đánh dấu.
 - Danh sách tài liệu/nội dung tham chiếu còn thiếu, cảnh báo và lỗi xử lý.
+- Người dùng kiểm chứng, ghi quyết định và nhận xét trong phiên; dữ liệu này tách khỏi kết quả AI. Khi bổ sung tài liệu và phân tích lại, chỉ giữ trạng thái đã kiểm chứng nếu nội dung liên quan được xác nhận không đổi.
 
 ### 5.4. Phạm vi bao phủ
 
@@ -149,7 +150,7 @@ Phần mở đầu, chữ ký và phụ lục không được so sánh toàn di�
 4. Sinh viên xem giải thích về đối tượng, quyền, nghĩa vụ, điều kiện hoặc thời hạn bị thay đổi, nếu hệ thống xác định được.
 5. Sinh viên mở lại đoạn nguồn, kiểm tra nhận định và ghi nhận giới hạn cần nghiên cứu thêm.
 
-**Kết quả mong đợi:** Sinh viên có thể mô tả thay đổi bằng lời của mình và chỉ ra bằng chứng. Việc ghi chú của sinh viên có thể thực hiện ngoài hệ thống; phiên bản đầu không bắt buộc có chức năng quản lý ghi chú.
+**Kết quả mong đợi:** Sinh viên có thể mô tả thay đổi bằng lời của mình và chỉ ra bằng chứng. Sinh viên ghi quyết định kiểm chứng và nhận xét trong phiên; nhận xét tách khỏi kết quả AI, không tự trở thành nhãn chuẩn và chưa bảo đảm giữ sau tải lại/đóng tab.
 
 ### 6.3. UC-03 — Rà soát trường hợp chưa chắc chắn
 
@@ -164,7 +165,7 @@ Phần mở đầu, chữ ký và phụ lục không được so sánh toàn di�
 3. Hệ thống chỉ rõ tài liệu và Điều/Khoản/bảng còn thiếu khi xác định được.
 4. Người dùng có thể tải tài liệu bổ sung để phân tích lại. Nếu không bổ sung, kết quả đã xác định vẫn được hiển thị cùng giới hạn phân tích.
 
-**Kết quả mong đợi:** Người dùng biết nhận định chưa được xác định chắc chắn. Phiên bản đầu không bắt buộc có giao diện sửa kết quả liên kết hoặc lưu xác nhận của người dùng.
+**Kết quả mong đợi:** Người dùng biết nhận định chưa được xác định chắc chắn. Phiên bản đầu giữ xác nhận/nhận xét kiểm chứng trong phiên, không sửa đè kết quả AI. Khi bổ sung và chạy lại, nhận xét phải được đối chiếu; nội dung đổi cần kiểm tra lại, không ghép chắc chắn thì giữ riêng nhận xét cũ. Không bắt buộc có giao diện sửa kết quả liên kết.
 
 ## 7. Yêu cầu nghiệp vụ
 
@@ -211,7 +212,7 @@ Khác biệt về ký tự chưa đồng nghĩa với thay đổi nội dung quy
 | Chế tài và trách nhiệm | Biện pháp xử lý hoặc trách nhiệm được mô tả có thay đổi không? |
 | Dẫn chiếu và định nghĩa | Dẫn chiếu hoặc cách gọi có thay đổi và có cần đọc thêm ngữ cảnh không? |
 
-Một thay đổi có thể liên quan nhiều nhóm. Nhóm nghiệp vụ ở đây cần được ánh xạ với các nhãn được chốt trong SRS và hướng dẫn gán nhãn; không yêu cầu mỗi câu hỏi trở thành một nhãn kỹ thuật riêng.
+Một thay đổi có thể liên quan nhiều nhóm. Đây là các câu hỏi nghiệp vụ và khía cạnh nội bộ, không phải danh mục nhãn đầu ra. Báo cáo mục tiêu dùng bốn nhóm phân loại theo Architecture/SRS; danh mục bốn mã và bảng ánh xạ còn phải chốt trước nghiệm thu phân loại. Không yêu cầu mỗi câu hỏi trở thành một nhãn kỹ thuật riêng, không tự gộp thành bốn nhóm khi chưa có căn cứ.
 
 ### 8.3. Mức độ nghiêm trọng
 
@@ -281,7 +282,7 @@ Nhóm kiểm tra bằng các nhiệm vụ trên một bộ cặp tài liệu và
 | Sinh viên hoặc người đánh giá theo vai trò này | Giải thích một thay đổi | Mô tả được nội dung trước/sau và chỉ ra bằng chứng, không chỉ lặp lại nhãn. |
 | Cả hai nhóm | Đọc báo cáo có cảnh báo hoặc xử lý một phần | Nhận biết được giới hạn, không hiểu danh sách thiếu là kết luận không có thay đổi. |
 
-Nhóm ghi nhận số nhiệm vụ hoàn thành đúng, thời gian thực hiện, lỗi diễn giải và phản hồi. Quy mô, người tham gia, phương pháp và ngưỡng chấp nhận của thử nghiệm được chốt trong Evaluation Plan. Nếu sử dụng thành viên nhóm đóng vai người dùng, báo cáo phải nêu rõ giới hạn này.
+Nhóm ghi nhận số nhiệm vụ hoàn thành đúng, thời gian thực hiện, lỗi diễn giải và phản hồi. Quy mô, người tham gia, phương pháp và ngưỡng chấp nhận của thử nghiệm được chốt trong Workflow. Nếu sử dụng thành viên nhóm đóng vai người dùng, báo cáo phải nêu rõ giới hạn này.
 
 ### 10.2. Mục tiêu chất lượng phát hiện
 
@@ -297,7 +298,7 @@ Nhóm ghi nhận số nhiệm vụ hoàn thành đúng, thời gian thực hiệ
 - Khóa dữ liệu test và quy tắc đối chiếu trước khi đánh giá cuối.
 - Quy tắc đối chiếu thay đổi dự đoán với đáp án tham chiếu phải thống nhất, tránh tính trùng.
 - Phải tính cả phát hiện sai và bỏ sót, kể cả thay đổi bị mất do đọc tài liệu, tách cấu trúc, trích yêu cầu sửa đổi hoặc liên kết sai.
-- Kết quả chưa chắc chắn không tự được tính là phát hiện đúng. Cách xử lý phải theo SRS và Evaluation Plan.
+- Kết quả chưa chắc chắn không tự được tính là phát hiện đúng. Cách xử lý phải theo SRS và Workflow.
 - Khi không có mẫu phù hợp để tính một chỉ số, ghi không xác định và lý do, không tự ghi 100%.
 - Báo cáo số cặp tài liệu, số thay đổi, số thay đổi CRITICAL, số trường hợp cần kiểm tra và các giới hạn dữ liệu.
 
@@ -310,6 +311,7 @@ Nhóm ghi nhận số nhiệm vụ hoàn thành đúng, thời gian thực hiệ
 5. Nhận định và mức độ có lý do; trường hợp thiếu căn cứ thể hiện chưa xác định.
 6. Lỗi đầu vào hoặc xử lý một phần không bị trình bày như không có thay đổi.
 7. Có báo cáo thực nghiệm, hướng dẫn sử dụng và giới hạn đã biết.
+8. Kiểm chứng/nhận xét trong phiên hoạt động đúng; bổ sung tài liệu không gắn nhầm nhận xét, không mất báo cáo cũ khi lượt mới thất bại. Phân loại bốn nhóm chỉ được nghiệm thu khi danh mục và fixture ánh xạ đã chốt.
 
 ## 11. Ngoài phạm vi phiên bản đầu
 
@@ -372,6 +374,6 @@ Nhóm ghi nhận số nhiệm vụ hoàn thành đúng, thời gian thực hiệ
 | SRS | Cụ thể hóa yêu cầu chức năng, dữ liệu, trạng thái, ràng buộc và cách kiểm chứng. |
 | Architecture | Thiết kế các module, luồng xử lý và các quyết định triển khai để đáp ứng SRS. |
 | README | Giới thiệu dự án, phạm vi và trạng thái triển khai thực tế; chỉ dẫn đến tài liệu chi tiết. |
-| Annotation Guideline và Evaluation Plan | Ví dụ phân loại, tiêu chí mức độ, đáp án tham chiếu, quy trình và cách tính chỉ số. |
+| Annotation Guideline và Workflow | Ví dụ phân loại, tiêu chí mức độ, đáp án tham chiếu, quy trình và cách tính chỉ số. |
 
 
