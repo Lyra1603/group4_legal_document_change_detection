@@ -22,7 +22,7 @@ def compute_text_diff(amendment_id: str, before_text: Optional[str], after_text:
     if before_text is None or after_text is None:
         return None
 
-    matcher = difflib.SequenceMatcher(None, before_text, after_text)
+    matcher = difflib.SequenceMatcher(None, before_text, after_text, autojunk=False)
     changes: List[TextChange] = []
 
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():

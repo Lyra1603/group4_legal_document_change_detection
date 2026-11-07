@@ -1,0 +1,37 @@
+{
+  "amendment_id": "synthetic-01",
+  "operation": "AMEND",
+  "applicability": "APPLIES",
+  "target_document": "base-example",
+  "target_unit_ids": [
+    "base-example:article_5"
+  ],
+  "target_locator": "Điều 5",
+  "before_text": "Hồ sơ phải nộp trong thời hạn 30 ngày.",
+  "after_text": "Hồ sơ phải nộp trong thời hạn 15 ngày.",
+  "after_basis": "QUOTED",
+  "instruction": {
+    "document_id": "amendment-example",
+    "source_refs": [
+      "fixture:instruction"
+    ],
+    "quote": "Thay nội dung Điều 5 bằng: Hồ sơ phải nộp trong thời hạn 15 ngày."
+  },
+  "evidence": [
+    {
+      "document_id": "base-example",
+      "source_refs": [
+        "fixture:base"
+      ],
+      "quote": "Hồ sơ phải nộp trong thời hạn 30 ngày."
+    }
+  ],
+  "context": {
+    "general_context": "SYNTHETIC: nghĩa vụ nộp hồ sơ.",
+    "evidence": [],
+    "references": []
+  },
+  "effect_info": [],
+  "needs_review": false,
+  "review_reason": ""
+}

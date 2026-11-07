@@ -10,6 +10,7 @@
 4. [Implementation Plan](implementation-plan.md): công nghệ,
    phân công và tiến độ triển khai.
 5. Mã nguồn: baseline hiện tại.
+6. [Bàn giao Ngọc Anh từ tuần 6](ngocanh-handover.md): module, adapter, kiểm thử và giới hạn.
 
 ---
 
