@@ -9,7 +9,10 @@
 3. [Architecture](architecture.md): thiết kế module và luồng xử lý.
 4. [Implementation Plan](implementation-plan.md): công nghệ,
    phân công và tiến độ triển khai.
-5. Mã nguồn: baseline hiện tại.
+5. [Module](module.md): owner, file bắt buộc và file bổ sung.
+6. [Decision](decision.md): lựa chọn và hợp đồng cần chốt.
+7. [Workflow](workflow.md): Git, phát triển bán song song và kiểm thử.
+8. Mã nguồn: kiểm tra đúng branch trước khi sử dụng schema/implementation.
 
 ---
 
@@ -19,89 +22,61 @@ Thiết kế mục tiêu của bản đầu sử dụng request đồng bộ: ba
 trả ComparisonReport trong cùng request; không dùng job nền
 hoặc API polling.
 
-Các module xử lý nằm trong một backend Python.
-Pipeline điều phối Reader, Parser, Aligner, Text Diff,
-Semantic Diff và Classifier & Scorer.
+Các module xử lý nằm trong `backend/app/`, gọi nhau qua hàm/hợp đồng dùng chung. Luồng: đọc/chuyển đổi và Parser → adapter/linker → context/LightRAG HTTP → Text Diff → Semantic Diff → Scorer → Pipeline tổng hợp `ComparisonReport.results` cùng base_document/amendment_document/reference_documents. Không diff toàn bộ V1 với S; Text Diff cần nội dung trước/sau cục bộ đã được xác định.
 
-```mermaid
-flowchart TD
-    UI["Web UI"] --> API["Backend API"]
-    API --> P["Pipeline"]
+LightRAG Server riêng qua HTTP là phương án đã chốt. Phạm vi đầu là retrieval; source registry kiểm tra nguồn, không dùng retrieval score làm mức tác động. Không triển khai Evaluator độc lập; giữ folder cũ, owner kiểm thử chéo tại từng điểm nối; Dũng điều phối tích hợp/Pipeline/API, Đức Anh điều phối kế hoạch đánh giá.
 
-    subgraph Processing["Các module do Pipeline điều phối"]
-        R["Reader: đọc riêng hai file"] --> PA["Parser: Tách Điều, giữ Khoản/Điểm trong nội dung"]
-        PA --> A["Aligner: ghép hai bản"]
-        A --> T["Text Diff"]
-        T --> S["Semantic Diff"]
-        S --> C["Classifier & Scorer"]
-    end
+Ngọc Anh phụ trách Text Diff; Tuấn Anh phụ trách Semantic Change/Scorer; Thọ phụ trách xử lý tài liệu; Dũng phụ trách dữ liệu/docs và tích hợp/Pipeline/API; Dũng + Đức Anh phụ trách AI Adapter. Đức Anh phụ trách schema, context và điều phối kế hoạch đánh giá; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG. Xem LK-01 trong decision.md và module.md; không mặc định một owner chung cho toàn folder change_analysis.
 
-    P --> R
-    C --> Report["ComparisonReport"]
-    Report --> API
+Phát triển bán song song bằng contract/schema/fixture đã thống nhất; runtime vẫn có thứ tự. Các folder chính và file bắt buộc được cố định; owner có thể thêm file hỗ trợ trong module.
 
-    Report -. "Khi kiểm thử" .-> E["Evaluator"]
-    GT["Ground truth"] --> E
-```
-
-Evaluator chạy riêng khi kiểm thử. Logging ghi nhận xuyên suốt
-các bước xử lý. Legal Knowledge Base chưa thuộc kiến trúc tối thiểu.
-Chưa chốt việc dùng LLM/API ngoài hoặc công nghệ frontend.
-
-## 2. Mục tiêu Hệ thống & Chỉ số Nghiệm thu (Targets)
-- Change F1 ≥ 0,90: đo khả năng phát hiện từng thay đổi nghĩa.
-- Critical Change Recall ≥ 0,95: tìm đúng ít nhất 95% thay đổi
-  được gán nhãn CRITICAL theo bộ tiêu chí thống nhất.
-- Đo trên bộ kiểm thử độc lập; đây là mục tiêu, chưa phải kết quả đạt được.
+## 2. Mục tiêu hệ thống và ngưỡng đánh giá dự tính
+- Change F1 ≥ 90% (dự tính): đo khả năng phát hiện từng thay đổi nghĩa.
+- Critical Change Recall ≥ 95% (dự tính): tìm đúng thay đổi được gán nhãn CRITICAL theo bộ tiêu chí thống nhất.
+- Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; chưa phải ngưỡng nghiệm thu chính thức.
+- Đo trên bộ kiểm thử độc lập; báo cáo kết quả thực tế và giới hạn, chưa coi các mức dự tính là chất lượng đã đạt. Matching đánh giá áp dụng 1–1 trước; 1–n bổ sung sau khi hoàn thành 1–1.
 
 ## 3. Cấu trúc Thư mục Dự án
+
+```text
+backend/
+  main.py
+  app/
+    api/
+    schemas/
+    document_processing/
+    context/
+    change_analysis/
+    evaluation/       # Giữ cấu trúc; không triển khai Evaluator riêng
+    pipeline.py
+    config.py
+frontend/
+test/
+data/
+deploy/
+runtime/
+docs/
+requirements.txt
 ```
-group4_legal_document_change_detection/
-├── docs/                       # Tài liệu đặc tả BRD và SRS
-├── data/                       # cấu trúc dự kiến: data/raw, data/dev_set, data/test_set
-├── src/
-│   ├── schemas.py              # Cấu trúc dữ liệu hiện tại; cần cập nhật theo SRS
-│   ├── parser/                 # Tách cấp Điều
-│   ├── aligner/                # Module Version Aligner 
-│   ├── semantic_diff/          # Module Semantic Diff Engine 
-│   ├── classifier_scorer/      # Module Change Classifier & Scorer
-│   ├── evaluation/             # Script tính toán F1, Recall
-│   └── pipeline.py             # Pipeline baseline hiện tại; cần cập nhật theo SRS
-├── backend/                    # API Server (Python FastAPI)
-├── frontend/                   # Giao diện Web UI
-└── requirements.txt            # Danh sách thư viện cần cài đặt
-```
+
+Giữ cấu trúc theo branch `plan_lightrag`; không tạo lại `src/` hoặc đổi `test/` thành `tests/`. Danh sách file chính theo [Module](module.md).
 
 ## Hiện trạng triển khai
 
-> **Lưu ý:** SRS và Minimum Architecture mô tả thiết kế mục tiêu hoàn chỉnh của hệ thống. Mã nguồn hiện tại trong repository mới dừng lại ở mức **baseline** để kiểm thử luồng cơ bản:
+- Cấu trúc nền đã có converter PDF → DOCX, Parser, Backend nhận upload và Pipeline đọc/parse; còn nhiều file chính là khung. Khi chưa có runner phân tích, trả `ANALYSIS_NOT_CONFIGURED`, không phải báo cáo so sánh thành công.
+- Nhóm đã chốt dùng schema và validator của Đức Anh tại commit b6a13f98b9a7357b9fbb0936aba6bda065d03fcb. Schema đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2) vào main (`a8a906a`); code nhập nguyên bản vào backend/app/schemas; adapter nguồn/Clause và wiring Pipeline còn cần triển khai. Xem [SRS mục 1.7](srs.md).
+- API main dùng `doc_v1/doc_s/reference_files`; đổi sang `base_file/amendment_file` hoặc hỗ trợ alias vẫn là đề xuất chưa chốt ở LK-11, chưa có trong router.
+- LightRAG HTTP đã chốt phương án, chưa đồng nghĩa đã hiện thực client và kiểm chứng vòng đời chỉ mục.
+- Phân công chức năng đã chốt ở LK-01: Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá. Dùng tám field_group/category theo schema chung; rubric và fixture nghiệp vụ còn cần review; benchmark/fixture phải được review trước khi dùng làm bằng chứng chất lượng.
 
-- **API & Input:** API hiện chỉ nhận 2 chuỗi text thô (`raw strings`), chưa hỗ trợ upload file tài liệu trực tiếp.
-- **Thành phần còn thiếu:** Chưa tách riêng module `Reader`, `Text Diff` chuyên biệt và chưa xây dựng giao diện người dùng (UI/Frontend).
-- **Data Schemas:** `schemas.py` chưa đồng bộ đầy đủ theo hợp đồng dữ liệu (data contract) mới nhất.
-- **Logic xử lý:** Các module `Semantic Diff` và `Scorer` mới áp dụng các rule-based đơn giản, chưa tích hợp NLP chuyên sâu.
-- **Đánh giá (Evaluator):** Module `Evaluator` cần tiếp tục cập nhật để đo lường đầy đủ các loại lỗi và hỗ trợ đánh giá chi tiết trên từng thay đổi (fine-grained diff evaluation).
-- **Bộ dữ liệu nghiệm thu:** Chưa hoàn thiện bộ benchmark/dataset chuẩn để chứng minh hệ thống đạt các mục tiêu nghiệm thu đề ra.
+## 4. Kiểm tra schema độc lập
 
-*Dự kiến bổ sung `python-docx` khi phát triển phân hệ trích xuất văn bản Word (`.docx`). Hiện tại dự án chưa tích hợp API AI thương mại bên ngoài.*
+Chạy từ repo root trong venv Python 3.11 trở lên (đã kiểm tra 3.12.14):
 
----
-
-## 4. Hướng dẫn Cài đặt & Chạy thử (Quick Start)
-- Bước 1: Cài đặt thư viện môi trường
-```
-pip install -r requirements.txt
+```bash
+python -m pip install -r requirements.txt
+python -m pip check
+python -m unittest discover -s test/schema_suite -p "test_*.py" -v
 ```
 
-- Bước 2: Chạy kiểm thử luồng Pipeline xử lý văn bản
-```
-python -m src.pipeline
-```
-
-- Bước 3: Khởi chạy Backend API Server
-```
-uvicorn backend.main:app --reload
-```
-- Truy cập API Docs tại: http://127.0.0.1:8000/docs
-
-
+requirements.txt ghim pydantic==2.13.4 và typing_extensions==4.16.0 cho schema. Kết quả thực tế: Python 3.12.14, 51 test: 49 đạt và 2 expected failures. Hai expected failures ghi nhận giới hạn chưa kiểm tra ID toàn báo cáo và TextDiff reconstruction, không phải đã sửa. requirements.txt chỉ khai báo dependency schema. API/PDF còn cần dependency runtime của module tương ứng; xem [hướng dẫn schema và runtime](schema-integration.md). Khi môi trường API đã được chuẩn bị, lệnh nền vẫn là `python -m uvicorn backend.main:app`; POST /api/compare nhận doc_v1/doc_s/reference_files. Chưa có analysis_runner thì trả FAILED/ANALYSIS_NOT_CONFIGURED, không tự có kết quả phân tích vì đã thêm schema.
