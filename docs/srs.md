@@ -26,7 +26,7 @@ Ngữ cảnh gồm thông tin tổng quát của V1 về phạm vi, đối tư�
 Pipeline điều phối các module. Backend API nhận yêu cầu từ giao diện,
 gọi Pipeline và trả báo cáo để giao diện hiển thị.
 
-Không triển khai Evaluator như một module/đầu việc độc lập. Kiểm thử chủ yếu do owner bên cung cấp và bên nhận tại từng điểm nối cùng thực hiện; Dũng điều phối đầu-cuối. Phép đo với đáp án chuẩn được thực hiện bằng kiểm thử/script trong `test/` khi cần, không mất trách nhiệm kiểm tra nghiệp vụ.
+Không triển khai Evaluator như một module/đầu việc độc lập. Kiểm thử chủ yếu do owner bên cung cấp và bên nhận tại từng điểm nối cùng thực hiện; Dũng điều phối tích hợp/Pipeline/API, Đức Anh điều phối kế hoạch đánh giá. Phép đo với đáp án chuẩn được thực hiện bằng kiểm thử/script trong `test/` khi cần, không mất trách nhiệm kiểm tra nghiệp vụ.
 
 Các cấu trúc mục 1.1–1.6 là biểu diễn nội bộ dùng cho phân tích và nhãn tham chiếu; mục 1.7–1.8 quy định hợp đồng báo cáo/phiên mục tiêu. Không xuất hợp đồng báo cáo cũ song song như API chính thức. Hai owner chốt input/output, ý nghĩa null/rỗng/lỗi, nguồn và fixture trước khi code độc lập; Đức Anh phối hợp hiện thực schema dùng chung; Dũng điều phối tích hợp/Pipeline/API. Các tên trường mới ở mục 1.7–1.8 là đặc tả mục tiêu cần review bằng fixture trước khi đóng băng; danh mục bốn mã chưa được xác nhận, không tự đặt mã. Đổi contract phải có bên giao/nhận review, đồng bộ SRS/schema/fixture trước tích hợp.
 
@@ -390,9 +390,7 @@ ReviewRecord là dữ liệu frontend trong phiên, tách khỏi báo cáo AI v�
 | FR-09 | Ngữ cảnh và dẫn chiếu | V1, yêu cầu sửa đổi, các tài liệu đã cung cấp → AnalysisContext | Giữ thông tin tổng quát và ngữ cảnh liên quan; tìm đúng nội dung dẫn chiếu, báo thiếu cụ thể; không tự thu thập tài liệu |
 | FR-10 | Hiệu lực và chuyển tiếp | S và yêu cầu sửa đổi → list[EffectInfo] | Giữ nội dung, phạm vi áp dụng và bằng chứng; ngoại lệ/chưa rõ phải cảnh báo; không tự xác minh hiệu lực thực tế |
 
-Mục tiêu đánh giá: Change F1 ≥ 0,90 và Critical Change Recall ≥ 0,95
-trên bộ kiểm thử độc lập. Đây là mục tiêu nghiệm thu, chưa phải
-chất lượng đã được chứng minh của mã nguồn hiện tại.
+Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; chưa phải ngưỡng nghiệm thu chính thức. Đo trên bộ kiểm thử độc lập; đây chưa phải chất lượng đã được chứng minh của mã nguồn hiện tại.
 
 Kiểm thử và phép đo ngoài luồng người dùng:
 - Đối chiếu ở cấp từng SemanticChange theo quy tắc gán nhãn thống nhất;
@@ -400,7 +398,7 @@ Kiểm thử và phép đo ngoài luồng người dùng:
   phải chứa các khía cạnh kỳ vọng; quy tắc matching quy định cách xử lý
   thiếu/sai khía cạnh trước khi chạy đánh giá, không tính đúng chỉ vì
   trùng một field_group. Ghi riêng lỗi nhóm, giá trị, diễn giải và bằng chứng.
-- Dự đoán và nhãn chuẩn được ghép một-một; không tính trùng.
+- Dự đoán và nhãn chuẩn được ghép một-một; không tính trùng. Matching 1–n bổ sung sau khi hoàn thành 1–1, theo test_evaluation_plan.md.
 - Nhãn chuẩn không được tìm thấy phải tính là bỏ sót.
 - Thay đổi nghĩa dự đoán không có nhãn chuẩn tương ứng phải tính
   là phát hiện sai sau khi kiểm tra tính đầy đủ của nhãn chuẩn.
@@ -434,7 +432,7 @@ Thọ và bên nhận chốt cấu trúc JSON fixture, định danh, đơn vị 
 | Yêu cầu | Một Điều có thể có nhiều yêu cầu; phân biệt số Điều trong S với vị trí đích; không coi nội dung không được nhắc đến là bãi bỏ |
 | Chưa rõ | Giữ chỉ dẫn nguồn, cảnh báo; không tự áp sửa đổi khi thiếu căn cứ |
 
-Bước chuẩn bị ngữ cảnh lấy thông tin tổng quát và nội dung liên quan từ V1, kiểm tra tài liệu dẫn chiếu người dùng cung cấp, tạo AnalysisContext. Nội dung hiệu lực/chuyển tiếp trong S được gắn qua EffectInfo; giữ ngoại lệ và phần chưa xác định. Đức Anh phụ trách chuẩn bị context theo phân công hiện có, giữ hợp đồng dữ liệu mục 1.2; người gọi/tích hợp LightRAG bổ sung sau. Phương án LightRAG Server qua HTTP đã chốt; chi tiết LK-13 chốt sau các quyết định khác. Client quản lý nhập, sẵn sàng, truy vấn và dọn dữ liệu từng comparison; source_registry ánh xạ về nguyên văn. Chưa chốt endpoint/payload/release thì phải kiểm chứng, không tự coi kết quả retrieval là bằng chứng đúng hoặc mức tác động.
+Bước chuẩn bị ngữ cảnh lấy thông tin tổng quát và nội dung liên quan từ V1, kiểm tra tài liệu dẫn chiếu người dùng cung cấp, tạo AnalysisContext. Nội dung hiệu lực/chuyển tiếp trong S được gắn qua EffectInfo; giữ ngoại lệ và phần chưa xác định. Đức Anh phụ trách context, giữ hợp đồng dữ liệu mục 1.2; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG. Phương án LightRAG Server qua HTTP đã chốt; chi tiết LK-13 chốt sau các quyết định khác. Client quản lý nhập, sẵn sàng, truy vấn và dọn dữ liệu từng comparison; source_registry ánh xạ về nguyên văn. Chưa chốt endpoint/payload/release thì phải kiểm chứng, không tự coi kết quả retrieval là bằng chứng đúng hoặc mức tác động.
 
 ### 3.4 Module Text Diff — tìm những đoạn chữ thay đổi: Sau khi xác định nội dung trước/sau cục bộ, Text Diff chỉ ra chữ nào được thêm, xóa hoặc thay thế.
 
@@ -493,7 +491,7 @@ Quy tắc cần ghi rõ:
 
 ### 3.7 Kiểm thử chéo và phép đo
 
-Không triển khai Evaluator độc lập, không giao Tuấn Anh đầu việc Evaluator. Owner module kiểm thử phần mình; hai owner tại điểm nối review input/output và chạy tích hợp. Dũng điều phối đầu-cuối; các owner phối hợp, Dũng hỗ trợ dữ liệu/nghiệp vụ và người khác review nhãn. Script phép đo nếu cần đặt trong `test/`, theo [Workflow](workflow.md). Các yêu cầu đo dưới đây vẫn được giữ, không thay bằng việc hai module chỉ chạy thông nhau.
+Không triển khai Evaluator độc lập, không giao Tuấn Anh đầu việc Evaluator. Owner module kiểm thử phần mình; hai owner tại điểm nối review input/output và chạy tích hợp. Dũng điều phối tích hợp/Pipeline/API; Đức Anh điều phối kế hoạch đánh giá; các owner phối hợp, Dũng hỗ trợ dữ liệu/nghiệp vụ và người khác review nhãn. Script phép đo nếu cần đặt trong `test/`; thiết kế đánh giá và phép đo theo [Kế hoạch kiểm thử và đánh giá](test_evaluation_plan.md), quy trình kiểm thử chéo theo [Workflow](workflow.md). Các yêu cầu đo dưới đây vẫn được giữ, không thay bằng việc hai module chỉ chạy thông nhau.
 
 | Nội dung | Quy định |
 |---|---|
@@ -512,7 +510,7 @@ Không triển khai Evaluator độc lập, không giao Tuấn Anh đầu việc
 | Critical Change Recall | Hệ thống tìm đúng bao nhiêu thay đổi trọng yếu thực sự? |
 
 Yêu cầu nghiệm thu cần ghi:
-- Mục tiêu: Change F1 ≥ 0,90, Critical Change Recall ≥ 0,95 trên bộ kiểm thử độc lập.
+- Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; chưa phải ngưỡng nghiệm thu chính thức. Đo trên bộ kiểm thử độc lập.
 - Thay đổi có trong đáp án nhưng hệ thống bỏ sót phải được tính là lỗi; không bỏ qua do thiếu kết quả hoặc liên kết sai.
 - Kết quả needs_review chưa được giải quyết không được tính là phát hiện đúng; phải báo thêm số lượng cần kiểm tra.
 - Tập kiểm thử không được dùng để điều chỉnh thuật toán.
@@ -565,8 +563,8 @@ Kiểm tra chất lượng giải thích và khả năng hiểu báo cáo theo B
   và phản hồi. Kiểm tra cả ca chỉ đổi diễn đạt, đổi nghĩa, thêm/xóa,
   chưa xác định và PARTIAL; loại thay đổi, mức độ và cảnh báo phải
   có nhãn chữ hoặc ký hiệu dễ hiểu, không chỉ phân biệt bằng màu.
-- Quy mô mẫu, người tham gia, cách chấm và ngưỡng chấp nhận được chốt
-  trong Workflow trước thử nghiệm. Nếu thành viên nhóm đóng
+- Quy mô mẫu, người tham gia, cách chấm và tiêu chí đánh giá được hoàn thiện
+  trong test_evaluation_plan.md trước thử nghiệm. Nếu thành viên nhóm đóng
   vai luật sư/pháp chế hoặc sinh viên luật, phải ghi rõ giới hạn này.
   Đây là hoạt động đánh giá ngoài luồng so sánh. Nhận xét kiểm chứng trong phiên theo mục 1.8 là dữ liệu sản phẩm riêng; không tự chuyển thành dữ liệu nghiên cứu hoặc nhãn chuẩn.
 
@@ -623,8 +621,7 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 - Bộ tiêu chí LOW/MEDIUM/HIGH/CRITICAL, kèm ví dụ có nhãn.
 - Ví dụ ranh giới giữa 8 nhóm field_group, quy tắc chia/gộp thay đổi
   và chọn category tổng thể từ aspects; danh mục mã theo mục 1.3–1.4.
-- Quy tắc đối chiếu dự đoán với ground truth, bao gồm trường hợp
-  một thay đổi được diễn đạt hoặc chia nhỏ khác nhau.
+- Quy tắc đối chiếu dự đoán với ground truth theo test_evaluation_plan.md: áp dụng matching 1–1 trước; trường hợp chia/gộp cần matching 1–n được bổ sung sau khi hoàn thành 1–1.
 - Bộ dữ liệu V1–S phát triển và kiểm thử độc lập, kèm nhãn vị trí đích, bằng chứng, hiệu lực và tình trạng đủ/thiếu tài liệu tham chiếu.
 - Giới hạn dung lượng, thời gian xử lý và môi trường đo hiệu năng.
 - Thuật toán Semantic Diff; có sử dụng mô hình hoặc API ngoài không.

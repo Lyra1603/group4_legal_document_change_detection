@@ -282,23 +282,23 @@ Nhóm kiểm tra bằng các nhiệm vụ trên một bộ cặp tài liệu và
 | Sinh viên hoặc người đánh giá theo vai trò này | Giải thích một thay đổi | Mô tả được nội dung trước/sau và chỉ ra bằng chứng, không chỉ lặp lại nhãn. |
 | Cả hai nhóm | Đọc báo cáo có cảnh báo hoặc xử lý một phần | Nhận biết được giới hạn, không hiểu danh sách thiếu là kết luận không có thay đổi. |
 
-Nhóm ghi nhận số nhiệm vụ hoàn thành đúng, thời gian thực hiện, lỗi diễn giải và phản hồi. Quy mô, người tham gia, phương pháp và ngưỡng chấp nhận của thử nghiệm được chốt trong Workflow. Nếu sử dụng thành viên nhóm đóng vai người dùng, báo cáo phải nêu rõ giới hạn này.
+Nhóm ghi nhận số nhiệm vụ hoàn thành đúng, thời gian thực hiện, lỗi diễn giải và phản hồi. Quy mô, người tham gia, phương pháp và tiêu chí đánh giá của thử nghiệm được hoàn thiện trong test_evaluation_plan.md. Nếu sử dụng thành viên nhóm đóng vai người dùng, báo cáo phải nêu rõ giới hạn này.
 
 ### 10.2. Mục tiêu chất lượng phát hiện
 
-- **Change F1 ≥ 0,90:** Mục tiêu phát hiện các thay đổi có ý nghĩa theo đáp án tham chiếu.
-- **Critical Change Recall ≥ 0,95:** Mục tiêu phát hiện các thay đổi được gán nhãn CRITICAL trong đáp án tham chiếu và đánh dấu critical đúng.
+- **Change F1 ≥ 90% (dự tính):** Mục tiêu phát hiện các thay đổi có ý nghĩa theo đáp án tham chiếu.
+- **Critical Change Recall ≥ 95% (dự tính):** Mục tiêu phát hiện các thay đổi được gán nhãn CRITICAL trong đáp án tham chiếu và đánh dấu critical đúng.
 
-Đây là mục tiêu đánh giá, chưa phải kết quả đã chứng minh. Nhóm phải báo cáo kết quả thực tế và kết luận đạt hoặc chưa đạt.
+Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; chưa phải ngưỡng nghiệm thu chính thức. Nhóm phải báo cáo kết quả thực tế và giới hạn; kết luận đạt/chưa đạt theo ngưỡng chính thức chỉ thực hiện khi kế hoạch đánh giá đã được hoàn thiện và xác nhận.
 
 ### 10.3. Nguyên tắc đánh giá
 
 - Có hướng dẫn gán nhãn, tiêu chí mức độ và quy trình xử lý bất đồng.
 - Tách dữ liệu phát triển/validation khỏi tập test độc lập; không dùng tập test cuối để điều chỉnh thuật toán hoặc ngưỡng.
 - Khóa dữ liệu test và quy tắc đối chiếu trước khi đánh giá cuối.
-- Quy tắc đối chiếu thay đổi dự đoán với đáp án tham chiếu phải thống nhất, tránh tính trùng.
+- Quy tắc đối chiếu thay đổi dự đoán với đáp án tham chiếu phải thống nhất, tránh tính trùng. Áp dụng matching 1–1 trước; matching 1–n bổ sung sau khi hoàn thành 1–1, theo test_evaluation_plan.md.
 - Phải tính cả phát hiện sai và bỏ sót, kể cả thay đổi bị mất do đọc tài liệu, tách cấu trúc, trích yêu cầu sửa đổi hoặc liên kết sai.
-- Kết quả chưa chắc chắn không tự được tính là phát hiện đúng. Cách xử lý phải theo SRS và Workflow.
+- Kết quả chưa chắc chắn không tự được tính là phát hiện đúng. Cách xử lý phải theo SRS và test_evaluation_plan.md.
 - Khi không có mẫu phù hợp để tính một chỉ số, ghi không xác định và lý do, không tự ghi 100%.
 - Báo cáo số cặp tài liệu, số thay đổi, số thay đổi CRITICAL, số trường hợp cần kiểm tra và các giới hạn dữ liệu.
 

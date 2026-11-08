@@ -3,7 +3,7 @@
 **Dự án:** Legal Document Change Detection — POCS, Nhóm 4
 **Phiên bản:** 0.1 — Khung chuẩn bị song song với quyết định và đặc tả module
 **Ngày tạo:** 08/11/2026
-**Trạng thái:** Khung kế hoạch đang hoàn thiện; Đức Anh điều phối. Hiện xác định cách đánh giá, chưa có ngưỡng chất lượng đạt/chưa đạt; contract và chi tiết phép đo còn chờ hoàn thiện.
+**Trạng thái:** Khung kế hoạch đang hoàn thiện; Đức Anh điều phối. Hiện xác định cách đánh giá; tạm lấy Change F1 ≥ 90% và Critical Change Recall ≥ 95%. Đây là các ngưỡng dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md, chưa phải ngưỡng nghiệm thu chính thức; contract và chi tiết phép đo còn chờ hoàn thiện.
 
 ## 1. Mục đích và phạm vi
 
@@ -120,7 +120,7 @@ Trước phép đánh giá độc lập, thống nhất chia dữ liệu phát t
 | Giải thích/bằng chứng | Kết luận có được nguồn hỗ trợ và nêu đúng giới hạn không? | Rubric review, người review và cách giải quyết bất đồng |
 | Hiệu năng/tài nguyên | Luồng mất bao lâu, tốn tài nguyên hoặc chi phí nào? | Môi trường, cách lặp, cache, model/embedding và cách tổng hợp |
 
-Hiện chưa có ngưỡng chất lượng đạt/chưa đạt. Kế hoạch xác định đơn vị đánh giá, matching, công thức, cách xử lý lỗi/chưa xác định, số mẫu hợp lệ và cách báo cáo kết quả. Không áp dụng các ngưỡng từ tài liệu cũ cho giai đoạn hiện tại. Không sửa cách tính sau khi thấy kết quả chỉ để tuyên bố đạt.
+Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; chưa phải ngưỡng nghiệm thu chính thức. Kế hoạch xác định đơn vị đánh giá, matching, công thức, cách xử lý lỗi/chưa xác định, số mẫu hợp lệ và cách báo cáo kết quả. Sau khi hoàn thiện kế hoạch, nhóm xác nhận ngưỡng chính thức trước đánh giá độc lập; không sửa ngưỡng hoặc cách tính sau khi thấy kết quả chỉ để tuyên bố đạt.
 
 Trong matching 1–1, mỗi dự đoán được ghép tối đa với một nhãn chuẩn và mỗi nhãn chuẩn được ghép tối đa với một dự đoán; không tính trùng. Các trường hợp chia/gộp cần matching 1–n được ghi nhận để phát triển sau, chưa áp dụng cách tính 1–n trong đợt hiện tại.
 
@@ -145,7 +145,7 @@ evaluation_report.md được tạo khi có kết quả thực tế. Báo cáo g
 | Người thực hiện và người review từng phần | Đức Anh đã được xác nhận điều phối; các owner liên quan phối hợp | Bổ sung trước khi phân công chạy toàn luồng/chính thức |
 | Contract, fixture và hành vi lỗi | Bên giao, bên nhận; schema/API khi liên quan | Sau quyết định CN/LK tương ứng |
 | Ca kiểm tra, expected output và lệnh chạy | Owner và reviewer | Khi phần module đủ đặc tả/có implementation |
-| Nhãn, rubric, dữ liệu và cách tính metric; matching 1–1 | Đức Anh điều phối; Dũng, owner phân tích và reviewer phối hợp | Trước đánh giá chính thức; chưa yêu cầu ngưỡng chất lượng, matching 1–n bổ sung sau khi hoàn thành 1–1 |
+| Nhãn, rubric, dữ liệu và cách tính metric; matching 1–1 | Đức Anh điều phối; Dũng, owner phân tích và reviewer phối hợp | Trước đánh giá chính thức; ngưỡng dự tính Change F1 ≥ 90% và Critical Change Recall ≥ 95% có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; matching 1–n bổ sung sau khi hoàn thành 1–1 |
 | Baseline và thiết kế thí nghiệm | Owner phương pháp, bên tích hợp và reviewer | Trước chạy so sánh |
 | Cấu hình và kiểm tra LightRAG thật | Dũng + Đức Anh và các bên liên quan | Theo thứ tự chốt LK-13 |
 

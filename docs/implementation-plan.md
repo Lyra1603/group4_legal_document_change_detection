@@ -63,7 +63,7 @@ Giới hạn dung lượng, số file tham chiếu, độ dài và thời gian x
 | AI Adapter | Dũng + Đức Anh | Gọi mô hình, kiểm tra output/lỗi theo CN-08 | Tuấn Anh kiểm tra dữ liệu nhận |
 | Schema; API và Pipeline | Đức Anh (schema); Dũng (API/Pipeline) | Luồng tích hợp, báo cáo đầy đủ, xử lý lỗi/file tạm | Tuấn Anh kiểm tra API/UI; chủ module kiểm tra dữ liệu |
 | Frontend | Tuấn Anh | Chọn V1/S/tham chiếu, xem báo cáo và bổ sung tài liệu | Dũng kiểm tra API/tích hợp |
-| Nhãn chuẩn và kiểm thử chéo | Dũng quản lý dữ liệu; hai owner từng điểm nối kiểm tra | Fixture/nhãn được review, contract test, integration test | Dũng điều phối đầu-cuối; thành viên khác kiểm tra phụ |
+| Nhãn chuẩn và kiểm thử chéo | Dũng quản lý dữ liệu; hai owner từng điểm nối kiểm tra | Fixture/nhãn được review, contract test, integration test | Dũng điều phối tích hợp; Đức Anh điều phối kế hoạch đánh giá; thành viên khác kiểm tra phụ |
 
 Mỗi issue có một người chịu trách nhiệm cuối cùng và một reviewer cụ thể. Cả nhóm tham gia gán nhãn; người review nhãn phải khác người tạo nhãn. Các task lấy mẫu, đọc cấu trúc, xây thuật toán và thiết kế UI có thể làm độc lập bằng fixture sau khi thống nhất ranh giới liên quan.
 
@@ -188,7 +188,7 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 - Cả nhóm kiểm tra acceptance criteria, trường hợp lỗi và chạy lại trên máy khác.
 - Dũng tổng hợp minh chứng dữ liệu; Đức Anh tổng hợp phiên bản, giới hạn và báo cáo kỹ thuật.
 - Chủ module phân tích lỗi; phân biệt lỗi cần sửa để bàn giao với hạn chế thuật toán cần công bố.
-- Nhóm báo cáo số đo thực tế, phân tích lỗi và giới hạn theo cách đánh giá đã thống nhất; hiện chưa có ngưỡng chất lượng đạt/chưa đạt.
+- Nhóm báo cáo số đo thực tế, phân tích lỗi và giới hạn theo cách đánh giá đã thống nhất; tạm lấy Change F1 ≥ 90% và Critical Change Recall ≥ 95%; đây là các ngưỡng dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md, chưa phải ngưỡng nghiệm thu chính thức.
 
 **Đầu ra:** `evaluation-report.md`, biên bản nghiệm thu nội bộ, danh sách lỗi và giới hạn đã biết.
 
@@ -254,7 +254,7 @@ Dũng bàn giao bộ V1–S với nguồn, hash, tham chiếu và giới hạn t
 
 Trước tuần 7 cần có mẫu sửa toàn đơn vị, sửa cụm từ, bổ sung/bãi bỏ, nhiều thay đổi trong một Điều, S sửa nhiều văn bản, vị trí đích mơ hồ và dẫn chiếu đủ/thiếu. Trước tuần 9 bổ sung hiệu lực có ngoại lệ, bảng/đoạn ngoài Điều làm căn cứ, file lỗi/quá giới hạn, null/rỗng, lỗi module, PARTIAL và gửi lại sau bổ sung tài liệu.
 
-Đánh giá bằng các chỉ số và phân tích lỗi theo test_evaluation_plan.md; hiện chưa có ngưỡng chất lượng đạt/chưa đạt. Đức Anh điều phối cả nhóm đo; hai owner từng điểm nối kiểm tra đầu ra/cách dùng, Dũng review căn cứ và chất lượng giải thích. Không sao chép công thức hoặc quy tắc gán nhãn vào kế hoạch này.
+Đánh giá bằng các chỉ số và phân tích lỗi theo test_evaluation_plan.md; tạm lấy Change F1 ≥ 90% và Critical Change Recall ≥ 95%; đây là các ngưỡng dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md, chưa phải ngưỡng nghiệm thu chính thức. Đức Anh điều phối cả nhóm đo; hai owner từng điểm nối kiểm tra đầu ra/cách dùng, Dũng review căn cứ và chất lượng giải thích. Không sao chép công thức hoặc quy tắc gán nhãn vào kế hoạch này.
 
 Kết quả phải gắn với commit, cấu hình, dependency/mô hình nếu có, dữ liệu và nhãn có phiên bản. Số liệu từ mẫu thiếu căn cứ hoặc dữ liệu giả định được giải thích đúng mục đích; không dùng thông tin ngoài bộ đầu vào để yêu cầu kết luận chắc chắn. Không chỉnh test sau khi xem kết quả để tuyên bố đạt.
 

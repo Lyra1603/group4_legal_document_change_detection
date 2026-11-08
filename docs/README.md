@@ -24,17 +24,17 @@ hoặc API polling.
 
 Các module xử lý nằm trong `backend/app/`, gọi nhau qua hàm/hợp đồng dùng chung. Luồng: đọc/chuyển đổi và Parser → adapter/linker → context/LightRAG HTTP → Text Diff → Semantic Diff → Scorer → Pipeline tổng hợp `ComparisonReport.documents/items`. Không diff toàn bộ V1 với S; Text Diff cần nội dung trước/sau cục bộ đã được xác định.
 
-LightRAG Server riêng qua HTTP là phương án đã chốt. Phạm vi đầu là retrieval; source registry kiểm tra nguồn, không dùng retrieval score làm mức tác động. Không triển khai Evaluator độc lập; giữ folder cũ, owner kiểm thử chéo tại từng điểm nối và Dũng điều phối đầu-cuối.
+LightRAG Server riêng qua HTTP là phương án đã chốt. Phạm vi đầu là retrieval; source registry kiểm tra nguồn, không dùng retrieval score làm mức tác động. Không triển khai Evaluator độc lập; giữ folder cũ, owner kiểm thử chéo tại từng điểm nối; Dũng điều phối tích hợp/Pipeline/API, Đức Anh điều phối kế hoạch đánh giá.
 
-Ngọc Anh phụ trách Text Diff; Tuấn Anh phụ trách Semantic Change/Scorer; Thọ phụ trách xử lý tài liệu; Dũng phụ trách dữ liệu/docs và tích hợp/Pipeline/API; Dũng + Đức Anh phụ trách AI Adapter. Đức Anh giữ phần schema/chuẩn bị context theo phân công hiện có; người gọi/tích hợp LightRAG bổ sung sau. Xem LK-01 trong decision.md và module.md; không mặc định một owner chung cho toàn folder change_analysis.
+Ngọc Anh phụ trách Text Diff; Tuấn Anh phụ trách Semantic Change/Scorer; Thọ phụ trách xử lý tài liệu; Dũng phụ trách dữ liệu/docs và tích hợp/Pipeline/API; Dũng + Đức Anh phụ trách AI Adapter. Đức Anh phụ trách schema, context và điều phối kế hoạch đánh giá; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG. Xem LK-01 trong decision.md và module.md; không mặc định một owner chung cho toàn folder change_analysis.
 
 Phát triển bán song song bằng contract/schema/fixture đã thống nhất; runtime vẫn có thứ tự. Các folder chính và file bắt buộc được cố định; owner có thể thêm file hỗ trợ trong module.
 
-## 2. Mục tiêu Hệ thống & Chỉ số Nghiệm thu (Targets)
-- Change F1 ≥ 0,90: đo khả năng phát hiện từng thay đổi nghĩa.
-- Critical Change Recall ≥ 0,95: tìm đúng ít nhất 95% thay đổi
-  được gán nhãn CRITICAL theo bộ tiêu chí thống nhất.
-- Đo trên bộ kiểm thử độc lập; đây là mục tiêu, chưa phải kết quả đạt được.
+## 2. Mục tiêu hệ thống và ngưỡng đánh giá dự tính
+- Change F1 ≥ 90% (dự tính): đo khả năng phát hiện từng thay đổi nghĩa.
+- Critical Change Recall ≥ 95% (dự tính): tìm đúng thay đổi được gán nhãn CRITICAL theo bộ tiêu chí thống nhất.
+- Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; chưa phải ngưỡng nghiệm thu chính thức.
+- Đo trên bộ kiểm thử độc lập; báo cáo kết quả thực tế và giới hạn, chưa coi các mức dự tính là chất lượng đã đạt. Matching đánh giá áp dụng 1–1 trước; 1–n bổ sung sau khi hoàn thành 1–1.
 
 ## 3. Cấu trúc Thư mục Dự án
 
@@ -67,7 +67,7 @@ Giữ cấu trúc theo branch `plan_lightrag`; không tạo lại `src/` hoặc 
 - Schema có implementation và validator trên nhánh `feat/ducanh-backend-integration` (commit schema `36d9727`) vẫn theo envelope trước `base_document/amendment_document/reference_documents/results`; chưa mặc định tương thích hợp đồng mục tiêu `documents/items`. Chỉ tích hợp phần đã review/chuyển đổi, không ghi đè implementation bằng file trống.
 - API nền dùng `doc_v1/doc_s/reference_files`; API mục tiêu dùng `base_file/amendment_file/reference_files`. Chưa coi hai giao diện tương đương nếu chưa có adapter/alias được kiểm thử.
 - LightRAG HTTP đã chốt phương án, chưa đồng nghĩa đã hiện thực client và kiểm chứng vòng đời chỉ mục.
-- Phân công chức năng đã chốt ở LK-01; người gọi/tích hợp LightRAG bổ sung sau. Bốn mã phân loại và contract/fixture chi tiết còn chờ; benchmark/fixture phải được review trước khi dùng làm bằng chứng chất lượng.
+- Phân công chức năng đã chốt ở LK-01: Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá. Bốn mã phân loại và contract/fixture chi tiết còn chờ; benchmark/fixture phải được review trước khi dùng làm bằng chứng chất lượng.
 
 ## 4. Hướng dẫn Cài đặt & Chạy thử (Quick Start)
 - Bước 1: Cài đặt thư viện môi trường
