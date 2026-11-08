@@ -43,7 +43,7 @@ ComparisonReport có comparison_id, base_document, amendment_document, reference
 
 Tám nhóm field_group/category và ràng buộc significance theo report_validation.py; không tiếp tục yêu cầu danh mục bốn nhóm hoặc đổi envelope sang dạng báo cáo phẳng. Phân công LK-01, phương án LightRAG HTTP và thứ tự chốt LK-13 giữ nguyên. Phần hướng dẫn chi tiết và phạm vi nhận xét frontend theo SRS mục 1.7–1.8.
 
-Các giới hạn validator đã merge nhưng chưa được quyết định sửa trong đợt này: change_id chưa được kiểm tra duy nhất xuyên các amendment; chưa kiểm tra reconstruction toàn Text Diff; các trường old_quote/new_quote không tự được kiểm chứng như EvidenceRef; PARTIAL/FAILED chưa được kiểm tra mọi điều kiện nghiệp vụ. Schema đã ở main; không diễn giải “qua schema” thành “đúng nghiệp vụ” hoặc “Pipeline đã gọi validator”. Xem [hướng dẫn schema](schema-integration.md).
+Các giới hạn validator đã merge nhưng chưa được quyết định sửa trong đợt này: change_id chưa được kiểm tra duy nhất xuyên các amendment; chưa kiểm tra reconstruction toàn Text Diff; các trường old_quote/new_quote không tự được kiểm chứng như EvidenceRef; PARTIAL/FAILED chưa được kiểm tra mọi điều kiện nghiệp vụ. Schema đã ở main; không diễn giải “qua schema” thành “đúng nghiệp vụ” hoặc “Pipeline đã gọi validator”. Xem [hướng dẫn schema](schema-integration.md) và [kết quả kiểm thử](schema-verification-report.md).
 
 ## A. Quyết định của owner về cách triển khai
 

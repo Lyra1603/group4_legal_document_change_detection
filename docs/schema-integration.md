@@ -138,3 +138,5 @@ python -m unittest discover -s test/schema_suite -p "test_*.py" -v
 ```
 
 Fixture [common_contract.json](../test/fixtures/reports/common_contract.json) là dữ liệu giả định để kiểm tra contract, không là nhãn pháp lý hoặc bằng chứng chất lượng mô hình. Test tích hợp dùng DOCX tối thiểu tự dựng bằng thư viện chuẩn và Parser có sẵn của main; không cần import API, storage, LightRAG hay mô hình. Ngưỡng F1 90%/Critical Recall 95% vẫn dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; test schema không xác nhận hai ngưỡng đó.
+
+Kết quả chạy lại trên main sau PR #2: [báo cáo kiểm thử và các điểm còn mở](schema-verification-report.md).

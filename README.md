@@ -11,6 +11,7 @@ Schema Đức Anh đã merge vào main qua [PR #2](https://github.com/Lyra1603/g
 - [Quyết định đã chốt/còn mở](docs/decision.md)
 - [Hướng dẫn schema, API hiện tại và adapter còn thiếu](docs/schema-integration.md)
 - [Kế hoạch kiểm thử](docs/test_evaluation_plan.md)
+- [Kết quả xác nhận schema](docs/schema-verification-report.md)
 - [Workflow](docs/workflow.md)
 
 Kiểm tra schema từ repo root, Python 3.11 trở lên; đã chạy Python 3.12.14:
