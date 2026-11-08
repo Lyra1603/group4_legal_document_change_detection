@@ -16,7 +16,7 @@ Tài liệu quy định cách thành viên phối hợp từ lúc chốt lựa c
 
 Quy tắc Git và các checklist dưới đây là đề xuất vận hành của bản đầu tiên, không khẳng định nhóm đã thông qua hoặc GitHub đã bật cấu hình bảo vệ. Quyết định và phân công mới nhất được nhóm xác nhận là căn cứ; khi tài liệu còn lệch nhau, cập nhật phần liên quan trước khi dựa vào đó để triển khai.
 
-Theo phân công hiện có: Dũng phụ trách tích hợp/API và dữ liệu/docs; Thọ phụ trách xử lý tài liệu; Ngọc Anh phụ trách Text Diff; Tuấn Anh phụ trách Semantic Change và Scorer; Dũng + Đức Anh phụ trách AI Adapter. Người gọi/tích hợp LightRAG sẽ bổ sung sau, không tự gán trong quy trình này.
+Theo phân công hiện có: Dũng phụ trách tích hợp/API và dữ liệu/docs; Thọ phụ trách xử lý tài liệu; Ngọc Anh phụ trách Text Diff; Tuấn Anh phụ trách Semantic Change và Scorer; Dũng + Đức Anh phụ trách AI Adapter. Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá.
 
 ## 2. Quy trình làm việc
 
@@ -142,6 +142,8 @@ Với điểm nối A → B:
 | Hai owner | Cùng thống nhất expected output, tái hiện lỗi, xác định bên sửa và xác nhận kiểm tra lại |
 | Thành viên khác | Review phụ hoặc nghiệp vụ theo phạm vi; hỗ trợ xử lý bất đồng, không thay việc hai owner tự kiểm tra |
 
+Dũng điều phối tích hợp; Đức Anh điều phối kế hoạch đánh giá. Thiết kế đánh giá, matching và phép đo theo [Kế hoạch kiểm thử và đánh giá](test_evaluation_plan.md).
+
 Không triển khai Evaluator riêng. Các phép kiểm tra tự động và script đo nếu cần vẫn được viết trong test/; kiểm thử chéo không chỉ là nhìn kết quả rồi nhận xét miệng.
 
 ### 4.2. Những cặp cần kiểm tra
@@ -154,8 +156,8 @@ Không triển khai Evaluator riêng. Các phép kiểm tra tự động và scr
 | Text Diff → Pipeline/API | Ngọc Anh ↔ Dũng |
 | Semantic Change/Scorer → Pipeline/API | Tuấn Anh ↔ Dũng |
 | AI Adapter → Semantic Change/Scorer | Dũng + Đức Anh ↔ Tuấn Anh |
-| Context → bên nhận | Người phụ trách context theo phân công áp dụng ↔ Ngọc Anh/Tuấn Anh/Dũng ở từng điểm nối |
-| Gọi/tích hợp LightRAG → nguồn/context/Pipeline | Bổ sung người phụ trách và cặp kiểm tra khi LK-13 được chốt |
+| Context → bên nhận | Đức Anh ↔ Ngọc Anh/Tuấn Anh/Dũng ở từng điểm nối |
+| Gọi/tích hợp LightRAG → nguồn/context/Pipeline | Dũng + Đức Anh phối hợp Thọ về nguồn, Đức Anh về context và Dũng về Pipeline |
 
 Đây là các điểm nối chức năng; có thể nằm cùng một folder hoặc có bước chuẩn hóa/ngữ cảnh ở giữa. Dùng bảng LK-02 trong decision.md để xác định đúng dữ liệu trao đổi. Semantic Change và Scorer cùng Tuấn Anh: vẫn cần kiểm thử điểm nối nội bộ, Dũng review khi nhận kết quả để tích hợp.
 

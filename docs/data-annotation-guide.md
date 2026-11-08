@@ -3,7 +3,7 @@
 **Dự án:** Legal Document Change Detection  
 **Phiên bản:** 1.2.0  
 **Trạng thái:** Hướng dẫn phục vụ pilot và review nhãn  
-**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md), [Workflow](workflow.md)
+**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md), [Workflow](workflow.md), [Kế hoạch kiểm thử và đánh giá](test_evaluation_plan.md)
 
 ## 1. Mục đích và phạm vi hướng dẫn
 
@@ -17,7 +17,7 @@ Một mẫu gồm văn bản ban đầu **V1**, văn bản sửa đổi **S** v�
 | Yêu cầu chức năng, mã nhãn và cấu trúc dữ liệu | SRS, đặc biệt mục 1.2–1.4 |
 | Module, luồng xử lý, API và lựa chọn triển khai | Architecture |
 | Tuyển chọn nguồn, quy tắc điền nhãn, ví dụ ranh giới và review | Hướng dẫn này |
-| Thiết kế phép thử, matching, công thức chỉ số và kế hoạch chia tập | Workflow |
+| Thiết kế phép thử, matching, công thức chỉ số và kế hoạch chia tập | test_evaluation_plan.md |
 
 Đầu ra của hoạt động dữ liệu gồm file nguồn, bộ đầu vào của từng mẫu, manifest, nhãn tham chiếu có bằng chứng, hồ sơ review và phiên bản nhãn. Không định nghĩa lại schema API trong tài liệu này; các ví dụ chỉ minh họa cách điền theo SRS.
 
@@ -128,7 +128,7 @@ Các biến thể cùng văn bản nền/chuỗi sửa đổi giữ chung `linea
 | 7 | Chọn category và significance theo mục 5 | ScoringResult cùng lý do/cảnh báo |
 | 8 | Kiểm tra độ bao phủ, nguồn và cấu trúc; review độc lập | Nhãn được chấp nhận hoặc hồ sơ bất đồng |
 
-Rà soát mọi yêu cầu trong S để tránh bỏ sót, nhưng chỉ phân tích ngữ nghĩa phần tác động đến V1 cùng ngữ cảnh cần thiết. Không phải gán một bản ghi cho mọi Điều không thay đổi của V1. Không dựa duy nhất vào vùng do thuật toán phát hiện. ID của nhãn chuẩn và dự đoán không bắt buộc giống nhau; cách matching thuộc Workflow.
+Rà soát mọi yêu cầu trong S để tránh bỏ sót, nhưng chỉ phân tích ngữ nghĩa phần tác động đến V1 cùng ngữ cảnh cần thiết. Không phải gán một bản ghi cho mọi Điều không thay đổi của V1. Không dựa duy nhất vào vùng do thuật toán phát hiện. ID của nhãn chuẩn và dự đoán không bắt buộc giống nhau; cách matching thuộc test_evaluation_plan.md. Hiện áp dụng matching 1–1; matching 1–n bổ sung sau khi hoàn thành 1–1.
 
 ## 4. Quy tắc gán nhãn và các trường hợp dễ nhầm
 
@@ -230,7 +230,7 @@ Chỉ đổi nghĩa đã xác định không gán LOW theo rubric hiện tại. 
 
 ## 6. Review, xử lý bất đồng và quản lý phiên bản nhãn
 
-Phân công nhân sự theo Architecture và Module: Dũng quản lý dữ liệu/nhãn và review nghiệp vụ; Tuấn Anh phụ trách Semantic Change/Scorer, Ngọc Anh phụ trách Text Diff; Dũng điều phối tích hợp/API, Dũng + Đức Anh phụ trách AI Adapter; hai owner tại mỗi điểm nối kiểm tra chéo output và cách sử dụng. Không có Evaluator độc lập. Mỗi cặp có người gán nhãn và một người review khác; không tự review bản mình như kiểm tra độc lập. Khi có người có chuyên môn pháp luật tham gia, ghi rõ vai trò và phạm vi kiểm tra; không mặc định nhóm đã có chuyên gia.
+Phân công nhân sự theo Architecture và Module: Dũng quản lý dữ liệu/nhãn và review nghiệp vụ; Tuấn Anh phụ trách Semantic Change/Scorer, Ngọc Anh phụ trách Text Diff; Dũng điều phối tích hợp/API, Dũng + Đức Anh phụ trách AI Adapter; Đức Anh điều phối kế hoạch đánh giá; hai owner tại mỗi điểm nối kiểm tra chéo output và cách sử dụng. Không có Evaluator độc lập. Mỗi cặp có người gán nhãn và một người review khác; không tự review bản mình như kiểm tra độc lập. Khi có người có chuyên môn pháp luật tham gia, ghi rõ vai trò và phạm vi kiểm tra; không mặc định nhóm đã có chuyên gia.
 
 ### 6.1. Checklist review
 
@@ -251,13 +251,13 @@ Phân công nhân sự theo Architecture và Module: Dũng quản lý dữ liệ
 
 Lưu hai phương án cùng đoạn nguồn, tiêu chí viện dẫn và lý do. Hai người đối chiếu; nếu chưa thống nhất, người điều phối nhãn mời người thứ ba xem xét, tham khảo giảng viên/người có chuyên môn khi có. Người quyết định ghi căn cứ và thay đổi cuối, không chỉ lấy đa số để xác nhận nội dung pháp lý.
 
-Trạng thái quản lý nhãn đề xuất: DRAFT → IN_REVIEW → ACCEPTED, hoặc UNRESOLVED khi chưa giải quyết. Đây là metadata gán nhãn, không phải ComparisonReport.status. ACCEPTED nghĩa là được chấp nhận theo quy trình dự án, không chứng nhận đúng pháp lý tuyệt đối. Nhãn còn bất đồng không được coi là gold xác định; giữ nguyên danh sách và để Workflow quy định cách báo cáo/đánh giá, không tự coi negative hoặc loại bỏ âm thầm.
+Trạng thái quản lý nhãn đề xuất: DRAFT → IN_REVIEW → ACCEPTED, hoặc UNRESOLVED khi chưa giải quyết. Đây là metadata gán nhãn, không phải ComparisonReport.status. ACCEPTED nghĩa là được chấp nhận theo quy trình dự án, không chứng nhận đúng pháp lý tuyệt đối. Nhãn còn bất đồng không được coi là gold xác định; giữ nguyên danh sách và để test_evaluation_plan.md quy định cách báo cáo/đánh giá, không tự coi negative hoặc loại bỏ âm thầm.
 
 ### 6.3. Phiên bản và điều kiện sử dụng
 
 Lưu label_version, guideline_version, người/thời điểm gán và review, hash file V1/S và toàn bộ tài liệu tham chiếu được cung cấp, nhật ký quyết định. Sửa input thì review lại nhãn liên quan. Đổi guideline thì rà những nhãn chịu ảnh hưởng; giữ lịch sử thay vì ghi đè không dấu vết.
 
-Pilot tuần 6 có ví dụ không đổi, đổi diễn đạt, đổi nghĩa, nhiều khía cạnh, bổ sung/bãi bỏ, S sửa nhiều văn bản, hiệu lực có ngoại lệ, đủ/thiếu dẫn chiếu và chưa xác định; ghi độ thống nhất và ca bất đồng để chỉnh guideline. Quy mô cuối và split theo Workflow, không đặt số lượng tùy ý trong tài liệu này. Khóa nhãn test và quy tắc trước đánh giá; các biến thể cùng nguồn/chuỗi sửa đổi giữ chung nhóm split.
+Pilot tuần 6 có ví dụ không đổi, đổi diễn đạt, đổi nghĩa, nhiều khía cạnh, bổ sung/bãi bỏ, S sửa nhiều văn bản, hiệu lực có ngoại lệ, đủ/thiếu dẫn chiếu và chưa xác định; ghi độ thống nhất và ca bất đồng để chỉnh guideline. Quy mô cuối và split theo test_evaluation_plan.md, không đặt số lượng tùy ý trong tài liệu này. Khóa nhãn test và quy tắc trước đánh giá; các biến thể cùng nguồn/chuỗi sửa đổi giữ chung nhóm split.
 
 Chỉ đưa vào bộ đánh giá khi bộ đầu vào được kiểm tra, nhãn được ACCEPTED và cấu trúc đã validate. ACCEPTED có thể bao gồm nhãn mong đợi “chưa đủ căn cứ” ở mẫu cố ý thiếu tài liệu nếu người review đã xác nhận giới hạn đó; khác với UNRESOLVED do người gán nhãn còn bất đồng. Báo riêng SYNTHETIC và DERIVED_REAL; số liệu từ mẫu giả định không đại diện tự động cho dữ liệu thực tế. Lỗi trích xuất/liên kết của hệ thống không làm thay đổi nhãn chuẩn đã kiểm tra bằng tài liệu nguồn.
 
@@ -413,9 +413,9 @@ Hai khối minh họa cách điền nhãn ngữ nghĩa và mức độ nội b�
 | Căn cứ | Ngữ cảnh sử dụng, tài liệu được cung cấp, tài liệu còn thiếu, nguồn hiệu lực/chuyển tiếp |
 | Nhãn | AmendmentItem, SemanticDiffResult và ScoringResult theo SRS; nhãn chưa xác định có lý do |
 | Review | Người gán/review, phương án bất đồng, quyết định và căn cứ |
-| Phiên bản | label_version, guideline_version, trạng thái review, split theo Workflow |
+| Phiên bản | label_version, guideline_version, trạng thái review, split theo test_evaluation_plan.md |
 
-Metadata quản lý lưu trong manifest/hồ sơ, không tự thêm vào API. Định dạng đóng gói gold.json và cách matching được thống nhất với Workflow; tên trường nghiệp vụ tuân theo SRS.
+Metadata quản lý lưu trong manifest/hồ sơ, không tự thêm vào API. Định dạng đóng gói gold.json và cách matching được thống nhất với test_evaluation_plan.md; matching 1–1 được thực hiện trước, matching 1–n bổ sung sau khi hoàn thành 1–1; tên trường nghiệp vụ tuân theo SRS.
 
 ### 7.5. Ngữ cảnh giữ nguyên ảnh hưởng cách hiểu
 

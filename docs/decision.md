@@ -90,7 +90,7 @@ Phần này ưu tiên những lựa chọn nằm trong module. Nếu đổi outp
 ### CN-04 — Cấu hình LightRAG và tài nguyên
 
 **Trạng thái:** CHO_DE_XUAT  
-**Chủ trì:** Người gọi/tích hợp LightRAG bổ sung sau; phối hợp người chịu tài nguyên/cấu hình.
+**Chủ trì:** Dũng + Đức Anh; phối hợp các bên liên quan về cấu hình và tài nguyên.
 
 **Vấn đề cần chốt:** Cấu hình môi trường, tài nguyên, giới hạn/chi phí; caching nội bộ và quy tắc retry; điều kiện dịch vụ sẵn sàng. Không đổi phương án HTTP.
 
@@ -101,7 +101,7 @@ Phần này ưu tiên những lựa chọn nằm trong module. Nếu đổi outp
 **Phương án owner đề xuất:** [Điền lựa chọn cụ thể.]  
 **Lý do và đánh đổi:** [Điền lý do, giới hạn và ví dụ kiểm chứng.]
 
-**Kết luận hiện có:** Người phụ trách gọi/tích hợp LightRAG sẽ bổ sung sau; CN-04 cần phối hợp LK-13 theo thứ tự chốt sau các quyết định còn lại. Chưa có lựa chọn cấu hình cuối cùng. Owner điền phương án mong muốn và lý do; các bên liên quan xác nhận trước khi dùng làm đặc tả chính thức.
+**Kết luận hiện có:** Đã chốt Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; CN-04 cần phối hợp LK-13 theo thứ tự chốt sau các quyết định còn lại. Chưa có lựa chọn cấu hình cuối cùng. Owner điền phương án mong muốn và lý do; các bên liên quan xác nhận trước khi dùng làm đặc tả chính thức.
 
 **Xác nhận còn cần:** [Ghi người/bên cần đồng ý, hoặc ghi không ảnh hưởng bên khác và lý do.]  
 **Đầu ra cần cập nhật:** config.py, cấu hình chạy; API/cách ly/vòng đời theo LK-13.  
@@ -227,9 +227,11 @@ Mỗi quyết định phải có bên cung cấp và bên nhận cùng thống n
 | Classifier & Scorer | Tuấn Anh | Theo người chủ trì CN-07 |
 | Tích hợp + API | Dũng | Pipeline, tổng hợp đầu ra và API nghiệp vụ; không đồng nhất với phần gọi LightRAG |
 | AI Adapter/gọi mô hình | Dũng + Đức Anh | Theo người chủ trì CN-08; phân chia công việc nội bộ sẽ được điền tại CN-08 |
-| Gọi/tích hợp LightRAG | Bổ sung sau | Chưa giao mặc định cho Dũng hoặc Đức Anh; phương án HTTP giữ nguyên |
+| Gọi/tích hợp LightRAG | Dũng + Đức Anh | Phụ trách gọi/tích hợp dịch vụ theo phương án HTTP đã chốt |
+| Context | Đức Anh | Chuẩn bị chunk, truy vấn, chọn và kiểm tra ngữ cảnh/căn cứ |
+| Điều phối kế hoạch đánh giá | Đức Anh | Tổng hợp yêu cầu từ thành viên, tổ chức hoàn thiện kế hoạch và theo dõi thực hiện |
 
-**Phạm vi đã chốt:** phân công chức năng và việc để riêng đầu việc gọi/tích hợp LightRAG để bổ sung người sau. Giữ cấu trúc folder chính theo plan_lightrag, không triển khai Evaluator riêng. Các chi tiết thuật toán và hợp đồng vẫn theo CN/LK tương ứng.
+**Phạm vi đã chốt:** phân công chức năng; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá. Giữ cấu trúc folder chính theo plan_lightrag, không triển khai Evaluator riêng. Các chi tiết thuật toán và hợp đồng vẫn theo CN/LK tương ứng.
 
 **Phần chưa quyết định tại LK-01:** không chốt lại người phụ trách frontend hoặc thay đổi ownership schema chỉ từ bảng chức năng này; không tự chuyển các nhiệm vụ ngoài phạm vi được liệt kê.
 
@@ -246,24 +248,24 @@ Mỗi quyết định phải có bên cung cấp và bên nhận cùng thống n
 | --- | --- | --- |
 | API/Pipeline (Dũng) → Xử lý tài liệu (Thọ) | Bộ V1/S/tham chiếu, metadata, tham số xử lý; cấu trúc kết quả trả về | LK-03, LK-04, LK-05, LK-11, LK-12 |
 | Parser/Adapter (Thọ) → Trích/liên kết chỉ dẫn (Thọ) | Cây, nguồn và cấu trúc chỉ dẫn; điểm nối nội bộ cùng người | LK-03, LK-04, LK-05 |
-| Parser/Adapter/Linker (Thọ) → Context (Đức Anh theo Architecture hiện có) | Cấu trúc, nguyên văn, định danh, spans và yêu cầu ngữ cảnh; người gọi LightRAG sẽ bổ sung sau | LK-03, LK-04, LK-05, LK-06 |
+| Parser/Adapter/Linker (Thọ) → Context (Đức Anh) | Cấu trúc, nguyên văn, định danh, spans và yêu cầu ngữ cảnh; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG | LK-03, LK-04, LK-05, LK-06 |
 | Linker — dữ liệu trước/sau (Thọ) → Text Diff (Ngọc Anh) | Nội dung cục bộ, chỉ dẫn/đích, căn cứ tạo nội dung sau, cảnh báo | LK-05, LK-07 |
-| Context (Đức Anh theo Architecture hiện có) → Text Diff (Ngọc Anh) | Ngữ cảnh/trạng thái đủ căn cứ cần cho bước diff, nếu sử dụng | LK-06, LK-07 |
-| Context (Đức Anh theo Architecture hiện có) → Semantic Change (Tuấn Anh) | Ngữ cảnh, tài liệu dẫn chiếu, bằng chứng và giới hạn | LK-06, LK-08 |
+| Context (Đức Anh) → Text Diff (Ngọc Anh) | Ngữ cảnh/trạng thái đủ căn cứ cần cho bước diff, nếu sử dụng | LK-06, LK-07 |
+| Context (Đức Anh) → Semantic Change (Tuấn Anh) | Ngữ cảnh, tài liệu dẫn chiếu, bằng chứng và giới hạn | LK-06, LK-08 |
 | Text Diff (Ngọc Anh) → Semantic Change (Tuấn Anh) | Các vùng thêm/xóa/thay thế, offset, ID và trường hợp không có kết quả diff | LK-07, LK-08 |
 | Semantic Change (Tuấn Anh) → Scorer (Tuấn Anh) | Nhận định nghĩa, bằng chứng, khía cạnh/nhãn và cảnh báo; điểm nối nội bộ cùng người | LK-08, LK-09, LK-10 |
 | AI Adapter (Dũng + Đức Anh) ↔ Semantic Change/Scorer (Tuấn Anh) | Yêu cầu gọi mô hình, output hợp lệ, bằng chứng và lỗi | CN-08, LK-08, LK-10, LK-12 |
 | Xử lý tài liệu/Linker (Thọ) → Pipeline (Dũng) | Dữ liệu nguồn/chỉ dẫn và phần chưa phân tích được | LK-04, LK-05, LK-11, LK-12 |
 | Text Diff (Ngọc Anh) → Pipeline (Dũng) | Kết quả diff phục vụ tổng hợp và hiển thị | LK-07, LK-11, LK-12 |
 | Semantic Change/Scorer (Tuấn Anh) → Pipeline/API (Dũng) | Nhận định, nhãn, mức tác động, giải thích, nguồn và cảnh báo | LK-08, LK-09, LK-10, LK-11, LK-12 |
-| Context (Đức Anh theo Architecture hiện có) → Pipeline (Dũng) | Ngữ cảnh, tình trạng tham chiếu và lỗi/cảnh báo liên quan | LK-06, LK-11, LK-12 |
+| Context (Đức Anh) → Pipeline (Dũng) | Ngữ cảnh, tình trạng tham chiếu và lỗi/cảnh báo liên quan | LK-06, LK-11, LK-12 |
 | Pipeline (Dũng) → API (Dũng) | Envelope báo cáo, lỗi và trạng thái; điểm nối nội bộ cùng người | LK-11, LK-12 |
 | API (Dũng) → Frontend (Tuấn Anh theo phân công hiện có) | Upload, báo cáo, nguồn hiển thị và lỗi; không tự thay phân công frontend tại đây | LK-11, LK-12 |
-| Context/nguồn (Đức Anh/Thọ) ↔ Gọi LightRAG (người phụ trách bổ sung sau) | Payload nhập/query, mapping nguồn, trạng thái và lỗi; bổ sung chi tiết sau các quyết định khác | LK-13 |
-| Pipeline (Dũng) ↔ Gọi LightRAG (người phụ trách bổ sung sau) | Khởi tạo, giới hạn thời gian, cách ly và dọn tài nguyên theo comparison | LK-13 |
+| Context/nguồn (Đức Anh/Thọ) ↔ Gọi LightRAG (Dũng + Đức Anh) | Payload nhập/query, mapping nguồn, trạng thái và lỗi; bổ sung chi tiết sau các quyết định khác | LK-13 |
+| Pipeline (Dũng) ↔ Gọi LightRAG (Dũng + Đức Anh) | Khởi tạo, giới hạn thời gian, cách ly và dọn tài nguyên theo comparison | LK-13 |
 | Dữ liệu/docs (Dũng) ↔ Các owner (Thọ, Ngọc Anh, Tuấn Anh, Đức Anh) | Mẫu nguồn, fixture, expected output và quy ước nghiệp vụ; phối hợp phát triển, không là bước runtime bắt buộc | LK-03 đến LK-12 theo dữ liệu liên quan |
 
-**Lưu ý phân công:** Context và nguồn giữ người phụ trách theo Architecture ở phạm vi chuẩn bị/ngữ cảnh; phần gọi/tích hợp LightRAG được tách ra và chưa chỉ định người. Không dùng tên Đức Anh tại cặp Context để mặc định Đức Anh đã nhận phần LightRAG.
+**Lưu ý phân công:** Context do Đức Anh phụ trách; nguồn do Thọ phụ trách; gọi/tích hợp LightRAG do Dũng + Đức Anh phối hợp.
 
 **Mỗi cặp cần điền:** tên public function/API, tham số, kiểu và cấu trúc return; trường bắt buộc/tùy chọn; ID, nguồn/offset; ý nghĩa null/rỗng/lỗi; phiên bản hợp đồng và một bộ input/output mẫu hai bên đã review.
 
@@ -476,20 +478,20 @@ Mỗi quyết định phải có bên cung cấp và bên nhận cùng thống n
 ### LK-13 — LightRAG HTTP và vòng đời dữ liệu
 
 **Trạng thái:** CHO_CAC_QUYET_DINH_KHAC_HOAN_THANH  
-**Chủ trì:** Người gọi/tích hợp LightRAG bổ sung sau; phối hợp Dũng phụ trách Pipeline/API và owner nguồn/context/ngữ nghĩa
+**Chủ trì:** Dũng + Đức Anh; phối hợp owner nguồn/context/ngữ nghĩa và các bên nhận dữ liệu
 
 **Vấn đề cần chốt:** API nhập/sẵn sàng/query/xóa thực tế; chunk/server có chia lại không, metadata được giữ thế nào; index dùng theo comparison; ID mapping; lỗi/retry/idempotency, timeout và cleanup khi client mất kết nối; không xóa vùng dùng chung để dọn một comparison.
 
 **Phương án để cân nhắc:** LightRAG Server riêng qua HTTP đã chốt; còn lựa chọn release, endpoint/payload, cấu hình và cách ly.
 
-**Bên cần thống nhất/review:** Người gọi/tích hợp LightRAG sau khi được bổ sung; Dũng về tích hợp/API, Thọ về nguồn, Đức Anh về context/AI Adapter khi liên quan, Tuấn Anh/Ngọc Anh về dữ liệu nhận.
+**Bên cần thống nhất/review:** Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; Dũng về Pipeline/API, Thọ về nguồn, Đức Anh về context/AI Adapter khi liên quan, Tuấn Anh/Ngọc Anh về dữ liệu nhận.
 
 **Phương án owner đề xuất:** [Điền lựa chọn cụ thể.]  
 **Lý do và đánh đổi:** [Điền lý do, giới hạn và ví dụ kiểm chứng.]
 
 **Thứ tự chốt:** Chỉ chốt các chi tiết còn lại của LK-13 sau khi các quyết định khác trong file đã hoàn thành. Trước đó có thể khảo sát/chuẩn bị, không coi là kết luận cuối cùng.
 
-**Kết luận hiện có:** Đã chốt phương án LightRAG Server qua HTTP, không phải tạm chọn. Chưa chốt/kiểm chứng release, endpoint, payload, model/embedding, storage, cách ly và lifecycle; không coi phương án đã chốt là đã tích hợp thành công.
+**Kết luận hiện có:** Đã chốt phương án LightRAG Server qua HTTP, không phải tạm chọn; Dũng + Đức Anh phụ trách gọi/tích hợp. Chưa chốt/kiểm chứng release, endpoint, payload, model/embedding, storage, cách ly và lifecycle; không coi phương án đã chốt là đã tích hợp thành công.
 
 **Xác nhận còn cần:** [Ghi người/bên cần đồng ý, hoặc ghi không ảnh hưởng bên khác và lý do.]  
 **Đầu ra cần cập nhật:** lightrag_client/config/source_registry, fixture/service smoke test và hướng dẫn chạy; cập nhật module.md context.  

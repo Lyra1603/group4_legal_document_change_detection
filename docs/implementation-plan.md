@@ -8,13 +8,13 @@
 
 ## 1. Công việc chính của từng thành viên
 
-- **Bạch Công Dũng:** phụ trách dữ liệu, nghiệp vụ và tài liệu tổng quát; chuẩn bị các mẫu V1–S, tài liệu tham chiếu và hướng dẫn gán nhãn. Phụ trách tích hợp/Pipeline/API; cùng Đức Anh phụ trách AI Adapter; review nghiệp vụ/căn cứ và fixture. Không mặc định nhận phần gọi LightRAG hoặc ownership code context.
-- **Dương Đức Anh:** phụ trách schema/chuẩn bị context theo phân công hiện có; cùng Dũng phụ trách AI Adapter/gọi mô hình. Phối hợp kỹ thuật và môi trường chung; không mặc định là người gọi/tích hợp LightRAG.
+- **Bạch Công Dũng:** phụ trách dữ liệu, nghiệp vụ và tài liệu tổng quát; chuẩn bị các mẫu V1–S, tài liệu tham chiếu và hướng dẫn gán nhãn. Phụ trách tích hợp/Pipeline/API; cùng Đức Anh phụ trách AI Adapter; review nghiệp vụ/căn cứ và fixture. Cùng Đức Anh phụ trách gọi/tích hợp LightRAG; context do Đức Anh phụ trách.
+- **Dương Đức Anh:** phụ trách schema và context; cùng Dũng phụ trách AI Adapter/gọi mô hình và gọi/tích hợp LightRAG; điều phối kế hoạch đánh giá. Phối hợp kỹ thuật và môi trường chung.
 - **Bùi Quang Thọ:** phụ trách đọc và phân tích cấu trúc tài liệu, trích yêu cầu sửa đổi và liên kết với nội dung V1. Giữ vị trí nguồn, phân biệt văn bản đích và trích thông tin hiệu lực/chuyển tiếp.
 - **Đoàn Ngọc Anh:** phụ trách Text Diff; bàn giao dữ liệu cho Tuấn Anh và Dũng theo hợp đồng/fixture đã review, kiểm thử chéo với bên nhận.
 - **Đỗ Tuấn Anh:** phụ trách Semantic Diff/Semantic Change và Classifier & Scorer; giữ frontend/session theo phân công hiện có. Semantic Change → Scorer là điểm nối nội bộ, Dũng review khi nhận kết quả để tích hợp; không giao lại Evaluator riêng.
 
-Phân công chức năng theo LK-01 đã chốt: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Change/Scorer; Dũng + Đức Anh AI Adapter. Context chuẩn bị theo phân công hiện có; gọi/tích hợp LightRAG bổ sung người sau, LK-13 chốt khi các quyết định khác hoàn thành. Không tự gán một owner chung cho toàn folder change_analysis. Nếu đổi người phụ trách, cập nhật người sở hữu và mốc bàn giao tại đây, đồng thời đồng bộ Architecture.
+Phân công chức năng theo LK-01 đã chốt: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Change/Scorer; Dũng + Đức Anh AI Adapter. Đức Anh phụ trách context và điều phối kế hoạch đánh giá; Dũng + Đức Anh gọi/tích hợp LightRAG, chi tiết LK-13 chốt khi các quyết định khác hoàn thành. Không tự gán một owner chung cho toàn folder change_analysis. Nếu đổi người phụ trách, cập nhật người sở hữu và mốc bàn giao tại đây, đồng thời đồng bộ Architecture.
 
 ## 2. Mục tiêu, phạm vi và mốc bàn giao
 
@@ -57,7 +57,7 @@ Giới hạn dung lượng, số file tham chiếu, độ dài và thời gian x
 | Dữ liệu, manifest và guideline | Dũng | Mẫu V1–S, bộ tham chiếu, nguồn/hash, hướng dẫn gán nhãn | Tuấn Anh; Thọ kiểm tra khả năng đọc |
 | Reader và Parser | Thọ | Nội dung có cấu trúc, thứ tự và vị trí nguồn | Dũng đối chiếu file; Đức Anh kiểm tra contract |
 | Trích yêu cầu, liên kết và hiệu lực | Thọ | AmendmentItem có chỉ dẫn, vị trí đích, EffectInfo và cảnh báo | Dũng review nghiệp vụ; Ngọc Anh thử đầu vào |
-| Chuẩn bị ngữ cảnh và dẫn chiếu | Đức Anh; người gọi LightRAG bổ sung sau | Phần lấy ngữ cảnh và kiểm tra căn cứ, AnalysisContext/ReferenceRequirement theo SRS | Thọ kiểm tra truy nguồn; Tuấn Anh/Ngọc Anh kiểm tra đầu vào sử dụng |
+| Chuẩn bị ngữ cảnh và dẫn chiếu | Đức Anh (context); Dũng + Đức Anh (gọi/tích hợp LightRAG) | Phần lấy ngữ cảnh và kiểm tra căn cứ, AnalysisContext/ReferenceRequirement theo SRS | Thọ kiểm tra truy nguồn; Tuấn Anh/Ngọc Anh kiểm tra đầu vào sử dụng |
 | Text Diff | Ngọc Anh | Khác biệt chữ và vị trí cục bộ | Tuấn Anh/Dũng kiểm tra đầu vào sử dụng |
 | Semantic Change và Scorer | Tuấn Anh | Nhận định, bằng chứng, giải thích và mức tác động | Ngọc Anh phối hợp Text Diff; Dũng review khi tích hợp |
 | AI Adapter | Dũng + Đức Anh | Gọi mô hình, kiểm tra output/lỗi theo CN-08 | Tuấn Anh kiểm tra dữ liệu nhận |
@@ -74,12 +74,12 @@ Mỗi issue có một người chịu trách nhiệm cuối cùng và một revi
 | Nguồn và khả năng đọc | Dũng + Thọ | Mẫu nào đại diện, lỗi nào do nguồn/chuyển đổi, cách giữ bảng và vị trí; file nào dùng làm ca lỗi | Bộ file mẫu kèm ghi chú và kết quả đọc, đầu tuần 6 |
 | Chỉ dẫn và vị trí đích | Dũng + Thọ | Các dạng sửa toàn đơn vị, cụm từ, bổ sung/bãi bỏ; phân biệt Điều của S và V1; S sửa văn bản khác; trường hợp không đủ rõ | Ví dụ chỉ dẫn–đích đã review, tuần 6; cập nhật khi gặp dạng mới |
 | Đầu vào cho Text Diff và Semantic Diff | Thọ + Ngọc Anh + Tuấn Anh; Đức Anh ở context, Dũng ở ca nghiệp vụ khó | Phần trước/sau cục bộ được trích hoặc suy ra thế nào; trường thông tin nào đã có, còn thiếu; bằng chứng và cảnh báo đi kèm; tránh yêu cầu Thọ phân tích nghĩa thay Tuấn Anh | Fixture được Ngọc Anh/Tuấn Anh dùng chạy thử và xác nhận, trước tích hợp tuần 7 |
-| Ngữ cảnh và tài liệu dẫn chiếu | Đức Anh + Thọ + Tuấn Anh + Ngọc Anh; Dũng review | Thọ cung cấp truy xuất nguồn; Tuấn Anh xác định ngữ cảnh cho phân tích nghĩa, Ngọc Anh thử Text Diff, Tuấn Anh kiểm tra Scorer; Đức Anh hiện thực chuẩn bị context, người gọi LightRAG bổ sung sau, Dũng review căn cứ đủ/thiếu. Thống nhất cách ghi AVAILABLE/MISSING/UNRESOLVED và giới hạn khi còn phụ thuộc | Người sở hữu task cụ thể và fixture đủ/thiếu dẫn chiếu, tuần 6; tích hợp tuần 7–8 |
+| Ngữ cảnh và tài liệu dẫn chiếu | Đức Anh + Thọ + Tuấn Anh + Ngọc Anh; Dũng review | Thọ cung cấp truy xuất nguồn; Tuấn Anh xác định ngữ cảnh cho phân tích nghĩa, Ngọc Anh thử Text Diff, Tuấn Anh kiểm tra Scorer; Đức Anh hiện thực chuẩn bị context, Dũng + Đức Anh gọi/tích hợp LightRAG, Dũng review căn cứ đủ/thiếu. Thống nhất cách ghi AVAILABLE/MISSING/UNRESOLVED và giới hạn khi còn phụ thuộc | Người sở hữu task cụ thể và fixture đủ/thiếu dẫn chiếu, tuần 6; tích hợp tuần 7–8 |
 | Hiệu lực và chuyển tiếp | Thọ + Dũng + Tuấn Anh + Ngọc Anh | Phạm vi áp dụng của ngày chung/ngoại lệ; khi nào chỉ là EffectInfo, khi nào đủ căn cứ thành khía cạnh thay đổi; không suy hiệu lực từ ngày ban hành | Mẫu ngày chung, mốc riêng và chưa rõ, tuần 6–7 |
 | Schema và tích hợp Pipeline | Đức Anh + Thọ + Ngọc Anh + Tuấn Anh; Dũng review nghiệp vụ | Các trường được tạo ở bước nào; định danh và nguồn; giá trị null/rỗng; lỗi/cảnh báo; bước nào tiếp tục được khi thiếu dữ liệu | Schema và báo cáo mẫu chạy qua các module, tuần 6; kiểm tra lại tại mỗi lần đổi contract |
 | API và giao diện | Dũng + Tuấn Anh | Tên file field, JSON response, lỗi HTTP, báo cáo PARTIAL; gửi lại cả bộ file khi bổ sung; hiển thị vai trò tài liệu, trạng thái chờ và chống gửi lặp | API contract và mock report cho UI, tuần 6; thử file thật tuần 7 |
 | Nội dung hiển thị phân tích | Ngọc Anh + Tuấn Anh; Thọ khi có vấn đề truy nguồn | Cách hiển thị aspects, diễn giải, mức độ, nội dung suy ra và quote; lấy nhãn vị trí từ nguồn nào; không làm phẳng mất khía cạnh | Một báo cáo có nhiều khía cạnh và cảnh báo được hiển thị đúng, tuần 7 |
-| Nhãn và phép đo | Tuấn Anh + Dũng + Ngọc Anh | Ranh giới change/aspect, ví dụ severity, matching, ca chưa xác định; nhãn mong đợi khi thiếu tham chiếu; phân biệt lỗi mô hình với lỗi nguồn | Guideline/nhãn pilot và ca tính tay của kiểm thử/script phép đo, tuần 6–7; cố định trước đánh giá độc lập |
+| Nhãn và phép đo | Đức Anh điều phối; Tuấn Anh + Dũng + Ngọc Anh phối hợp | Ranh giới change/aspect, ví dụ severity, matching 1–1 trước và 1–n bổ sung sau khi hoàn thành 1–1, ca chưa xác định; nhãn mong đợi khi thiếu tham chiếu; phân biệt lỗi mô hình với lỗi nguồn | Guideline/nhãn pilot và ca tính tay của kiểm thử/script phép đo, tuần 6–7; cố định trước đánh giá độc lập |
 | Tài nguyên và chạy demo | Đức Anh + chủ module có tác vụ nặng; Tuấn Anh ở thời gian chờ UI | Dependency, mô hình/API, tài nguyên, timeout và điều kiện sẵn sàng; giới hạn đo được và cách báo lỗi | Cấu hình và kết quả đo, tuần 8; chốt tuần 10 |
 
 Chỉ mời người cung cấp đầu vào, người nhận đầu ra và người có trách nhiệm quyết định liên quan. Không yêu cầu cả nhóm cùng viết một module hoặc cùng dự mọi trao đổi.
@@ -103,7 +103,7 @@ Tài liệu là cơ sở làm việc có phiên bản. Phương pháp và hợp 
 | Development guide | Đức Anh; từng chủ module bổ sung lệnh của mình | Thành viên khác cài, chạy và kiểm tra lại được |
 | Workflow | Dũng | Có cách nhận task, branch, PR, review và tích hợp |
 | Data annotation guide | Dũng; Tuấn Anh + Ngọc Anh review nhãn | Có mẫu V1–S, bằng chứng, dẫn chiếu, hiệu lực và quy trình review |
-| Workflow | Dũng + hai owner mỗi điểm nối | Có ca pilot, phương án chia tập, matching và cách kiểm tra kết luận thiếu căn cứ |
+| test_evaluation_plan.md | Đức Anh điều phối; các owner phối hợp | Có ca pilot, phương án chia tập, matching 1–1 và cách kiểm tra kết luận thiếu căn cứ; matching 1–n bổ sung sau khi hoàn thành 1–1 |
 | README | Đức Anh + Dũng | Giới thiệu đúng phạm vi và chỉ đến tài liệu chi tiết |
 
 Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hưởng. Một quyết định công nghệ nội bộ chưa chốt không cản module khác dùng fixture; thiếu hợp đồng bàn giao thì cần xử lý trước khi tích hợp task phụ thuộc.
@@ -114,7 +114,7 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 
 **Mục tiêu:** mỗi người có đầu vào–đầu ra mẫu, chạy được phần việc và biết điểm cần phối hợp.
 
-- Dũng đồng bộ API/Pipeline, Đức Anh phối hợp schema và chuẩn bị context; các owner chốt contract/fixture rồi code song song. Gọi/tích hợp LightRAG chờ người được bổ sung và LK-13.
+- Dũng đồng bộ API/Pipeline, Đức Anh phối hợp schema và chuẩn bị context; các owner chốt contract/fixture rồi code song song. Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; chi tiết kỹ thuật chờ LK-13.
 - Thọ triển khai Reader/Parser trên file thật; cùng Dũng lập fixture chỉ dẫn–vị trí đích, ngữ cảnh và hiệu lực.
 - Ngọc Anh làm Text Diff trên fixture và cùng Thọ kiểm tra trước/sau; Tuấn Anh làm Semantic Change/Scorer. Các bên chốt dữ liệu Text Diff → Semantic Change, còn Semantic Change → Scorer là điểm nối nội bộ Tuấn Anh.
 - Dũng tuyển chọn V1–S, manifest/tham chiếu và review căn cứ đủ/thiếu; hỗ trợ Thọ, Đức Anh, Ngọc Anh và Tuấn Anh xây fixture có đáp án nguồn.
@@ -129,7 +129,7 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 **Mục tiêu:** xử lý một cặp thật từ tải file đến báo cáo.
 
 - Thọ hoàn thiện trích yêu cầu, liên kết V1 và hiệu lực cho các dạng đã thống nhất; giữ phần chưa xác định.
-- Đức Anh hiện thực chuẩn bị context; phần gọi/tích hợp LightRAG bổ sung sau khi các quyết định khác hoàn thành; Thọ bảo đảm mapping nguồn, Dũng review căn cứ, Tuấn Anh/Ngọc Anh thử đầu vào phân tích.
+- Đức Anh hiện thực chuẩn bị context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG, chi tiết kỹ thuật chốt theo LK-13 sau khi các quyết định khác hoàn thành; Thọ bảo đảm mapping nguồn, Dũng review căn cứ, Tuấn Anh/Ngọc Anh thử đầu vào phân tích.
 - Ngọc Anh nối Text Diff; Tuấn Anh nối Semantic Change/Scorer với dữ liệu thật. Hai bên đối chiếu lỗi và kiểm tra chéo với Thọ/Đức Anh tại ranh giới bàn giao.
 - Dũng tích hợp module thật, giữ định danh tài liệu, kết quả nội bộ và ReviewItem/documents/items cùng cảnh báo; báo PARTIAL phù hợp.
 - Tuấn Anh nối UI, thử đủ/thiếu tài liệu, bổ sung rồi gửi lại bộ file; kiểm tra Semantic Diff và contract trên nhãn đã review.
@@ -146,7 +146,7 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 - Thọ sửa lỗi đọc, cấu trúc, vị trí đích và hiệu lực; Đức Anh sửa context, Dũng review căn cứ và bổ sung dữ liệu đại diện.
 - Dũng đo thời gian từng bước, quản lý file tạm, giới hạn và deadline với chủ module liên quan.
 - Tuấn Anh hoàn thiện hiển thị bằng chứng, nội dung suy ra, yêu cầu tham chiếu và PARTIAL; cùng owner bên giao/nhận kiểm thử tích hợp.
-- Dũng + Tuấn Anh rà chất lượng nhãn, chia tập theo nguồn/chuỗi sửa đổi; Ngọc Anh kiểm tra matching và ca tính tay. Giữ tập test độc lập với hiệu chỉnh thuật toán.
+- Dũng + Tuấn Anh rà chất lượng nhãn, chia tập theo nguồn/chuỗi sửa đổi; Ngọc Anh kiểm tra matching 1–1 và ca tính tay; matching 1–n bổ sung sau khi hoàn thành 1–1. Giữ tập test độc lập với hiệu chỉnh thuật toán.
 
 **Đầu ra:** báo cáo thử nghiệm trên tập phát triển, bộ regression, cấu hình đo được và phiên bản tích hợp ổn định.
 
@@ -156,7 +156,7 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 
 **Mục tiêu:** kiểm tra đầy đủ luồng nghiệp vụ, lỗi và khả năng sử dụng trước khi chốt thuật toán.
 
-- Dũng điều phối kiểm thử đầu-cuối theo SRS; Tuấn Anh kiểm tra Semantic Diff/UI; ghi lỗi kèm file đầu vào, commit, expected/actual và bằng chứng.
+- Đức Anh điều phối kế hoạch kiểm thử toàn hệ thống theo SRS; Dũng điều phối tích hợp; Tuấn Anh kiểm tra Semantic Diff/UI; ghi lỗi kèm file đầu vào, commit, expected/actual và bằng chứng.
 - Dũng kiểm tra API/Pipeline, giới hạn, deadline, dọn file và chạy đồng thời; sửa lỗi tích hợp.
 - Thọ kiểm thử bố cục, bảng, ranh giới Điều, chỉ dẫn sửa đổi và các ca liên kết vị trí đích khó; bổ sung regression test.
 - Tuấn Anh phân tích lỗi ngữ nghĩa/chấm điểm, Ngọc Anh phân tích Text Diff trên dev set; ưu tiên bỏ sót thay đổi quan trọng.
@@ -184,11 +184,11 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 
 **Mục tiêu:** có kết quả chất lượng tái lập được cho phiên bản ứng viên.
 
-- Dũng điều phối cả nhóm chạy đánh giá trên test set; Tuấn Anh kiểm tra ngữ nghĩa, Ngọc Anh kiểm tra Text Diff, Tuấn Anh kiểm tra Scorer; báo số mẫu, TP/FP/FN cấp SemanticChange, F1, Critical Change Recall, trường hợp chưa xác định và lỗi khía cạnh theo nhóm; tổng hợp đánh giá giải thích/khả năng hiểu báo cáo theo Workflow.
+- Đức Anh điều phối cả nhóm chạy đánh giá trên test set; Tuấn Anh kiểm tra ngữ nghĩa, Ngọc Anh kiểm tra Text Diff, Tuấn Anh kiểm tra Scorer; báo số mẫu, TP/FP/FN cấp SemanticChange, F1, Critical Change Recall, trường hợp chưa xác định và lỗi khía cạnh theo nhóm; tổng hợp đánh giá giải thích/khả năng hiểu báo cáo theo test_evaluation_plan.md.
 - Cả nhóm kiểm tra acceptance criteria, trường hợp lỗi và chạy lại trên máy khác.
 - Dũng tổng hợp minh chứng dữ liệu; Đức Anh tổng hợp phiên bản, giới hạn và báo cáo kỹ thuật.
 - Chủ module phân tích lỗi; phân biệt lỗi cần sửa để bàn giao với hạn chế thuật toán cần công bố.
-- Nhóm đối chiếu mục tiêu chất lượng với số đo thực tế và ghi rõ tiêu chí đạt/chưa đạt.
+- Nhóm báo cáo số đo thực tế, phân tích lỗi và giới hạn theo cách đánh giá đã thống nhất; hiện chưa có ngưỡng chất lượng đạt/chưa đạt.
 
 **Đầu ra:** `evaluation-report.md`, biên bản nghiệm thu nội bộ, danh sách lỗi và giới hạn đã biết.
 
@@ -239,22 +239,22 @@ Task có thể bắt đầu bằng fixture trước khi module cung cấp dữ l
 | PL-09 | Dữ liệu, manifest và nhãn | Dũng quản lý dữ liệu/nhãn; người tạo và người review khác nhau | Cả nhóm gán nhãn, Ngọc Anh review ranh giới phân tích | Tuần 6–8 |
 | PL-10 | Contract test và kiểm thử chéo | Hai owner tại từng điểm nối; Dũng điều phối | Fixture đã review; nhãn pilot/matching và ca tính tay với Dũng | Tuần 6–7 |
 | PL-11 | Cải thiện phương pháp/hiệu năng | Chủ module; Dũng điều phối | Luồng tích hợp, dữ liệu phát triển và kiểm thử/script phép đo | Tuần 8–10 |
-| PL-12 | Kiểm thử toàn hệ thống | Dũng điều phối; hai owner từng điểm nối | PL-07, PL-08; chủ module sửa lỗi của mình | Tuần 9–10 |
+| PL-12 | Kiểm thử toàn hệ thống | Đức Anh điều phối kế hoạch; Dũng điều phối tích hợp; hai owner từng điểm nối kiểm tra | PL-07, PL-08; chủ module sửa lỗi của mình | Tuần 9–10 |
 | PL-13 | Phiên bản ứng viên | Dũng; Đức Anh phối hợp kỹ thuật | PL-11, PL-12; cả nhóm review | Cuối tuần 10 |
-| PL-14 | Đánh giá độc lập | Dũng điều phối cả nhóm | PL-13, tập test và cách tính cố định | Tuần 11 |
+| PL-14 | Đánh giá độc lập | Đức Anh điều phối cả nhóm | PL-13, tập test và cách tính cố định | Tuần 11 |
 | PL-15 | Đóng gói, báo cáo, diễn tập | Dũng điều phối | PL-14; cả nhóm bàn giao phần phụ trách | Tuần 12 |
 | PL-16 | Nộp và bàn giao | Dũng điều phối | PL-15 | Tuần 13 |
-| PL-17 | Chuẩn bị ngữ cảnh/dẫn chiếu; gọi LightRAG bổ sung sau | Đức Anh (context); người gọi LightRAG chưa chốt | PL-03, PL-04; Thọ cung cấp truy nguồn, Ngọc Anh thử đủ/thiếu căn cứ | Tuần 6–8 |
+| PL-17 | Chuẩn bị ngữ cảnh/dẫn chiếu; gọi/tích hợp LightRAG | Đức Anh (context); Dũng + Đức Anh (gọi/tích hợp LightRAG) | PL-03, PL-04; Thọ cung cấp truy nguồn, Ngọc Anh thử đủ/thiếu căn cứ | Tuần 6–8 |
 
 Mã giữ ổn định để dùng trong issue; PL-17 là phần ngữ cảnh có liên kết với PL-04 và PL-06, không phải bước chờ sau PL-16.
 
 ## 8. Dữ liệu, kiểm thử và đánh giá
 
-Dũng bàn giao bộ V1–S với nguồn, hash, tham chiếu và giới hạn theo data-annotation-guide. Dũng quản lý nhãn/chia tập; người review khác người tạo nhãn. Hai owner từng điểm nối kiểm tra contract/matching, Dũng điều phối khóa test và đánh giá theo Workflow; Tuấn Anh kiểm tra ngữ nghĩa, Ngọc Anh kiểm tra Text Diff, Tuấn Anh kiểm tra mức độ. Cả nhóm tham gia review độc lập, không lấy kết quả thuật toán làm đáp án chuẩn.
+Dũng bàn giao bộ V1–S với nguồn, hash, tham chiếu và giới hạn theo data-annotation-guide. Dũng quản lý nhãn/chia tập; người review khác người tạo nhãn. Hai owner từng điểm nối kiểm tra contract/matching 1–1; matching 1–n bổ sung sau khi hoàn thành 1–1; Đức Anh điều phối kế hoạch, khóa test và đánh giá theo test_evaluation_plan.md; Dũng phối hợp dữ liệu và tích hợp; Tuấn Anh kiểm tra ngữ nghĩa, Ngọc Anh kiểm tra Text Diff, Tuấn Anh kiểm tra mức độ. Cả nhóm tham gia review độc lập, không lấy kết quả thuật toán làm đáp án chuẩn.
 
 Trước tuần 7 cần có mẫu sửa toàn đơn vị, sửa cụm từ, bổ sung/bãi bỏ, nhiều thay đổi trong một Điều, S sửa nhiều văn bản, vị trí đích mơ hồ và dẫn chiếu đủ/thiếu. Trước tuần 9 bổ sung hiệu lực có ngoại lệ, bảng/đoạn ngoài Điều làm căn cứ, file lỗi/quá giới hạn, null/rỗng, lỗi module, PARTIAL và gửi lại sau bổ sung tài liệu.
 
-Mục tiêu chất lượng theo SRS: Change F1 ≥ 0,90 và Critical Change Recall ≥ 0,95; đây là mục tiêu cần kiểm chứng. Dũng điều phối cả nhóm đo; hai owner từng điểm nối kiểm tra đầu ra/cách dùng, Dũng review căn cứ và chất lượng giải thích theo Workflow. Không sao chép công thức hoặc quy tắc gán nhãn vào kế hoạch này.
+Đánh giá bằng các chỉ số và phân tích lỗi theo test_evaluation_plan.md; hiện chưa có ngưỡng chất lượng đạt/chưa đạt. Đức Anh điều phối cả nhóm đo; hai owner từng điểm nối kiểm tra đầu ra/cách dùng, Dũng review căn cứ và chất lượng giải thích. Không sao chép công thức hoặc quy tắc gán nhãn vào kế hoạch này.
 
 Kết quả phải gắn với commit, cấu hình, dependency/mô hình nếu có, dữ liệu và nhãn có phiên bản. Số liệu từ mẫu thiếu căn cứ hoặc dữ liệu giả định được giải thích đúng mục đích; không dùng thông tin ngoài bộ đầu vào để yêu cầu kết luận chắc chắn. Không chỉnh test sau khi xem kết quả để tuyên bố đạt.
 
@@ -268,7 +268,7 @@ Kết quả phải gắn với commit, cấu hình, dependency/mô hình nếu c
 
 Module hoàn thành khi có mã nguồn, ví dụ đầu vào–đầu ra, kiểm tra phù hợp, hướng dẫn chạy và giới hạn; bên nhận sử dụng được đầu ra. Tính năng đầu-cuối hoàn thành khi thao tác người dùng trả đúng kết quả hoặc lỗi theo hợp đồng.
 
-Bàn giao cuối gồm mã nguồn, cấu hình/dependency, hướng dẫn chạy, dữ liệu mẫu được phép phân phối, kết quả đánh giá, báo cáo và slide. Dũng điều phối báo cáo kiểm thử/đánh giá từ các owner; Dũng tổng hợp minh chứng dữ liệu/nghiệp vụ; Thọ, Ngọc Anh và Tuấn Anh bàn giao phương pháp/giới hạn phần phụ trách; Dũng kiểm tra gói chạy/phiên bản chung, Đức Anh phối hợp kỹ thuật.
+Bàn giao cuối gồm mã nguồn, cấu hình/dependency, hướng dẫn chạy, dữ liệu mẫu được phép phân phối, kết quả đánh giá, báo cáo và slide. Đức Anh điều phối tổng hợp báo cáo kiểm thử/đánh giá từ các owner; Dũng tổng hợp minh chứng dữ liệu/nghiệp vụ; Thọ, Ngọc Anh và Tuấn Anh bàn giao phương pháp/giới hạn phần phụ trách; Dũng kiểm tra gói chạy/phiên bản chung, Đức Anh phối hợp kỹ thuật.
 
 ## 10. Cập nhật kế hoạch và quyết định
 
@@ -281,7 +281,7 @@ Bàn giao cuối gồm mã nguồn, cấu hình/dependency, hướng dẫn chạ
 | Tiến độ | Dũng + chủ task và bên phụ thuộc | Mục 2, 6, 7; nêu ảnh hưởng và phương án |
 | Giới hạn vận hành | Đức Anh + chủ module; Tuấn Anh ở phía UI | Cấu hình, API contract, hướng dẫn chạy và ca giới hạn |
 | Phạm vi/kiến trúc | Đức Anh + Dũng + các chủ module bị ảnh hưởng | BRD/SRS/Architecture trước, rồi task và kế hoạch |
-| Phép đo | Dũng điều phối; hai owner điểm nối + Dũng | Workflow và phiên bản kết quả |
+| Phép đo | Đức Anh điều phối; hai owner điểm nối và Dũng phối hợp | test_evaluation_plan.md và phiên bản kết quả |
 
 Giữ lịch sử qua commit/PR, tăng phiên bản khi kế hoạch thay đổi. Không cần viết lại toàn bộ tài liệu vì một lựa chọn nội bộ; chỉ cập nhật phần sở hữu quyết định và các phần phụ thuộc thực sự bị ảnh hưởng.
 
@@ -290,8 +290,8 @@ Giữ lịch sử qua commit/PR, tăng phiên bản khi kế hoạch thay đổi
 
 - Giữ cấu trúc folder chính và file bắt buộc theo [Module](module.md); được thêm file hỗ trợ trong module, không tự đổi giao diện hoặc đường dẫn chính.
 - Phát triển bán song song: trước task phụ thuộc, hai owner chốt hợp đồng và input/output fixture; bên nhận code với mock/fixture, bên giao hoàn thiện output thật; kiểm tra và tích hợp từng điểm nối sớm. Trình tự xử lý runtime không phải lịch chờ lập trình.
-- Mỗi task và chức năng/module có người chịu trách nhiệm; có thể nhiều người tham gia. Folder change_analysis phân công theo chức năng: Ngọc Anh Text Diff, Tuấn Anh Semantic Change/Scorer; AI Adapter do Dũng + Đức Anh. Không tự gán owner toàn folder; người gọi/tích hợp LightRAG bổ sung sau.
-- Không triển khai Evaluator riêng; giữ folder/file cũ để không đổi cấu trúc. Test module do owner viết, contract/integration test do hai owner cùng review; Dũng điều phối đầu-cuối. Nhãn/metric vẫn cần khi đo chất lượng.
+- Mỗi task và chức năng/module có người chịu trách nhiệm; có thể nhiều người tham gia. Folder change_analysis phân công theo chức năng: Ngọc Anh Text Diff, Tuấn Anh Semantic Change/Scorer; AI Adapter do Dũng + Đức Anh. Không tự gán owner toàn folder; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá.
+- Không triển khai Evaluator riêng; giữ folder/file cũ để không đổi cấu trúc. Test module do owner viết, contract/integration test do hai owner cùng review; Dũng điều phối tích hợp, Đức Anh điều phối kế hoạch đánh giá. Nhãn/metric vẫn cần khi đo chất lượng.
 - Git theo [Workflow](workflow.md): issue/task, branch có tên thống nhất, commit theo phạm vi, PR và reviewer bên nhận; không tự push vào nhánh chung hoặc thay schema mà chưa phối hợp.
 
-Phần gọi/tích hợp LightRAG và chi tiết LK-13 không bị áp một mốc tuần như nhiệm vụ đã chốt; chỉ hoàn thiện sau các quyết định còn lại. Mốc chuẩn bị context/nguồn trong kế hoạch không đồng nghĩa chốt trước phần gọi LightRAG. Quy trình Git và kiểm thử tập trung tại workflow.md.
+Dũng + Đức Anh đã được chốt phụ trách gọi/tích hợp LightRAG. Chi tiết LK-13 không bị áp một mốc tuần như nhiệm vụ kỹ thuật đã chốt; chỉ hoàn thiện sau các quyết định còn lại. Mốc chuẩn bị context/nguồn trong kế hoạch không đồng nghĩa chốt trước chi tiết kỹ thuật LightRAG. Quy trình Git và kiểm thử tập trung tại workflow.md.

@@ -26,7 +26,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 | api/ | Dũng | Owner Pipeline, frontend và các bên dùng API | Chờ hợp đồng API/báo cáo |
 | schemas/ | Đức Anh | Owner bên cung cấp và bên nhận từng kiểu dữ liệu | Chờ các hợp đồng chung |
 | document_processing/ | Thọ | Đức Anh, Ngọc Anh, Tuấn Anh theo điểm nối; Dũng review nguồn/nghiệp vụ | Chờ hợp đồng cây/nguồn/chỉ dẫn |
-| context/ | Đức Anh ở phần chuẩn bị context; người gọi/tích hợp LightRAG bổ sung sau | Thọ cung cấp nguồn; Ngọc Anh/Tuấn Anh nhận ngữ cảnh; Dũng nhận phần tích hợp | HTTP đã chốt; chi tiết LightRAG chờ LK-13 sau các quyết định còn lại |
+| context/ | Đức Anh phụ trách context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG | Thọ cung cấp nguồn; Ngọc Anh/Tuấn Anh nhận ngữ cảnh; Dũng nhận phần tích hợp | HTTP đã chốt; chi tiết LightRAG chờ LK-13 sau các quyết định còn lại |
 | change_analysis/ | Chốt theo chức năng ở LK-01, không gán owner chung toàn folder | Ngọc Anh: Text Diff; Tuấn Anh: Semantic Change/Scorer; Dũng + Đức Anh: AI Adapter | Phân công đã chốt; contract chi tiết còn chờ |
 | evaluation/ | Không triển khai như module riêng | Test chuyển sang các owner và test/ | Giữ cấu trúc, không giao lại đầu việc Evaluator |
 
@@ -34,7 +34,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 | --- | --- | --- |
 | backend/main.py | Dũng | Khởi tạo ứng dụng, đăng ký thành phần backend |
 | backend/app/pipeline.py | Dũng | Điều phối và tổng hợp báo cáo |
-| backend/app/config.py | Dũng điều phối cấu hình tích hợp/API; Đức Anh phối hợp phần kỹ thuật liên quan | Cấu hình LightRAG do người phụ trách được bổ sung sau phối hợp |
+| backend/app/config.py | Dũng điều phối cấu hình tích hợp/API; Đức Anh phối hợp phần kỹ thuật liên quan | Dũng + Đức Anh phối hợp cấu hình LightRAG |
 | frontend/ | Tuấn Anh theo phân công hiện có | Cần xác nhận khối lượng sau khi nhận thêm Semantic Diff; không tự chuyển người |
 | Dữ liệu, nghiệp vụ, nhãn/fixture nghiệp vụ và tài liệu tổng quát | Dũng | Owner liên quan phối hợp, người review nhãn khác người tạo |
 
@@ -111,16 +111,16 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 
 ### 3.4. context/
 
-**Owner:** Đức Anh ở phần chuẩn bị context; người gọi/tích hợp LightRAG bổ sung sau. LK-13 chốt sau các quyết định còn lại.
+**Owner:** Đức Anh phụ trách context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG. LK-13 chốt sau các quyết định còn lại.
 
 **Nhiệm vụ và ranh giới:** Chuẩn bị chunk, truy xuất LightRAG và chọn ngữ cảnh/căn cứ cho phân tích. LightRAG phục vụ retrieval; không tự thay linker, Semantic Diff hoặc Scorer.
 
 | File chính | Trách nhiệm |
 | --- | --- |
-| chunk_builder.py | Tạo đoạn đủ nghĩa, giữ metadata và liên kết nguồn. |
-| source_registry.py | Ánh xạ chunk/kết quả truy xuất về đúng document_id và nguyên văn nguồn. |
-| lightrag_client.py | Gọi LightRAG Server qua HTTP: nhập, theo dõi sẵn sàng, truy vấn, xử lý lỗi và dọn dữ liệu. |
-| context_builder.py | Lập truy vấn, chọn/kiểm tra căn cứ, cung cấp ngữ cảnh và nhu cầu tham chiếu thiếu/chưa rõ. |
+| chunk_builder.py | Đức Anh: tạo đoạn đủ nghĩa, giữ metadata và liên kết nguồn. |
+| source_registry.py | Đức Anh: ánh xạ chunk/kết quả truy xuất về đúng document_id và nguyên văn nguồn. |
+| lightrag_client.py | Dũng + Đức Anh: gọi LightRAG Server qua HTTP: nhập, theo dõi sẵn sàng, truy vấn, xử lý lỗi và dọn dữ liệu. |
+| context_builder.py | Đức Anh: lập truy vấn, chọn/kiểm tra căn cứ, cung cấp ngữ cảnh và nhu cầu tham chiếu thiếu/chưa rõ. |
 
 **Đầu vào:** Tài liệu/cây/nguồn và yêu cầu sửa đổi đã chuẩn hóa.
 
@@ -173,7 +173,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 
 **Đầu ra:** Không có đầu ra bắt buộc từ Evaluator riêng; phép đo nếu cần thực hiện qua test/script đã thống nhất.
 
-**Bên kết nối:** Các owner kiểm tra chéo; thành viên khác kiểm tra phụ; đầu-cuối cần người điều phối được xác nhận.
+**Bên kết nối:** Đức Anh điều phối kế hoạch đánh giá; các owner thực hiện kiểm tra phần mình và kiểm tra chéo; thành viên khác kiểm tra phụ; Dũng phụ trách tích hợp/Pipeline/API.
 
 **File hỗ trợ:** được thêm trong module theo quy định mục 1; tên/cấu trúc nội bộ chỉ cố định khi owner đề xuất và các bên liên quan thống nhất.
 
@@ -199,7 +199,7 @@ Thực hiện quy trình chốt → code song song → kiểm thử chéo → t�
 
 ## 6. Kiểm thử và điều kiện hoàn thành
 
-Checklist, trách nhiệm hai bên, cách báo lỗi và điều kiện merge theo [workflow.md](workflow.md). Bàn giao module vẫn cần code, input/output mẫu, lệnh/kết quả kiểm tra và giới hạn. Các điều kiện đặc thù trong mục 3 là căn cứ kiểm tra, không thay quy trình kiểm thử chung.
+Checklist, trách nhiệm hai bên, cách báo lỗi và điều kiện merge theo [workflow.md](workflow.md). Bàn giao module vẫn cần code, input/output mẫu, lệnh/kết quả kiểm tra và giới hạn. Các điều kiện đặc thù trong mục 3 là căn cứ kiểm tra, không thay quy trình kiểm thử chung. Thiết kế đánh giá và phép đo theo [Kế hoạch kiểm thử và đánh giá](test_evaluation_plan.md).
 
 ## 7. Trạng thái hoàn thiện
 
@@ -213,7 +213,7 @@ Phân biệt ba trạng thái: đủ đặc tả, đã hiện thực và đã t�
 | LightRAG qua HTTP | Đã chốt phương án | CN-03/CN-04 và LK-13 còn chi tiết kỹ thuật |
 | Semantic Diff giao Tuấn Anh; bỏ Evaluator riêng | Đã chốt phân công chức năng | Hoàn thiện contract/fixture và trách nhiệm test |
 | Phân công change_analysis/AI Adapter | Đã chốt theo chức năng | LK-01; CN-05/CN-06/CN-07/CN-08 còn lựa chọn triển khai |
-| Người gọi/tích hợp LightRAG | Bổ sung sau | LK-13 chốt sau các quyết định còn lại |
+| Người gọi/tích hợp LightRAG | Đã chốt Dũng + Đức Anh | Chi tiết kỹ thuật còn chờ CN-04/LK-13; LK-13 chốt sau các quyết định còn lại |
 | Hợp đồng dữ liệu và báo cáo | Chưa đóng băng | LK-02 đến LK-12 và LK-13 |
 | Phương pháp nội bộ từng owner | Chờ owner điền lựa chọn | Các quyết định CN liên quan |
 

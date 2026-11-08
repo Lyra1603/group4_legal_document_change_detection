@@ -162,16 +162,16 @@ Với lỗi từng bước, giữ chỉ dẫn/căn cứ đã có và chỉ PARTI
 
 | Owner | Trách nhiệm chính | Quyết định liên quan |
 | --- | --- | --- |
-| Bạch Công Dũng | Dữ liệu, docs, nghiệp vụ; Pipeline, tích hợp và API; phối hợp AI Adapter với Đức Anh | LK-01, LK-02, LK-11, LK-12, CN-08 |
-| Dương Đức Anh | Schema và chuẩn bị context theo phân công hiện có; cùng Dũng phụ trách AI Adapter | LK-03, LK-04, LK-06, CN-03, CN-08 |
+| Bạch Công Dũng | Dữ liệu, docs, nghiệp vụ; Pipeline, tích hợp và API; cùng Đức Anh phụ trách AI Adapter và gọi/tích hợp LightRAG | LK-01, LK-02, LK-11, LK-12, CN-04, CN-08, LK-13 |
+| Dương Đức Anh | Schema và context; cùng Dũng phụ trách AI Adapter và gọi/tích hợp LightRAG; điều phối kế hoạch đánh giá | LK-01, LK-03, LK-04, LK-06, CN-03, CN-04, CN-08, LK-13 |
 | Bùi Quang Thọ | Chuyển đổi, Parser, document_adapter; trích/liên kết chỉ dẫn và hiệu lực | CN-01, CN-02, LK-03, LK-04, LK-05 |
 | Đỗ Tuấn Anh | Semantic Change/Semantic Diff và Scorer; frontend/session theo phân công hiện có | CN-06, CN-07, LK-07, LK-08, LK-09, LK-10 |
 | Đoàn Ngọc Anh | Text Diff và kiểm thử chéo các điểm nối liên quan | CN-05, LK-05, LK-07 |
-| Người gọi/tích hợp LightRAG | Bổ sung sau; không mặc định thuộc Dũng hoặc Đức Anh | CN-04, LK-13 |
+| Người gọi/tích hợp LightRAG | Dũng + Đức Anh | CN-04, LK-13 |
 
 Phân công chức năng theo LK-01 trong [decision.md](decision.md). Không mặc định một người sở hữu toàn folder change_analysis khi các chức năng được giao cho nhiều người. Đổi thuật toán nội bộ theo phạm vi owner; đổi contract phải được bên giao/nhận review và cập nhật schema/fixture. Quy trình làm việc, Git và kiểm thử theo [workflow.md](workflow.md); không tạo hệ thống mã quyết định D-xx song song.
 
-Không triển khai thêm database lịch sử, account, cộng tác, job/queue hoặc học lại từ nhận xét ở đợt này. Không triển khai module Evaluator độc lập. Các owner bên giao và bên nhận cùng kiểm thử hợp đồng, review cách sử dụng dữ liệu và thử tích hợp; Dũng điều phối kiểm thử đầu-cuối, Dũng hỗ trợ dữ liệu/nhãn và kiểm tra nghiệp vụ; Dũng chủ trì nghiên cứu khả năng sử dụng; không lấy chất lượng mô hình làm bằng chứng giao diện hiệu quả hoặc ngược lại. React/TypeScript là định hướng frontend, yêu cầu frontend trong SRS xác nhận môi trường và thư viện; giới hạn, mô hình và ngân sách chưa là cam kết.
+Không triển khai thêm database lịch sử, account, cộng tác, job/queue hoặc học lại từ nhận xét ở đợt này. Không triển khai module Evaluator độc lập. Các owner bên giao và bên nhận cùng kiểm thử hợp đồng, review cách sử dụng dữ liệu và thử tích hợp; Dũng điều phối tích hợp/Pipeline/API; Đức Anh điều phối kế hoạch đánh giá; các owner thực hiện và kiểm tra chéo; Dũng hỗ trợ dữ liệu/nhãn và kiểm tra nghiệp vụ; Dũng chủ trì nghiên cứu khả năng sử dụng; không lấy chất lượng mô hình làm bằng chứng giao diện hiệu quả hoặc ngược lại. React/TypeScript là định hướng frontend, yêu cầu frontend trong SRS xác nhận môi trường và thư viện; giới hạn, mô hình và ngân sách chưa là cam kết.
 
 
 ### Các quyết định triển khai cần hoàn thiện
@@ -182,7 +182,7 @@ Phương án LightRAG Server qua HTTP đã được chốt. Các việc sau là 
 - Chọn LLM/embedding, cấu hình storage, thông tin kết nối, timeout/retry và ngân sách tài nguyên.
 - Chốt chunking, source registry và fixture ánh xạ quote về đúng nguồn; kiểm chứng dữ liệu không lẫn giữa các comparison.
 - Đồng bộ hợp đồng documents/items, bốn nhóm phân loại, ReviewRecord và multipart upload vào SRS/schema/API contract; kiểm thử cả SUCCESS/PARTIAL/FAILED.
-- Áp dụng phân công chức năng đã chốt ở LK-01: Ngọc Anh làm Text Diff; Tuấn Anh làm Semantic Change/Scorer; Dũng làm tích hợp/API; Dũng + Đức Anh làm AI Adapter. Người gọi/tích hợp LightRAG bổ sung sau; không tự gán owner toàn folder change_analysis.
+- Áp dụng phân công chức năng đã chốt ở LK-01: Ngọc Anh làm Text Diff; Tuấn Anh làm Semantic Change/Scorer; Dũng làm tích hợp/API; Dũng + Đức Anh làm AI Adapter. Đã chốt Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá; còn hoàn thiện chi tiết triển khai và kiểm chứng. Không tự gán owner toàn folder change_analysis.
 - Triển khai bán song song: thống nhất contract, schema và fixture trước; bên nhận phát triển với mock/fixture trong khi bên giao hoàn thiện; tích hợp từng điểm nối, không đợi cả chuỗi xong. Chi tiết theo [Workflow](workflow.md) và [Workflow](workflow.md).
 
 
