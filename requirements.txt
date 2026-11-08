@@ -1,0 +1,3 @@
+# Schema-only dependencies; the existing API/PDF runtime is outside this import.
+pydantic==2.13.4
+typing_extensions==4.16.0
