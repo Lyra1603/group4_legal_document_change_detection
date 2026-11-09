@@ -12,7 +12,9 @@
 5. [Module](module.md): owner, file bắt buộc và file bổ sung.
 6. [Decision](decision.md): lựa chọn và hợp đồng cần chốt.
 7. [Workflow](workflow.md): Git, phát triển bán song song và kiểm thử.
-8. Mã nguồn: kiểm tra đúng branch trước khi sử dụng schema/implementation.
+8. [Báo cáo phần việc của Tuấn Anh](bao-cao-phan-viec-tuan-anh.md): phạm vi,
+   đề xuất và các điểm cần phối hợp.
+9. Mã nguồn: kiểm tra đúng branch trước khi sử dụng schema/implementation.
 
 ---
 
