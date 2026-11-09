@@ -1,0 +1,3623 @@
+{
+  "schema_version": "1.0",
+  "document_id": "doc_2af685c8c75ff63e",
+  "filename": "input.docx",
+  "status": "SUCCESS",
+  "articles": [
+    {
+      "node_id": "doc_2af685c8c75ff63e:n2",
+      "kind": "ARTICLE",
+      "label": "1",
+      "heading": "Phạm vi điều chỉnh",
+      "segments": [
+        {
+          "source_ref": "block:22",
+          "start": 0,
+          "end": 26
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n3",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:23",
+              "start": 0,
+              "end": 540
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:23"
+          ],
+          "full_text": "1. Thông tư này quy định một số nội dung về hoạt động thống kê trong thi hành án dân sự và theo dõi thi hành án hành chính, bao gồm: chế độ báo cáo thống kê; nguyên tắc lập và gửi báo cáo thống kê; nguồn số liệu để lập báo cáo thống kê; giá trị của số liệu thống kê; phương pháp tính trong báo cáo thống kê; khóa sổ và lập báo cáo thống kê; xử lý sự cố hệ thống và điều chỉnh số liệu báo cáo thống kê; nội dung và hình thức thẩm tra, kiểm tra số liệu thống kê; phổ biến thông tin thống kê; sử dụng số liệu, thông tin trong báo cáo thống kê."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n4",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:24",
+              "start": 0,
+              "end": 331
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:24"
+          ],
+          "full_text": "2. Hoạt động báo cáo thống kê quy định tại Thông tư này để thu thập thông tin chỉ tiêu thống kê thi hành án dân sự, theo dõi thi hành án hành chính thuộc hệ thống chỉ tiêu thống kê quốc gia, hệ thống chỉ tiêu thống kê ngành Tư pháp phục vụ công tác quản lý, chỉ đạo, điều hành, báo cáo Chính phủ, Quốc hội và cơ quan có thẩm quyền."
+        }
+      ],
+      "source_refs": [
+        "block:22",
+        "block:23",
+        "block:24"
+      ],
+      "full_text": "Điều 1. Phạm vi điều chỉnh\n1. Thông tư này quy định một số nội dung về hoạt động thống kê trong thi hành án dân sự và theo dõi thi hành án hành chính, bao gồm: chế độ báo cáo thống kê; nguyên tắc lập và gửi báo cáo thống kê; nguồn số liệu để lập báo cáo thống kê; giá trị của số liệu thống kê; phương pháp tính trong báo cáo thống kê; khóa sổ và lập báo cáo thống kê; xử lý sự cố hệ thống và điều chỉnh số liệu báo cáo thống kê; nội dung và hình thức thẩm tra, kiểm tra số liệu thống kê; phổ biến thông tin thống kê; sử dụng số liệu, thông tin trong báo cáo thống kê.\n2. Hoạt động báo cáo thống kê quy định tại Thông tư này để thu thập thông tin chỉ tiêu thống kê thi hành án dân sự, theo dõi thi hành án hành chính thuộc hệ thống chỉ tiêu thống kê quốc gia, hệ thống chỉ tiêu thống kê ngành Tư pháp phục vụ công tác quản lý, chỉ đạo, điều hành, báo cáo Chính phủ, Quốc hội và cơ quan có thẩm quyền."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n5",
+      "kind": "ARTICLE",
+      "label": "2",
+      "heading": "Đối tượng áp dụng",
+      "segments": [
+        {
+          "source_ref": "block:25",
+          "start": 0,
+          "end": 25
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n6",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:26",
+              "start": 0,
+              "end": 58
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n7",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:27",
+                  "start": 0,
+                  "end": 55
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:27"
+              ],
+              "full_text": "a) Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n8",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:28",
+                  "start": 0,
+                  "end": 51
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:28"
+              ],
+              "full_text": "b) Cơ quan quản lý thi hành án thuộc Bộ Quốc phòng;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n9",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:29",
+                  "start": 0,
+                  "end": 46
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:29"
+              ],
+              "full_text": "c) Cơ quan thi hành án dân sự tỉnh, thành phố;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n10",
+              "kind": "POINT",
+              "label": "d",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:30",
+                  "start": 0,
+                  "end": 36
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:30"
+              ],
+              "full_text": "d) Cơ quan thi hành án cấp quân khu."
+            }
+          ],
+          "source_refs": [
+            "block:26",
+            "block:27",
+            "block:28",
+            "block:29",
+            "block:30"
+          ],
+          "full_text": "1. Cơ quan trực tiếp thực hiện công tác thống kê, bao gồm:\na) Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp;\nb) Cơ quan quản lý thi hành án thuộc Bộ Quốc phòng;\nc) Cơ quan thi hành án dân sự tỉnh, thành phố;\nd) Cơ quan thi hành án cấp quân khu."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n11",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:31",
+              "start": 0,
+              "end": 217
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:31"
+          ],
+          "full_text": "2. Cơ quan, tổ chức, cá nhân có liên quan đến công tác thi hành án dân sự, theo dõi thi hành án hành chính có trách nhiệm phối hợp, cung cấp, quản lý, khai thác và sử dụng số liệu thống kê theo quy định của pháp luật."
+        }
+      ],
+      "source_refs": [
+        "block:25",
+        "block:26",
+        "block:27",
+        "block:28",
+        "block:29",
+        "block:30",
+        "block:31"
+      ],
+      "full_text": "Điều 2. Đối tượng áp dụng\n1. Cơ quan trực tiếp thực hiện công tác thống kê, bao gồm:\na) Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp;\nb) Cơ quan quản lý thi hành án thuộc Bộ Quốc phòng;\nc) Cơ quan thi hành án dân sự tỉnh, thành phố;\nd) Cơ quan thi hành án cấp quân khu.\n2. Cơ quan, tổ chức, cá nhân có liên quan đến công tác thi hành án dân sự, theo dõi thi hành án hành chính có trách nhiệm phối hợp, cung cấp, quản lý, khai thác và sử dụng số liệu thống kê theo quy định của pháp luật."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n12",
+      "kind": "ARTICLE",
+      "label": "3",
+      "heading": "Biểu mẫu thống kê và giải thích biểu mẫu thống kê",
+      "segments": [
+        {
+          "source_ref": "block:34",
+          "start": 0,
+          "end": 57
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n13",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:35",
+              "start": 0,
+              "end": 139
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:35"
+          ],
+          "full_text": "\t1. Danh mục biểu mẫu thống kê, biểu mẫu thống kê và giải thích biểu mẫu thống kê được quy định tại Phụ lục ban hành kèm theo Thông tư này."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n14",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:36",
+              "start": 0,
+              "end": 95
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:36"
+          ],
+          "full_text": "\t2. Ký hiệu biểu mẫu được thể hiện tại dòng đầu tiên ở góc trên bên trái của biểu mẫu thống kê."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n15",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:37",
+              "start": 0,
+              "end": 361
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:37"
+          ],
+          "full_text": "3. Ngoài biểu mẫu thống kê quy định tại khoản 1 Điều này, cơ quan, đơn vị trực tiếp thực hiện công tác thống kê được khai thác, trích xuất số liệu dưới dạng báo cáo điện tử từ nền tảng số thi hành án dân sự và hệ thống thông tin, cơ sở dữ liệu có liên quan theo quy định của pháp luật, bảo đảm phù hợp với nội dung, cấu trúc chỉ tiêu thống kê đã được chuẩn hóa."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n16",
+          "kind": "CLAUSE",
+          "label": "4",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:38",
+              "start": 0,
+              "end": 152
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:38"
+          ],
+          "full_text": "\t4. Số liệu được khai thác, trích xuất theo quy định tại khoản 3 Điều này có giá trị sử dụng và giá trị pháp lý như số liệu thống kê trên biểu mẫu giấy."
+        }
+      ],
+      "source_refs": [
+        "block:34",
+        "block:35",
+        "block:36",
+        "block:37",
+        "block:38"
+      ],
+      "full_text": "Điều 3. Biểu mẫu thống kê và giải thích biểu mẫu thống kê\n\t1. Danh mục biểu mẫu thống kê, biểu mẫu thống kê và giải thích biểu mẫu thống kê được quy định tại Phụ lục ban hành kèm theo Thông tư này.\n\t2. Ký hiệu biểu mẫu được thể hiện tại dòng đầu tiên ở góc trên bên trái của biểu mẫu thống kê.\n3. Ngoài biểu mẫu thống kê quy định tại khoản 1 Điều này, cơ quan, đơn vị trực tiếp thực hiện công tác thống kê được khai thác, trích xuất số liệu dưới dạng báo cáo điện tử từ nền tảng số thi hành án dân sự và hệ thống thông tin, cơ sở dữ liệu có liên quan theo quy định của pháp luật, bảo đảm phù hợp với nội dung, cấu trúc chỉ tiêu thống kê đã được chuẩn hóa.\n\t4. Số liệu được khai thác, trích xuất theo quy định tại khoản 3 Điều này có giá trị sử dụng và giá trị pháp lý như số liệu thống kê trên biểu mẫu giấy."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n17",
+      "kind": "ARTICLE",
+      "label": "4",
+      "heading": "Kỳ báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:39",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n18",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:40",
+              "start": 0,
+              "end": 195
+            },
+            {
+              "source_ref": "block:41",
+              "start": 0,
+              "end": 288
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:40",
+            "block:41"
+          ],
+          "full_text": "1. Kỳ báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính bao gồm báo cáo thống kê 12 tháng và báo cáo thống kê đột xuất. Kỳ báo cáo thống kê 12 tháng là kỳ báo cáo thống kê năm.\nNăm báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính bắt đầu từ ngày 01 tháng 01 và kết thúc vào ngày 31 tháng 12 của năm báo cáo. Thời điểm chốt số liệu thống kê là thời điểm kết thúc kỳ báo cáo; số liệu được ghi nhận đến hết 24 giờ của ngày cuối cùng của kỳ báo cáo."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n19",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:42",
+              "start": 0,
+              "end": 318
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:42"
+          ],
+          "full_text": "2. Báo cáo thống kê đột xuất được thực hiện theo yêu cầu của Bộ Tư pháp, cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp hoặc cơ quan quản lý thi hành án thuộc Bộ Quốc phòng. Văn bản của người có yêu cầu báo cáo thống kê đột xuất phải nêu rõ thời gian, thời hạn, nội dung báo cáo thống kê và yêu cầu khác (nếu có)."
+        }
+      ],
+      "source_refs": [
+        "block:39",
+        "block:40",
+        "block:41",
+        "block:42"
+      ],
+      "full_text": "Điều 4. Kỳ báo cáo thống kê\n1. Kỳ báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính bao gồm báo cáo thống kê 12 tháng và báo cáo thống kê đột xuất. Kỳ báo cáo thống kê 12 tháng là kỳ báo cáo thống kê năm.\nNăm báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính bắt đầu từ ngày 01 tháng 01 và kết thúc vào ngày 31 tháng 12 của năm báo cáo. Thời điểm chốt số liệu thống kê là thời điểm kết thúc kỳ báo cáo; số liệu được ghi nhận đến hết 24 giờ của ngày cuối cùng của kỳ báo cáo.\n2. Báo cáo thống kê đột xuất được thực hiện theo yêu cầu của Bộ Tư pháp, cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp hoặc cơ quan quản lý thi hành án thuộc Bộ Quốc phòng. Văn bản của người có yêu cầu báo cáo thống kê đột xuất phải nêu rõ thời gian, thời hạn, nội dung báo cáo thống kê và yêu cầu khác (nếu có)."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n20",
+      "kind": "ARTICLE",
+      "label": "5",
+      "heading": "Cơ quan, đơn vị gửi và nhận báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:43",
+          "start": 0,
+          "end": 52
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n21",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:44",
+              "start": 0,
+              "end": 107
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:44"
+          ],
+          "full_text": "\t1. Cơ quan, đơn vị gửi và nhận báo cáo thống kê được thể hiện tại góc trên bên phải của biểu mẫu thống kê."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n22",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:45",
+              "start": 0,
+              "end": 151
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:45"
+          ],
+          "full_text": "\t2. Cơ quan, đơn vị nhận báo cáo thống kê có trách nhiệm tiếp nhận, thẩm tra, tổng hợp và sử dụng số liệu báo cáo thống kê theo quy định của pháp luật."
+        }
+      ],
+      "source_refs": [
+        "block:43",
+        "block:44",
+        "block:45"
+      ],
+      "full_text": "Điều 5. Cơ quan, đơn vị gửi và nhận báo cáo thống kê\n\t1. Cơ quan, đơn vị gửi và nhận báo cáo thống kê được thể hiện tại góc trên bên phải của biểu mẫu thống kê.\n\t2. Cơ quan, đơn vị nhận báo cáo thống kê có trách nhiệm tiếp nhận, thẩm tra, tổng hợp và sử dụng số liệu báo cáo thống kê theo quy định của pháp luật."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n23",
+      "kind": "ARTICLE",
+      "label": "6",
+      "heading": "Hình thức báo cáo và phương thức gửi báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:46",
+          "start": 0,
+          "end": 62
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n24",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:47",
+              "start": 0,
+              "end": 122
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n25",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:48",
+                  "start": 0,
+                  "end": 95
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:48"
+              ],
+              "full_text": "\ta) Báo cáo bằng văn bản giấy phải có chữ ký của người có thẩm quyền và đóng dấu theo quy định;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n26",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:49",
+                  "start": 0,
+                  "end": 183
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:49"
+              ],
+              "full_text": "\tb) Báo cáo điện tử được thể hiện dưới dạng thông điệp dữ liệu hoặc tệp điện tử, được xác thực bằng chữ ký số của người có thẩm quyền theo quy định của pháp luật về giao dịch điện tử."
+            }
+          ],
+          "source_refs": [
+            "block:47",
+            "block:48",
+            "block:49"
+          ],
+          "full_text": "\t1. Báo cáo thống kê được thể hiện dưới dạng dữ liệu điện tử hoặc văn bản, bảo đảm đầy đủ nội dung theo biểu mẫu quy định.\n\ta) Báo cáo bằng văn bản giấy phải có chữ ký của người có thẩm quyền và đóng dấu theo quy định;\n\tb) Báo cáo điện tử được thể hiện dưới dạng thông điệp dữ liệu hoặc tệp điện tử, được xác thực bằng chữ ký số của người có thẩm quyền theo quy định của pháp luật về giao dịch điện tử."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n27",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:50",
+              "start": 0,
+              "end": 131
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n28",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:51",
+                  "start": 0,
+                  "end": 44
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:51"
+              ],
+              "full_text": "\ta) Gửi trên nền tảng số thi hành án dân sự;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n29",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:52",
+                  "start": 0,
+                  "end": 51
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:52"
+              ],
+              "full_text": "\tb) Gửi qua hệ thống thư điện tử do Bộ Tư pháp cấp;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n30",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:53",
+                  "start": 0,
+                  "end": 76
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:53"
+              ],
+              "full_text": "\tc) Gửi qua Hệ thống quản lý văn bản và điều hành tác nghiệp của Bộ Tư pháp."
+            }
+          ],
+          "source_refs": [
+            "block:50",
+            "block:51",
+            "block:52",
+            "block:53"
+          ],
+          "full_text": "\t2. Báo cáo thống kê được gửi đến cơ quan có thẩm quyền bằng phương thức điện tử là chủ yếu, thông qua một trong các hình thức sau:\n\ta) Gửi trên nền tảng số thi hành án dân sự;\n\tb) Gửi qua hệ thống thư điện tử do Bộ Tư pháp cấp;\n\tc) Gửi qua Hệ thống quản lý văn bản và điều hành tác nghiệp của Bộ Tư pháp."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n31",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:54",
+              "start": 0,
+              "end": 178
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:54"
+          ],
+          "full_text": "3. Trường hợp báo cáo đã được gửi bằng phương thức điện tử theo quy định tại khoản 2 Điều này thì không phải gửi lại bằng văn bản giấy, trừ trường hợp pháp luật có quy định khác."
+        }
+      ],
+      "source_refs": [
+        "block:46",
+        "block:47",
+        "block:48",
+        "block:49",
+        "block:50",
+        "block:51",
+        "block:52",
+        "block:53",
+        "block:54"
+      ],
+      "full_text": "\tĐiều 6. Hình thức báo cáo và phương thức gửi báo cáo thống kê\n\t1. Báo cáo thống kê được thể hiện dưới dạng dữ liệu điện tử hoặc văn bản, bảo đảm đầy đủ nội dung theo biểu mẫu quy định.\n\ta) Báo cáo bằng văn bản giấy phải có chữ ký của người có thẩm quyền và đóng dấu theo quy định;\n\tb) Báo cáo điện tử được thể hiện dưới dạng thông điệp dữ liệu hoặc tệp điện tử, được xác thực bằng chữ ký số của người có thẩm quyền theo quy định của pháp luật về giao dịch điện tử.\n\t2. Báo cáo thống kê được gửi đến cơ quan có thẩm quyền bằng phương thức điện tử là chủ yếu, thông qua một trong các hình thức sau:\n\ta) Gửi trên nền tảng số thi hành án dân sự;\n\tb) Gửi qua hệ thống thư điện tử do Bộ Tư pháp cấp;\n\tc) Gửi qua Hệ thống quản lý văn bản và điều hành tác nghiệp của Bộ Tư pháp.\n3. Trường hợp báo cáo đã được gửi bằng phương thức điện tử theo quy định tại khoản 2 Điều này thì không phải gửi lại bằng văn bản giấy, trừ trường hợp pháp luật có quy định khác."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n32",
+      "kind": "ARTICLE",
+      "label": "7",
+      "heading": "Thời hạn nhận báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:55",
+          "start": 0,
+          "end": 39
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n33",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:56",
+              "start": 0,
+              "end": 174
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:56"
+          ],
+          "full_text": "\t1. Trong thời hạn 02 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan thi hành án cấp quân khu gửi báo cáo thống kê đến cơ quan quản lý thi hành án thuộc Bộ Quốc phòng."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n34",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:57",
+              "start": 0,
+              "end": 187
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:57"
+          ],
+          "full_text": "2. Trong thời hạn 03 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan thi hành án dân sự tỉnh, thành phố gửi báo cáo thống kê đến cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n35",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:58",
+              "start": 0,
+              "end": 215
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:58"
+          ],
+          "full_text": "3. Trong thời hạn 04 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan quản lý thi hành án thuộc Bộ Quốc phòng gửi báo cáo thống kê đến Bộ Tư pháp (thông qua cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp)."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n36",
+          "kind": "CLAUSE",
+          "label": "4",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:59",
+              "start": 0,
+              "end": 164
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:59"
+          ],
+          "full_text": "4. Trong thời hạn 06 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp tổng hợp, lập và hoàn thiện báo cáo thống kê."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n37",
+          "kind": "CLAUSE",
+          "label": "5",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:60",
+              "start": 0,
+              "end": 166
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:60"
+          ],
+          "full_text": "5. Đối với báo cáo thống kê đột xuất, cơ quan, đơn vị thực hiện theo yêu cầu về nội dung và thời hạn của cơ quan có thẩm quyền quản lý nhà nước về thi hành án dân sự."
+        }
+      ],
+      "source_refs": [
+        "block:55",
+        "block:56",
+        "block:57",
+        "block:58",
+        "block:59",
+        "block:60"
+      ],
+      "full_text": "\tĐiều 7. Thời hạn nhận báo cáo thống kê\n\t1. Trong thời hạn 02 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan thi hành án cấp quân khu gửi báo cáo thống kê đến cơ quan quản lý thi hành án thuộc Bộ Quốc phòng.\n2. Trong thời hạn 03 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan thi hành án dân sự tỉnh, thành phố gửi báo cáo thống kê đến cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp.\n3. Trong thời hạn 04 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan quản lý thi hành án thuộc Bộ Quốc phòng gửi báo cáo thống kê đến Bộ Tư pháp (thông qua cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp).\n4. Trong thời hạn 06 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp tổng hợp, lập và hoàn thiện báo cáo thống kê.\n5. Đối với báo cáo thống kê đột xuất, cơ quan, đơn vị thực hiện theo yêu cầu về nội dung và thời hạn của cơ quan có thẩm quyền quản lý nhà nước về thi hành án dân sự."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n38",
+      "kind": "ARTICLE",
+      "label": "8",
+      "heading": "Nguyên tắc lập và gửi báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:63",
+          "start": 0,
+          "end": 46
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n39",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:64",
+              "start": 0,
+              "end": 187
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:64"
+          ],
+          "full_text": "1. Hoạt động thống kê thi hành án dân sự, theo dõi thi hành án hành chính là bộ phận của hệ thống thông tin thống kê ngành Tư pháp, được thực hiện thống nhất, đồng bộ trong toàn hệ thống."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n40",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:65",
+              "start": 0,
+              "end": 191
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:65"
+          ],
+          "full_text": "2. Báo cáo thống kê phải được lập kịp thời, đầy đủ, chính xác, khách quan, trung thực, phản ánh đúng tình hình, kết quả thi hành án dân sự và theo dõi thi hành án hành chính trong kỳ báo cáo."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n41",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:66",
+              "start": 0,
+              "end": 156
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:66"
+          ],
+          "full_text": "\t3. Cơ quan, đơn vị lập, gửi báo cáo thống kê chịu trách nhiệm trước pháp luật và cấp có thẩm quyền về tính chính xác, đầy đủ, kịp thời của số liệu báo cáo."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n42",
+          "kind": "CLAUSE",
+          "label": "4",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:67",
+              "start": 0,
+              "end": 296
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:67"
+          ],
+          "full_text": "4. Việc lập, gửi báo cáo thống kê được thực hiện trên cơ sở dữ liệu điện tử, ưu tiên trên môi trường số, bảo đảm khả năng kết nối, khai thác, sử dụng dữ liệu, an toàn, an ninh thông tin theo quy định của pháp luật. Trường hợp thực hiện bằng văn bản thì áp dụng theo quy định đối với văn bản giấy."
+        }
+      ],
+      "source_refs": [
+        "block:63",
+        "block:64",
+        "block:65",
+        "block:66",
+        "block:67"
+      ],
+      "full_text": "Điều 8. Nguyên tắc lập và gửi báo cáo thống kê\n1. Hoạt động thống kê thi hành án dân sự, theo dõi thi hành án hành chính là bộ phận của hệ thống thông tin thống kê ngành Tư pháp, được thực hiện thống nhất, đồng bộ trong toàn hệ thống.\n2. Báo cáo thống kê phải được lập kịp thời, đầy đủ, chính xác, khách quan, trung thực, phản ánh đúng tình hình, kết quả thi hành án dân sự và theo dõi thi hành án hành chính trong kỳ báo cáo.\n\t3. Cơ quan, đơn vị lập, gửi báo cáo thống kê chịu trách nhiệm trước pháp luật và cấp có thẩm quyền về tính chính xác, đầy đủ, kịp thời của số liệu báo cáo.\n4. Việc lập, gửi báo cáo thống kê được thực hiện trên cơ sở dữ liệu điện tử, ưu tiên trên môi trường số, bảo đảm khả năng kết nối, khai thác, sử dụng dữ liệu, an toàn, an ninh thông tin theo quy định của pháp luật. Trường hợp thực hiện bằng văn bản thì áp dụng theo quy định đối với văn bản giấy."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n43",
+      "kind": "ARTICLE",
+      "label": "9",
+      "heading": "Nguồn số liệu để lập báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:68",
+          "start": 0,
+          "end": 45
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n44",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:69",
+              "start": 0,
+              "end": 208
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:69"
+          ],
+          "full_text": "1. Số liệu sử dụng để lập báo cáo thống kê được khai thác, tổng hợp từ cơ sở dữ liệu về thi hành án dân sự, phương tiện điện tử khác, hồ sơ nghiệp vụ và tài liệu khác có liên quan theo quy định của pháp luật."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n45",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:70",
+              "start": 0,
+              "end": 176
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:70"
+          ],
+          "full_text": "2. Số liệu trong báo cáo thống kê phải được hình thành từ kết quả thực hiện nghiệp vụ thi hành án dân sự, có thể kiểm tra, đối chiếu với hồ sơ nghiệp vụ, tài liệu có liên quan."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n46",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:71",
+              "start": 0,
+              "end": 257
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n47",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:72",
+                  "start": 0,
+                  "end": 200
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:72"
+              ],
+              "full_text": "a) Trường hợp xác định số liệu trên cơ sở dữ liệu, phương tiện điện tử chưa chính xác hoặc chưa được cập nhật đầy đủ thì phải kịp thời cập nhật, điều chỉnh theo hồ sơ nghiệp vụ, tài liệu có liên quan;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n48",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:73",
+                  "start": 0,
+                  "end": 245
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:73"
+              ],
+              "full_text": "b) Trường hợp chưa xác định được nguyên nhân hoặc chưa kịp điều chỉnh thì việc lập báo cáo thống kê phải căn cứ vào hồ sơ nghiệp vụ, đồng thời ghi chú rõ nội dung chênh lệch và thực hiện điều chỉnh trên cơ sở dữ liệu sau khi có kết quả xác minh."
+            }
+          ],
+          "source_refs": [
+            "block:71",
+            "block:72",
+            "block:73"
+          ],
+          "full_text": "3. Trường hợp số liệu trên cơ sở dữ liệu về thi hành án dân sự, phương tiện điện tử có sự khác biệt so với hồ sơ nghiệp vụ, tài liệu có liên quan thì cơ quan, đơn vị có trách nhiệm kiểm tra, đối chiếu để xác định nguyên nhân chênh lệch và thực hiện như sau:\na) Trường hợp xác định số liệu trên cơ sở dữ liệu, phương tiện điện tử chưa chính xác hoặc chưa được cập nhật đầy đủ thì phải kịp thời cập nhật, điều chỉnh theo hồ sơ nghiệp vụ, tài liệu có liên quan;\nb) Trường hợp chưa xác định được nguyên nhân hoặc chưa kịp điều chỉnh thì việc lập báo cáo thống kê phải căn cứ vào hồ sơ nghiệp vụ, đồng thời ghi chú rõ nội dung chênh lệch và thực hiện điều chỉnh trên cơ sở dữ liệu sau khi có kết quả xác minh."
+        }
+      ],
+      "source_refs": [
+        "block:68",
+        "block:69",
+        "block:70",
+        "block:71",
+        "block:72",
+        "block:73"
+      ],
+      "full_text": "Điều 9. Nguồn số liệu để lập báo cáo thống kê\n1. Số liệu sử dụng để lập báo cáo thống kê được khai thác, tổng hợp từ cơ sở dữ liệu về thi hành án dân sự, phương tiện điện tử khác, hồ sơ nghiệp vụ và tài liệu khác có liên quan theo quy định của pháp luật.\n2. Số liệu trong báo cáo thống kê phải được hình thành từ kết quả thực hiện nghiệp vụ thi hành án dân sự, có thể kiểm tra, đối chiếu với hồ sơ nghiệp vụ, tài liệu có liên quan.\n3. Trường hợp số liệu trên cơ sở dữ liệu về thi hành án dân sự, phương tiện điện tử có sự khác biệt so với hồ sơ nghiệp vụ, tài liệu có liên quan thì cơ quan, đơn vị có trách nhiệm kiểm tra, đối chiếu để xác định nguyên nhân chênh lệch và thực hiện như sau:\na) Trường hợp xác định số liệu trên cơ sở dữ liệu, phương tiện điện tử chưa chính xác hoặc chưa được cập nhật đầy đủ thì phải kịp thời cập nhật, điều chỉnh theo hồ sơ nghiệp vụ, tài liệu có liên quan;\nb) Trường hợp chưa xác định được nguyên nhân hoặc chưa kịp điều chỉnh thì việc lập báo cáo thống kê phải căn cứ vào hồ sơ nghiệp vụ, đồng thời ghi chú rõ nội dung chênh lệch và thực hiện điều chỉnh trên cơ sở dữ liệu sau khi có kết quả xác minh."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n49",
+      "kind": "ARTICLE",
+      "label": "10",
+      "heading": "Giá trị của số liệu thống kê",
+      "segments": [
+        {
+          "source_ref": "block:74",
+          "start": 0,
+          "end": 37
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n50",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:75",
+              "start": 0,
+              "end": 135
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:75"
+          ],
+          "full_text": "\t1. Thông tin, số liệu thống kê được thu thập, tổng hợp, lập và cung cấp theo quy định tại Thông tư này là số liệu thống kê chính thức."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n51",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:76",
+              "start": 0,
+              "end": 178
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:76"
+          ],
+          "full_text": "2. Số liệu thống kê không thay thế tài liệu, hồ sơ nghiệp vụ và không làm phát sinh, thay đổi, chấm dứt quyền, nghĩa vụ của cơ quan, tổ chức, cá nhân theo quy định của pháp luật."
+        }
+      ],
+      "source_refs": [
+        "block:74",
+        "block:75",
+        "block:76"
+      ],
+      "full_text": "Điều 10. Giá trị của số liệu thống kê\n\t1. Thông tin, số liệu thống kê được thu thập, tổng hợp, lập và cung cấp theo quy định tại Thông tư này là số liệu thống kê chính thức.\n2. Số liệu thống kê không thay thế tài liệu, hồ sơ nghiệp vụ và không làm phát sinh, thay đổi, chấm dứt quyền, nghĩa vụ của cơ quan, tổ chức, cá nhân theo quy định của pháp luật."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n52",
+      "kind": "ARTICLE",
+      "label": "11",
+      "heading": "Phương pháp tính trong báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:77",
+          "start": 0,
+          "end": 48
+        },
+        {
+          "source_ref": "block:78",
+          "start": 0,
+          "end": 183
+        },
+        {
+          "source_ref": "block:79",
+          "start": 0,
+          "end": 133
+        }
+      ],
+      "children": [],
+      "source_refs": [
+        "block:77",
+        "block:78",
+        "block:79"
+      ],
+      "full_text": "Điều 11. Phương pháp tính trong báo cáo thống kê\nSố liệu trong báo cáo thống kê được xác định theo phương pháp lũy kế trong năm báo cáo, bao gồm số phát sinh từ đầu năm báo cáo đến thời điểm chốt số liệu và số năm trước chuyển sang.\n\tPhương pháp tính cụ thể đối với từng chỉ tiêu thống kê được hướng dẫn chi tiết tại biểu mẫu thống kê ban hành kèm theo Thông tư này."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n53",
+      "kind": "ARTICLE",
+      "label": "12",
+      "heading": "Khóa sổ và lập báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:80",
+          "start": 0,
+          "end": 40
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n54",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:81",
+              "start": 0,
+              "end": 287
+            },
+            {
+              "source_ref": "block:82",
+              "start": 0,
+              "end": 377
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:81",
+            "block:82"
+          ],
+          "full_text": "1. Sau thời điểm khóa sổ, hệ thống tự động xác lập dữ liệu của kỳ báo cáo để phục vụ trích xuất biểu mẫu thống kê. Dữ liệu phát sinh hoặc được cập nhật sau thời điểm khóa sổ được tính vào kỳ báo cáo tiếp theo, trừ trường hợp điều chỉnh số liệu theo quy định tại Điều 13 của Thông tư này.\nTrường hợp chưa thực hiện được trên phương tiện điện tử hoặc chưa có dữ liệu điện tử, cơ quan, đơn vị quy định tại khoản 1 Điều 2 của Thông tư này thực hiện chốt số liệu, khóa sổ trên hồ sơ nghiệp vụ hoặc trên biểu mẫu thống kê (bằng giấy hoặc phương tiện điện tử phù hợp) để lập báo cáo thống kê và chịu trách nhiệm về tính đầy đủ, chính xác của dữ liệu tại thời điểm khóa sổ."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n55",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:83",
+              "start": 0,
+              "end": 354
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:83"
+          ],
+          "full_text": "2. Việc ghi chép, lập và trình bày báo cáo thống kê phải thực hiện đúng hướng dẫn tại biểu mẫu và bản giải thích biểu mẫu ban hành kèm theo Thông tư này, bảo đảm thống nhất với phương pháp tính quy định tại Điều 11 của Thông tư này. Báo cáo thống kê phải được lập đúng kỳ báo cáo, thời điểm khóa sổ và thời hạn gửi báo cáo theo quy định tại Thông tư này."
+        }
+      ],
+      "source_refs": [
+        "block:80",
+        "block:81",
+        "block:82",
+        "block:83"
+      ],
+      "full_text": "Điều 12. Khóa sổ và lập báo cáo thống kê\n1. Sau thời điểm khóa sổ, hệ thống tự động xác lập dữ liệu của kỳ báo cáo để phục vụ trích xuất biểu mẫu thống kê. Dữ liệu phát sinh hoặc được cập nhật sau thời điểm khóa sổ được tính vào kỳ báo cáo tiếp theo, trừ trường hợp điều chỉnh số liệu theo quy định tại Điều 13 của Thông tư này.\nTrường hợp chưa thực hiện được trên phương tiện điện tử hoặc chưa có dữ liệu điện tử, cơ quan, đơn vị quy định tại khoản 1 Điều 2 của Thông tư này thực hiện chốt số liệu, khóa sổ trên hồ sơ nghiệp vụ hoặc trên biểu mẫu thống kê (bằng giấy hoặc phương tiện điện tử phù hợp) để lập báo cáo thống kê và chịu trách nhiệm về tính đầy đủ, chính xác của dữ liệu tại thời điểm khóa sổ.\n2. Việc ghi chép, lập và trình bày báo cáo thống kê phải thực hiện đúng hướng dẫn tại biểu mẫu và bản giải thích biểu mẫu ban hành kèm theo Thông tư này, bảo đảm thống nhất với phương pháp tính quy định tại Điều 11 của Thông tư này. Báo cáo thống kê phải được lập đúng kỳ báo cáo, thời điểm khóa sổ và thời hạn gửi báo cáo theo quy định tại Thông tư này."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n56",
+      "kind": "ARTICLE",
+      "label": "13",
+      "heading": "Xử lý sự cố hệ thống và điều chỉnh số liệu báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:84",
+          "start": 0,
+          "end": 68
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n57",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:85",
+              "start": 0,
+              "end": 237
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:85"
+          ],
+          "full_text": "1. Sự cố hệ thống trong thực hiện báo cáo thống kê là tình trạng phương tiện điện tử phục vụ công tác thống kê không thể vận hành hoặc vận hành không ổn định, dẫn đến không thể cập nhật dữ liệu, trích xuất hoặc gửi báo cáo theo quy định."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n58",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:86",
+              "start": 0,
+              "end": 357
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:86"
+          ],
+          "full_text": "2. Khi xảy ra sự cố hệ thống, cơ quan thi hành án dân sự phải kịp thời thông báo cho cơ quan quản lý, vận hành hệ thống để được hướng dẫn xử lý. Trường hợp sự cố hệ thống xảy ra trên diện rộng và đã được cơ quan quản lý, vận hành hệ thống thông báo chính thức theo quy định tại khoản 9 Điều này thì cơ quan thi hành án dân sự không phải thực hiện thông báo."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n59",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:87",
+              "start": 0,
+              "end": 434
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:87"
+          ],
+          "full_text": "3. Trong thời gian xảy ra sự cố hệ thống, việc lập và gửi báo cáo thống kê được thực hiện bằng phương thức khác theo hướng dẫn của cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp, cơ quan quản lý thi hành án thuộc Bộ Quốc phòng; việc xảy ra sự cố hệ thống không làm thay đổi thời hạn nhận báo cáo thống kê, trừ trường hợp được cơ quan có thẩm quyền xem xét, chấp thuận trên cơ sở xác nhận sự cố theo quy định tại khoản 8 Điều này."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n60",
+          "kind": "CLAUSE",
+          "label": "4",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:88",
+              "start": 0,
+              "end": 78
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n61",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:89",
+                  "start": 0,
+                  "end": 76
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:89"
+              ],
+              "full_text": "a) Cập nhật đầy đủ dữ liệu nghiệp vụ phát sinh trong thời gian xảy ra sự cố;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n62",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:90",
+                  "start": 0,
+                  "end": 39
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:90"
+              ],
+              "full_text": "b) Rà soát, đối chiếu số liệu thống kê;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n63",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:91",
+                  "start": 0,
+                  "end": 123
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:91"
+              ],
+              "full_text": "\tc) Trường hợp phát hiện sai sót số liệu so với báo cáo đã gửi thì thực hiện đề nghị điều chỉnh theo quy định tại Điều này."
+            }
+          ],
+          "source_refs": [
+            "block:88",
+            "block:89",
+            "block:90",
+            "block:91"
+          ],
+          "full_text": "4. Sau khi hệ thống được khôi phục, cơ quan thi hành án dân sự có trách nhiệm:\na) Cập nhật đầy đủ dữ liệu nghiệp vụ phát sinh trong thời gian xảy ra sự cố;\nb) Rà soát, đối chiếu số liệu thống kê;\n\tc) Trường hợp phát hiện sai sót số liệu so với báo cáo đã gửi thì thực hiện đề nghị điều chỉnh theo quy định tại Điều này."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n64",
+          "kind": "CLAUSE",
+          "label": "5",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:92",
+              "start": 0,
+              "end": 167
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n65",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:93",
+                  "start": 0,
+                  "end": 42
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:93"
+              ],
+              "full_text": "a) Sai sót do sự cố kỹ thuật của hệ thống;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n66",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:94",
+                  "start": 0,
+                  "end": 65
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:94"
+              ],
+              "full_text": "b) Sai sót trong việc cập nhật, đồng bộ, nhập hoặc xử lý dữ liệu;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n67",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:95",
+                  "start": 0,
+                  "end": 44
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:95"
+              ],
+              "full_text": "c) Phát hiện sai sót sau khi đã gửi báo cáo;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n68",
+              "kind": "POINT",
+              "label": "d",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:96",
+                  "start": 0,
+                  "end": 211
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:96"
+              ],
+              "full_text": "d) Có thay đổi về căn cứ pháp lý của việc thi hành án như bản án, quyết định của Tòa án, quyết định của cơ quan có thẩm quyền làm thay đổi nội dung nghĩa vụ thi hành án, dẫn đến phải điều chỉnh số liệu thống kê;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n69",
+              "kind": "POINT",
+              "label": "đ",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:97",
+                  "start": 0,
+                  "end": 60
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:97"
+              ],
+              "full_text": "đ) Trường hợp khác theo quy định của pháp luật có liên quan."
+            }
+          ],
+          "source_refs": [
+            "block:92",
+            "block:93",
+            "block:94",
+            "block:95",
+            "block:96",
+            "block:97"
+          ],
+          "full_text": "5. Số liệu báo cáo thống kê sau khi đã gửi chỉ được xem xét điều chỉnh khi có sai sót làm ảnh hưởng đến tính đầy đủ, chính xác của số liệu, bao gồm các trường hợp sau:\na) Sai sót do sự cố kỹ thuật của hệ thống;\nb) Sai sót trong việc cập nhật, đồng bộ, nhập hoặc xử lý dữ liệu;\nc) Phát hiện sai sót sau khi đã gửi báo cáo;\nd) Có thay đổi về căn cứ pháp lý của việc thi hành án như bản án, quyết định của Tòa án, quyết định của cơ quan có thẩm quyền làm thay đổi nội dung nghĩa vụ thi hành án, dẫn đến phải điều chỉnh số liệu thống kê;\nđ) Trường hợp khác theo quy định của pháp luật có liên quan."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n70",
+          "kind": "CLAUSE",
+          "label": "6",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:98",
+              "start": 0,
+              "end": 73
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n71",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:99",
+                  "start": 0,
+                  "end": 93
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:99"
+              ],
+              "full_text": "\ta) Có thông báo hoặc đề nghị điều chỉnh, nêu rõ nội dung, phạm vi và nguyên nhân điều chỉnh;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n72",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:100",
+                  "start": 0,
+                  "end": 170
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:100"
+              ],
+              "full_text": "\tb) Có tài liệu, căn cứ chứng minh nguyên nhân điều chỉnh, trường hợp do lỗi kỹ thuật của hệ thống phải có xác nhận hoặc thông báo của cơ quan quản lý, vận hành hệ thống;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n73",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:101",
+                  "start": 0,
+                  "end": 79
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:101"
+              ],
+              "full_text": "\tc) Việc điều chỉnh phải được lưu vết, ký số và bảo đảm trách nhiệm giải trình."
+            }
+          ],
+          "source_refs": [
+            "block:98",
+            "block:99",
+            "block:100",
+            "block:101"
+          ],
+          "full_text": "6. Việc điều chỉnh số liệu báo cáo thống kê phải bảo đảm các yêu cầu sau:\n\ta) Có thông báo hoặc đề nghị điều chỉnh, nêu rõ nội dung, phạm vi và nguyên nhân điều chỉnh;\n\tb) Có tài liệu, căn cứ chứng minh nguyên nhân điều chỉnh, trường hợp do lỗi kỹ thuật của hệ thống phải có xác nhận hoặc thông báo của cơ quan quản lý, vận hành hệ thống;\n\tc) Việc điều chỉnh phải được lưu vết, ký số và bảo đảm trách nhiệm giải trình."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n74",
+          "kind": "CLAUSE",
+          "label": "7",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:102",
+              "start": 0,
+              "end": 103
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n75",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:103",
+                  "start": 0,
+                  "end": 97
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:103"
+              ],
+              "full_text": "\ta) Xác nhận của cơ quan quản lý, vận hành hệ thống về thời gian, phạm vi và ảnh hưởng của sự cố;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n76",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:104",
+                  "start": 0,
+                  "end": 78
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:104"
+              ],
+              "full_text": "\tb) Tài liệu đối chiếu, xác định số liệu đúng sau khi hệ thống được khôi phục."
+            }
+          ],
+          "source_refs": [
+            "block:102",
+            "block:103",
+            "block:104"
+          ],
+          "full_text": "\t7. Trường hợp điều chỉnh số liệu do sự cố hệ thống, đề nghị điều chỉnh phải kèm theo các tài liệu sau:\n\ta) Xác nhận của cơ quan quản lý, vận hành hệ thống về thời gian, phạm vi và ảnh hưởng của sự cố;\n\tb) Tài liệu đối chiếu, xác định số liệu đúng sau khi hệ thống được khôi phục."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n77",
+          "kind": "CLAUSE",
+          "label": "8",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:105",
+              "start": 0,
+              "end": 158
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:105"
+          ],
+          "full_text": "\t8. Thời gian hệ thống xảy ra sự cố được cơ quan quản lý, vận hành hệ thống xác nhận là căn cứ để xem xét việc thực hiện thời hạn lập và gửi báo cáo thống kê."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n78",
+          "kind": "CLAUSE",
+          "label": "9",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:106",
+              "start": 0,
+              "end": 252
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n79",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:107",
+                  "start": 0,
+                  "end": 42
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:107"
+              ],
+              "full_text": "\ta) Thời điểm phát sinh và kết thúc sự cố;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n80",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:108",
+                  "start": 0,
+                  "end": 22
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:108"
+              ],
+              "full_text": "\tb) Phạm vi ảnh hưởng;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n81",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:109",
+                  "start": 0,
+                  "end": 41
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:109"
+              ],
+              "full_text": "\tc) Dự kiến thời gian khắc phục (nếu có);"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n82",
+              "kind": "POINT",
+              "label": "d",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:110",
+                  "start": 0,
+                  "end": 62
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:110"
+              ],
+              "full_text": "\td) Hướng dẫn tạm thời đối với việc lập, gửi báo cáo thống kê."
+            }
+          ],
+          "source_refs": [
+            "block:106",
+            "block:107",
+            "block:108",
+            "block:109",
+            "block:110"
+          ],
+          "full_text": "\t9. Cơ quan quản lý, vận hành hệ thống có trách nhiệm thông báo, xác nhận sự cố bằng văn bản hoặc thông báo chính thức trên hệ thống hoặc hình thức điện tử khác bảo đảm khả năng kiểm tra, xác thực và truy vết thông tin. Nội dung thông báo phải bao gồm:\n\ta) Thời điểm phát sinh và kết thúc sự cố;\n\tb) Phạm vi ảnh hưởng;\n\tc) Dự kiến thời gian khắc phục (nếu có);\n\td) Hướng dẫn tạm thời đối với việc lập, gửi báo cáo thống kê."
+        }
+      ],
+      "source_refs": [
+        "block:84",
+        "block:85",
+        "block:86",
+        "block:87",
+        "block:88",
+        "block:89",
+        "block:90",
+        "block:91",
+        "block:92",
+        "block:93",
+        "block:94",
+        "block:95",
+        "block:96",
+        "block:97",
+        "block:98",
+        "block:99",
+        "block:100",
+        "block:101",
+        "block:102",
+        "block:103",
+        "block:104",
+        "block:105",
+        "block:106",
+        "block:107",
+        "block:108",
+        "block:109",
+        "block:110"
+      ],
+      "full_text": "Điều 13. Xử lý sự cố hệ thống và điều chỉnh số liệu báo cáo thống kê\n1. Sự cố hệ thống trong thực hiện báo cáo thống kê là tình trạng phương tiện điện tử phục vụ công tác thống kê không thể vận hành hoặc vận hành không ổn định, dẫn đến không thể cập nhật dữ liệu, trích xuất hoặc gửi báo cáo theo quy định.\n2. Khi xảy ra sự cố hệ thống, cơ quan thi hành án dân sự phải kịp thời thông báo cho cơ quan quản lý, vận hành hệ thống để được hướng dẫn xử lý. Trường hợp sự cố hệ thống xảy ra trên diện rộng và đã được cơ quan quản lý, vận hành hệ thống thông báo chính thức theo quy định tại khoản 9 Điều này thì cơ quan thi hành án dân sự không phải thực hiện thông báo.\n3. Trong thời gian xảy ra sự cố hệ thống, việc lập và gửi báo cáo thống kê được thực hiện bằng phương thức khác theo hướng dẫn của cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp, cơ quan quản lý thi hành án thuộc Bộ Quốc phòng; việc xảy ra sự cố hệ thống không làm thay đổi thời hạn nhận báo cáo thống kê, trừ trường hợp được cơ quan có thẩm quyền xem xét, chấp thuận trên cơ sở xác nhận sự cố theo quy định tại khoản 8 Điều này.\n4. Sau khi hệ thống được khôi phục, cơ quan thi hành án dân sự có trách nhiệm:\na) Cập nhật đầy đủ dữ liệu nghiệp vụ phát sinh trong thời gian xảy ra sự cố;\nb) Rà soát, đối chiếu số liệu thống kê;\n\tc) Trường hợp phát hiện sai sót số liệu so với báo cáo đã gửi thì thực hiện đề nghị điều chỉnh theo quy định tại Điều này.\n5. Số liệu báo cáo thống kê sau khi đã gửi chỉ được xem xét điều chỉnh khi có sai sót làm ảnh hưởng đến tính đầy đủ, chính xác của số liệu, bao gồm các trường hợp sau:\na) Sai sót do sự cố kỹ thuật của hệ thống;\nb) Sai sót trong việc cập nhật, đồng bộ, nhập hoặc xử lý dữ liệu;\nc) Phát hiện sai sót sau khi đã gửi báo cáo;\nd) Có thay đổi về căn cứ pháp lý của việc thi hành án như bản án, quyết định của Tòa án, quyết định của cơ quan có thẩm quyền làm thay đổi nội dung nghĩa vụ thi hành án, dẫn đến phải điều chỉnh số liệu thống kê;\nđ) Trường hợp khác theo quy định của pháp luật có liên quan.\n6. Việc điều chỉnh số liệu báo cáo thống kê phải bảo đảm các yêu cầu sau:\n\ta) Có thông báo hoặc đề nghị điều chỉnh, nêu rõ nội dung, phạm vi và nguyên nhân điều chỉnh;\n\tb) Có tài liệu, căn cứ chứng minh nguyên nhân điều chỉnh, trường hợp do lỗi kỹ thuật của hệ thống phải có xác nhận hoặc thông báo của cơ quan quản lý, vận hành hệ thống;\n\tc) Việc điều chỉnh phải được lưu vết, ký số và bảo đảm trách nhiệm giải trình.\n\t7. Trường hợp điều chỉnh số liệu do sự cố hệ thống, đề nghị điều chỉnh phải kèm theo các tài liệu sau:\n\ta) Xác nhận của cơ quan quản lý, vận hành hệ thống về thời gian, phạm vi và ảnh hưởng của sự cố;\n\tb) Tài liệu đối chiếu, xác định số liệu đúng sau khi hệ thống được khôi phục.\n\t8. Thời gian hệ thống xảy ra sự cố được cơ quan quản lý, vận hành hệ thống xác nhận là căn cứ để xem xét việc thực hiện thời hạn lập và gửi báo cáo thống kê.\n\t9. Cơ quan quản lý, vận hành hệ thống có trách nhiệm thông báo, xác nhận sự cố bằng văn bản hoặc thông báo chính thức trên hệ thống hoặc hình thức điện tử khác bảo đảm khả năng kiểm tra, xác thực và truy vết thông tin. Nội dung thông báo phải bao gồm:\n\ta) Thời điểm phát sinh và kết thúc sự cố;\n\tb) Phạm vi ảnh hưởng;\n\tc) Dự kiến thời gian khắc phục (nếu có);\n\td) Hướng dẫn tạm thời đối với việc lập, gửi báo cáo thống kê."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n83",
+      "kind": "ARTICLE",
+      "label": "14",
+      "heading": "Nội dung và hình thức thẩm tra, kiểm tra số liệu thống kê",
+      "segments": [
+        {
+          "source_ref": "block:111",
+          "start": 0,
+          "end": 67
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n84",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:112",
+              "start": 0,
+              "end": 57
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n85",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:113",
+                  "start": 0,
+                  "end": 165
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:113"
+              ],
+              "full_text": "\ta) Thẩm tra số liệu thống kê, bao gồm việc rà soát, đối chiếu, kiểm chứng tính đầy đủ, chính xác, hợp lý của số liệu trong quá trình lập, tổng hợp báo cáo thống kê;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n86",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:114",
+                  "start": 0,
+                  "end": 203
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:114"
+              ],
+              "full_text": "\tb) Kiểm tra việc chấp hành các quy định của pháp luật về thống kê trong lĩnh vực thi hành án dân sự và theo dõi thi hành án hành chính bao gồm việc lập, tổng hợp, ký số, gửi và lưu trữ báo cáo thống kê;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n87",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:115",
+                  "start": 0,
+                  "end": 118
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:115"
+              ],
+              "full_text": "\tc) Kiểm tra việc quản lý, vận hành, khai thác và sử dụng hệ thống thông tin, cơ sở dữ liệu phục vụ công tác thống kê;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n88",
+              "kind": "POINT",
+              "label": "d",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:116",
+                  "start": 0,
+                  "end": 74
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:116"
+              ],
+              "full_text": "\td) Kiểm tra việc tổ chức thực hiện công tác thống kê tại cơ quan, đơn vị;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n89",
+              "kind": "POINT",
+              "label": "đ",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:117",
+                  "start": 0,
+                  "end": 79
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:117"
+              ],
+              "full_text": "\tđ) Các nội dung kiểm tra khác có liên quan đến việc chấp hành chế độ thống kê."
+            }
+          ],
+          "source_refs": [
+            "block:112",
+            "block:113",
+            "block:114",
+            "block:115",
+            "block:116",
+            "block:117"
+          ],
+          "full_text": "\t1. Nội dung thẩm tra, kiểm tra số liệu thống kê bao gồm:\n\ta) Thẩm tra số liệu thống kê, bao gồm việc rà soát, đối chiếu, kiểm chứng tính đầy đủ, chính xác, hợp lý của số liệu trong quá trình lập, tổng hợp báo cáo thống kê;\n\tb) Kiểm tra việc chấp hành các quy định của pháp luật về thống kê trong lĩnh vực thi hành án dân sự và theo dõi thi hành án hành chính bao gồm việc lập, tổng hợp, ký số, gửi và lưu trữ báo cáo thống kê;\n\tc) Kiểm tra việc quản lý, vận hành, khai thác và sử dụng hệ thống thông tin, cơ sở dữ liệu phục vụ công tác thống kê;\n\td) Kiểm tra việc tổ chức thực hiện công tác thống kê tại cơ quan, đơn vị;\n\tđ) Các nội dung kiểm tra khác có liên quan đến việc chấp hành chế độ thống kê."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n90",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:118",
+              "start": 0,
+              "end": 72
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n91",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:119",
+                  "start": 0,
+                  "end": 165
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:119"
+              ],
+              "full_text": "\ta) Thẩm tra số liệu thống kê được thực hiện thường xuyên trong quá trình tiếp nhận, tổng hợp báo cáo thông qua việc rà soát, đối chiếu, kiểm chứng và xử lý số liệu;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n92",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:120",
+                  "start": 0,
+                  "end": 145
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:120"
+              ],
+              "full_text": "\tb) Kiểm tra thống kê được thực hiện theo kế hoạch, theo chuyên đề hoặc đột xuất nhằm đánh giá việc chấp hành quy định của pháp luật về thống kê;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n93",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:121",
+                  "start": 0,
+                  "end": 110
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:121"
+              ],
+              "full_text": "\tc) Thẩm tra, kiểm tra được thực hiện thông qua hệ thống thông tin, cơ sở dữ liệu và phương tiện điện tử khác;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n94",
+              "kind": "POINT",
+              "label": "d",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:122",
+                  "start": 0,
+                  "end": 46
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:122"
+              ],
+              "full_text": "d) Hình thức khác theo quy định của pháp luật."
+            }
+          ],
+          "source_refs": [
+            "block:118",
+            "block:119",
+            "block:120",
+            "block:121",
+            "block:122"
+          ],
+          "full_text": "2. Hình thức thẩm tra, kiểm tra số liệu thống kê được thực hiện như sau:\n\ta) Thẩm tra số liệu thống kê được thực hiện thường xuyên trong quá trình tiếp nhận, tổng hợp báo cáo thông qua việc rà soát, đối chiếu, kiểm chứng và xử lý số liệu;\n\tb) Kiểm tra thống kê được thực hiện theo kế hoạch, theo chuyên đề hoặc đột xuất nhằm đánh giá việc chấp hành quy định của pháp luật về thống kê;\n\tc) Thẩm tra, kiểm tra được thực hiện thông qua hệ thống thông tin, cơ sở dữ liệu và phương tiện điện tử khác;\nd) Hình thức khác theo quy định của pháp luật."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n95",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:123",
+              "start": 0,
+              "end": 167
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n96",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:124",
+                  "start": 0,
+                  "end": 106
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:124"
+              ],
+              "full_text": "\ta) Yêu cầu cơ quan, đơn vị được thẩm tra, kiểm tra giải trình, cung cấp thông tin, tài liệu có liên quan;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n97",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:125",
+                  "start": 0,
+                  "end": 125
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:125"
+              ],
+              "full_text": "\tb) Yêu cầu điều chỉnh, hoàn thiện số liệu thống kê; trường hợp cần thiết thì yêu cầu lập lại báo cáo thống kê theo quy định;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n98",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:126",
+                  "start": 0,
+                  "end": 124
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:126"
+              ],
+              "full_text": "\tc) Kiến nghị hoặc quyết định xử lý theo thẩm quyền đối với cơ quan, đơn vị, cá nhân có vi phạm theo quy định của pháp luật;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n99",
+              "kind": "POINT",
+              "label": "d",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:127",
+                  "start": 0,
+                  "end": 269
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:127"
+              ],
+              "full_text": "d) Trường hợp số liệu thống kê đã được cung cấp, ban hành, sử dụng trong phạm vi báo cáo thống kê hoặc phục vụ chỉ đạo, điều hành mà phát hiện có sai lệch thì phải kịp thời điều chỉnh, đồng thời thông báo đến cơ quan, đơn vị đã sử dụng số liệu đó để bảo đảm thống nhất."
+            }
+          ],
+          "source_refs": [
+            "block:123",
+            "block:124",
+            "block:125",
+            "block:126",
+            "block:127"
+          ],
+          "full_text": "\t3. Khi phát hiện sai sót, vi phạm trong công tác thống kê, cơ quan có thẩm quyền kiểm tra, cơ quan, đơn vị thực hiện thẩm tra trong quá trình tổng hợp có trách nhiệm:\n\ta) Yêu cầu cơ quan, đơn vị được thẩm tra, kiểm tra giải trình, cung cấp thông tin, tài liệu có liên quan;\n\tb) Yêu cầu điều chỉnh, hoàn thiện số liệu thống kê; trường hợp cần thiết thì yêu cầu lập lại báo cáo thống kê theo quy định;\n\tc) Kiến nghị hoặc quyết định xử lý theo thẩm quyền đối với cơ quan, đơn vị, cá nhân có vi phạm theo quy định của pháp luật;\nd) Trường hợp số liệu thống kê đã được cung cấp, ban hành, sử dụng trong phạm vi báo cáo thống kê hoặc phục vụ chỉ đạo, điều hành mà phát hiện có sai lệch thì phải kịp thời điều chỉnh, đồng thời thông báo đến cơ quan, đơn vị đã sử dụng số liệu đó để bảo đảm thống nhất."
+        }
+      ],
+      "source_refs": [
+        "block:111",
+        "block:112",
+        "block:113",
+        "block:114",
+        "block:115",
+        "block:116",
+        "block:117",
+        "block:118",
+        "block:119",
+        "block:120",
+        "block:121",
+        "block:122",
+        "block:123",
+        "block:124",
+        "block:125",
+        "block:126",
+        "block:127"
+      ],
+      "full_text": "\tĐiều 14. Nội dung và hình thức thẩm tra, kiểm tra số liệu thống kê\n\t1. Nội dung thẩm tra, kiểm tra số liệu thống kê bao gồm:\n\ta) Thẩm tra số liệu thống kê, bao gồm việc rà soát, đối chiếu, kiểm chứng tính đầy đủ, chính xác, hợp lý của số liệu trong quá trình lập, tổng hợp báo cáo thống kê;\n\tb) Kiểm tra việc chấp hành các quy định của pháp luật về thống kê trong lĩnh vực thi hành án dân sự và theo dõi thi hành án hành chính bao gồm việc lập, tổng hợp, ký số, gửi và lưu trữ báo cáo thống kê;\n\tc) Kiểm tra việc quản lý, vận hành, khai thác và sử dụng hệ thống thông tin, cơ sở dữ liệu phục vụ công tác thống kê;\n\td) Kiểm tra việc tổ chức thực hiện công tác thống kê tại cơ quan, đơn vị;\n\tđ) Các nội dung kiểm tra khác có liên quan đến việc chấp hành chế độ thống kê.\n2. Hình thức thẩm tra, kiểm tra số liệu thống kê được thực hiện như sau:\n\ta) Thẩm tra số liệu thống kê được thực hiện thường xuyên trong quá trình tiếp nhận, tổng hợp báo cáo thông qua việc rà soát, đối chiếu, kiểm chứng và xử lý số liệu;\n\tb) Kiểm tra thống kê được thực hiện theo kế hoạch, theo chuyên đề hoặc đột xuất nhằm đánh giá việc chấp hành quy định của pháp luật về thống kê;\n\tc) Thẩm tra, kiểm tra được thực hiện thông qua hệ thống thông tin, cơ sở dữ liệu và phương tiện điện tử khác;\nd) Hình thức khác theo quy định của pháp luật.\n\t3. Khi phát hiện sai sót, vi phạm trong công tác thống kê, cơ quan có thẩm quyền kiểm tra, cơ quan, đơn vị thực hiện thẩm tra trong quá trình tổng hợp có trách nhiệm:\n\ta) Yêu cầu cơ quan, đơn vị được thẩm tra, kiểm tra giải trình, cung cấp thông tin, tài liệu có liên quan;\n\tb) Yêu cầu điều chỉnh, hoàn thiện số liệu thống kê; trường hợp cần thiết thì yêu cầu lập lại báo cáo thống kê theo quy định;\n\tc) Kiến nghị hoặc quyết định xử lý theo thẩm quyền đối với cơ quan, đơn vị, cá nhân có vi phạm theo quy định của pháp luật;\nd) Trường hợp số liệu thống kê đã được cung cấp, ban hành, sử dụng trong phạm vi báo cáo thống kê hoặc phục vụ chỉ đạo, điều hành mà phát hiện có sai lệch thì phải kịp thời điều chỉnh, đồng thời thông báo đến cơ quan, đơn vị đã sử dụng số liệu đó để bảo đảm thống nhất."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n100",
+      "kind": "ARTICLE",
+      "label": "15",
+      "heading": "Phổ biến thông tin thống kê",
+      "segments": [
+        {
+          "source_ref": "block:128",
+          "start": 0,
+          "end": 36
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n101",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:129",
+              "start": 0,
+              "end": 356
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:129"
+          ],
+          "full_text": "1. Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp thực hiện phổ biến thông tin thống kê thi hành án dân sự, theo dõi thi hành án hành chính sau khi được người có thẩm quyền công bố. Thông tin thống kê gồm số liệu thống kê, báo cáo phân tích chuyên đề, báo cáo đánh giá tình hình thực hiện chiến lược, kế hoạch 5 năm, hằng năm và văn bản khác (nếu có)."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n102",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:130",
+              "start": 0,
+              "end": 129
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:130"
+          ],
+          "full_text": "\t2. Thông tin thống kê được phổ biến trên môi trường số, báo cáo, ấn phẩm thống kê và hình thức khác theo quy định của pháp luật."
+        }
+      ],
+      "source_refs": [
+        "block:128",
+        "block:129",
+        "block:130"
+      ],
+      "full_text": "Điều 15. Phổ biến thông tin thống kê\n1. Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp thực hiện phổ biến thông tin thống kê thi hành án dân sự, theo dõi thi hành án hành chính sau khi được người có thẩm quyền công bố. Thông tin thống kê gồm số liệu thống kê, báo cáo phân tích chuyên đề, báo cáo đánh giá tình hình thực hiện chiến lược, kế hoạch 5 năm, hằng năm và văn bản khác (nếu có).\n\t2. Thông tin thống kê được phổ biến trên môi trường số, báo cáo, ấn phẩm thống kê và hình thức khác theo quy định của pháp luật."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n103",
+      "kind": "ARTICLE",
+      "label": "16",
+      "heading": "Sử dụng số liệu, thông tin trong báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:131",
+          "start": 0,
+          "end": 58
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n104",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:132",
+              "start": 0,
+              "end": 213
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:132"
+          ],
+          "full_text": "1. Cơ quan, đơn vị có liên quan có trách nhiệm sử dụng thống nhất số liệu thống kê chính thức theo quy định tại Điều 10 của Thông tư này trong quá trình quản lý, chỉ đạo, điều hành và thực hiện nhiệm vụ được giao."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n105",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:133",
+              "start": 0,
+              "end": 174
+            }
+          ],
+          "children": [
+            {
+              "node_id": "doc_2af685c8c75ff63e:n106",
+              "kind": "POINT",
+              "label": "a",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:134",
+                  "start": 0,
+                  "end": 150
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:134"
+              ],
+              "full_text": "\ta) Đánh giá kết quả thực hiện chỉ tiêu, nhiệm vụ thi hành án dân sự; tình hình tổ chức, hoạt động của cơ quan thi hành án dân sự theo các kỳ báo cáo;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n107",
+              "kind": "POINT",
+              "label": "b",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:135",
+                  "start": 0,
+                  "end": 74
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:135"
+              ],
+              "full_text": "b) Xây dựng kế hoạch, giao chỉ tiêu, nhiệm vụ thi hành án dân sự hằng năm;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n108",
+              "kind": "POINT",
+              "label": "c",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:136",
+                  "start": 0,
+                  "end": 71
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:136"
+              ],
+              "full_text": "c) Thực hiện công tác tổ chức cán bộ trong hệ thống thi hành án dân sự;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n109",
+              "kind": "POINT",
+              "label": "d",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:137",
+                  "start": 0,
+                  "end": 102
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:137"
+              ],
+              "full_text": "\td) Thực hiện công tác quản lý tài chính, bảo đảm điều kiện hoạt động của hệ thống thi hành án dân sự;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n110",
+              "kind": "POINT",
+              "label": "đ",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:138",
+                  "start": 0,
+                  "end": 71
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:138"
+              ],
+              "full_text": "đ) Tổng hợp, báo cáo cơ quan có thẩm quyền theo quy định của pháp luật;"
+            },
+            {
+              "node_id": "doc_2af685c8c75ff63e:n111",
+              "kind": "POINT",
+              "label": "e",
+              "heading": null,
+              "segments": [
+                {
+                  "source_ref": "block:139",
+                  "start": 0,
+                  "end": 123
+                }
+              ],
+              "children": [],
+              "source_refs": [
+                "block:139"
+              ],
+              "full_text": "\te) Đánh giá kết quả thi hành án hành chính, phục vụ việc xem xét, kiến nghị xử lý trách nhiệm theo quy định của pháp luật."
+            }
+          ],
+          "source_refs": [
+            "block:133",
+            "block:134",
+            "block:135",
+            "block:136",
+            "block:137",
+            "block:138",
+            "block:139"
+          ],
+          "full_text": "2. Số liệu, thông tin trong báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính được sử dụng là căn cứ phục vụ công tác quản lý, chỉ đạo, điều hành, bao gồm:\n\ta) Đánh giá kết quả thực hiện chỉ tiêu, nhiệm vụ thi hành án dân sự; tình hình tổ chức, hoạt động của cơ quan thi hành án dân sự theo các kỳ báo cáo;\nb) Xây dựng kế hoạch, giao chỉ tiêu, nhiệm vụ thi hành án dân sự hằng năm;\nc) Thực hiện công tác tổ chức cán bộ trong hệ thống thi hành án dân sự;\n\td) Thực hiện công tác quản lý tài chính, bảo đảm điều kiện hoạt động của hệ thống thi hành án dân sự;\nđ) Tổng hợp, báo cáo cơ quan có thẩm quyền theo quy định của pháp luật;\n\te) Đánh giá kết quả thi hành án hành chính, phục vụ việc xem xét, kiến nghị xử lý trách nhiệm theo quy định của pháp luật."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n112",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:140",
+              "start": 0,
+              "end": 208
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:140"
+          ],
+          "full_text": "3. Trường hợp sử dụng số liệu khác với số liệu thống kê chính thức quy định tại Điều 10 của Thông tư này thì phải nêu rõ nguồn, thời điểm của số liệu và chịu trách nhiệm về tính chính xác của số liệu sử dụng."
+        }
+      ],
+      "source_refs": [
+        "block:131",
+        "block:132",
+        "block:133",
+        "block:134",
+        "block:135",
+        "block:136",
+        "block:137",
+        "block:138",
+        "block:139",
+        "block:140"
+      ],
+      "full_text": "Điều 16. Sử dụng số liệu, thông tin trong báo cáo thống kê\n1. Cơ quan, đơn vị có liên quan có trách nhiệm sử dụng thống nhất số liệu thống kê chính thức theo quy định tại Điều 10 của Thông tư này trong quá trình quản lý, chỉ đạo, điều hành và thực hiện nhiệm vụ được giao.\n2. Số liệu, thông tin trong báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính được sử dụng là căn cứ phục vụ công tác quản lý, chỉ đạo, điều hành, bao gồm:\n\ta) Đánh giá kết quả thực hiện chỉ tiêu, nhiệm vụ thi hành án dân sự; tình hình tổ chức, hoạt động của cơ quan thi hành án dân sự theo các kỳ báo cáo;\nb) Xây dựng kế hoạch, giao chỉ tiêu, nhiệm vụ thi hành án dân sự hằng năm;\nc) Thực hiện công tác tổ chức cán bộ trong hệ thống thi hành án dân sự;\n\td) Thực hiện công tác quản lý tài chính, bảo đảm điều kiện hoạt động của hệ thống thi hành án dân sự;\nđ) Tổng hợp, báo cáo cơ quan có thẩm quyền theo quy định của pháp luật;\n\te) Đánh giá kết quả thi hành án hành chính, phục vụ việc xem xét, kiến nghị xử lý trách nhiệm theo quy định của pháp luật.\n3. Trường hợp sử dụng số liệu khác với số liệu thống kê chính thức quy định tại Điều 10 của Thông tư này thì phải nêu rõ nguồn, thời điểm của số liệu và chịu trách nhiệm về tính chính xác của số liệu sử dụng."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n113",
+      "kind": "ARTICLE",
+      "label": "17",
+      "heading": "Trách nhiệm thực hiện chế độ báo cáo thống kê",
+      "segments": [
+        {
+          "source_ref": "block:143",
+          "start": 0,
+          "end": 54
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n114",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:144",
+              "start": 0,
+              "end": 202
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:144"
+          ],
+          "full_text": "1. Bộ Tư pháp có trách nhiệm chỉ đạo việc quản lý, vận hành, khai thác và nâng cấp nền tảng số thi hành án dân sự, cơ sở dữ liệu về thi hành án dân sự trên cơ sở các hệ thống thông tin đã được xây dựng."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n115",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:145",
+              "start": 0,
+              "end": 185
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:145"
+          ],
+          "full_text": "2. Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp giúp Bộ trưởng Bộ Tư pháp hướng dẫn, chỉ đạo, thẩm tra, kiểm tra và đôn đốc việc thực hiện hoạt động thống kê trong toàn hệ thống."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n116",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:146",
+              "start": 0,
+              "end": 259
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:146"
+          ],
+          "full_text": "3. Cơ quan thi hành án dân sự tỉnh, thành phố có trách nhiệm tổ chức triển khai thực hiện Thông tư này trong phạm vi quản lý; phân công đầu mối, hướng dẫn thực hiện công tác thống kê; tổ chức rà soát, đối chiếu, kiểm soát số liệu trước khi ký số, gửi báo cáo."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n117",
+          "kind": "CLAUSE",
+          "label": "4",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:147",
+              "start": 0,
+              "end": 222
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:147"
+          ],
+          "full_text": "4. Cơ quan quản lý thi hành án thuộc Bộ Quốc phòng tổ chức thực hiện chế độ báo cáo thống kê thi hành án trong quân đội; hướng dẫn, kiểm tra và đôn đốc việc thực hiện chế độ báo cáo thống kê theo quy định tại Thông tư này."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n118",
+          "kind": "CLAUSE",
+          "label": "5",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:148",
+              "start": 0,
+              "end": 204
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:148"
+          ],
+          "full_text": "5. Cơ quan thi hành án cấp quân khu có trách nhiệm tổ chức lập, rà soát, đối chiếu và gửi báo cáo thống kê theo quy định; chấp hành hướng dẫn, kiểm tra của cơ quan quản lý thi hành án thuộc Bộ Quốc phòng."
+        }
+      ],
+      "source_refs": [
+        "block:143",
+        "block:144",
+        "block:145",
+        "block:146",
+        "block:147",
+        "block:148"
+      ],
+      "full_text": "Điều 17. Trách nhiệm thực hiện chế độ báo cáo thống kê\n1. Bộ Tư pháp có trách nhiệm chỉ đạo việc quản lý, vận hành, khai thác và nâng cấp nền tảng số thi hành án dân sự, cơ sở dữ liệu về thi hành án dân sự trên cơ sở các hệ thống thông tin đã được xây dựng.\n2. Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp giúp Bộ trưởng Bộ Tư pháp hướng dẫn, chỉ đạo, thẩm tra, kiểm tra và đôn đốc việc thực hiện hoạt động thống kê trong toàn hệ thống.\n3. Cơ quan thi hành án dân sự tỉnh, thành phố có trách nhiệm tổ chức triển khai thực hiện Thông tư này trong phạm vi quản lý; phân công đầu mối, hướng dẫn thực hiện công tác thống kê; tổ chức rà soát, đối chiếu, kiểm soát số liệu trước khi ký số, gửi báo cáo.\n4. Cơ quan quản lý thi hành án thuộc Bộ Quốc phòng tổ chức thực hiện chế độ báo cáo thống kê thi hành án trong quân đội; hướng dẫn, kiểm tra và đôn đốc việc thực hiện chế độ báo cáo thống kê theo quy định tại Thông tư này.\n5. Cơ quan thi hành án cấp quân khu có trách nhiệm tổ chức lập, rà soát, đối chiếu và gửi báo cáo thống kê theo quy định; chấp hành hướng dẫn, kiểm tra của cơ quan quản lý thi hành án thuộc Bộ Quốc phòng."
+    },
+    {
+      "node_id": "doc_2af685c8c75ff63e:n119",
+      "kind": "ARTICLE",
+      "label": "18",
+      "heading": "Hiệu lực thi hành",
+      "segments": [
+        {
+          "source_ref": "block:149",
+          "start": 0,
+          "end": 26
+        }
+      ],
+      "children": [
+        {
+          "node_id": "doc_2af685c8c75ff63e:n120",
+          "kind": "CLAUSE",
+          "label": "1",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:150",
+              "start": 0,
+              "end": 68
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:150"
+          ],
+          "full_text": "1. Thông tư này có hiệu lực thi hành kể từ ngày 01 tháng 7 năm 2026."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n121",
+          "kind": "CLAUSE",
+          "label": "2",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:151",
+              "start": 0,
+              "end": 214
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:151"
+          ],
+          "full_text": "2. Thông tư số 05/2024/TT-BTP ngày 10 tháng 6 năm 2024 của Bộ trưởng Bộ Tư pháp quy định Chế độ báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính hết hiệu lực kể từ ngày Thông tư này có hiệu lực."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n122",
+          "kind": "CLAUSE",
+          "label": "3",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:152",
+              "start": 0,
+              "end": 135
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:152"
+          ],
+          "full_text": "\t3. Số liệu, biểu mẫu thống kê đã lập, gửi đúng quy định trước thời điểm Thông tư này có hiệu lực được công nhận và có giá trị sử dụng."
+        },
+        {
+          "node_id": "doc_2af685c8c75ff63e:n123",
+          "kind": "CLAUSE",
+          "label": "4",
+          "heading": null,
+          "segments": [
+            {
+              "source_ref": "block:153",
+              "start": 0,
+              "end": 141
+            }
+          ],
+          "children": [],
+          "source_refs": [
+            "block:153"
+          ],
+          "full_text": "\t4. Trong quá trình thực hiện, nếu có vướng mắc, đề nghị tổ chức, cá nhân phản ánh kịp thời về Bộ Tư pháp để nghiên cứu, hướng dẫn bổ sung./."
+        }
+      ],
+      "source_refs": [
+        "block:149",
+        "block:150",
+        "block:151",
+        "block:152",
+        "block:153"
+      ],
+      "full_text": "Điều 18. Hiệu lực thi hành\n1. Thông tư này có hiệu lực thi hành kể từ ngày 01 tháng 7 năm 2026.\n2. Thông tư số 05/2024/TT-BTP ngày 10 tháng 6 năm 2024 của Bộ trưởng Bộ Tư pháp quy định Chế độ báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính hết hiệu lực kể từ ngày Thông tư này có hiệu lực.\n\t3. Số liệu, biểu mẫu thống kê đã lập, gửi đúng quy định trước thời điểm Thông tư này có hiệu lực được công nhận và có giá trị sử dụng.\n\t4. Trong quá trình thực hiện, nếu có vướng mắc, đề nghị tổ chức, cá nhân phản ánh kịp thời về Bộ Tư pháp để nghiên cứu, hướng dẫn bổ sung./."
+    }
+  ],
+  "outside": [
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:1",
+      "start": 0,
+      "end": 125,
+      "text": "BỘ TƯ PHÁP\tCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nSố: 05/2026/TT-BTP\tHà Nội, ngày 15 tháng 5 năm 2026",
+      "kind": "TABLE"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:2",
+      "start": 0,
+      "end": 8,
+      "text": "THÔNG TƯ",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:3",
+      "start": 0,
+      "end": 98,
+      "text": "Quy định một số nội dung về hoạt động thống kê thi hành án dân sự, theo dõi thi hành án hành chính",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:4",
+      "start": 0,
+      "end": 48,
+      "text": "Căn cứ Luật Thi hành án dân sự số 106/2025/QH15;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:5",
+      "start": 0,
+      "end": 111,
+      "text": "\t\tCăn cứ Luật Thống kê số 89/2015/QH13 được sửa đổi, bổ sung bởi Luật số 01/2021/QH15 và Luật số 138/2025/QH15;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:6",
+      "start": 0,
+      "end": 164,
+      "text": "Căn cứ Luật Tố tụng hành chính số 93/2015/QH13 được sửa đổi, bổ sung bởi Luật số 55/2019/QH14, Luật Tổ chức Tòa án nhân dân số 34/2024/QH15 và Luật số 85/2025/QH15;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:7",
+      "start": 0,
+      "end": 46,
+      "text": "Căn cứ Luật Giao dịch điện tử số 20/2023/QH15;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:8",
+      "start": 0,
+      "end": 36,
+      "text": "Căn cứ Luật Dữ liệu số 60/2024/QH15;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:9",
+      "start": 0,
+      "end": 43,
+      "text": "Căn cứ Luật Chuyển đổi số số 148/2025/QH15;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:10",
+      "start": 0,
+      "end": 188,
+      "text": "Căn cứ Nghị định số 71/2016/NĐ-CP của Chính phủ quy định thời hạn, trình tự, thủ tục thi hành án hành chính và xử lý trách nhiệm đối với người không thi hành bản án, quyết định của Tòa án;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:11",
+      "start": 0,
+      "end": 201,
+      "text": "Căn cứ Nghị định số 94/2016/NĐ-CP của Chính phủ quy định chi tiết và hướng dẫn thi hành một số điều của Luật Thống kê được sửa đổi, bổ sung bởi Nghị định số 62/2024/NĐ-CP và Nghị định số 13/2026/NĐ-CP;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:12",
+      "start": 0,
+      "end": 311,
+      "text": "Căn cứ Nghị định số 94/2022/NĐ-CP của Chính phủ quy định nội dung chỉ tiêu thống kê thuộc Hệ thống chỉ tiêu thống kê quốc gia và quy trình biên soạn chỉ tiêu tổng sản phẩm trong nước, chỉ tiêu tổng sản phẩm trên địa bàn tỉnh, thành phố trực thuộc Trung ương được sửa đổi, bổ sung bởi Nghị định số 13/2026/NĐ-CP;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:13",
+      "start": 0,
+      "end": 139,
+      "text": "\t\tCăn cứ Nghị định số 278/2025/NĐ-CP của Chính phủ quy định về kết nối, chia sẻ dữ liệu bắt buộc giữa các cơ quan thuộc hệ thống chính trị;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:14",
+      "start": 0,
+      "end": 123,
+      "text": "\t\tCăn cứ Nghị định số 09/2026/NĐ-CP của Chính phủ quy định chức năng, nhiệm vụ, quyền hạn và cơ cấu tổ chức của Bộ Tư pháp;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:15",
+      "start": 0,
+      "end": 167,
+      "text": "Căn cứ Nghị định số 139/2026/NĐ-CP của Chính phủ quy định chi tiết nội dung chế độ báo cáo thống kê cấp quốc gia được sửa đổi, bổ sung bởi Nghị định số 152/2026/NĐ-CP;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:16",
+      "start": 0,
+      "end": 141,
+      "text": "\t\tCăn cứ Nghị định số 150/2026/NĐ-CP của Chính phủ quy định về tổ chức cán bộ và điều kiện bảo đảm hoạt động của hệ thống thi hành án dân sự;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:17",
+      "start": 0,
+      "end": 127,
+      "text": "\t\tCăn cứ Nghị định số 152/2026/NĐ-CP của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Thi hành án dân sự;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:18",
+      "start": 0,
+      "end": 59,
+      "text": "Theo đề nghị của Cục trưởng Cục Quản lý Thi hành án dân sự;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "BEFORE_BODY",
+      "source_ref": "block:19",
+      "start": 0,
+      "end": 140,
+      "text": "\t\tBộ trưởng Bộ Tư pháp ban hành Thông tư quy định một số nội dung về hoạt động thống kê thi hành án dân sự, theo dõi thi hành án hành chính.",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_HEADING",
+      "source_ref": "block:20",
+      "start": 0,
+      "end": 8,
+      "text": "Chương I",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_TITLE",
+      "source_ref": "block:21",
+      "start": 0,
+      "end": 14,
+      "text": "QUY ĐỊNH CHUNG",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_HEADING",
+      "source_ref": "block:32",
+      "start": 0,
+      "end": 9,
+      "text": "Chương II",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_TITLE",
+      "source_ref": "block:33",
+      "start": 0,
+      "end": 23,
+      "text": "CHẾ ĐỘ BÁO CÁO THỐNG KÊ",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_HEADING",
+      "source_ref": "block:61",
+      "start": 0,
+      "end": 10,
+      "text": "Chương III",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_TITLE",
+      "source_ref": "block:62",
+      "start": 0,
+      "end": 51,
+      "text": "NGUYÊN TẮC, PHƯƠNG PHÁP VÀ QUẢN LÝ SỐ LIỆU THỐNG KÊ",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_HEADING",
+      "source_ref": "block:141",
+      "start": 0,
+      "end": 9,
+      "text": "Chương IV",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "SECTION_TITLE",
+      "source_ref": "block:142",
+      "start": 0,
+      "end": 17,
+      "text": "TỔ CHỨC THỰC HIỆN",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:154",
+      "start": 0,
+      "end": 50,
+      "text": "\tNơi nhận: \tBỘ TRƯỞNG- Ban Bí thư Trung ương Đảng;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:154",
+      "start": 51,
+      "end": 92,
+      "text": "- Thủ tướng, các Phó Thủ tướng Chính phủ;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:154",
+      "start": 93,
+      "end": 141,
+      "text": "- Văn phòng Trung ương Đảng và các Ban của Đảng;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:154",
+      "start": 142,
+      "end": 166,
+      "text": "- Văn phòng Tổng Bí thư;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:154",
+      "start": 167,
+      "end": 188,
+      "text": "- Văn phòng Quốc hội;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:154",
+      "start": 189,
+      "end": 235,
+      "text": "- Hội đồng Dân tộc và các Uỷ ban của Quốc hội;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:154",
+      "start": 236,
+      "end": 262,
+      "text": "- Văn phòng Chủ tịch nước;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:155",
+      "start": 0,
+      "end": 76,
+      "text": "- Các Bộ, cơ quan ngang Bộ;- UBND các tỉnh, thành phố;- Văn phòng Chính phủ;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:155",
+      "start": 77,
+      "end": 103,
+      "text": "- Tòa án nhân dân tối cao;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:156",
+      "start": 0,
+      "end": 16,
+      "text": "Hoàng Thanh Tùng",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 0,
+      "end": 33,
+      "text": "- Viện kiểm sát nhân dân tối cao;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 34,
+      "end": 72,
+      "text": "- Cơ quan Trung ương của các đoàn thể;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 73,
+      "end": 94,
+      "text": "- Kiểm toán Nhà nước;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 95,
+      "end": 146,
+      "text": "- Bộ Tư pháp (các Thứ trưởng, các đơn vị thuộc Bộ);",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 147,
+      "end": 177,
+      "text": "- Cục Thống kê - Bộ Tài chính;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 178,
+      "end": 207,
+      "text": "- Sở Tư pháp tỉnh, thành phố;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 208,
+      "end": 245,
+      "text": "- Thi hành án dân sự tỉnh, thành phố;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 246,
+      "end": 280,
+      "text": "- Cục Thi hành án - Bộ Quốc phòng;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 281,
+      "end": 314,
+      "text": "- Phòng Thi hành án cấp quân khu;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 315,
+      "end": 326,
+      "text": "- Công báo;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 327,
+      "end": 362,
+      "text": "- Cổng Thông tin điện tử Chính phủ;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 363,
+      "end": 401,
+      "text": "- Cơ sở dữ liệu quốc gia về pháp luật;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 402,
+      "end": 438,
+      "text": "- Cổng Thông tin điện tử Bộ Tư pháp;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 439,
+      "end": 483,
+      "text": "- Cổng Thông tin điện tử Thi hành án dân sự;",
+      "kind": "PARAGRAPH"
+    },
+    {
+      "region": "AFTER_BODY",
+      "source_ref": "block:157",
+      "start": 484,
+      "end": 521,
+      "text": "- Lưu: VT, Cục Quản lý THADS (10 bộ).",
+      "kind": "PARAGRAPH"
+    }
+  ],
+  "source_blocks": [
+    {
+      "source_ref": "block:1",
+      "kind": "TABLE",
+      "text": "BỘ TƯ PHÁP\tCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nSố: 05/2026/TT-BTP\tHà Nội, ngày 15 tháng 5 năm 2026"
+    },
+    {
+      "source_ref": "block:2",
+      "kind": "PARAGRAPH",
+      "text": "THÔNG TƯ"
+    },
+    {
+      "source_ref": "block:3",
+      "kind": "PARAGRAPH",
+      "text": "Quy định một số nội dung về hoạt động thống kê thi hành án dân sự, theo dõi thi hành án hành chính"
+    },
+    {
+      "source_ref": "block:4",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Luật Thi hành án dân sự số 106/2025/QH15;"
+    },
+    {
+      "source_ref": "block:5",
+      "kind": "PARAGRAPH",
+      "text": "\t\tCăn cứ Luật Thống kê số 89/2015/QH13 được sửa đổi, bổ sung bởi Luật số 01/2021/QH15 và Luật số 138/2025/QH15;"
+    },
+    {
+      "source_ref": "block:6",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Luật Tố tụng hành chính số 93/2015/QH13 được sửa đổi, bổ sung bởi Luật số 55/2019/QH14, Luật Tổ chức Tòa án nhân dân số 34/2024/QH15 và Luật số 85/2025/QH15;"
+    },
+    {
+      "source_ref": "block:7",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Luật Giao dịch điện tử số 20/2023/QH15;"
+    },
+    {
+      "source_ref": "block:8",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Luật Dữ liệu số 60/2024/QH15;"
+    },
+    {
+      "source_ref": "block:9",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Luật Chuyển đổi số số 148/2025/QH15;"
+    },
+    {
+      "source_ref": "block:10",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Nghị định số 71/2016/NĐ-CP của Chính phủ quy định thời hạn, trình tự, thủ tục thi hành án hành chính và xử lý trách nhiệm đối với người không thi hành bản án, quyết định của Tòa án;"
+    },
+    {
+      "source_ref": "block:11",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Nghị định số 94/2016/NĐ-CP của Chính phủ quy định chi tiết và hướng dẫn thi hành một số điều của Luật Thống kê được sửa đổi, bổ sung bởi Nghị định số 62/2024/NĐ-CP và Nghị định số 13/2026/NĐ-CP;"
+    },
+    {
+      "source_ref": "block:12",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Nghị định số 94/2022/NĐ-CP của Chính phủ quy định nội dung chỉ tiêu thống kê thuộc Hệ thống chỉ tiêu thống kê quốc gia và quy trình biên soạn chỉ tiêu tổng sản phẩm trong nước, chỉ tiêu tổng sản phẩm trên địa bàn tỉnh, thành phố trực thuộc Trung ương được sửa đổi, bổ sung bởi Nghị định số 13/2026/NĐ-CP;"
+    },
+    {
+      "source_ref": "block:13",
+      "kind": "PARAGRAPH",
+      "text": "\t\tCăn cứ Nghị định số 278/2025/NĐ-CP của Chính phủ quy định về kết nối, chia sẻ dữ liệu bắt buộc giữa các cơ quan thuộc hệ thống chính trị;"
+    },
+    {
+      "source_ref": "block:14",
+      "kind": "PARAGRAPH",
+      "text": "\t\tCăn cứ Nghị định số 09/2026/NĐ-CP của Chính phủ quy định chức năng, nhiệm vụ, quyền hạn và cơ cấu tổ chức của Bộ Tư pháp;"
+    },
+    {
+      "source_ref": "block:15",
+      "kind": "PARAGRAPH",
+      "text": "Căn cứ Nghị định số 139/2026/NĐ-CP của Chính phủ quy định chi tiết nội dung chế độ báo cáo thống kê cấp quốc gia được sửa đổi, bổ sung bởi Nghị định số 152/2026/NĐ-CP;"
+    },
+    {
+      "source_ref": "block:16",
+      "kind": "PARAGRAPH",
+      "text": "\t\tCăn cứ Nghị định số 150/2026/NĐ-CP của Chính phủ quy định về tổ chức cán bộ và điều kiện bảo đảm hoạt động của hệ thống thi hành án dân sự;"
+    },
+    {
+      "source_ref": "block:17",
+      "kind": "PARAGRAPH",
+      "text": "\t\tCăn cứ Nghị định số 152/2026/NĐ-CP của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Thi hành án dân sự;"
+    },
+    {
+      "source_ref": "block:18",
+      "kind": "PARAGRAPH",
+      "text": "Theo đề nghị của Cục trưởng Cục Quản lý Thi hành án dân sự;"
+    },
+    {
+      "source_ref": "block:19",
+      "kind": "PARAGRAPH",
+      "text": "\t\tBộ trưởng Bộ Tư pháp ban hành Thông tư quy định một số nội dung về hoạt động thống kê thi hành án dân sự, theo dõi thi hành án hành chính."
+    },
+    {
+      "source_ref": "block:20",
+      "kind": "PARAGRAPH",
+      "text": "Chương I"
+    },
+    {
+      "source_ref": "block:21",
+      "kind": "PARAGRAPH",
+      "text": "QUY ĐỊNH CHUNG"
+    },
+    {
+      "source_ref": "block:22",
+      "kind": "PARAGRAPH",
+      "text": "Điều 1. Phạm vi điều chỉnh"
+    },
+    {
+      "source_ref": "block:23",
+      "kind": "PARAGRAPH",
+      "text": "1. Thông tư này quy định một số nội dung về hoạt động thống kê trong thi hành án dân sự và theo dõi thi hành án hành chính, bao gồm: chế độ báo cáo thống kê; nguyên tắc lập và gửi báo cáo thống kê; nguồn số liệu để lập báo cáo thống kê; giá trị của số liệu thống kê; phương pháp tính trong báo cáo thống kê; khóa sổ và lập báo cáo thống kê; xử lý sự cố hệ thống và điều chỉnh số liệu báo cáo thống kê; nội dung và hình thức thẩm tra, kiểm tra số liệu thống kê; phổ biến thông tin thống kê; sử dụng số liệu, thông tin trong báo cáo thống kê."
+    },
+    {
+      "source_ref": "block:24",
+      "kind": "PARAGRAPH",
+      "text": "2. Hoạt động báo cáo thống kê quy định tại Thông tư này để thu thập thông tin chỉ tiêu thống kê thi hành án dân sự, theo dõi thi hành án hành chính thuộc hệ thống chỉ tiêu thống kê quốc gia, hệ thống chỉ tiêu thống kê ngành Tư pháp phục vụ công tác quản lý, chỉ đạo, điều hành, báo cáo Chính phủ, Quốc hội và cơ quan có thẩm quyền."
+    },
+    {
+      "source_ref": "block:25",
+      "kind": "PARAGRAPH",
+      "text": "Điều 2. Đối tượng áp dụng"
+    },
+    {
+      "source_ref": "block:26",
+      "kind": "PARAGRAPH",
+      "text": "1. Cơ quan trực tiếp thực hiện công tác thống kê, bao gồm:"
+    },
+    {
+      "source_ref": "block:27",
+      "kind": "PARAGRAPH",
+      "text": "a) Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp;"
+    },
+    {
+      "source_ref": "block:28",
+      "kind": "PARAGRAPH",
+      "text": "b) Cơ quan quản lý thi hành án thuộc Bộ Quốc phòng;"
+    },
+    {
+      "source_ref": "block:29",
+      "kind": "PARAGRAPH",
+      "text": "c) Cơ quan thi hành án dân sự tỉnh, thành phố;"
+    },
+    {
+      "source_ref": "block:30",
+      "kind": "PARAGRAPH",
+      "text": "d) Cơ quan thi hành án cấp quân khu."
+    },
+    {
+      "source_ref": "block:31",
+      "kind": "PARAGRAPH",
+      "text": "2. Cơ quan, tổ chức, cá nhân có liên quan đến công tác thi hành án dân sự, theo dõi thi hành án hành chính có trách nhiệm phối hợp, cung cấp, quản lý, khai thác và sử dụng số liệu thống kê theo quy định của pháp luật."
+    },
+    {
+      "source_ref": "block:32",
+      "kind": "PARAGRAPH",
+      "text": "Chương II"
+    },
+    {
+      "source_ref": "block:33",
+      "kind": "PARAGRAPH",
+      "text": "CHẾ ĐỘ BÁO CÁO THỐNG KÊ"
+    },
+    {
+      "source_ref": "block:34",
+      "kind": "PARAGRAPH",
+      "text": "Điều 3. Biểu mẫu thống kê và giải thích biểu mẫu thống kê"
+    },
+    {
+      "source_ref": "block:35",
+      "kind": "PARAGRAPH",
+      "text": "\t1. Danh mục biểu mẫu thống kê, biểu mẫu thống kê và giải thích biểu mẫu thống kê được quy định tại Phụ lục ban hành kèm theo Thông tư này."
+    },
+    {
+      "source_ref": "block:36",
+      "kind": "PARAGRAPH",
+      "text": "\t2. Ký hiệu biểu mẫu được thể hiện tại dòng đầu tiên ở góc trên bên trái của biểu mẫu thống kê."
+    },
+    {
+      "source_ref": "block:37",
+      "kind": "PARAGRAPH",
+      "text": "3. Ngoài biểu mẫu thống kê quy định tại khoản 1 Điều này, cơ quan, đơn vị trực tiếp thực hiện công tác thống kê được khai thác, trích xuất số liệu dưới dạng báo cáo điện tử từ nền tảng số thi hành án dân sự và hệ thống thông tin, cơ sở dữ liệu có liên quan theo quy định của pháp luật, bảo đảm phù hợp với nội dung, cấu trúc chỉ tiêu thống kê đã được chuẩn hóa."
+    },
+    {
+      "source_ref": "block:38",
+      "kind": "PARAGRAPH",
+      "text": "\t4. Số liệu được khai thác, trích xuất theo quy định tại khoản 3 Điều này có giá trị sử dụng và giá trị pháp lý như số liệu thống kê trên biểu mẫu giấy."
+    },
+    {
+      "source_ref": "block:39",
+      "kind": "PARAGRAPH",
+      "text": "Điều 4. Kỳ báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:40",
+      "kind": "PARAGRAPH",
+      "text": "1. Kỳ báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính bao gồm báo cáo thống kê 12 tháng và báo cáo thống kê đột xuất. Kỳ báo cáo thống kê 12 tháng là kỳ báo cáo thống kê năm."
+    },
+    {
+      "source_ref": "block:41",
+      "kind": "PARAGRAPH",
+      "text": "Năm báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính bắt đầu từ ngày 01 tháng 01 và kết thúc vào ngày 31 tháng 12 của năm báo cáo. Thời điểm chốt số liệu thống kê là thời điểm kết thúc kỳ báo cáo; số liệu được ghi nhận đến hết 24 giờ của ngày cuối cùng của kỳ báo cáo."
+    },
+    {
+      "source_ref": "block:42",
+      "kind": "PARAGRAPH",
+      "text": "2. Báo cáo thống kê đột xuất được thực hiện theo yêu cầu của Bộ Tư pháp, cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp hoặc cơ quan quản lý thi hành án thuộc Bộ Quốc phòng. Văn bản của người có yêu cầu báo cáo thống kê đột xuất phải nêu rõ thời gian, thời hạn, nội dung báo cáo thống kê và yêu cầu khác (nếu có)."
+    },
+    {
+      "source_ref": "block:43",
+      "kind": "PARAGRAPH",
+      "text": "Điều 5. Cơ quan, đơn vị gửi và nhận báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:44",
+      "kind": "PARAGRAPH",
+      "text": "\t1. Cơ quan, đơn vị gửi và nhận báo cáo thống kê được thể hiện tại góc trên bên phải của biểu mẫu thống kê."
+    },
+    {
+      "source_ref": "block:45",
+      "kind": "PARAGRAPH",
+      "text": "\t2. Cơ quan, đơn vị nhận báo cáo thống kê có trách nhiệm tiếp nhận, thẩm tra, tổng hợp và sử dụng số liệu báo cáo thống kê theo quy định của pháp luật."
+    },
+    {
+      "source_ref": "block:46",
+      "kind": "PARAGRAPH",
+      "text": "\tĐiều 6. Hình thức báo cáo và phương thức gửi báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:47",
+      "kind": "PARAGRAPH",
+      "text": "\t1. Báo cáo thống kê được thể hiện dưới dạng dữ liệu điện tử hoặc văn bản, bảo đảm đầy đủ nội dung theo biểu mẫu quy định."
+    },
+    {
+      "source_ref": "block:48",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Báo cáo bằng văn bản giấy phải có chữ ký của người có thẩm quyền và đóng dấu theo quy định;"
+    },
+    {
+      "source_ref": "block:49",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Báo cáo điện tử được thể hiện dưới dạng thông điệp dữ liệu hoặc tệp điện tử, được xác thực bằng chữ ký số của người có thẩm quyền theo quy định của pháp luật về giao dịch điện tử."
+    },
+    {
+      "source_ref": "block:50",
+      "kind": "PARAGRAPH",
+      "text": "\t2. Báo cáo thống kê được gửi đến cơ quan có thẩm quyền bằng phương thức điện tử là chủ yếu, thông qua một trong các hình thức sau:"
+    },
+    {
+      "source_ref": "block:51",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Gửi trên nền tảng số thi hành án dân sự;"
+    },
+    {
+      "source_ref": "block:52",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Gửi qua hệ thống thư điện tử do Bộ Tư pháp cấp;"
+    },
+    {
+      "source_ref": "block:53",
+      "kind": "PARAGRAPH",
+      "text": "\tc) Gửi qua Hệ thống quản lý văn bản và điều hành tác nghiệp của Bộ Tư pháp."
+    },
+    {
+      "source_ref": "block:54",
+      "kind": "PARAGRAPH",
+      "text": "3. Trường hợp báo cáo đã được gửi bằng phương thức điện tử theo quy định tại khoản 2 Điều này thì không phải gửi lại bằng văn bản giấy, trừ trường hợp pháp luật có quy định khác."
+    },
+    {
+      "source_ref": "block:55",
+      "kind": "PARAGRAPH",
+      "text": "\tĐiều 7. Thời hạn nhận báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:56",
+      "kind": "PARAGRAPH",
+      "text": "\t1. Trong thời hạn 02 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan thi hành án cấp quân khu gửi báo cáo thống kê đến cơ quan quản lý thi hành án thuộc Bộ Quốc phòng."
+    },
+    {
+      "source_ref": "block:57",
+      "kind": "PARAGRAPH",
+      "text": "2. Trong thời hạn 03 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan thi hành án dân sự tỉnh, thành phố gửi báo cáo thống kê đến cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp."
+    },
+    {
+      "source_ref": "block:58",
+      "kind": "PARAGRAPH",
+      "text": "3. Trong thời hạn 04 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan quản lý thi hành án thuộc Bộ Quốc phòng gửi báo cáo thống kê đến Bộ Tư pháp (thông qua cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp)."
+    },
+    {
+      "source_ref": "block:59",
+      "kind": "PARAGRAPH",
+      "text": "4. Trong thời hạn 06 ngày làm việc kể từ ngày kết thúc kỳ báo cáo, cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp tổng hợp, lập và hoàn thiện báo cáo thống kê."
+    },
+    {
+      "source_ref": "block:60",
+      "kind": "PARAGRAPH",
+      "text": "5. Đối với báo cáo thống kê đột xuất, cơ quan, đơn vị thực hiện theo yêu cầu về nội dung và thời hạn của cơ quan có thẩm quyền quản lý nhà nước về thi hành án dân sự."
+    },
+    {
+      "source_ref": "block:61",
+      "kind": "PARAGRAPH",
+      "text": "Chương III"
+    },
+    {
+      "source_ref": "block:62",
+      "kind": "PARAGRAPH",
+      "text": "NGUYÊN TẮC, PHƯƠNG PHÁP VÀ QUẢN LÝ SỐ LIỆU THỐNG KÊ"
+    },
+    {
+      "source_ref": "block:63",
+      "kind": "PARAGRAPH",
+      "text": "Điều 8. Nguyên tắc lập và gửi báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:64",
+      "kind": "PARAGRAPH",
+      "text": "1. Hoạt động thống kê thi hành án dân sự, theo dõi thi hành án hành chính là bộ phận của hệ thống thông tin thống kê ngành Tư pháp, được thực hiện thống nhất, đồng bộ trong toàn hệ thống."
+    },
+    {
+      "source_ref": "block:65",
+      "kind": "PARAGRAPH",
+      "text": "2. Báo cáo thống kê phải được lập kịp thời, đầy đủ, chính xác, khách quan, trung thực, phản ánh đúng tình hình, kết quả thi hành án dân sự và theo dõi thi hành án hành chính trong kỳ báo cáo."
+    },
+    {
+      "source_ref": "block:66",
+      "kind": "PARAGRAPH",
+      "text": "\t3. Cơ quan, đơn vị lập, gửi báo cáo thống kê chịu trách nhiệm trước pháp luật và cấp có thẩm quyền về tính chính xác, đầy đủ, kịp thời của số liệu báo cáo."
+    },
+    {
+      "source_ref": "block:67",
+      "kind": "PARAGRAPH",
+      "text": "4. Việc lập, gửi báo cáo thống kê được thực hiện trên cơ sở dữ liệu điện tử, ưu tiên trên môi trường số, bảo đảm khả năng kết nối, khai thác, sử dụng dữ liệu, an toàn, an ninh thông tin theo quy định của pháp luật. Trường hợp thực hiện bằng văn bản thì áp dụng theo quy định đối với văn bản giấy."
+    },
+    {
+      "source_ref": "block:68",
+      "kind": "PARAGRAPH",
+      "text": "Điều 9. Nguồn số liệu để lập báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:69",
+      "kind": "PARAGRAPH",
+      "text": "1. Số liệu sử dụng để lập báo cáo thống kê được khai thác, tổng hợp từ cơ sở dữ liệu về thi hành án dân sự, phương tiện điện tử khác, hồ sơ nghiệp vụ và tài liệu khác có liên quan theo quy định của pháp luật."
+    },
+    {
+      "source_ref": "block:70",
+      "kind": "PARAGRAPH",
+      "text": "2. Số liệu trong báo cáo thống kê phải được hình thành từ kết quả thực hiện nghiệp vụ thi hành án dân sự, có thể kiểm tra, đối chiếu với hồ sơ nghiệp vụ, tài liệu có liên quan."
+    },
+    {
+      "source_ref": "block:71",
+      "kind": "PARAGRAPH",
+      "text": "3. Trường hợp số liệu trên cơ sở dữ liệu về thi hành án dân sự, phương tiện điện tử có sự khác biệt so với hồ sơ nghiệp vụ, tài liệu có liên quan thì cơ quan, đơn vị có trách nhiệm kiểm tra, đối chiếu để xác định nguyên nhân chênh lệch và thực hiện như sau:"
+    },
+    {
+      "source_ref": "block:72",
+      "kind": "PARAGRAPH",
+      "text": "a) Trường hợp xác định số liệu trên cơ sở dữ liệu, phương tiện điện tử chưa chính xác hoặc chưa được cập nhật đầy đủ thì phải kịp thời cập nhật, điều chỉnh theo hồ sơ nghiệp vụ, tài liệu có liên quan;"
+    },
+    {
+      "source_ref": "block:73",
+      "kind": "PARAGRAPH",
+      "text": "b) Trường hợp chưa xác định được nguyên nhân hoặc chưa kịp điều chỉnh thì việc lập báo cáo thống kê phải căn cứ vào hồ sơ nghiệp vụ, đồng thời ghi chú rõ nội dung chênh lệch và thực hiện điều chỉnh trên cơ sở dữ liệu sau khi có kết quả xác minh."
+    },
+    {
+      "source_ref": "block:74",
+      "kind": "PARAGRAPH",
+      "text": "Điều 10. Giá trị của số liệu thống kê"
+    },
+    {
+      "source_ref": "block:75",
+      "kind": "PARAGRAPH",
+      "text": "\t1. Thông tin, số liệu thống kê được thu thập, tổng hợp, lập và cung cấp theo quy định tại Thông tư này là số liệu thống kê chính thức."
+    },
+    {
+      "source_ref": "block:76",
+      "kind": "PARAGRAPH",
+      "text": "2. Số liệu thống kê không thay thế tài liệu, hồ sơ nghiệp vụ và không làm phát sinh, thay đổi, chấm dứt quyền, nghĩa vụ của cơ quan, tổ chức, cá nhân theo quy định của pháp luật."
+    },
+    {
+      "source_ref": "block:77",
+      "kind": "PARAGRAPH",
+      "text": "Điều 11. Phương pháp tính trong báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:78",
+      "kind": "PARAGRAPH",
+      "text": "Số liệu trong báo cáo thống kê được xác định theo phương pháp lũy kế trong năm báo cáo, bao gồm số phát sinh từ đầu năm báo cáo đến thời điểm chốt số liệu và số năm trước chuyển sang."
+    },
+    {
+      "source_ref": "block:79",
+      "kind": "PARAGRAPH",
+      "text": "\tPhương pháp tính cụ thể đối với từng chỉ tiêu thống kê được hướng dẫn chi tiết tại biểu mẫu thống kê ban hành kèm theo Thông tư này."
+    },
+    {
+      "source_ref": "block:80",
+      "kind": "PARAGRAPH",
+      "text": "Điều 12. Khóa sổ và lập báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:81",
+      "kind": "PARAGRAPH",
+      "text": "1. Sau thời điểm khóa sổ, hệ thống tự động xác lập dữ liệu của kỳ báo cáo để phục vụ trích xuất biểu mẫu thống kê. Dữ liệu phát sinh hoặc được cập nhật sau thời điểm khóa sổ được tính vào kỳ báo cáo tiếp theo, trừ trường hợp điều chỉnh số liệu theo quy định tại Điều 13 của Thông tư này."
+    },
+    {
+      "source_ref": "block:82",
+      "kind": "PARAGRAPH",
+      "text": "Trường hợp chưa thực hiện được trên phương tiện điện tử hoặc chưa có dữ liệu điện tử, cơ quan, đơn vị quy định tại khoản 1 Điều 2 của Thông tư này thực hiện chốt số liệu, khóa sổ trên hồ sơ nghiệp vụ hoặc trên biểu mẫu thống kê (bằng giấy hoặc phương tiện điện tử phù hợp) để lập báo cáo thống kê và chịu trách nhiệm về tính đầy đủ, chính xác của dữ liệu tại thời điểm khóa sổ."
+    },
+    {
+      "source_ref": "block:83",
+      "kind": "PARAGRAPH",
+      "text": "2. Việc ghi chép, lập và trình bày báo cáo thống kê phải thực hiện đúng hướng dẫn tại biểu mẫu và bản giải thích biểu mẫu ban hành kèm theo Thông tư này, bảo đảm thống nhất với phương pháp tính quy định tại Điều 11 của Thông tư này. Báo cáo thống kê phải được lập đúng kỳ báo cáo, thời điểm khóa sổ và thời hạn gửi báo cáo theo quy định tại Thông tư này."
+    },
+    {
+      "source_ref": "block:84",
+      "kind": "PARAGRAPH",
+      "text": "Điều 13. Xử lý sự cố hệ thống và điều chỉnh số liệu báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:85",
+      "kind": "PARAGRAPH",
+      "text": "1. Sự cố hệ thống trong thực hiện báo cáo thống kê là tình trạng phương tiện điện tử phục vụ công tác thống kê không thể vận hành hoặc vận hành không ổn định, dẫn đến không thể cập nhật dữ liệu, trích xuất hoặc gửi báo cáo theo quy định."
+    },
+    {
+      "source_ref": "block:86",
+      "kind": "PARAGRAPH",
+      "text": "2. Khi xảy ra sự cố hệ thống, cơ quan thi hành án dân sự phải kịp thời thông báo cho cơ quan quản lý, vận hành hệ thống để được hướng dẫn xử lý. Trường hợp sự cố hệ thống xảy ra trên diện rộng và đã được cơ quan quản lý, vận hành hệ thống thông báo chính thức theo quy định tại khoản 9 Điều này thì cơ quan thi hành án dân sự không phải thực hiện thông báo."
+    },
+    {
+      "source_ref": "block:87",
+      "kind": "PARAGRAPH",
+      "text": "3. Trong thời gian xảy ra sự cố hệ thống, việc lập và gửi báo cáo thống kê được thực hiện bằng phương thức khác theo hướng dẫn của cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp, cơ quan quản lý thi hành án thuộc Bộ Quốc phòng; việc xảy ra sự cố hệ thống không làm thay đổi thời hạn nhận báo cáo thống kê, trừ trường hợp được cơ quan có thẩm quyền xem xét, chấp thuận trên cơ sở xác nhận sự cố theo quy định tại khoản 8 Điều này."
+    },
+    {
+      "source_ref": "block:88",
+      "kind": "PARAGRAPH",
+      "text": "4. Sau khi hệ thống được khôi phục, cơ quan thi hành án dân sự có trách nhiệm:"
+    },
+    {
+      "source_ref": "block:89",
+      "kind": "PARAGRAPH",
+      "text": "a) Cập nhật đầy đủ dữ liệu nghiệp vụ phát sinh trong thời gian xảy ra sự cố;"
+    },
+    {
+      "source_ref": "block:90",
+      "kind": "PARAGRAPH",
+      "text": "b) Rà soát, đối chiếu số liệu thống kê;"
+    },
+    {
+      "source_ref": "block:91",
+      "kind": "PARAGRAPH",
+      "text": "\tc) Trường hợp phát hiện sai sót số liệu so với báo cáo đã gửi thì thực hiện đề nghị điều chỉnh theo quy định tại Điều này."
+    },
+    {
+      "source_ref": "block:92",
+      "kind": "PARAGRAPH",
+      "text": "5. Số liệu báo cáo thống kê sau khi đã gửi chỉ được xem xét điều chỉnh khi có sai sót làm ảnh hưởng đến tính đầy đủ, chính xác của số liệu, bao gồm các trường hợp sau:"
+    },
+    {
+      "source_ref": "block:93",
+      "kind": "PARAGRAPH",
+      "text": "a) Sai sót do sự cố kỹ thuật của hệ thống;"
+    },
+    {
+      "source_ref": "block:94",
+      "kind": "PARAGRAPH",
+      "text": "b) Sai sót trong việc cập nhật, đồng bộ, nhập hoặc xử lý dữ liệu;"
+    },
+    {
+      "source_ref": "block:95",
+      "kind": "PARAGRAPH",
+      "text": "c) Phát hiện sai sót sau khi đã gửi báo cáo;"
+    },
+    {
+      "source_ref": "block:96",
+      "kind": "PARAGRAPH",
+      "text": "d) Có thay đổi về căn cứ pháp lý của việc thi hành án như bản án, quyết định của Tòa án, quyết định của cơ quan có thẩm quyền làm thay đổi nội dung nghĩa vụ thi hành án, dẫn đến phải điều chỉnh số liệu thống kê;"
+    },
+    {
+      "source_ref": "block:97",
+      "kind": "PARAGRAPH",
+      "text": "đ) Trường hợp khác theo quy định của pháp luật có liên quan."
+    },
+    {
+      "source_ref": "block:98",
+      "kind": "PARAGRAPH",
+      "text": "6. Việc điều chỉnh số liệu báo cáo thống kê phải bảo đảm các yêu cầu sau:"
+    },
+    {
+      "source_ref": "block:99",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Có thông báo hoặc đề nghị điều chỉnh, nêu rõ nội dung, phạm vi và nguyên nhân điều chỉnh;"
+    },
+    {
+      "source_ref": "block:100",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Có tài liệu, căn cứ chứng minh nguyên nhân điều chỉnh, trường hợp do lỗi kỹ thuật của hệ thống phải có xác nhận hoặc thông báo của cơ quan quản lý, vận hành hệ thống;"
+    },
+    {
+      "source_ref": "block:101",
+      "kind": "PARAGRAPH",
+      "text": "\tc) Việc điều chỉnh phải được lưu vết, ký số và bảo đảm trách nhiệm giải trình."
+    },
+    {
+      "source_ref": "block:102",
+      "kind": "PARAGRAPH",
+      "text": "\t7. Trường hợp điều chỉnh số liệu do sự cố hệ thống, đề nghị điều chỉnh phải kèm theo các tài liệu sau:"
+    },
+    {
+      "source_ref": "block:103",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Xác nhận của cơ quan quản lý, vận hành hệ thống về thời gian, phạm vi và ảnh hưởng của sự cố;"
+    },
+    {
+      "source_ref": "block:104",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Tài liệu đối chiếu, xác định số liệu đúng sau khi hệ thống được khôi phục."
+    },
+    {
+      "source_ref": "block:105",
+      "kind": "PARAGRAPH",
+      "text": "\t8. Thời gian hệ thống xảy ra sự cố được cơ quan quản lý, vận hành hệ thống xác nhận là căn cứ để xem xét việc thực hiện thời hạn lập và gửi báo cáo thống kê."
+    },
+    {
+      "source_ref": "block:106",
+      "kind": "PARAGRAPH",
+      "text": "\t9. Cơ quan quản lý, vận hành hệ thống có trách nhiệm thông báo, xác nhận sự cố bằng văn bản hoặc thông báo chính thức trên hệ thống hoặc hình thức điện tử khác bảo đảm khả năng kiểm tra, xác thực và truy vết thông tin. Nội dung thông báo phải bao gồm:"
+    },
+    {
+      "source_ref": "block:107",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Thời điểm phát sinh và kết thúc sự cố;"
+    },
+    {
+      "source_ref": "block:108",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Phạm vi ảnh hưởng;"
+    },
+    {
+      "source_ref": "block:109",
+      "kind": "PARAGRAPH",
+      "text": "\tc) Dự kiến thời gian khắc phục (nếu có);"
+    },
+    {
+      "source_ref": "block:110",
+      "kind": "PARAGRAPH",
+      "text": "\td) Hướng dẫn tạm thời đối với việc lập, gửi báo cáo thống kê."
+    },
+    {
+      "source_ref": "block:111",
+      "kind": "PARAGRAPH",
+      "text": "\tĐiều 14. Nội dung và hình thức thẩm tra, kiểm tra số liệu thống kê"
+    },
+    {
+      "source_ref": "block:112",
+      "kind": "PARAGRAPH",
+      "text": "\t1. Nội dung thẩm tra, kiểm tra số liệu thống kê bao gồm:"
+    },
+    {
+      "source_ref": "block:113",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Thẩm tra số liệu thống kê, bao gồm việc rà soát, đối chiếu, kiểm chứng tính đầy đủ, chính xác, hợp lý của số liệu trong quá trình lập, tổng hợp báo cáo thống kê;"
+    },
+    {
+      "source_ref": "block:114",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Kiểm tra việc chấp hành các quy định của pháp luật về thống kê trong lĩnh vực thi hành án dân sự và theo dõi thi hành án hành chính bao gồm việc lập, tổng hợp, ký số, gửi và lưu trữ báo cáo thống kê;"
+    },
+    {
+      "source_ref": "block:115",
+      "kind": "PARAGRAPH",
+      "text": "\tc) Kiểm tra việc quản lý, vận hành, khai thác và sử dụng hệ thống thông tin, cơ sở dữ liệu phục vụ công tác thống kê;"
+    },
+    {
+      "source_ref": "block:116",
+      "kind": "PARAGRAPH",
+      "text": "\td) Kiểm tra việc tổ chức thực hiện công tác thống kê tại cơ quan, đơn vị;"
+    },
+    {
+      "source_ref": "block:117",
+      "kind": "PARAGRAPH",
+      "text": "\tđ) Các nội dung kiểm tra khác có liên quan đến việc chấp hành chế độ thống kê."
+    },
+    {
+      "source_ref": "block:118",
+      "kind": "PARAGRAPH",
+      "text": "2. Hình thức thẩm tra, kiểm tra số liệu thống kê được thực hiện như sau:"
+    },
+    {
+      "source_ref": "block:119",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Thẩm tra số liệu thống kê được thực hiện thường xuyên trong quá trình tiếp nhận, tổng hợp báo cáo thông qua việc rà soát, đối chiếu, kiểm chứng và xử lý số liệu;"
+    },
+    {
+      "source_ref": "block:120",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Kiểm tra thống kê được thực hiện theo kế hoạch, theo chuyên đề hoặc đột xuất nhằm đánh giá việc chấp hành quy định của pháp luật về thống kê;"
+    },
+    {
+      "source_ref": "block:121",
+      "kind": "PARAGRAPH",
+      "text": "\tc) Thẩm tra, kiểm tra được thực hiện thông qua hệ thống thông tin, cơ sở dữ liệu và phương tiện điện tử khác;"
+    },
+    {
+      "source_ref": "block:122",
+      "kind": "PARAGRAPH",
+      "text": "d) Hình thức khác theo quy định của pháp luật."
+    },
+    {
+      "source_ref": "block:123",
+      "kind": "PARAGRAPH",
+      "text": "\t3. Khi phát hiện sai sót, vi phạm trong công tác thống kê, cơ quan có thẩm quyền kiểm tra, cơ quan, đơn vị thực hiện thẩm tra trong quá trình tổng hợp có trách nhiệm:"
+    },
+    {
+      "source_ref": "block:124",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Yêu cầu cơ quan, đơn vị được thẩm tra, kiểm tra giải trình, cung cấp thông tin, tài liệu có liên quan;"
+    },
+    {
+      "source_ref": "block:125",
+      "kind": "PARAGRAPH",
+      "text": "\tb) Yêu cầu điều chỉnh, hoàn thiện số liệu thống kê; trường hợp cần thiết thì yêu cầu lập lại báo cáo thống kê theo quy định;"
+    },
+    {
+      "source_ref": "block:126",
+      "kind": "PARAGRAPH",
+      "text": "\tc) Kiến nghị hoặc quyết định xử lý theo thẩm quyền đối với cơ quan, đơn vị, cá nhân có vi phạm theo quy định của pháp luật;"
+    },
+    {
+      "source_ref": "block:127",
+      "kind": "PARAGRAPH",
+      "text": "d) Trường hợp số liệu thống kê đã được cung cấp, ban hành, sử dụng trong phạm vi báo cáo thống kê hoặc phục vụ chỉ đạo, điều hành mà phát hiện có sai lệch thì phải kịp thời điều chỉnh, đồng thời thông báo đến cơ quan, đơn vị đã sử dụng số liệu đó để bảo đảm thống nhất."
+    },
+    {
+      "source_ref": "block:128",
+      "kind": "PARAGRAPH",
+      "text": "Điều 15. Phổ biến thông tin thống kê"
+    },
+    {
+      "source_ref": "block:129",
+      "kind": "PARAGRAPH",
+      "text": "1. Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp thực hiện phổ biến thông tin thống kê thi hành án dân sự, theo dõi thi hành án hành chính sau khi được người có thẩm quyền công bố. Thông tin thống kê gồm số liệu thống kê, báo cáo phân tích chuyên đề, báo cáo đánh giá tình hình thực hiện chiến lược, kế hoạch 5 năm, hằng năm và văn bản khác (nếu có)."
+    },
+    {
+      "source_ref": "block:130",
+      "kind": "PARAGRAPH",
+      "text": "\t2. Thông tin thống kê được phổ biến trên môi trường số, báo cáo, ấn phẩm thống kê và hình thức khác theo quy định của pháp luật."
+    },
+    {
+      "source_ref": "block:131",
+      "kind": "PARAGRAPH",
+      "text": "Điều 16. Sử dụng số liệu, thông tin trong báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:132",
+      "kind": "PARAGRAPH",
+      "text": "1. Cơ quan, đơn vị có liên quan có trách nhiệm sử dụng thống nhất số liệu thống kê chính thức theo quy định tại Điều 10 của Thông tư này trong quá trình quản lý, chỉ đạo, điều hành và thực hiện nhiệm vụ được giao."
+    },
+    {
+      "source_ref": "block:133",
+      "kind": "PARAGRAPH",
+      "text": "2. Số liệu, thông tin trong báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính được sử dụng là căn cứ phục vụ công tác quản lý, chỉ đạo, điều hành, bao gồm:"
+    },
+    {
+      "source_ref": "block:134",
+      "kind": "PARAGRAPH",
+      "text": "\ta) Đánh giá kết quả thực hiện chỉ tiêu, nhiệm vụ thi hành án dân sự; tình hình tổ chức, hoạt động của cơ quan thi hành án dân sự theo các kỳ báo cáo;"
+    },
+    {
+      "source_ref": "block:135",
+      "kind": "PARAGRAPH",
+      "text": "b) Xây dựng kế hoạch, giao chỉ tiêu, nhiệm vụ thi hành án dân sự hằng năm;"
+    },
+    {
+      "source_ref": "block:136",
+      "kind": "PARAGRAPH",
+      "text": "c) Thực hiện công tác tổ chức cán bộ trong hệ thống thi hành án dân sự;"
+    },
+    {
+      "source_ref": "block:137",
+      "kind": "PARAGRAPH",
+      "text": "\td) Thực hiện công tác quản lý tài chính, bảo đảm điều kiện hoạt động của hệ thống thi hành án dân sự;"
+    },
+    {
+      "source_ref": "block:138",
+      "kind": "PARAGRAPH",
+      "text": "đ) Tổng hợp, báo cáo cơ quan có thẩm quyền theo quy định của pháp luật;"
+    },
+    {
+      "source_ref": "block:139",
+      "kind": "PARAGRAPH",
+      "text": "\te) Đánh giá kết quả thi hành án hành chính, phục vụ việc xem xét, kiến nghị xử lý trách nhiệm theo quy định của pháp luật."
+    },
+    {
+      "source_ref": "block:140",
+      "kind": "PARAGRAPH",
+      "text": "3. Trường hợp sử dụng số liệu khác với số liệu thống kê chính thức quy định tại Điều 10 của Thông tư này thì phải nêu rõ nguồn, thời điểm của số liệu và chịu trách nhiệm về tính chính xác của số liệu sử dụng."
+    },
+    {
+      "source_ref": "block:141",
+      "kind": "PARAGRAPH",
+      "text": "Chương IV"
+    },
+    {
+      "source_ref": "block:142",
+      "kind": "PARAGRAPH",
+      "text": "TỔ CHỨC THỰC HIỆN"
+    },
+    {
+      "source_ref": "block:143",
+      "kind": "PARAGRAPH",
+      "text": "Điều 17. Trách nhiệm thực hiện chế độ báo cáo thống kê"
+    },
+    {
+      "source_ref": "block:144",
+      "kind": "PARAGRAPH",
+      "text": "1. Bộ Tư pháp có trách nhiệm chỉ đạo việc quản lý, vận hành, khai thác và nâng cấp nền tảng số thi hành án dân sự, cơ sở dữ liệu về thi hành án dân sự trên cơ sở các hệ thống thông tin đã được xây dựng."
+    },
+    {
+      "source_ref": "block:145",
+      "kind": "PARAGRAPH",
+      "text": "2. Cơ quan quản lý thi hành án dân sự thuộc Bộ Tư pháp giúp Bộ trưởng Bộ Tư pháp hướng dẫn, chỉ đạo, thẩm tra, kiểm tra và đôn đốc việc thực hiện hoạt động thống kê trong toàn hệ thống."
+    },
+    {
+      "source_ref": "block:146",
+      "kind": "PARAGRAPH",
+      "text": "3. Cơ quan thi hành án dân sự tỉnh, thành phố có trách nhiệm tổ chức triển khai thực hiện Thông tư này trong phạm vi quản lý; phân công đầu mối, hướng dẫn thực hiện công tác thống kê; tổ chức rà soát, đối chiếu, kiểm soát số liệu trước khi ký số, gửi báo cáo."
+    },
+    {
+      "source_ref": "block:147",
+      "kind": "PARAGRAPH",
+      "text": "4. Cơ quan quản lý thi hành án thuộc Bộ Quốc phòng tổ chức thực hiện chế độ báo cáo thống kê thi hành án trong quân đội; hướng dẫn, kiểm tra và đôn đốc việc thực hiện chế độ báo cáo thống kê theo quy định tại Thông tư này."
+    },
+    {
+      "source_ref": "block:148",
+      "kind": "PARAGRAPH",
+      "text": "5. Cơ quan thi hành án cấp quân khu có trách nhiệm tổ chức lập, rà soát, đối chiếu và gửi báo cáo thống kê theo quy định; chấp hành hướng dẫn, kiểm tra của cơ quan quản lý thi hành án thuộc Bộ Quốc phòng."
+    },
+    {
+      "source_ref": "block:149",
+      "kind": "PARAGRAPH",
+      "text": "Điều 18. Hiệu lực thi hành"
+    },
+    {
+      "source_ref": "block:150",
+      "kind": "PARAGRAPH",
+      "text": "1. Thông tư này có hiệu lực thi hành kể từ ngày 01 tháng 7 năm 2026."
+    },
+    {
+      "source_ref": "block:151",
+      "kind": "PARAGRAPH",
+      "text": "2. Thông tư số 05/2024/TT-BTP ngày 10 tháng 6 năm 2024 của Bộ trưởng Bộ Tư pháp quy định Chế độ báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính hết hiệu lực kể từ ngày Thông tư này có hiệu lực."
+    },
+    {
+      "source_ref": "block:152",
+      "kind": "PARAGRAPH",
+      "text": "\t3. Số liệu, biểu mẫu thống kê đã lập, gửi đúng quy định trước thời điểm Thông tư này có hiệu lực được công nhận và có giá trị sử dụng."
+    },
+    {
+      "source_ref": "block:153",
+      "kind": "PARAGRAPH",
+      "text": "\t4. Trong quá trình thực hiện, nếu có vướng mắc, đề nghị tổ chức, cá nhân phản ánh kịp thời về Bộ Tư pháp để nghiên cứu, hướng dẫn bổ sung./."
+    },
+    {
+      "source_ref": "block:154",
+      "kind": "PARAGRAPH",
+      "text": "\tNơi nhận: \tBỘ TRƯỞNG- Ban Bí thư Trung ương Đảng;\n- Thủ tướng, các Phó Thủ tướng Chính phủ;\n- Văn phòng Trung ương Đảng và các Ban của Đảng;\n- Văn phòng Tổng Bí thư;\n- Văn phòng Quốc hội;\n- Hội đồng Dân tộc và các Uỷ ban của Quốc hội;\n- Văn phòng Chủ tịch nước;"
+    },
+    {
+      "source_ref": "block:155",
+      "kind": "PARAGRAPH",
+      "text": "- Các Bộ, cơ quan ngang Bộ;- UBND các tỉnh, thành phố;- Văn phòng Chính phủ;\n- Tòa án nhân dân tối cao;"
+    },
+    {
+      "source_ref": "block:156",
+      "kind": "PARAGRAPH",
+      "text": "Hoàng Thanh Tùng"
+    },
+    {
+      "source_ref": "block:157",
+      "kind": "PARAGRAPH",
+      "text": "- Viện kiểm sát nhân dân tối cao;\n- Cơ quan Trung ương của các đoàn thể;\n- Kiểm toán Nhà nước;\n- Bộ Tư pháp (các Thứ trưởng, các đơn vị thuộc Bộ);\n- Cục Thống kê - Bộ Tài chính;\n- Sở Tư pháp tỉnh, thành phố;\n- Thi hành án dân sự tỉnh, thành phố;\n- Cục Thi hành án - Bộ Quốc phòng;\n- Phòng Thi hành án cấp quân khu;\n- Công báo;\n- Cổng Thông tin điện tử Chính phủ;\n- Cơ sở dữ liệu quốc gia về pháp luật;\n- Cổng Thông tin điện tử Bộ Tư pháp;\n- Cổng Thông tin điện tử Thi hành án dân sự;\n- Lưu: VT, Cục Quản lý THADS (10 bộ)."
+    }
+  ],
+  "warnings": [],
+  "summary": {
+    "articles": 18,
+    "clauses": 57,
+    "points": 47,
+    "quotations": 0
+  }
+}

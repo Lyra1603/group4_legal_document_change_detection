@@ -1,0 +1,1170 @@
+{
+  "rules": "nd187-2025-annexI-partial-v6",
+  "legal_basis": "Phụ lục I, Mục 1, Phần I và Phần III.2 Nghị định 187/2025/NĐ-CP",
+  "format_choices": {
+    "font": "Times New Roman",
+    "body_size_pt": 14,
+    "first_line_cm": 1.25,
+    "paragraph_after_pt": 6,
+    "line_spacing": 1.2,
+    "margins_mm": {
+      "top": 20,
+      "bottom": 20,
+      "right": 20,
+      "left": 30
+    }
+  },
+  "kind": "base",
+  "changes": [
+    {
+      "action": "pdf_whitespace_repair",
+      "before": "1. Kỳ báo cáo thống kêthi hành án dân sự, theo dõi thi hành án hành chính bao gồm báo cáo thống kê 12 tháng và báo cáo thống kê đột xuất. Kỳ báo cáo thống kê 12 tháng là kỳ báo cáo thống kê năm.",
+      "after": "1. Kỳ báo cáo thống kê thi hành án dân sự, theo dõi thi hành án hành chính bao gồm báo cáo thống kê 12 tháng và báo cáo thống kê đột xuất. Kỳ báo cáo thống kê 12 tháng là kỳ báo cáo thống kê năm.",
+      "pdf_location": {
+        "page_start": 3,
+        "page_end": 3,
+        "first_line_bbox": [
+          120.5,
+          466.9190368652344,
+          556.2960205078125,
+          482.4170227050781
+        ],
+        "last_line_bbox": [
+          85.05000305175781,
+          505.5550537109375,
+          311.3179931640625,
+          521.0530395507812
+        ]
+      }
+    },
+    {
+      "action": "pdf_whitespace_repair",
+      "before": "5. Đối với báo cáo thống kê đột xuất, cơ quan, đơn vị thực hiện theo yêu cầu về nội dung và thời hạn của cơ quan có thẩm quyềnquản lý nhà nước về thi hành án dân sự.",
+      "after": "5. Đối với báo cáo thống kê đột xuất, cơ quan, đơn vị thực hiện theo yêu cầu về nội dung và thời hạn của cơ quan có thẩm quyền quản lý nhà nước về thi hành án dân sự.",
+      "pdf_location": {
+        "page_start": 5,
+        "page_end": 5,
+        "first_line_bbox": [
+          120.5,
+          64.19502258300781,
+          556.305908203125,
+          79.69302368164062
+        ],
+        "last_line_bbox": [
+          85.05000305175781,
+          102.83102416992188,
+          142.91200256347656,
+          118.32902526855469
+        ]
+      }
+    },
+    {
+      "action": "pdf_whitespace_repair",
+      "before": "\t3.Cơ quan, đơn vị lập, gửi báo cáo thống kê chịu trách nhiệm trước pháp luật và cấp có thẩm quyền về tính chính xác, đầy đủ, kịp thời của số liệu báo cáo.",
+      "after": "\t3. Cơ quan, đơn vị lập, gửi báo cáo thống kê chịu trách nhiệm trước pháp luật và cấp có thẩm quyền về tính chính xác, đầy đủ, kịp thời của số liệu báo cáo.",
+      "pdf_location": {
+        "page_start": 5,
+        "page_end": 5,
+        "first_line_bbox": [
+          120.5,
+          333.01104736328125,
+          556.2960205078125,
+          348.509033203125
+        ],
+        "last_line_bbox": [
+          85.05000305175781,
+          352.32904052734375,
+          515.4380493164062,
+          367.8270263671875
+        ]
+      }
+    },
+    {
+      "action": "pdf_whitespace_repair",
+      "before": "1.Sau thời điểm khóa sổ, hệ thống tự động xác lập dữ liệu của kỳ báo cáo để phục vụ trích xuất biểu mẫu thống kê. Dữ liệu phát sinh hoặc được cập nhật sau thời điểm khóa sổ được tính vào kỳ báo cáo tiếp theo, trừ trường hợp điều chỉnh số liệu theo quy định tại Điều 13 của Thông tư này.",
+      "after": "1. Sau thời điểm khóa sổ, hệ thống tự động xác lập dữ liệu của kỳ báo cáo để phục vụ trích xuất biểu mẫu thống kê. Dữ liệu phát sinh hoặc được cập nhật sau thời điểm khóa sổ được tính vào kỳ báo cáo tiếp theo, trừ trường hợp điều chỉnh số liệu theo quy định tại Điều 13 của Thông tư này.",
+      "pdf_location": {
+        "page_start": 6,
+        "page_end": 6,
+        "first_line_bbox": [
+          120.5,
+          421.2830505371094,
+          556.2921142578125,
+          436.7810363769531
+        ],
+        "last_line_bbox": [
+          85.05000305175781,
+          479.2370300292969,
+          332.91998291015625,
+          494.7350158691406
+        ]
+      }
+    },
+    {
+      "action": "pdf_whitespace_repair",
+      "before": "2. Việc ghi chép, lập và trình bày báo cáo thống kê phải thực hiện đúng hướng dẫn tại biểu mẫu và bản giải thích biểu mẫu ban hành kèm theo Thông tư này, bảo đảm thống nhất với phương pháp tính quy định tại Điều 11 của Thông tư này.Báo cáo thống kê phải được lập đúng kỳ báo cáo, thời điểm khóa sổ và thời hạn gửi báo cáo theo quy định tại Thông tư này.",
+      "after": "2. Việc ghi chép, lập và trình bày báo cáo thống kê phải thực hiện đúng hướng dẫn tại biểu mẫu và bản giải thích biểu mẫu ban hành kèm theo Thông tư này, bảo đảm thống nhất với phương pháp tính quy định tại Điều 11 của Thông tư này. Báo cáo thống kê phải được lập đúng kỳ báo cáo, thời điểm khóa sổ và thời hạn gửi báo cáo theo quy định tại Thông tư này.",
+      "pdf_location": {
+        "page_start": 6,
+        "page_end": 6,
+        "first_line_bbox": [
+          120.5,
+          607.14501953125,
+          556.320068359375,
+          622.6430053710938
+        ],
+        "last_line_bbox": [
+          85.05000305175781,
+          684.4170532226562,
+          284.7039794921875,
+          699.9150390625
+        ]
+      }
+    },
+    {
+      "paragraph": 45,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 46,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 48,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 49,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 54,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 57,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 58,
+      "action": "normalize_or_split",
+      "units": 2
+    },
+    {
+      "paragraph": 59,
+      "action": "normalize_or_split",
+      "units": 2
+    },
+    {
+      "paragraph": 60,
+      "action": "normalize_or_split",
+      "units": 4
+    },
+    {
+      "paragraph": 62,
+      "action": "normalize_or_split",
+      "units": 2
+    },
+    {
+      "paragraph": 70,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 72,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 74,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 84,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 85,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 87,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 89,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 95,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 104,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 112,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 115,
+      "action": "normalize_or_split",
+      "units": 2
+    },
+    {
+      "paragraph": 116,
+      "action": "normalize_or_split",
+      "units": 3
+    },
+    {
+      "paragraph": 117,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 118,
+      "action": "normalize_or_split",
+      "units": 5
+    },
+    {
+      "paragraph": 119,
+      "action": "normalize_or_split",
+      "units": 7
+    },
+    {
+      "paragraph": 123,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 124,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 125,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 127,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 128,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 129,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 130,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 132,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 134,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 135,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 140,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 143,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 145,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 160,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "paragraph": 161,
+      "action": "normalize_or_split",
+      "units": 1
+    },
+    {
+      "action": "join_pdf_page_continuation",
+      "before": [
+        "1. Sự cố hệ thống trong thực hiện báo cáo thống kê là tình trạng phương tiện điện tử phục vụ công tác thống kê không thể vận hành hoặc vận hành không ổn định,",
+        "dẫn đến không thể cập nhật dữ liệu, trích xuất hoặc gửi báo cáo theo quy định."
+      ],
+      "after": "1. Sự cố hệ thống trong thực hiện báo cáo thống kê là tình trạng phương tiện điện tử phục vụ công tác thống kê không thể vận hành hoặc vận hành không ổn định, dẫn đến không thể cập nhật dữ liệu, trích xuất hoặc gửi báo cáo theo quy định.",
+      "pdf_location": {
+        "page_start": 6,
+        "page_end": 7,
+        "first_line_bbox": [
+          120.5,
+          735.052978515625,
+          556.2921142578125,
+          750.5509643554688
+        ],
+        "last_line_bbox": [
+          85.05000305175781,
+          64.19502258300781,
+          516.2921142578125,
+          79.69302368164062
+        ]
+      }
+    },
+    {
+      "action": "reflow_text_only_layout",
+      "sections_before": 17,
+      "sections_after": 1,
+      "columns_after": 1
+    },
+    {
+      "action": "reconstruct_pdf_header_two_columns",
+      "evidence": "five_text_blocks_exact_match_and_pdf_coordinates",
+      "texts": [
+        "BỘ TƯ PHÁP",
+        "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+        "Độc lập - Tự do - Hạnh phúc",
+        "Số: 05/2026/TT-BTP",
+        "Hà Nội, ngày 15 tháng 5 năm 2026"
+      ]
+    }
+  ],
+  "warnings": [
+    "Chỉ áp dụng một phần thể thức, không xác nhận văn bản đúng chuẩn hoàn toàn.",
+    "Phân vùng theo nhãn chỉ là hỗ trợ; chưa khôi phục thứ tự cột ở nơi nhận/chữ ký, không loại bỏ nội dung.",
+    "Phân vùng theo nhãn chỉ là hỗ trợ; chưa khôi phục thứ tự cột ở nơi nhận/chữ ký, không loại bỏ nội dung.",
+    "Không đoán cách viết đúng nếu PDF cũng dính/tách chữ hoặc không có đủ bằng chứng vị trí.",
+    "Không khôi phục bảng đã mất, thứ tự nhiều cột hoặc định dạng nhấn mạnh trong đoạn được viết lại.",
+    "Paragraph sau chuẩn hóa có thể khác tệp trung gian; chỉ số trong regions trỏ tới đầu ra.",
+    "Chỉ dựng đầu trang khi khớp mẫu hình học và chữ PDF; chưa dựng lại khối ký/nơi nhận, số trang và đánh số riêng phụ lục.",
+    "Không tự viết hoa, sửa dấu câu hay đánh lại số Điều/Khoản/Điểm; cần review chuyên môn.",
+    "Tách paragraph và một khoảng trắng sau nhãn là quy tắc kỹ thuật; không phải mọi xuống dòng đều là đơn vị pháp lý."
+  ],
+  "pdf_alignment": {
+    "matched_paragraphs": 136,
+    "needs_review": [
+      {
+        "paragraph_before_normalization_0based": 7,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "THÔNG TƯ"
+      },
+      {
+        "paragraph_before_normalization_0based": 28,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "Chương I"
+      },
+      {
+        "paragraph_before_normalization_0based": 42,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "Chương II"
+      },
+      {
+        "paragraph_before_normalization_0based": 69,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "Chương III"
+      },
+      {
+        "paragraph_before_normalization_0based": 147,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "Chương IV"
+      },
+      {
+        "paragraph_before_normalization_0based": 162,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "Nơi nhận: \tBỘ TRƯỞNG- Ban Bí thư Trung ương Đảng;\n- Thủ tướng, các Phó Thủ tướng Chính phủ;\n- Văn phòng Trung ương Đảng "
+      }
+    ],
+    "geometry_space_candidates": 0,
+    "pages_with_images": []
+  },
+  "regions": [
+    {
+      "output_paragraph_0based": 0,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 1,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 2,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 3,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 4,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 5,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 6,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 7,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 8,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 9,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 10,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 11,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 12,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 13,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 14,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 15,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 16,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 17,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 18,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 19,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 20,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 21,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 22,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 23,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 24,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 25,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 26,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 27,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 28,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 29,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 30,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 31,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 32,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 33,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 34,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 35,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 36,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 37,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 38,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 39,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 40,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 41,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 42,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 43,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 44,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 45,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 46,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 47,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 48,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 49,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 50,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 51,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 52,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 53,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 54,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 55,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 56,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 57,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 58,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 59,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 60,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 61,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 62,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 63,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 64,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 65,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 66,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 67,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 68,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 69,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 70,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 71,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 72,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 73,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 74,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 75,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 76,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 77,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 78,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 79,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 80,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 81,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 82,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 83,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 84,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 85,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 86,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 87,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 88,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 89,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 90,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 91,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 92,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 93,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 94,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 95,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 96,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 97,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 98,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 99,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 100,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 101,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 102,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 103,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 104,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 105,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 106,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 107,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 108,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 109,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 110,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 111,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 112,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 113,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 114,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 115,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 116,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 117,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 118,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 119,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 120,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 121,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 122,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 123,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 124,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 125,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 126,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 127,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 128,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 129,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 130,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 131,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 132,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 133,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 134,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 135,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 136,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 137,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 138,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 139,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 140,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 141,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 142,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 143,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 144,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 145,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 146,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 147,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 148,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 149,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 150,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 151,
+      "region": "body"
+    },
+    {
+      "output_paragraph_0based": 152,
+      "region": "closing"
+    },
+    {
+      "output_paragraph_0based": 153,
+      "region": "closing"
+    },
+    {
+      "output_paragraph_0based": 154,
+      "region": "closing"
+    },
+    {
+      "output_paragraph_0based": 155,
+      "region": "closing"
+    }
+  ],
+  "non_whitespace_length_before": 16467,
+  "non_whitespace_length_after": 16467,
+  "integrity_non_whitespace_exact_match": true,
+  "status": "needs_review",
+  "remaining_standalone_numbers": [],
+  "layout_review": {
+    "table_count": 1,
+    "section_count": 1,
+    "requires_visual_review": true,
+    "note": "Kiểm tra khối đầu, nơi nhận/chữ ký, thứ tự cột, khoảng trống và ngắt trang; không tự dựng bảng từ chữ đã bị làm phẳng."
+  },
+  "pdf_margin_removals": [
+    {
+      "page": 2,
+      "text": "2",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 3,
+      "text": "3",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 4,
+      "text": "4",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 5,
+      "text": "5",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 6,
+      "text": "6",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 7,
+      "text": "7",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 8,
+      "text": "8",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 9,
+      "text": "9",
+      "bbox": [
+        315.92498779296875,
+        36.51100158691406,
+        321.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 10,
+      "text": "10",
+      "bbox": [
+        312.92498779296875,
+        36.51100158691406,
+        324.92498779296875,
+        49.79499816894531
+      ]
+    },
+    {
+      "page": 11,
+      "text": "11",
+      "bbox": [
+        312.92498779296875,
+        36.51100158691406,
+        324.92498779296875,
+        49.79499816894531
+      ]
+    }
+  ],
+  "change_location_note": "paragraph là chỉ số 0-based trong DOCX trung gian; output_paragraph_0based là chỉ số đầu ra. Sửa theo PDF có before/after và vị trí PDF.",
+  "pdf_page_number_candidates": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11"
+  ],
+  "input": "C:\\Users\\DELL\\OneDrive - vnu.edu.vn\\Desktop\\đang học\\tương tác\\Human-in-the-Loop-System-for-Reviewing-Legal-Document-Changes-with-Explainable-AI\\data\\test_pdf_to_docx\\case_01\\input.pdf",
+  "output": "C:\\Users\\DELL\\OneDrive - vnu.edu.vn\\Desktop\\đang học\\tương tác\\Human-in-the-Loop-System-for-Reviewing-Legal-Document-Changes-with-Explainable-AI\\data\\test_pdf_to_docx\\case_01\\converted.docx",
+  "sparse_pdf_pages": [],
+  "intermediate_files_retained": false
+}

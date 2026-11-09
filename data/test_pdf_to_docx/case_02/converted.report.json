@@ -1,0 +1,120 @@
+{
+  "rules": "nd187-2025-annexI-partial-v6",
+  "legal_basis": "Phụ lục I, Mục 1, Phần I và Phần III.2 Nghị định 187/2025/NĐ-CP",
+  "format_choices": {
+    "font": "Times New Roman",
+    "body_size_pt": 14,
+    "first_line_cm": 1.25,
+    "paragraph_after_pt": 6,
+    "line_spacing": 1.2,
+    "margins_mm": {
+      "top": 20,
+      "bottom": 20,
+      "right": 20,
+      "left": 30
+    }
+  },
+  "kind": "base",
+  "changes": [],
+  "warnings": [
+    "Chỉ áp dụng một phần thể thức, không xác nhận văn bản đúng chuẩn hoàn toàn.",
+    "Phân vùng theo nhãn chỉ là hỗ trợ; chưa khôi phục thứ tự cột ở nơi nhận/chữ ký, không loại bỏ nội dung.",
+    "Giữ bố cục section vì có bảng/phụ lục/trang ngang/header/footer cần bảo toàn.",
+    "Khối đầu trang không thuộc mẫu hình học đã hỗ trợ; giữ nội dung để kiểm tra.",
+    "Phân vùng theo nhãn chỉ là hỗ trợ; chưa khôi phục thứ tự cột ở nơi nhận/chữ ký, không loại bỏ nội dung.",
+    "Không đoán cách viết đúng nếu PDF cũng dính/tách chữ hoặc không có đủ bằng chứng vị trí.",
+    "Không khôi phục bảng đã mất, thứ tự nhiều cột hoặc định dạng nhấn mạnh trong đoạn được viết lại.",
+    "Paragraph sau chuẩn hóa có thể khác tệp trung gian; chỉ số trong regions trỏ tới đầu ra.",
+    "Chỉ dựng đầu trang khi khớp mẫu hình học và chữ PDF; chưa dựng lại khối ký/nơi nhận, số trang và đánh số riêng phụ lục.",
+    "Không tự viết hoa, sửa dấu câu hay đánh lại số Điều/Khoản/Điểm; cần review chuyên môn.",
+    "Tách paragraph và một khoảng trắng sau nhãn là quy tắc kỹ thuật; không phải mọi xuống dòng đều là đơn vị pháp lý.",
+    "PDF có ảnh ở các trang [1, 2]; không xác minh được chữ trong ảnh, không hỗ trợ OCR."
+  ],
+  "pdf_alignment": {
+    "matched_paragraphs": 7,
+    "needs_review": [
+      {
+        "paragraph_before_normalization_0based": 2,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "CÔNG BÁO/Số 1007 + 1008/Ngày 29-7-2025"
+      },
+      {
+        "paragraph_before_normalization_0based": 3,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "3"
+      },
+      {
+        "paragraph_before_normalization_0based": 5,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "ỦY BAN THƯỜNG VỤ QUỐC HỘI "
+      },
+      {
+        "paragraph_before_normalization_0based": 13,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "4"
+      },
+      {
+        "paragraph_before_normalization_0based": 14,
+        "reason": "no_unique_pdf_match_or_complex_element",
+        "excerpt": "CÔNG BÁO/Số 1007 + 1008/Ngày 29-7-2025"
+      }
+    ],
+    "geometry_space_candidates": 0,
+    "pages_with_images": [
+      1,
+      2
+    ]
+  },
+  "regions": [
+    {
+      "output_paragraph_0based": 1,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 2,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 3,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 4,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 5,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 6,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 12,
+      "region": "preamble"
+    },
+    {
+      "output_paragraph_0based": 13,
+      "region": "preamble"
+    }
+  ],
+  "non_whitespace_length_before": 415,
+  "non_whitespace_length_after": 415,
+  "integrity_non_whitespace_exact_match": true,
+  "status": "needs_review",
+  "remaining_standalone_numbers": [],
+  "layout_review": {
+    "table_count": 2,
+    "section_count": 2,
+    "requires_visual_review": true,
+    "note": "Kiểm tra khối đầu, nơi nhận/chữ ký, thứ tự cột, khoảng trống và ngắt trang; không tự dựng bảng từ chữ đã bị làm phẳng."
+  },
+  "pdf_margin_removals": [],
+  "change_location_note": "paragraph là chỉ số 0-based trong DOCX trung gian; output_paragraph_0based là chỉ số đầu ra. Sửa theo PDF có before/after và vị trí PDF.",
+  "pdf_page_number_candidates": [],
+  "input": "C:\\Users\\DELL\\OneDrive - vnu.edu.vn\\Desktop\\đang học\\tương tác\\Human-in-the-Loop-System-for-Reviewing-Legal-Document-Changes-with-Explainable-AI\\data\\test_pdf_to_docx\\case_02\\input.pdf",
+  "output": "C:\\Users\\DELL\\OneDrive - vnu.edu.vn\\Desktop\\đang học\\tương tác\\Human-in-the-Loop-System-for-Reviewing-Legal-Document-Changes-with-Explainable-AI\\data\\test_pdf_to_docx\\case_02\\converted.docx",
+  "sparse_pdf_pages": [],
+  "intermediate_files_retained": false
+}
