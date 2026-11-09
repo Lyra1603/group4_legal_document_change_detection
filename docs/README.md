@@ -14,7 +14,9 @@
 7. [Workflow](workflow.md): Git, phát triển bán song song và kiểm thử.
 8. [Báo cáo phần việc của Tuấn Anh](bao-cao-phan-viec-tuan-anh.md): phạm vi,
    đề xuất và các điểm cần phối hợp.
-9. Mã nguồn: kiểm tra đúng branch trước khi sử dụng schema/implementation.
+9. [Báo cáo đề xuất quyết định POCS của Tuấn Anh](bao-cao-de-xuat-owner-tuan-anh.docx):
+   nội dung theo mẫu owner decision.
+10. Mã nguồn: kiểm tra đúng branch trước khi sử dụng schema/implementation.
 
 ---
 
