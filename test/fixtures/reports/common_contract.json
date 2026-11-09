@@ -1,0 +1,254 @@
+{
+  "documents": {
+    "v1": {
+      "document_id": "v1",
+      "role": "BASE",
+      "filename": "base.docx",
+      "file_type": "DOCX",
+      "blocks": [
+        {
+          "source_ref": "block:1",
+          "text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+        }
+      ]
+    },
+    "s": {
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "filename": "amend.docx",
+      "file_type": "DOCX",
+      "blocks": [
+        {
+          "source_ref": "block:1",
+          "text": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+        }
+      ]
+    },
+    "ref_1": {
+      "document_id": "ref_1",
+      "role": "REFERENCE",
+      "filename": "reference.docx",
+      "file_type": "DOCX",
+      "blocks": [
+        {
+          "source_ref": "block:1",
+          "text": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+        }
+      ]
+    }
+  },
+  "clauses": {
+    "v1": [
+      {
+        "unit_id": "v1:n1",
+        "id": "Điều 1",
+        "title": "Báo cáo",
+        "content": "Doanh nghiệp phải nộp báo cáo trong 30 ngày.",
+        "source_refs": [
+          "block:1"
+        ]
+      }
+    ],
+    "s": [],
+    "ref_1": []
+  },
+  "report": {
+    "comparison_id": "schema-fixture",
+    "base_document": {
+      "document_id": "v1",
+      "role": "BASE",
+      "filename": "base.docx"
+    },
+    "amendment_document": {
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "filename": "amend.docx"
+    },
+    "reference_documents": [
+      {
+        "document_id": "ref_1",
+        "role": "REFERENCE",
+        "filename": "reference.docx"
+      }
+    ],
+    "status": "SUCCESS",
+    "results": [
+      {
+        "amendment": {
+          "amendment_id": "s:a1",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+          },
+          "target_document": "V1",
+          "target_locator": "Điều 1",
+          "target_unit_ids": [
+            "v1:n1"
+          ],
+          "applicability": "APPLIES",
+          "before_text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày.",
+          "after_text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày.",
+          "after_basis": "DERIVED",
+          "evidence": [
+            {
+              "document_id": "v1",
+              "source_refs": [
+                "block:1"
+              ],
+              "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+            },
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:1"
+              ],
+              "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+            }
+          ],
+          "effect_info": [
+            {
+              "text": "Thông tin hiệu lực chỉ phục vụ fixture, không xác nhận pháp luật.",
+              "applies_to": "Yêu cầu giả định",
+              "evidence": [
+                {
+                  "document_id": "s",
+                  "source_refs": [
+                    "block:1"
+                  ],
+                  "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+                }
+              ],
+              "needs_review": true,
+              "review_reason": "Không có thông tin hiệu lực trong nguồn giả định"
+            }
+          ],
+          "context": {
+            "general_context": "Ví dụ giả định để kiểm thử hợp đồng, không đánh giá chất lượng AI.",
+            "evidence": [
+              {
+                "document_id": "v1",
+                "source_refs": [
+                  "block:1"
+                ],
+                "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+              }
+            ],
+            "references": [
+              {
+                "reference_id": "ref_1:requirement_1",
+                "document_label": "reference.docx",
+                "target_locator": "block:1",
+                "purpose": "Định nghĩa dùng trong ví dụ",
+                "status": "AVAILABLE",
+                "evidence": [
+                  {
+                    "document_id": "ref_1",
+                    "source_refs": [
+                      "block:1"
+                    ],
+                    "quote": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+                  }
+                ],
+                "reason": "Đã cung cấp"
+              }
+            ]
+          },
+          "needs_review": true,
+          "review_reason": "Chưa có thông tin hiệu lực trong ví dụ"
+        },
+        "text_diff": {
+          "amendment_id": "s:a1",
+          "changes": [
+            {
+              "type": "REPLACE",
+              "old_text": "30",
+              "new_text": "15",
+              "old_start": 36,
+              "old_end": 38,
+              "new_start": 36,
+              "new_end": 38
+            }
+          ]
+        },
+        "semantic_diff": {
+          "amendment_id": "s:a1",
+          "changes": [
+            {
+              "change_id": "c1",
+              "is_meaningful_change": true,
+              "diff_details": "Thay thời hạn nộp báo cáo.",
+              "aspects": [
+                {
+                  "aspect_id": "a1",
+                  "field_group": "TIME_QUANTITY",
+                  "old_value": "30 ngày",
+                  "new_value": "15 ngày",
+                  "interpretation": "Rút ngắn thời hạn từ 30 xuống 15 ngày.",
+                  "evidence": [
+                    {
+                      "document_id": "v1",
+                      "source_refs": [
+                        "block:1"
+                      ],
+                      "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+                    },
+                    {
+                      "document_id": "s",
+                      "source_refs": [
+                        "block:1"
+                      ],
+                      "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+                    }
+                  ],
+                  "old_quote": "30 ngày",
+                  "new_quote": null,
+                  "needs_review": false,
+                  "review_reason": ""
+                }
+              ],
+              "evidence": [
+                {
+                  "document_id": "v1",
+                  "source_refs": [
+                    "block:1"
+                  ],
+                  "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+                },
+                {
+                  "document_id": "s",
+                  "source_refs": [
+                    "block:1"
+                  ],
+                  "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+                }
+              ],
+              "old_quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày.",
+              "new_quote": null,
+              "needs_review": false,
+              "review_reason": ""
+            }
+          ],
+          "needs_review": false,
+          "review_reason": ""
+        },
+        "scoring": [
+          {
+            "change_id": "c1",
+            "category": "TIME_QUANTITY",
+            "significance": "HIGH",
+            "is_critical": false,
+            "reason": "Mức giả định phục vụ test schema, chưa xác nhận rubric.",
+            "needs_review": false,
+            "review_reason": ""
+          }
+        ]
+      }
+    ],
+    "warnings": [],
+    "errors": []
+  }
+}
