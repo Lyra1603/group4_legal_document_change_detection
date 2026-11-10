@@ -1,10 +1,10 @@
 # KẾ HOẠCH TRIỂN KHAI DỰ ÁN
 
-**Dự án:** Legal Document Change Detection  
-**Phiên bản kế hoạch:** 1.4.0  
-**Thời gian thực hiện:** Cuối tuần 5 đến hết tuần 13  
-**Người điều phối tích hợp/API và tài liệu:** Bạch Công Dũng  
-**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md), [Hướng dẫn dữ liệu và gán nhãn](data-annotation-guide.md), [Workflow](workflow.md), [Module](module.md), [Workflow](workflow.md)  
+**Dự án:** Legal Document Change Detection
+**Phiên bản kế hoạch:** 1.4.0
+**Thời gian thực hiện:** Cuối tuần 5 đến hết tuần 13
+**Người điều phối tích hợp/API và tài liệu:** Bạch Công Dũng
+**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md), [Hướng dẫn dữ liệu và gán nhãn](data-annotation-guide.md), [Workflow](workflow.md), [Module](module.md), [Workflow](workflow.md)
 
 ## 1. Công việc chính của từng thành viên
 
@@ -17,6 +17,10 @@
 Phân công chức năng theo LK-01 đã chốt: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Change/Scorer; Dũng + Đức Anh AI Adapter. Đức Anh phụ trách context và điều phối kế hoạch đánh giá; Dũng + Đức Anh gọi/tích hợp LightRAG, chi tiết LK-13 chốt khi các quyết định khác hoàn thành. Không tự gán một owner chung cho toàn folder change_analysis. Nếu đổi người phụ trách, cập nhật người sở hữu và mốc bàn giao tại đây, đồng thời đồng bộ Architecture.
 
 ## 2. Mục tiêu, phạm vi và mốc bàn giao
+
+Sau adapter, Context chuẩn bị chunk, registry và nhập chỉ mục song song nhánh Linker xác định đích/trước-sau → Text Diff. Điểm ghép chờ index sẵn sàng và TextDiffResult, kết hợp chỉ dẫn, trước/sau và vùng chữ đổi để tạo query. LightRAG truy xuất qua HTTP, registry kiểm tra nguồn/quote rồi mới chuyển sang Semantic. Semantic dùng rule trước, model khi cần; Scorer và Pipeline nhận kết quả cùng bằng chứng/cảnh báo để tổng hợp report.
+
+Nhận xét là chức năng dự kiến sau khi các chức năng cốt lõi hoàn thiện, chỉ liệt kê trong phạm vi mở rộng, không là module chính hoặc điều kiện nghiệm thu bản đầu. Hai loại: (1) nhận xét sau phiên được lưu để phục vụ phát triển; (2) nhận xét trong phiên kết hợp nhận xét có sẵn để xem xét và cập nhật kết luận. Khi triển khai, giữ phân biệt kết luận ban đầu/cập nhật và căn cứ thay đổi; không tự coi nhận xét là gold/nhãn huấn luyện. Cách lưu, API, định danh, nguồn nhận xét có sẵn và cơ chế kết hợp chưa chốt; chưa mở rộng schema chung.
 
 Ứng dụng phân tích văn bản ban đầu V1 và văn bản sửa đổi S, nhận diện nội dung bị tác động, giải thích thay đổi với ngữ cảnh và bằng chứng, kèm thông tin hiệu lực/chuyển tiếp được nêu trong nguồn. Người dùng cung cấp tài liệu tham chiếu khi cần; thiếu căn cứ thì giữ phần đã xác định và thể hiện giới hạn.
 
@@ -51,6 +55,8 @@ Giới hạn dung lượng, số file tham chiếu, độ dài và thời gian x
 ## 4. Trách nhiệm, phối hợp và bàn giao
 
 ### 4.1. Người sở hữu đầu ra
+
+Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển bằng chứng có nguồn cùng lỗi/cảnh báo và phạm vi bị ảnh hưởng cho module nhận đầu ra theo contract chung. Bên nhận kiểm tra dữ liệu, không bỏ cảnh báo hoặc biến thiếu căn cứ thành không có thay đổi. Pipeline tổng hợp trạng thái báo cáo, không thay owner xử lý lỗi nội bộ.
 
 | Hạng mục | Chủ trì | Đầu ra | Người review chính |
 | --- | --- | --- | --- |
@@ -131,7 +137,7 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 - Thọ hoàn thiện trích yêu cầu, liên kết V1 và hiệu lực cho các dạng đã thống nhất; giữ phần chưa xác định.
 - Đức Anh hiện thực chuẩn bị context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG, chi tiết kỹ thuật chốt theo LK-13 sau khi các quyết định khác hoàn thành; Thọ bảo đảm mapping nguồn, Dũng review căn cứ, Tuấn Anh/Ngọc Anh thử đầu vào phân tích.
 - Ngọc Anh nối Text Diff; Tuấn Anh nối Semantic Change/Scorer với dữ liệu thật. Hai bên đối chiếu lỗi và kiểm tra chéo với Thọ/Đức Anh tại ranh giới bàn giao.
-- Dũng tích hợp module thật, giữ định danh tài liệu, kết quả nội bộ và ReviewItem/documents/items cùng cảnh báo; báo PARTIAL phù hợp.
+- Dũng tích hợp module thật, giữ định danh tài liệu, kết quả nội bộ và ComparisonReport.results/AmendmentResult cùng cảnh báo; báo PARTIAL phù hợp.
 - Tuấn Anh nối UI, thử đủ/thiếu tài liệu, bổ sung rồi gửi lại bộ file; kiểm tra Semantic Diff và contract trên nhãn đã review.
 
 **Đầu ra:** luồng chính không dùng mock nghiệp vụ, kết quả baseline trên tập phát triển và danh sách ca chưa hỗ trợ.
@@ -223,6 +229,14 @@ Hoàn thiện pilot trong tuần 6 rồi cập nhật quy tắc bị ảnh hư�
 **Tiêu chí kết thúc:** sản phẩm được nộp đúng yêu cầu; người nhận có thể chạy theo hướng dẫn; mã nguồn, tài liệu, minh chứng và kết quả đánh giá truy được về đúng phiên bản.
 
 ## 7. Danh mục công việc và phụ thuộc
+
+Nhánh `ducanh_bachdung/integrate_LightRAG`, commit `e47e049ada29fdab95dcd39a5d0ad14d98c3b411`, đã có client HTTP, chunk builder, source registry, context builder và `context/semantic_bridge.py`. Có demo DOCX với adapter, Linker hẹp, Text Diff, baseline Semantic/Scorer và report PARTIAL. Demo chạy riêng bằng `backend.demo:app`; `backend.main:app` vẫn chưa cấu hình runner mặc định. Frontend demo là HTML/CSS/JavaScript, chưa thay định hướng frontend chính thức.
+
+Chưa kiểm chứng LightRAG Server/model/index/KG thật; web demo tắt LightRAG. Bridge hiện chạy Context (gồm retrieval khi cấu hình) song song Text Diff rồi ghép trước Semantic; còn tách index/query và dùng Text Diff tạo query để khớp luồng mục tiêu mới. Rule baseline đã có, model fallback chưa tích hợp. Kết quả nhánh thử nghiệm không tự xác nhận đã merge main/nghiệm thu.
+
+Căn cứ: [báo cáo tích hợp](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/lightrag-integration-report.md), [demo và giới hạn](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/local-web-demo.md). Kết quả test trong các báo cáo chưa được chạy lại trong đợt sửa tài liệu này.
+
+Việc tiếp theo: tách index/query, ghép query từ Text Diff, kiểm chứng LightRAG thật, rule/model fallback và hiển thị bằng chứng. Nhận xét phát triển sau; mốc tuần vẫn là kế hoạch.
 
 Task có thể bắt đầu bằng fixture trước khi module cung cấp dữ liệu hoàn thành; phụ thuộc dưới đây là điều kiện tích hợp bằng dữ liệu thật.
 

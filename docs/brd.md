@@ -1,8 +1,8 @@
 # BRD — Hệ thống phân tích thay đổi văn bản pháp lý
 
-**Dự án:** Legal Document Change Detection  
-**Nhóm:** Group 4  
-**Phiên bản tài liệu:** 1.1.0   
+**Dự án:** Legal Document Change Detection
+**Nhóm:** Group 4
+**Phiên bản tài liệu:** 1.1.0
 **Phạm vi phiên bản đầu:** Phân tích văn bản quy phạm pháp luật tiếng Việt ban đầu (V1) và văn bản sửa đổi (S), kèm tài liệu tham chiếu do người dùng cung cấp khi cần.
 
 ## 1. Mục đích tài liệu
@@ -103,13 +103,17 @@ Phân tích tập trung vào phần thay đổi, sử dụng thông tin tổng q
 
 ### 5.3. Đầu ra
 
+Hiển thị bằng chứng là chức năng chính: đọc đoạn nguồn, tài liệu/vị trí gắn với nhận định; phân biệt nguyên văn và nội dung suy ra.
+
+Nhận xét là chức năng dự kiến sau khi các chức năng cốt lõi hoàn thiện, chỉ liệt kê trong phạm vi mở rộng, không là module chính hoặc điều kiện nghiệm thu bản đầu. Hai loại: (1) nhận xét sau phiên được lưu để phục vụ phát triển; (2) nhận xét trong phiên kết hợp nhận xét có sẵn để xem xét và cập nhật kết luận. Khi triển khai, giữ phân biệt kết luận ban đầu/cập nhật và căn cứ thay đổi; không tự coi nhận xét là gold/nhãn huấn luyện. Cách lưu, API, định danh, nguồn nhận xét có sẵn và cơ chế kết hợp chưa chốt; chưa mở rộng schema chung.
+
 - Danh sách yêu cầu sửa đổi, bổ sung, bãi bỏ và vị trí bị tác động trong V1.
 - Nội dung trước thay đổi, nội dung hoặc chỉ dẫn sửa đổi trong S và phần chữ khác biệt khi xác định được.
 - Nhận định về thay đổi nội dung quy định, nhóm nội dung thay đổi, mức độ và lý do khi có đủ căn cứ.
 - Bằng chứng và vị trí nguồn trong V1, S và tài liệu tham chiếu được sử dụng.
 - Thông tin hiệu lực và chuyển tiếp được nêu trong S, kèm phạm vi áp dụng và căn cứ; phần chưa xác định phải được đánh dấu.
 - Danh sách tài liệu/nội dung tham chiếu còn thiếu, cảnh báo và lỗi xử lý.
-- Người dùng kiểm chứng, ghi quyết định và nhận xét trong phiên; dữ liệu này tách khỏi kết quả AI. Khi bổ sung tài liệu và phân tích lại, chỉ giữ trạng thái đã kiểm chứng nếu nội dung liên quan được xác nhận không đổi.
+- Nhận xét hai loại phát triển sau theo mục 5.3.
 
 ### 5.4. Phạm vi bao phủ
 
@@ -150,7 +154,7 @@ Phần mở đầu, chữ ký và phụ lục không được so sánh toàn di�
 4. Sinh viên xem giải thích về đối tượng, quyền, nghĩa vụ, điều kiện hoặc thời hạn bị thay đổi, nếu hệ thống xác định được.
 5. Sinh viên mở lại đoạn nguồn, kiểm tra nhận định và ghi nhận giới hạn cần nghiên cứu thêm.
 
-**Kết quả mong đợi:** Sinh viên có thể mô tả thay đổi bằng lời của mình và chỉ ra bằng chứng. Sinh viên ghi quyết định kiểm chứng và nhận xét trong phiên; nhận xét tách khỏi kết quả AI, không tự trở thành nhãn chuẩn và chưa bảo đảm giữ sau tải lại/đóng tab.
+**Kết quả mong đợi:** Sinh viên có thể mô tả thay đổi bằng lời của mình và chỉ ra bằng chứng. Nhận xét hai loại phát triển sau theo mục 5.3.
 
 ### 6.3. UC-03 — Rà soát trường hợp chưa chắc chắn
 
@@ -165,7 +169,7 @@ Phần mở đầu, chữ ký và phụ lục không được so sánh toàn di�
 3. Hệ thống chỉ rõ tài liệu và Điều/Khoản/bảng còn thiếu khi xác định được.
 4. Người dùng có thể tải tài liệu bổ sung để phân tích lại. Nếu không bổ sung, kết quả đã xác định vẫn được hiển thị cùng giới hạn phân tích.
 
-**Kết quả mong đợi:** Người dùng biết nhận định chưa được xác định chắc chắn. Phiên bản đầu giữ xác nhận/nhận xét kiểm chứng trong phiên, không sửa đè kết quả AI. Khi bổ sung và chạy lại, nhận xét phải được đối chiếu; nội dung đổi cần kiểm tra lại, không ghép chắc chắn thì giữ riêng nhận xét cũ. Không bắt buộc có giao diện sửa kết quả liên kết.
+**Kết quả mong đợi:** Người dùng biết nhận định chưa được xác định chắc chắn. Nhận xét hai loại phát triển sau theo mục 5.3; chưa bắt buộc giao diện sửa liên kết.
 
 ## 7. Yêu cầu nghiệp vụ
 
@@ -212,7 +216,7 @@ Khác biệt về ký tự chưa đồng nghĩa với thay đổi nội dung quy
 | Chế tài và trách nhiệm | Biện pháp xử lý hoặc trách nhiệm được mô tả có thay đổi không? |
 | Dẫn chiếu và định nghĩa | Dẫn chiếu hoặc cách gọi có thay đổi và có cần đọc thêm ngữ cảnh không? |
 
-Một thay đổi có thể liên quan nhiều nhóm. Đây là các câu hỏi nghiệp vụ và khía cạnh nội bộ, không phải danh mục nhãn đầu ra. Báo cáo mục tiêu dùng bốn nhóm phân loại theo Architecture/SRS; danh mục bốn mã và bảng ánh xạ còn phải chốt trước nghiệm thu phân loại. Không yêu cầu mỗi câu hỏi trở thành một nhãn kỹ thuật riêng, không tự gộp thành bốn nhóm khi chưa có căn cứ.
+Một thay đổi có thể liên quan nhiều nhóm. Hợp đồng chung dùng tám field_group để giữ các khía cạnh và category để tóm tắt SemanticChange theo Architecture/SRS. Chỉ đổi diễn đạt dùng WORDING_ONLY; chưa xác định dùng null và cảnh báo theo contract. Không bỏ aspects để ép một nhãn tổng thể.
 
 ### 8.3. Mức độ nghiêm trọng
 
@@ -311,7 +315,7 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 5. Nhận định và mức độ có lý do; trường hợp thiếu căn cứ thể hiện chưa xác định.
 6. Lỗi đầu vào hoặc xử lý một phần không bị trình bày như không có thay đổi.
 7. Có báo cáo thực nghiệm, hướng dẫn sử dụng và giới hạn đã biết.
-8. Kiểm chứng/nhận xét trong phiên hoạt động đúng; bổ sung tài liệu không gắn nhầm nhận xét, không mất báo cáo cũ khi lượt mới thất bại. Phân loại bốn nhóm chỉ được nghiệm thu khi danh mục và fixture ánh xạ đã chốt.
+8. Hiển thị bằng chứng/cảnh báo; lượt bổ sung thất bại giữ báo cáo cũ. Nhận xét phát triển sau. Giữ tám nhóm/category theo schema chung; review rubric trước đánh giá.
 
 ## 11. Ngoài phạm vi phiên bản đầu
 

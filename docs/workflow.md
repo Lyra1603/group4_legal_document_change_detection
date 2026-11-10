@@ -1,7 +1,7 @@
 # WORKFLOW — Quy trình làm việc, Git và kiểm thử chéo
 
-**Dự án:** Legal Document Change Detection — POCS, Nhóm 4  
-**Phiên bản:** Bản đầu tiên  
+**Dự án:** Legal Document Change Detection — POCS, Nhóm 4
+**Phiên bản:** Bản đầu tiên
 **Trạng thái:** Bản dự thảo để nhóm đọc và thống nhất áp dụng
 
 ## 1. Mục đích và phạm vi
@@ -45,7 +45,7 @@ Ghi lựa chọn trong decision.md; cập nhật module.md và schema liên quan
 
 - Bên cung cấp hiện thực để trả đúng hợp đồng đã chốt.
 - Bên nhận sử dụng fixture/mock cùng hợp đồng để code ngay, không đợi bên cung cấp hoàn thiện toàn module.
-- JSON có thể dùng lưu mẫu; các module trong cùng backend có thể gọi hàm với object/dict. Không bắt mọi điểm nối ghi file hoặc gọi HTTP.
+- JSON có thể dùng lưu mẫu; các module trong cùng backend bàn giao dict/list theo TypedDict của schema Đức Anh đã chốt; object nội bộ khác cần adapter tại điểm bàn giao. Không bắt mọi điểm nối ghi file hoặc gọi HTTP.
 - Mock phải có nhãn rõ, nằm ở phần phát triển/kiểm thử phù hợp. Không dùng kết quả mock để tuyên bố đã tích hợp với module thật.
 - Khi giao AI assistant làm task, cung cấp cùng phiên bản quyết định, đặc tả module và dữ liệu mẫu. Không để AI tự thêm trường/đổi contract để code chạy được.
 
@@ -83,7 +83,9 @@ Không đợi mọi module xong mới thử ghép: tích hợp từng điểm n�
 
 ### 3.2. Nhánh chung và việc tạo branch
 
-Nhóm dùng một nhánh tích hợp được thông báo rõ. Cấu trúc chuẩn lấy từ plan_lightrag; main là nhánh chung sau khi hoàn tất việc thay nội dung main như kế hoạch. Nếu thao tác đó chưa hoàn tất, ghi rõ nhánh tích hợp tạm thời trong task/PR; không để mỗi thành viên tự đoán.
+Nhánh công việc của Dũng + Đức Anh: `ducanh_bachdung/integrate_LightRAG`, phục vụ tích hợp thử nghiệm/demo; không thay `main` làm nhánh tích hợp chung và không đổi tên nhánh hiện có.
+
+Nhóm dùng một nhánh tích hợp được thông báo rõ. Cấu trúc chuẩn lấy từ plan_lightrag; main hiện là nhánh chung, đã nhận cấu trúc nền và schema qua PR #2 (`a8a906a`). Tạo nhánh task từ origin/main đã cập nhật; không merge nguyên nhánh docs cũ nếu kéo theo code hoặc cấu trúc không thuộc task.
 
 - Tạo branch từ nhánh tích hợp đã cập nhật, theo một task/phạm vi cụ thể.
 - Không tự lập nhánh chung mới hoặc tạo branch không rõ mục đích. Thành viên được tạo branch công việc theo quy ước, không cần xin phép lại cho từng task đã nhận.
@@ -148,6 +150,10 @@ Không triển khai Evaluator riêng. Các phép kiểm tra tự động và scr
 
 ### 4.2. Những cặp cần kiểm tra
 
+Sau adapter, Context chuẩn bị chunk, registry và nhập chỉ mục song song nhánh Linker xác định đích/trước-sau → Text Diff. Điểm ghép chờ index sẵn sàng và TextDiffResult, kết hợp chỉ dẫn, trước/sau và vùng chữ đổi để tạo query. LightRAG truy xuất qua HTTP, registry kiểm tra nguồn/quote rồi mới chuyển sang Semantic. Semantic dùng rule trước, model khi cần; Scorer và Pipeline nhận kết quả cùng bằng chứng/cảnh báo để tổng hợp report.
+
+Bổ sung điểm nối: Text Diff → ghép query; index → điểm ghép; query/registry → Semantic; report/bằng chứng → frontend.
+
 | Điểm nối | Hai bên kiểm tra chính |
 | --- | --- |
 | Xử lý tài liệu/Linker → Text Diff | Thọ ↔ Ngọc Anh |
@@ -175,6 +181,8 @@ Các ca tối thiểu tùy điểm nối: bình thường, không có kết qu�
 Đáp án không chỉ sao chép từ output của A. Ví dụ số Điều/Khoản/Điểm phải đối chiếu mẫu nguồn; hai module cùng dùng sai một trường vẫn có thể chạy thông nhau nhưng không đúng nghiệp vụ.
 
 ### 4.4. Ghi nhận và xử lý lỗi
+
+Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển bằng chứng có nguồn cùng lỗi/cảnh báo và phạm vi bị ảnh hưởng cho module nhận đầu ra theo contract chung. Bên nhận kiểm tra dữ liệu, không bỏ cảnh báo hoặc biến thiếu căn cứ thành không có thay đổi. Pipeline tổng hợp trạng thái báo cáo, không thay owner xử lý lỗi nội bộ.
 
 Mỗi lỗi nên có mẫu ngắn:
 

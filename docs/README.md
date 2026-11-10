@@ -18,11 +18,15 @@
 
 ## 1. Minimum Architecture dự kiến
 
+Hiển thị bằng chứng có tài liệu/vị trí nguồn là chức năng chính.
+
+Nhận xét là chức năng dự kiến sau khi các chức năng cốt lõi hoàn thiện, chỉ liệt kê trong phạm vi mở rộng, không là module chính hoặc điều kiện nghiệm thu bản đầu. Hai loại: (1) nhận xét sau phiên được lưu để phục vụ phát triển; (2) nhận xét trong phiên kết hợp nhận xét có sẵn để xem xét và cập nhật kết luận. Khi triển khai, giữ phân biệt kết luận ban đầu/cập nhật và căn cứ thay đổi; không tự coi nhận xét là gold/nhãn huấn luyện. Cách lưu, API, định danh, nguồn nhận xét có sẵn và cơ chế kết hợp chưa chốt; chưa mở rộng schema chung.
+
 Thiết kế mục tiêu của bản đầu sử dụng request đồng bộ: backend xử lý hai file và
 trả ComparisonReport trong cùng request; không dùng job nền
 hoặc API polling.
 
-Các module xử lý nằm trong `backend/app/`, gọi nhau qua hàm/hợp đồng dùng chung. Luồng: đọc/chuyển đổi và Parser → adapter/linker → context/LightRAG HTTP → Text Diff → Semantic Diff → Scorer → Pipeline tổng hợp `ComparisonReport.documents/items`. Không diff toàn bộ V1 với S; Text Diff cần nội dung trước/sau cục bộ đã được xác định.
+Sau adapter, Context chuẩn bị chunk, registry và nhập chỉ mục song song nhánh Linker xác định đích/trước-sau → Text Diff. Điểm ghép chờ index sẵn sàng và TextDiffResult, kết hợp chỉ dẫn, trước/sau và vùng chữ đổi để tạo query. LightRAG truy xuất qua HTTP, registry kiểm tra nguồn/quote rồi mới chuyển sang Semantic. Semantic dùng rule trước, model khi cần; Scorer và Pipeline nhận kết quả cùng bằng chứng/cảnh báo để tổng hợp report.
 
 LightRAG Server riêng qua HTTP là phương án đã chốt. Phạm vi đầu là retrieval; source registry kiểm tra nguồn, không dùng retrieval score làm mức tác động. Không triển khai Evaluator độc lập; giữ folder cũ, owner kiểm thử chéo tại từng điểm nối; Dũng điều phối tích hợp/Pipeline/API, Đức Anh điều phối kế hoạch đánh giá.
 
@@ -63,28 +67,28 @@ Giữ cấu trúc theo branch `plan_lightrag`; không tạo lại `src/` hoặc 
 
 ## Hiện trạng triển khai
 
+Nhánh `ducanh_bachdung/integrate_LightRAG`, commit `e47e049ada29fdab95dcd39a5d0ad14d98c3b411`, đã có client HTTP, chunk builder, source registry, context builder và `context/semantic_bridge.py`. Có demo DOCX với adapter, Linker hẹp, Text Diff, baseline Semantic/Scorer và report PARTIAL. Demo chạy riêng bằng `backend.demo:app`; `backend.main:app` vẫn chưa cấu hình runner mặc định. Frontend demo là HTML/CSS/JavaScript, chưa thay định hướng frontend chính thức.
+
+Chưa kiểm chứng LightRAG Server/model/index/KG thật; web demo tắt LightRAG. Bridge hiện chạy Context (gồm retrieval khi cấu hình) song song Text Diff rồi ghép trước Semantic; còn tách index/query và dùng Text Diff tạo query để khớp luồng mục tiêu mới. Rule baseline đã có, model fallback chưa tích hợp. Kết quả nhánh thử nghiệm không tự xác nhận đã merge main/nghiệm thu.
+
+Căn cứ: [báo cáo tích hợp](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/lightrag-integration-report.md), [demo và giới hạn](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/local-web-demo.md). Kết quả test trong các báo cáo chưa được chạy lại trong đợt sửa tài liệu này.
+
+Các gạch đầu dòng dưới đây mô tả nền main/schema, không phải hiện trạng đầy đủ của nhánh thử nghiệm.
+
 - Cấu trúc nền đã có converter PDF → DOCX, Parser, Backend nhận upload và Pipeline đọc/parse; còn nhiều file chính là khung. Khi chưa có runner phân tích, trả `ANALYSIS_NOT_CONFIGURED`, không phải báo cáo so sánh thành công.
-- Schema có implementation và validator trên nhánh `feat/ducanh-backend-integration` (commit schema `36d9727`) vẫn theo envelope trước `base_document/amendment_document/reference_documents/results`; chưa mặc định tương thích hợp đồng mục tiêu `documents/items`. Chỉ tích hợp phần đã review/chuyển đổi, không ghi đè implementation bằng file trống.
-- API nền dùng `doc_v1/doc_s/reference_files`; API mục tiêu dùng `base_file/amendment_file/reference_files`. Chưa coi hai giao diện tương đương nếu chưa có adapter/alias được kiểm thử.
+- Nhóm đã chốt dùng schema và validator của Đức Anh tại commit b6a13f98b9a7357b9fbb0936aba6bda065d03fcb. Schema đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2) vào main (`a8a906a`); code nhập nguyên bản vào backend/app/schemas; adapter nguồn/Clause và wiring Pipeline còn cần triển khai. Xem [SRS mục 1.7](srs.md).
+- API main dùng `doc_v1/doc_s/reference_files`; đổi sang `base_file/amendment_file` hoặc hỗ trợ alias vẫn là đề xuất chưa chốt ở LK-11, chưa có trong router.
 - LightRAG HTTP đã chốt phương án, chưa đồng nghĩa đã hiện thực client và kiểm chứng vòng đời chỉ mục.
-- Phân công chức năng đã chốt ở LK-01: Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá. Bốn mã phân loại và contract/fixture chi tiết còn chờ; benchmark/fixture phải được review trước khi dùng làm bằng chứng chất lượng.
+- Phân công chức năng đã chốt ở LK-01: Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá. Dùng tám field_group/category theo schema chung; rubric và fixture nghiệp vụ còn cần review; benchmark/fixture phải được review trước khi dùng làm bằng chứng chất lượng.
 
-## 4. Hướng dẫn Cài đặt & Chạy thử (Quick Start)
-- Bước 1: Cài đặt thư viện môi trường
-```
-pip install -r requirements.txt
-```
+## 4. Kiểm tra schema độc lập
 
-- Bước 2: Chạy bộ kiểm thử đã hiện thực theo [Workflow](workflow.md). Nếu dùng pytest và đã bổ sung dependency:
+Chạy từ repo root trong venv Python 3.11 trở lên (đã kiểm tra 3.12.14):
+
 ```bash
-python -m pytest test/
+python -m pip install -r requirements.txt
+python -m pip check
+python -m unittest discover -s test/schema_suite -p "test_*.py" -v
 ```
-Thư mục khung hoặc không tìm thấy test không phải bằng chứng đã đạt kiểm thử. Không dùng lệnh `python -m src.pipeline` của cấu trúc cũ.
 
-- Bước 3: Khởi chạy Backend API Server
-```
-uvicorn backend.main:app --reload
-```
-- Truy cập API Docs tại: http://127.0.0.1:8000/docs
-
-
+requirements.txt ghim pydantic==2.13.4 và typing_extensions==4.16.0 cho schema. Kết quả thực tế: Python 3.12.14, 51 test: 49 đạt và 2 expected failures; chi tiết ở [báo cáo kiểm thử](schema-verification-report.md). Hai expected failures ghi nhận giới hạn chưa kiểm tra ID toàn báo cáo và TextDiff reconstruction, không phải đã sửa. requirements.txt chỉ khai báo dependency schema. API/PDF còn cần dependency runtime của module tương ứng; xem [hướng dẫn schema và runtime](schema-integration.md). Khi môi trường API đã được chuẩn bị, lệnh nền vẫn là `python -m uvicorn backend.main:app`; POST /api/compare nhận doc_v1/doc_s/reference_files. Chưa có analysis_runner thì trả FAILED/ANALYSIS_NOT_CONFIGURED, không tự có kết quả phân tích vì đã thêm schema.

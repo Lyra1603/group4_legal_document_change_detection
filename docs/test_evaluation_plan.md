@@ -3,7 +3,7 @@
 **Dự án:** Legal Document Change Detection — POCS, Nhóm 4
 **Phiên bản:** 0.1 — Khung chuẩn bị song song với quyết định và đặc tả module
 **Ngày tạo:** 08/11/2026
-**Trạng thái:** Khung kế hoạch đang hoàn thiện; Đức Anh điều phối. Hiện xác định cách đánh giá; tạm lấy Change F1 ≥ 90% và Critical Change Recall ≥ 95%. Đây là các ngưỡng dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md, chưa phải ngưỡng nghiệm thu chính thức; contract và chi tiết phép đo còn chờ hoàn thiện.
+**Trạng thái:** Khung kế hoạch đang hoàn thiện; Đức Anh điều phối. Hiện xác định cách đánh giá; tạm lấy Change F1 ≥ 90% và Critical Change Recall ≥ 95%. Đây là các ngưỡng dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md, chưa phải ngưỡng nghiệm thu chính thức; hợp đồng schema chung đã chốt, adapter/fixture nghiệp vụ và chi tiết phép đo còn chờ hoàn thiện.
 
 ## 1. Mục đích và phạm vi
 
@@ -32,7 +32,7 @@ Các đường dẫn tới test, fixture và script cụ thể được bổ sun
 | --- | --- | --- |
 | Chờ đề xuất owner | Liệt kê rủi ro, chuẩn bị mẫu nghiệp vụ và yêu cầu bằng chứng; owner đề xuất cách tự kiểm chứng | Mẫu và đáp án được review; chưa coi cấu trúc dữ liệu dự kiến là contract |
 | Review và chốt quyết định | Kiểm tra phương án có thể đo/kiểm chứng; thống nhất phần ảnh hưởng bên nhận | Quyết định liên quan được xác nhận theo decision.md |
-| Hoàn thiện từng phần module.md | Điền input/output, expected output, ca kiểm tra, người thực hiện và reviewer | Contract, schema và fixture cùng cách hiểu |
+| Hoàn thiện từng phần module.md | Điền input/output, expected output, ca kiểm tra, người thực hiện và reviewer | Dùng hợp đồng schema Đức Anh đã chọn; fixture nghiệp vụ và adapter được hai bên review |
 | Có implementation | Tự kiểm tra module; kiểm tra điểm nối với đầu ra thật; tích hợp sớm | Có kết quả và giới hạn, không chỉ có code test |
 | Chuẩn bị đánh giá chính thức | Cố định phiên bản, cấu hình, dữ liệu, nhãn, matching và phép đo | Các phần phụ thuộc đã rõ; không còn lỗi chặn phép đo |
 
@@ -69,6 +69,8 @@ Owner tự kiểm tra trước bàn giao. Bên giao và bên nhận kiểm tra c
 
 ## 6. Danh mục kiểm tra ban đầu
 
+Bổ sung ca: index chạy song song Linker/Text Diff; query chờ cả hai nhánh và sử dụng đúng TextDiffResult; lỗi một nhánh không bị che. Kiểm tra quote/document_id/source_ref qua retrieval → Semantic/Scorer → frontend, kể cả sau cleanup. Kiểm tra rule trước/model khi cần, lỗi model không tạo kết luận giả; owner giao/nhận lỗi cùng bằng chứng. Nhận xét hai loại là backlog giai đoạn sau, không là điều kiện nghiệm thu bản đầu.
+
 Các mã dưới đây là mã của kế hoạch này, không phải mã quyết định mới. Đây là phạm vi chuẩn bị, chưa xác nhận các test đã được hiện thực hoặc đã đạt.
 
 | Mã | Phạm vi | Tình huống/rủi ro cần kiểm tra | Căn cứ xác định expected output |
@@ -82,7 +84,7 @@ Các mã dưới đây là mã của kế hoạch này, không phải mã quyế
 | TEP-07 | Semantic Diff | Chỉ đổi diễn đạt, thay đổi nghĩa, nhiều khía cạnh, nhận định không có căn cứ | Nhãn/nhận định tham chiếu và matching được thống nhất |
 | TEP-08 | Scorer | Ranh giới mức tác động, thiếu căn cứ, sai liên kết với nhận định, dùng retrieval score thay mức tác động | Rubric và ví dụ ranh giới được chốt |
 | TEP-09 | AI Adapter | Output sai cấu trúc, trích dẫn không có trong nguồn, timeout hoặc lỗi mô hình | Contract lỗi và quy tắc validation; có thể giả lập lỗi để kiểm tra ổn định |
-| TEP-10 | Tổng hợp/API | Bỏ mất chỉ dẫn chưa phân tích, mất cảnh báo, nhầm lỗi với không có thay đổi | Fixture báo cáo và bảng null/rỗng/lỗi/trạng thái |
+| TEP-10 | Tổng hợp/API | Bỏ mất chỉ dẫn chưa phân tích, mất cảnh báo, nhầm lỗi với không có thay đổi | ComparisonReport/results/AmendmentResult theo schema chung và bảng null/rỗng/lỗi/trạng thái |
 | TEP-11 | Toàn luồng | Một ca đủ căn cứ, một ca thiếu căn cứ, một ca lỗi; bổ sung tài liệu khi chức năng đã được chốt | Báo cáo kỳ vọng từ file thật, nguồn và phạm vi xử lý |
 | TEP-12 | LightRAG và vòng đời | Sẵn sàng nhập/query, mapping, cách ly lượt chạy, cleanup và lỗi dịch vụ | Release/API thực tế theo LK-13; chưa chốt payload hoặc cấu hình trong kế hoạch này |
 
@@ -132,6 +134,14 @@ Giữ cùng dữ liệu và điều kiện so sánh; ghi các khác biệt cấu
 
 ## 9. Điều kiện bàn giao và báo cáo
 
+Nhánh `ducanh_bachdung/integrate_LightRAG`, commit `e47e049ada29fdab95dcd39a5d0ad14d98c3b411`, đã có client HTTP, chunk builder, source registry, context builder và `context/semantic_bridge.py`. Có demo DOCX với adapter, Linker hẹp, Text Diff, baseline Semantic/Scorer và report PARTIAL. Demo chạy riêng bằng `backend.demo:app`; `backend.main:app` vẫn chưa cấu hình runner mặc định. Frontend demo là HTML/CSS/JavaScript, chưa thay định hướng frontend chính thức.
+
+Chưa kiểm chứng LightRAG Server/model/index/KG thật; web demo tắt LightRAG. Bridge hiện chạy Context (gồm retrieval khi cấu hình) song song Text Diff rồi ghép trước Semantic; còn tách index/query và dùng Text Diff tạo query để khớp luồng mục tiêu mới. Rule baseline đã có, model fallback chưa tích hợp. Kết quả nhánh thử nghiệm không tự xác nhận đã merge main/nghiệm thu.
+
+Căn cứ: [báo cáo tích hợp](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/lightrag-integration-report.md), [demo và giới hạn](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/local-web-demo.md). Kết quả test trong các báo cáo chưa được chạy lại trong đợt sửa tài liệu này.
+
+Theo báo cáo nhánh: demo 12/12 đạt; context 24 đạt, 2 real-service tests skipped; schema 49 đạt, 2 expected failures. Chưa chạy lại trong đợt sửa docs; số test không chứng minh chất lượng pháp lý hoặc LightRAG thật.
+
 Một phần đủ điều kiện bàn giao khi có đặc tả liên quan đã chốt, code, mẫu vào ra, kiểm tra phù hợp, kết quả, cách chạy và giới hạn; bên nhận sử dụng được đầu ra thật. Trạng thái đủ đặc tả, đã hiện thực và đã tích hợp/kiểm tra phải được ghi riêng.
 
 Mỗi đợt đo cần lưu commit, cấu hình, dependency/model khi có, phiên bản dữ liệu/nhãn, cách tính và kết quả. Nếu dùng lỗi test để chỉnh phương pháp, công bố việc đó; chỉ gọi một lần đánh giá mới là độc lập khi dùng dữ liệu chưa được dùng để chỉnh.
@@ -150,3 +160,7 @@ evaluation_report.md được tạo khi có kết quả thực tế. Báo cáo g
 | Cấu hình và kiểm tra LightRAG thật | Dũng + Đức Anh và các bên liên quan | Theo thứ tự chốt LK-13 |
 
 Các mục chờ trên không tự tạo quyết định mới hoặc thay phân công đã chốt. Sau khi module.md hoàn thiện, rà lại kế hoạch để không thiếu điểm nối, lỗi và điều kiện bàn giao; không phải viết lại toàn bộ kế hoạch từ đầu.
+
+## Kiểm tra hợp đồng chung độc lập
+
+Các test schema chạy từ repo root: `python -m unittest discover -s test/schema_suite -p "test_*.py" -v` sau khi cài `requirements.txt`. Fixture nguồn dùng block:N, có báo cáo thành công, từng biến thể sai schema/nguồn/scoring và report nền main chưa có runner. Đây là kiểm tra hợp đồng, không phải đánh giá chất lượng mô hình hoặc xác nhận Pipeline đã nối validation. Các giới hạn validator giữ nguyên và ví dụ cần review ở [SRS mục 1.7](srs.md).
