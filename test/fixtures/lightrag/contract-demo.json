@@ -1,0 +1,424 @@
+{
+  "mode": "CONTRACT_DOUBLE_NOT_LIGHTRAG",
+  "generated_at": "2026-11-10T16:18:55.187352+00:00",
+  "upstream_commit": "28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c",
+  "input": {
+    "comparison_id": "lightrag-synthetic-demo",
+    "documents": [
+      {
+        "document_id": "v1",
+        "role": "BASE",
+        "filename": "base.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+          }
+        ]
+      },
+      {
+        "document_id": "s",
+        "role": "AMENDMENT",
+        "filename": "amend.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+          }
+        ]
+      },
+      {
+        "document_id": "ref_1",
+        "role": "REFERENCE",
+        "filename": "reference.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+          }
+        ]
+      },
+      {
+        "document_id": "ref_2",
+        "role": "REFERENCE",
+        "filename": "reference_other_version.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+          }
+        ]
+      }
+    ],
+    "versions": {
+      "v1": "fixture-version-1",
+      "s": "fixture-version-1",
+      "ref_1": "fixture-version-1",
+      "ref_2": "fixture-version-2"
+    },
+    "amendment": {
+      "amendment_id": "s:a1",
+      "operation": "AMEND",
+      "instruction": {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+      },
+      "target_document": "V1",
+      "target_locator": "Điều 1",
+      "target_unit_ids": [
+        "v1:n1"
+      ],
+      "applicability": "APPLIES",
+      "before_text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày.",
+      "after_text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày.",
+      "after_basis": "DERIVED",
+      "evidence": [
+        {
+          "document_id": "v1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+        },
+        {
+          "document_id": "s",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+        }
+      ],
+      "effect_info": [
+        {
+          "text": "Thông tin hiệu lực chỉ phục vụ fixture, không xác nhận pháp luật.",
+          "applies_to": "Yêu cầu giả định",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:1"
+              ],
+              "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+            }
+          ],
+          "needs_review": true,
+          "review_reason": "Không có thông tin hiệu lực trong nguồn giả định"
+        }
+      ],
+      "context": {
+        "general_context": "Ví dụ giả định để kiểm thử hợp đồng, không đánh giá chất lượng AI.",
+        "evidence": [
+          {
+            "document_id": "v1",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+          }
+        ],
+        "references": [
+          {
+            "reference_id": "ref_1:requirement_1",
+            "document_label": "reference.docx",
+            "target_locator": "block:1",
+            "purpose": "Định nghĩa dùng trong ví dụ",
+            "status": "UNRESOLVED",
+            "evidence": [],
+            "reason": "Not yet retrieved in this synthetic demo"
+          }
+        ]
+      },
+      "needs_review": true,
+      "review_reason": "Chưa có thông tin hiệu lực trong ví dụ"
+    }
+  },
+  "registry": [
+    {
+      "comparison_id": "lightrag-synthetic-demo",
+      "file_source": "pocs_2a6d1caff57b3afe292e50b049a55b3a5322b1faae31ac6522f281ff4893673c.txt",
+      "document_id": "v1",
+      "role": "BASE",
+      "version": "fixture-version-1",
+      "source_ref": "block:1",
+      "text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày.",
+      "indexed_text": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"v1\", \"role\": \"BASE\", \"version\": \"fixture-version-1\", \"source_ref\": \"block:1\"}\nDoanh nghiệp phải nộp báo cáo trong 30 ngày."
+    },
+    {
+      "comparison_id": "lightrag-synthetic-demo",
+      "file_source": "pocs_5ce254b748af3a9ad4212fce4d457fa1a969ab2d50c94c9f7bd09e4dcd2fef65.txt",
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "version": "fixture-version-1",
+      "source_ref": "block:1",
+      "text": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1.",
+      "indexed_text": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"s\", \"role\": \"AMENDMENT\", \"version\": \"fixture-version-1\", \"source_ref\": \"block:1\"}\nThay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+    },
+    {
+      "comparison_id": "lightrag-synthetic-demo",
+      "file_source": "pocs_105c032538951159ceb6369e962fc6a9cc03ef4aaddca31d41042c2df41a997e.txt",
+      "document_id": "ref_1",
+      "role": "REFERENCE",
+      "version": "fixture-version-1",
+      "source_ref": "block:1",
+      "text": "Định nghĩa báo cáo dùng trong ví dụ giả định.",
+      "indexed_text": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"ref_1\", \"role\": \"REFERENCE\", \"version\": \"fixture-version-1\", \"source_ref\": \"block:1\"}\nĐịnh nghĩa báo cáo dùng trong ví dụ giả định."
+    },
+    {
+      "comparison_id": "lightrag-synthetic-demo",
+      "file_source": "pocs_bf0d0538defe02de939874fd93a670f28b1cb69d8d6c0a1eba479d9b1b82def5.txt",
+      "document_id": "ref_2",
+      "role": "REFERENCE",
+      "version": "fixture-version-2",
+      "source_ref": "block:1",
+      "text": "Định nghĩa báo cáo dùng trong ví dụ giả định.",
+      "indexed_text": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"ref_2\", \"role\": \"REFERENCE\", \"version\": \"fixture-version-2\", \"source_ref\": \"block:1\"}\nĐịnh nghĩa báo cáo dùng trong ví dụ giả định."
+    }
+  ],
+  "project_source_graph": {
+    "kind": "PROJECT_SOURCE_GRAPH_NOT_LIGHTRAG_KG",
+    "nodes": [
+      {
+        "id": "document_c0a756ca6748bf459053466ebacc2002dd367bbbdba994a7a8ef329a6fd4bf9d",
+        "type": "DocumentVersion",
+        "document_id": "v1",
+        "comparison_id": "lightrag-synthetic-demo",
+        "role": "BASE",
+        "version": "fixture-version-1"
+      },
+      {
+        "id": "pocs_2a6d1caff57b3afe292e50b049a55b3a5322b1faae31ac6522f281ff4893673c.txt",
+        "type": "SourceBlock",
+        "document_id": "v1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+      },
+      {
+        "id": "document_cc773b5f440edc6c3f0a663edc9ef4f97bf1a40ba72d343ac4ce725f63142906",
+        "type": "DocumentVersion",
+        "document_id": "s",
+        "comparison_id": "lightrag-synthetic-demo",
+        "role": "AMENDMENT",
+        "version": "fixture-version-1"
+      },
+      {
+        "id": "pocs_5ce254b748af3a9ad4212fce4d457fa1a969ab2d50c94c9f7bd09e4dcd2fef65.txt",
+        "type": "SourceBlock",
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+      },
+      {
+        "id": "document_c40d8b626e1d43df782ea2de6e0824915f0adedf908c6e89eae07584c3fad88c",
+        "type": "DocumentVersion",
+        "document_id": "ref_1",
+        "comparison_id": "lightrag-synthetic-demo",
+        "role": "REFERENCE",
+        "version": "fixture-version-1"
+      },
+      {
+        "id": "pocs_105c032538951159ceb6369e962fc6a9cc03ef4aaddca31d41042c2df41a997e.txt",
+        "type": "SourceBlock",
+        "document_id": "ref_1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+      },
+      {
+        "id": "document_fe6224f6214c4a1876aafd0d1abfa7d0e6f014dd046503e96926c558cb5ef198",
+        "type": "DocumentVersion",
+        "document_id": "ref_2",
+        "comparison_id": "lightrag-synthetic-demo",
+        "role": "REFERENCE",
+        "version": "fixture-version-2"
+      },
+      {
+        "id": "pocs_bf0d0538defe02de939874fd93a670f28b1cb69d8d6c0a1eba479d9b1b82def5.txt",
+        "type": "SourceBlock",
+        "document_id": "ref_2",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+      }
+    ],
+    "edges": [
+      {
+        "source": "document_c0a756ca6748bf459053466ebacc2002dd367bbbdba994a7a8ef329a6fd4bf9d",
+        "target": "pocs_2a6d1caff57b3afe292e50b049a55b3a5322b1faae31ac6522f281ff4893673c.txt",
+        "type": "HAS_SOURCE_BLOCK",
+        "basis": "PROJECT_SOURCE",
+        "inferred": false
+      },
+      {
+        "source": "document_cc773b5f440edc6c3f0a663edc9ef4f97bf1a40ba72d343ac4ce725f63142906",
+        "target": "pocs_5ce254b748af3a9ad4212fce4d457fa1a969ab2d50c94c9f7bd09e4dcd2fef65.txt",
+        "type": "HAS_SOURCE_BLOCK",
+        "basis": "PROJECT_SOURCE",
+        "inferred": false
+      },
+      {
+        "source": "document_c40d8b626e1d43df782ea2de6e0824915f0adedf908c6e89eae07584c3fad88c",
+        "target": "pocs_105c032538951159ceb6369e962fc6a9cc03ef4aaddca31d41042c2df41a997e.txt",
+        "type": "HAS_SOURCE_BLOCK",
+        "basis": "PROJECT_SOURCE",
+        "inferred": false
+      },
+      {
+        "source": "document_fe6224f6214c4a1876aafd0d1abfa7d0e6f014dd046503e96926c558cb5ef198",
+        "target": "pocs_bf0d0538defe02de939874fd93a670f28b1cb69d8d6c0a1eba479d9b1b82def5.txt",
+        "type": "HAS_SOURCE_BLOCK",
+        "basis": "PROJECT_SOURCE",
+        "inferred": false
+      }
+    ]
+  },
+  "upstream_extracted_graph": null,
+  "disabled": {
+    "context": {
+      "general_context": "Ví dụ giả định để kiểm thử hợp đồng, không đánh giá chất lượng AI.",
+      "evidence": [
+        {
+          "document_id": "v1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+        }
+      ],
+      "references": [
+        {
+          "reference_id": "ref_1:requirement_1",
+          "document_label": "reference.docx",
+          "target_locator": "block:1",
+          "purpose": "Định nghĩa dùng trong ví dụ",
+          "status": "UNRESOLVED",
+          "evidence": [],
+          "reason": "Not yet retrieved in this synthetic demo"
+        }
+      ]
+    },
+    "metrics": {
+      "source_precision": 0.0,
+      "source_recall": 0.0,
+      "source_count": 1
+    },
+    "latency_ms": 2.293199999257922
+  },
+  "enabled": {
+    "context": {
+      "general_context": "Ví dụ giả định để kiểm thử hợp đồng, không đánh giá chất lượng AI.\n[v1 / BASE / version=fixture-version-1 / block:1] Doanh nghiệp phải nộp báo cáo trong 30 ngày.\n[s / AMENDMENT / version=fixture-version-1 / block:1] Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1.\n[ref_1 / REFERENCE / version=fixture-version-1 / block:1] Định nghĩa báo cáo dùng trong ví dụ giả định.\n[ref_2 / REFERENCE / version=fixture-version-2 / block:1] Định nghĩa báo cáo dùng trong ví dụ giả định.",
+      "evidence": [
+        {
+          "document_id": "v1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày."
+        },
+        {
+          "document_id": "s",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Thay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1."
+        },
+        {
+          "document_id": "ref_1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+        },
+        {
+          "document_id": "ref_2",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Định nghĩa báo cáo dùng trong ví dụ giả định."
+        }
+      ],
+      "references": [
+        {
+          "reference_id": "ref_1:requirement_1",
+          "document_label": "reference.docx",
+          "target_locator": "block:1",
+          "purpose": "Định nghĩa dùng trong ví dụ",
+          "status": "UNRESOLVED",
+          "evidence": [],
+          "reason": "Not yet retrieved in this synthetic demo"
+        }
+      ]
+    },
+    "raw_retrieval": {
+      "chunks": [
+        {
+          "file_path": "pocs_2a6d1caff57b3afe292e50b049a55b3a5322b1faae31ac6522f281ff4893673c.txt",
+          "content": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"v1\", \"role\": \"BASE\", \"version\": \"fixture-version-1\", \"source_ref\": \"block:1\"}\nDoanh nghiệp phải nộp báo cáo trong 30 ngày.",
+          "chunk_id": "chunk-0",
+          "reference_id": "0"
+        },
+        {
+          "file_path": "pocs_5ce254b748af3a9ad4212fce4d457fa1a969ab2d50c94c9f7bd09e4dcd2fef65.txt",
+          "content": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"s\", \"role\": \"AMENDMENT\", \"version\": \"fixture-version-1\", \"source_ref\": \"block:1\"}\nThay cụm từ “30 ngày” bằng cụm từ “15 ngày” tại Điều 1.",
+          "chunk_id": "chunk-1",
+          "reference_id": "1"
+        },
+        {
+          "file_path": "pocs_105c032538951159ceb6369e962fc6a9cc03ef4aaddca31d41042c2df41a997e.txt",
+          "content": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"ref_1\", \"role\": \"REFERENCE\", \"version\": \"fixture-version-1\", \"source_ref\": \"block:1\"}\nĐịnh nghĩa báo cáo dùng trong ví dụ giả định.",
+          "chunk_id": "chunk-2",
+          "reference_id": "2"
+        },
+        {
+          "file_path": "pocs_bf0d0538defe02de939874fd93a670f28b1cb69d8d6c0a1eba479d9b1b82def5.txt",
+          "content": "POCS_SOURCE {\"comparison\": \"lightrag-synthetic-demo\", \"document_id\": \"ref_2\", \"role\": \"REFERENCE\", \"version\": \"fixture-version-2\", \"source_ref\": \"block:1\"}\nĐịnh nghĩa báo cáo dùng trong ví dụ giả định.",
+          "chunk_id": "chunk-3",
+          "reference_id": "3"
+        }
+      ],
+      "entities": [],
+      "relationships": [],
+      "references": []
+    },
+    "issues": [],
+    "metrics": {
+      "source_precision": 0.25,
+      "source_recall": 1.0,
+      "source_count": 4
+    },
+    "index_ms": 5.000800010748208,
+    "retrieval_latency_ms": [
+      6.806900026276708,
+      8.71770002413541,
+      5.9358999715186656
+    ],
+    "repeat_consistency": true,
+    "validated_evidence_count": 4
+  },
+  "expected_source_refs": [
+    {
+      "document_id": "ref_1",
+      "source_ref": "block:1"
+    }
+  ],
+  "failure": null,
+  "cleanup_issue": null,
+  "limits": [
+    "Synthetic task, one instruction, three repeated queries; no official acceptance threshold.",
+    "No running Semantic Diff/model; semantic quality and legal validity are NOT measured.",
+    "Contract double results cannot demonstrate real retrieval/KG quality.",
+    "Dedicated instance isolation requires deployment storage separation and a common durable lease directory."
+  ]
+}
