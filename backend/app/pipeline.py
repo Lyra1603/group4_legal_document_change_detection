@@ -2,7 +2,7 @@
 
 Real work implemented: DOCX parsing; PDF conversion through the existing module;
 source/role preservation; input errors; report envelope; cooperative deadline.
-NOT implemented here: amendment linking, LightRAG HTTP/index lifecycle, semantic
+NOT wired here: amendment linking, optional context/LightRAG adapter, semantic
 analysis or scoring. Without an injected analysis_runner, return FAILED with
 ANALYSIS_NOT_CONFIGURED, never a fabricated successful comparison.
 
@@ -26,7 +26,7 @@ from .document_processing.parser.legal_structure_parser import parse_docx
 
 logger = logging.getLogger(__name__)
 MISSING_COMPONENTS = (
-    "amendment_linker", "lightrag_client/index_lifecycle", "context_builder",
+    "amendment_linker", "context_wiring/LightRAG_service_configuration",
     "text_diff", "semantic_diff", "scorer", "nested_report_validation",
 )
 
@@ -140,9 +140,10 @@ def run_comparison(documents: list[DocumentInput], comparison_id: str, *,
                    analysis_runner: AnalysisRunner | None = None) -> dict[str, Any]:
     """Return a report; input errors raise PipelineInputError.
 
-    Future runner orchestration: extract/link -> create one isolated index ->
-    retrieve per amendment -> AnalysisContext -> diff/semantics/scoring -> cleanup.
-    No HTTP endpoint names or unverified LightRAG payloads are assumed here.
+    Optional runner join: context/LightRAG preparation parallel to Text Diff,
+    then Semantic Diff -> Scorer. app.context.semantic_bridge implements the
+    opt-in join; runner owns source validation, service lifecycle and reporting.
+    This function does not enable retrieval or configure domain callbacks.
     """
     _validate_inputs(documents)
     if not comparison_id:
