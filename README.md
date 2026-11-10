@@ -14,6 +14,7 @@ Schema Đức Anh đã merge vào main qua [PR #2](https://github.com/Lyra1603/g
 - [Kết quả xác nhận schema](docs/schema-verification-report.md)
 - [Workflow](docs/workflow.md)
 - [Thử nghiệm LightRAG, hướng dẫn chạy và bằng chứng demo](docs/lightrag-integration-report.md)
+- [Web demo chọn file V1–S và kết quả thực tế từ data/raw](docs/local-web-demo.md)
 
 Kiểm tra schema từ repo root, Python 3.11 trở lên; đã chạy Python 3.12.14:
 
@@ -31,3 +32,5 @@ requirements.txt ghim Pydantic 2.13.4 và typing_extensions 4.16.0. Lần xác n
 Backend có upload/đọc/parse; chưa có runner phân tích hoặc wiring validator trong Pipeline. POST /api/compare hiện nhận doc_v1/doc_s/reference_files ở backend/main.py; chưa gắn runner trả HTTP 501 / ANALYSIS_NOT_CONFIGURED sau đọc/parse hợp lệ. LightRAG có adapter HTTP/context thử nghiệm và điểm nối opt-in trước Semantic Diff; chưa chạy index/retrieval/KG trên dịch vụ thật và chưa bật trong API. Xem báo cáo thử nghiệm ở trên. requirements.txt hiện chỉ đủ dependency schema; HTTP client tùy chọn ở requirements-lightrag-client.txt, dịch vụ LightRAG chạy riêng.
 
 Phân công: Dũng dữ liệu/docs và Pipeline/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Diff/Scorer và frontend; Đức Anh schema/context và điều phối đánh giá; Dũng + Đức Anh AI Adapter và gọi/tích hợp LightRAG.
+
+Web demo cục bộ có điểm khởi chạy riêng: cài `requirements-demo.txt`, chạy `python -m uvicorn backend.demo:app --host 127.0.0.1 --port 8000`, rồi mở http://127.0.0.1:8000. Có chọn file, dữ liệu mẫu từ data/raw, diff có nguồn và lỗi ngoài phạm vi. Model chưa chọn, LightRAG tắt; ngữ nghĩa/mức tác động chưa đủ căn cứ giữ null và PARTIAL. Đây là demo quy tắc cục bộ, chưa phải nghiệm thu toàn hệ thống hoặc dịch vụ LightRAG thật. API nền backend.main vẫn giữ runner mặc định chưa cấu hình.
