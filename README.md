@@ -13,6 +13,7 @@ Schema Đức Anh đã merge vào main qua [PR #2](https://github.com/Lyra1603/g
 - [Kế hoạch kiểm thử](docs/test_evaluation_plan.md)
 - [Kết quả xác nhận schema](docs/schema-verification-report.md)
 - [Workflow](docs/workflow.md)
+- [Thử nghiệm LightRAG, hướng dẫn chạy và bằng chứng demo](docs/lightrag-integration-report.md)
 
 Kiểm tra schema từ repo root, Python 3.11 trở lên; đã chạy Python 3.12.14:
 
@@ -27,6 +28,6 @@ python -m unittest discover -s test/schema_suite -p "test_*.py" -v
 
 requirements.txt ghim Pydantic 2.13.4 và typing_extensions 4.16.0. Lần xác nhận: 51 test, 49 đạt và 2 expected failures ghi nhận giới hạn hiện tại; không phải 51 test đều đạt. Chi tiết, lệnh và môi trường ở báo cáo kiểm thử.
 
-Backend có upload/đọc/parse; chưa có runner phân tích hoặc wiring validator trong Pipeline. POST /api/compare hiện nhận doc_v1/doc_s/reference_files ở backend/main.py; chưa gắn runner trả HTTP 501 / ANALYSIS_NOT_CONFIGURED sau đọc/parse hợp lệ. LightRAG Server qua HTTP đã chốt phương án, chưa hiện thực tích hợp. requirements.txt hiện chỉ đủ dependency schema; cài runtime API/PDF là việc riêng theo hướng dẫn, không giả định cài requirements là chạy được toàn hệ thống.
+Backend có upload/đọc/parse; chưa có runner phân tích hoặc wiring validator trong Pipeline. POST /api/compare hiện nhận doc_v1/doc_s/reference_files ở backend/main.py; chưa gắn runner trả HTTP 501 / ANALYSIS_NOT_CONFIGURED sau đọc/parse hợp lệ. LightRAG có adapter HTTP/context thử nghiệm và điểm nối opt-in trước Semantic Diff; chưa chạy index/retrieval/KG trên dịch vụ thật và chưa bật trong API. Xem báo cáo thử nghiệm ở trên. requirements.txt hiện chỉ đủ dependency schema; HTTP client tùy chọn ở requirements-lightrag-client.txt, dịch vụ LightRAG chạy riêng.
 
 Phân công: Dũng dữ liệu/docs và Pipeline/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Diff/Scorer và frontend; Đức Anh schema/context và điều phối đánh giá; Dũng + Đức Anh AI Adapter và gọi/tích hợp LightRAG.
