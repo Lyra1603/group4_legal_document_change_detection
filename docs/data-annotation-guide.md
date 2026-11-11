@@ -1,8 +1,8 @@
 # HƯỚNG DẪN TUYỂN CHỌN DỮ LIỆU VÀ GÁN NHÃN
 
-**Dự án:** Legal Document Change Detection  
-**Phiên bản:** 1.2.0  
-**Trạng thái:** Hướng dẫn phục vụ pilot và review nhãn  
+**Dự án:** Legal Document Change Detection
+**Phiên bản:** 1.2.0
+**Trạng thái:** Hướng dẫn phục vụ pilot và review nhãn
 **Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md), [Workflow](workflow.md), [Kế hoạch kiểm thử và đánh giá](test_evaluation_plan.md)
 
 ## 1. Mục đích và phạm vi hướng dẫn
@@ -147,9 +147,9 @@ Ví dụ: đổi chủ thể báo cáo sự cố và ngưỡng thời gian gián
 
 Nếu không thống nhất được ranh giới, ghi phương án và lý do để adjudication; khóa quy tắc sau pilot và cập nhật nhãn bị ảnh hưởng. Không thay cách chia để làm tăng chỉ số sau khi xem test.
 
-### 4.3. Ranh giới 8 nhóm khía cạnh nội bộ
+### 4.3. Ranh giới 8 nhóm khía cạnh dùng chung
 
-Mã và cấu trúc theo SRS mục 1.3; bảng này giữ chi tiết khía cạnh nội bộ và ví dụ đã có. Không dùng tám nhóm này như bốn mã phân loại ReviewItem. Danh mục bốn mã, định nghĩa và mapping cần owner Semantic Diff/Scorer, Dũng và Đức Anh chốt bằng fixture; chưa có thì ghi chưa xác định, không tự đổi nhãn gold thành mã giả.
+Mã và cấu trúc theo SRS mục 1.3 và GROUPS trong report_validation.py. Đây là tám nhóm của hợp đồng chung; category dùng một nhóm có trong aspects, WORDING_ONLY hoặc null theo validator. Không tạo danh mục nhãn đầu ra khác với schema đã chốt.
 
 | Trường hợp | Nhóm sử dụng | Quy tắc phân biệt |
 | --- | --- | --- |
@@ -206,9 +206,9 @@ Một ngày hiệu lực được nêu trong S không tự là thay đổi ngày
 
 ## 5. Tiêu chí chọn nhãn tổng thể và mức độ
 
-### 5.1. Chọn category tổng thể nội bộ
+### 5.1. Chọn category tổng thể theo hợp đồng chung
 
-category nội bộ tóm tắt SemanticChange; giữ nguyên tất cả aspects. Đây không phải classification_code bốn nhóm của ReviewItem. Không dùng kết quả ưu tiên nội bộ dưới đây để tự quyết định bốn mã đầu ra. Chỉ chọn trong các field_group đã xác định có đổi nghĩa của thay đổi đó. Quy tắc pilot đề xuất: CONSEQUENCES_SANCTIONS → RIGHTS_DUTIES_ACTIONS → SUBJECT_OBJECT → CONDITIONS_EXCEPTIONS → PROCEDURE_AUTHORITY → TIME_QUANTITY → SCOPE_EFFECT_TRANSITION → DEFINITIONS_REFERENCES. Thứ tự này là quy ước trình bày của dự án, không phải thứ tự mức tác động pháp lý.
+category tóm tắt SemanticChange theo hợp đồng chung; giữ nguyên tất cả aspects. Chỉ chọn trong các field_group đã xác định có đổi nghĩa của thay đổi đó. Quy tắc pilot đề xuất: CONSEQUENCES_SANCTIONS → RIGHTS_DUTIES_ACTIONS → SUBJECT_OBJECT → CONDITIONS_EXCEPTIONS → PROCEDURE_AUTHORITY → TIME_QUANTITY → SCOPE_EFFECT_TRANSITION → DEFINITIONS_REFERENCES. Thứ tự này là quy ước trình bày của dự án, không phải thứ tự mức tác động pháp lý.
 
 Ví dụ có SUBJECT_OBJECT và TIME_QUANTITY thì category = SUBJECT_OBJECT; reason vẫn giải thích cả việc mở rộng chủ thể và thay ngưỡng. Trường hợp đổi nội dung quyền/nghĩa vụ và chủ thể thì ưu tiên RIGHTS_DUTIES_ACTIONS. Chưa có nhóm được xác định đủ căn cứ thì category = null và cảnh báo; chỉ đổi diễn đạt thì WORDING_ONLY. Thứ tự ưu tiên phải được nhóm review qua pilot, ghi phiên bản trước sử dụng chung.
 
@@ -401,7 +401,7 @@ ScoringResult cho cùng thay đổi:
 
 ```
 
-Hai khối minh họa cách điền nhãn ngữ nghĩa và mức độ nội bộ, không phải hồ sơ đầy đủ hoặc response API documents/items. Bộ fixture báo cáo phải có mapping sang ReviewItem theo SRS mục 1.7 sau khi contract được hai bên review. Chỉ dẫn, vị trí đích, ngữ cảnh, dẫn chiếu và hiệu lực phải được ghi trong AmendmentItem theo SRS; không tạo thêm schema ở đây. Mẫu không quyết định trước số lượng file hoặc số trang của dữ liệu thực tế.
+Hai khối minh họa cách điền nhãn ngữ nghĩa và mức độ nội bộ, không phải response API đầy đủ. Fixture báo cáo dùng ComparisonReport.results với AmendmentResult theo SRS mục 1.7; giữ ID và các trường nullable theo schema chung. Chỉ dẫn, vị trí đích, ngữ cảnh, dẫn chiếu và hiệu lực phải được ghi trong AmendmentItem theo SRS; không tạo thêm schema ở đây. Mẫu không quyết định trước số lượng file hoặc số trang của dữ liệu thực tế.
 
 ### 7.4. Hồ sơ gán nhãn mỗi mẫu
 
@@ -428,4 +428,4 @@ Gán AMEND, đích khoản 1 Điều 2, khía cạnh SUBJECT_OBJECT vì thêm t�
 
 Fixture mỗi điểm nối lưu dưới `test/fixtures/`, có input, output mong đợi, phiên bản hợp đồng, căn cứ nguồn và hai owner review. Bên nhận dùng fixture để phát triển độc lập trước khi có output thật; output thật phải qua cùng kiểm tra. Các ca tối thiểu theo Workflow. Số Điều/Khoản/Điểm mong đợi phải được review từ nguồn độc lập, không chỉ chép summary của Parser làm đáp án.
 
-Nhãn chi tiết AmendmentItem/SemanticDiffResult/ScoringResult được giữ để phân tích lỗi; báo cáo API mục tiêu đóng gói ReviewItem trong documents/items. ReviewRecord và nhận xét người dùng trong phiên không tự là gold, không tự dùng để huấn luyện hoặc chấm điểm. Khi kiểm tra bổ sung tài liệu, có fixture nội dung không đổi, nội dung đổi, mục mới, không ghép được và lượt thất bại; không tự lấy quyết định cũ làm đáp án của lượt mới.
+Nhãn chi tiết AmendmentItem/SemanticDiffResult/ScoringResult được giữ để phân tích lỗi; báo cáo API đóng gói AmendmentResult trong results. Dữ liệu nhận xét người dùng trong phiên thuộc frontend, kiểu còn chờ; không tự là gold, không tự dùng để huấn luyện hoặc chấm điểm. Khi kiểm tra bổ sung tài liệu, có fixture nội dung không đổi, nội dung đổi, mục mới, không ghép được và lượt thất bại; không tự lấy quyết định cũ làm đáp án của lượt mới.
