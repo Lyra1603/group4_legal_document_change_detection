@@ -1,0 +1,45 @@
+{
+  "input": {
+    "documents": {
+      "v1": {
+        "document_id": "v1",
+        "role": "BASE",
+        "filename": "sample-base.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Văn bản mẫu A"
+          },
+          {
+            "source_ref": "block:2",
+            "text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+          },
+          {
+            "source_ref": "block:3",
+            "text": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+          }
+        ]
+      },
+      "s": {
+        "document_id": "s",
+        "role": "AMENDMENT",
+        "filename": "sample-amendment.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Thay thế Điều 2 của Văn bản mẫu A bằng nội dung sau:"
+          },
+          {
+            "source_ref": "block:2",
+            "text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+          }
+        ]
+      }
+    }
+  },
+  "expected_output": {
+    "index_ready": true
+  }
+}

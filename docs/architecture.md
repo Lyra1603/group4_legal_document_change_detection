@@ -40,16 +40,30 @@ Ba file nền main/pipeline/requirements được ghi nhận đã có trong mã 
 
 ## 2. Thành phần và ranh giới trách nhiệm
 
+Sơ đồ tổng thể thể hiện đường đi từ tải tài liệu đến hiển thị báo cáo, cùng ranh giới giữa Frontend, backend nghiệp vụ và LightRAG Server. Chi tiết luồng tích hợp sau Document Processing nằm ở mục 4.1.1.
+
 ```mermaid
 flowchart TD
-A["Adapter: tài liệu và nguồn chuẩn hóa"] --> B["Linker: xác định đích và trước/sau"]
-A --> C["Context: tạo chunk, registry và nhập chỉ mục"]
-B --> D["Text Diff"]
-D --> E["Ghép yêu cầu query"]
-C --> E
-E --> F["LightRAG query và kiểm tra nguồn"]
-F --> G["Semantic: rule trước, model khi cần"]
-G --> H["Scorer và report"]
+    UI["Frontend: tải tài liệu và kiểm chứng báo cáo"]
+    subgraph BE["Backend nghiệp vụ"]
+        API["API nghiệp vụ"]
+        P["Pipeline điều phối"]
+        DOC["Document Processing: đọc, chuyển PDF khi cần, parse và chuẩn hóa nguồn"]
+        ANALYSIS["Phân tích thay đổi: Linker, Text Diff, Context, Semantic và Scorer"]
+        REPORT["Tổng hợp và kiểm tra ComparisonReport"]
+        MODEL["AI Adapter: gọi model khi cần"]
+    end
+    RAG["LightRAG Server riêng: lập chỉ mục và truy xuất"]
+
+    UI -->|"V1, S và tài liệu tham chiếu nếu có"| API
+    API --> P
+    P --> DOC
+    DOC -->|"Tài liệu và nguồn chuẩn hóa"| ANALYSIS
+    ANALYSIS <-->|"HTTP qua LightRAG client"| RAG
+    ANALYSIS -.->|"Semantic cần model"| MODEL
+    ANALYSIS -->|"Kết quả, bằng chứng và cảnh báo"| REPORT
+    REPORT --> API
+    API -->|"Báo cáo và bằng chứng truy được nguồn"| UI
 ```
 
 Các module nghiệp vụ gọi nhau bằng hàm/contract; HTTP LightRAG được cô lập trong client. Pipeline không phụ thuộc router hoặc shape response thô của dịch vụ. AI Adapter gọi mô hình và validate kết quả; context client không tự quyết định nhãn pháp lý hay decision người dùng. Log không ghi toàn văn tài liệu, ghi chú hoặc khóa.
@@ -132,7 +146,23 @@ Sau adapter, Context chuẩn bị chunk, registry và nhập chỉ mục song so
 
 Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển bằng chứng có nguồn cùng lỗi/cảnh báo và phạm vi bị ảnh hưởng cho module nhận đầu ra theo contract chung. Bên nhận kiểm tra dữ liệu, không bỏ cảnh báo hoặc biến thiếu căn cứ thành không có thay đổi. Pipeline tổng hợp trạng thái báo cáo, không thay owner xử lý lỗi nội bộ.
 
-API giữ doc_v1/doc_s/reference_files; Pipeline cấp comparison_id, đọc/parse/adapter, thực hiện luồng mục 2 rồi validate report. Trả nguồn đủ để frontend đọc bằng chứng sau cleanup; giữ chỉ dẫn chưa phân tích được. Index phục vụ nhiều chỉ dẫn cùng comparison; cách ly/cleanup thật còn cần kiểm chứng.
+API giữ doc_v1/doc_s/reference_files; Pipeline cấp comparison_id, đọc/parse/adapter, thực hiện luồng chi tiết ở mục 4.1.1 rồi validate report. Trả nguồn đủ để frontend đọc bằng chứng sau cleanup; giữ chỉ dẫn chưa phân tích được. Index phục vụ nhiều chỉ dẫn cùng comparison; cách ly/cleanup thật còn cần kiểm chứng.
+
+#### 4.1.1. Luồng mục tiêu sau Document Processing khi tích hợp LightRAG
+
+Phần này bắt đầu từ đầu ra của Adapter. Chuẩn bị Context và chỉ mục chạy song song với nhánh Linker → Text Diff. Kết quả Text Diff tham gia tạo truy vấn sau khi cả hai nhánh sẵn sàng. Nguồn truy xuất được kiểm chứng trước khi Semantic nhận dữ liệu.
+
+```mermaid
+flowchart TD
+A["Adapter: tài liệu và nguồn chuẩn hóa"] --> B["Linker: xác định đích và trước/sau"]
+A --> C["Context: tạo chunk, registry và nhập chỉ mục"]
+B --> D["Text Diff"]
+D --> E["Ghép yêu cầu query"]
+C --> E
+E --> F["LightRAG query và kiểm tra nguồn"]
+F --> G["Semantic: rule trước, model khi cần"]
+G --> H["Scorer và report"]
+```
 
 ### 4.2. Bổ sung tài liệu và nhận xét
 
