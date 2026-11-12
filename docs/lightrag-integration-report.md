@@ -1,5 +1,7 @@
 # Báo cáo thử nghiệm LightRAG cho Semantic Diff
 
+**Báo cáo lịch sử ngày 10/11:** giữ bằng chứng theo mốc dưới đây. Các ghi nhận “chưa có Linker/demo” và tracking/đường chạy chỉ thuộc lần khảo sát ban đầu. Nhánh hiện tại đã có demo và sửa lỗi tại c192f43; xem [common-baseline.md](common-baseline.md) để tra trạng thái mới. Sơ đồ thử nghiệm cũ không thay thế luồng mục tiêu index + Text Diff → query trong [architecture.md](architecture.md#411-luồng-mục-tiêu-sau-document-processing-khi-tích-hợp-lightrag).
+
 Ngày thực hiện 10/11/2026. Owner Dũng + Đức Anh. Phạm vi theo yêu cầu thử nghiệm LK-13 trong phiên làm việc này; chưa phải quyết định áp dụng chính thức của cả nhóm.
 
 ## 1. Kết quả và giới hạn quan trọng

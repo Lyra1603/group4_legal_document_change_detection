@@ -1,0 +1,55 @@
+{
+  "upstream_branch": "bachdung/docs-data",
+  "upstream_commit": "cf62188b5f1e366957666a4b0edb6003da5679d5",
+  "prepared_on_branch": "ducanh_bachdung/integrate_LightRAG",
+  "decision_date": "2026-11-12",
+  "scope": "Docs and shared fixture synchronization; no production algorithm, schema, branch history or raw PDF import.",
+  "adaptations": [
+    "Resolved target_document uses document_id v1.",
+    "Unreviewed severity/is_critical null with review.",
+    "Example report PARTIAL with review warning rather than SUCCESS.",
+    "Negative scenario expected subsets are test assertions, not a new module contract.",
+    "Query gates require index and TextDiffResult before execution.",
+    "Keep Dung docs as design baseline; current executable entry point backend.demo:app.",
+    "Retain historical verification reports; distinguish target interfaces from runtime.",
+    "Unsupported ADD/REPEAL and multiple targets deferred until after baseline merge."
+  ],
+  "open_items": [
+    "Encoding target_document when document identity is unresolved remains unpinned; never invent a confirmed ID.",
+    "Rule/model readiness and rubric need owner review.",
+    "Module function bindings/BoundaryData adapters must be implemented and verified separately."
+  ],
+  "files": [
+    "data/module_handoff_fixtures/adapter_to_context/deadline_reduction.json",
+    "data/module_handoff_fixtures/adapter_to_linker/deadline_reduction.json",
+    "data/module_handoff_fixtures/analysis_to_pipeline/deadline_reduction.json",
+    "data/module_handoff_fixtures/api_to_frontend/deadline_reduction.json",
+    "data/module_handoff_fixtures/context_and_text_diff_to_semantic/deadline_reduction.json",
+    "data/module_handoff_fixtures/document_to_text_diff/deadline_reduction.json",
+    "data/module_handoff_fixtures/retrieval_to_context/deadline_reduction.json",
+    "data/module_handoff_fixtures/scenarios/ambiguous_target.json",
+    "data/module_handoff_fixtures/scenarios/missing_target.json",
+    "data/module_handoff_fixtures/scenarios/mixed_supported_unsupported.json",
+    "data/module_handoff_fixtures/scenarios/other_document.json",
+    "data/module_handoff_fixtures/scenarios/unsupported_move.json",
+    "data/module_handoff_fixtures/scenarios/unverified_document.json",
+    "data/module_handoff_fixtures/semantic_to_scorer/deadline_reduction.json",
+    "data/module_handoff_fixtures/text_diff_and_index_to_query/deadline_reduction.json",
+    "data/module_handoff_fixtures/text_diff_and_index_to_query/index_not_ready.json",
+    "data/module_handoff_fixtures/text_diff_and_index_to_query/text_diff_not_ready.json"
+  ],
+  "docs_baseline_branch": "bachdung/docs",
+  "docs_baseline_commit": "6dbda8da7a050e4d21f354c5e59765244e2f176a",
+  "code_baseline_commit": "c192f43b785f9a38a64c8ca6e4166c0e40622528",
+  "verified_unchanged_upstream_fixtures": [
+    "data/module_handoff_fixtures/adapter_to_context/deadline_reduction.json",
+    "data/module_handoff_fixtures/adapter_to_linker/deadline_reduction.json",
+    "data/module_handoff_fixtures/analysis_to_pipeline/deadline_reduction.json",
+    "data/module_handoff_fixtures/api_to_frontend/deadline_reduction.json",
+    "data/module_handoff_fixtures/context_and_text_diff_to_semantic/deadline_reduction.json",
+    "data/module_handoff_fixtures/document_to_text_diff/deadline_reduction.json",
+    "data/module_handoff_fixtures/retrieval_to_context/deadline_reduction.json",
+    "data/module_handoff_fixtures/semantic_to_scorer/deadline_reduction.json",
+    "data/module_handoff_fixtures/text_diff_and_index_to_query/deadline_reduction.json"
+  ]
+}

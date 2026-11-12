@@ -1,0 +1,62 @@
+{
+  "input": {
+    "index_ready": true,
+    "amendment": {
+      "amendment_id": "a1",
+      "operation": "AMEND",
+      "instruction": {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Thay thế Điều 2 của Văn bản mẫu A bằng nội dung sau:"
+      },
+      "target_document": "v1",
+      "target_locator": "Điều 2",
+      "target_unit_ids": [
+        "v1:n2"
+      ],
+      "applicability": "APPLIES",
+      "before_text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+      "after_text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+      "after_basis": "QUOTED",
+      "evidence": [
+        {
+          "document_id": "v1",
+          "source_refs": [
+            "block:2"
+          ],
+          "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+        },
+        {
+          "document_id": "s",
+          "source_refs": [
+            "block:2"
+          ],
+          "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+        }
+      ],
+      "effect_info": [],
+      "context": {
+        "general_context": "",
+        "evidence": [],
+        "references": []
+      },
+      "needs_review": false,
+      "review_reason": ""
+    },
+    "text_diff": null
+  },
+  "expected_output": {
+    "query_executed": false,
+    "review_reason_required": true
+  },
+  "metadata": {
+    "kind": "SYNTHETIC_QUERY_GATE_TARGET_NOT_SERVICE_PROOF",
+    "upstream_commit": "cf62188b5f1e366957666a4b0edb6003da5679d5",
+    "upstream_path": "data/module_handoff_fixtures/text_diff_and_index_to_query/deadline_reduction.json",
+    "decision_date": "2026-11-12",
+    "implementation_status": "NOT_VERIFIED_AGAINST_ALL_MODULES",
+    "docs_baseline_commit": "6dbda8da7a050e4d21f354c5e59765244e2f176a"
+  }
+}

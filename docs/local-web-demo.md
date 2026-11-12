@@ -2,11 +2,13 @@
 
 Ngày 11/11/2026, trên nhánh `ducanh_bachdung/integrate_LightRAG`. Người dùng đã cho phép kiểm tra nhánh thành viên, tái sử dụng code và viết phần tối thiểu còn thiếu. Dữ liệu lấy từ `data/raw`; quyết định model được để lại sau.
 
+**Cập nhật 12/11, code c192f43:** đây là điểm chạy nền chung theo quyết định Đức Anh. Linker đã sửa xác minh văn bản đích và chặn thao tác chưa hỗ trợ bị nhận thành AMEND; report/HTTP đã sửa. JSON/ảnh ngày 11/11 bên dưới là lịch sử, không tự ghi đè. Trạng thái mới ở [common-baseline.md](common-baseline.md).
+
 ## Kết quả hiện tại
 
 Có luồng thực thi từ giao diện chọn file → upload HTTP → Reader/Parser → adapter Clause → Linker hẹp → Text Diff → baseline ngữ nghĩa/scoring → validator → báo cáo trên web. Không dùng đáp án trước/sau điền sẵn để tạo kết quả.
 
-**Chưa có LightRAG/model thật trong web demo này.** Baseline giữ kết luận ngữ nghĩa và mức tác động chưa xác định khi context chưa xác nhận. Báo cáo trả PARTIAL và hiển thị lý do; không tuyên bố đã hoàn thành nghiệm thu Semantic Diff hoặc LK-13.
+**Chưa có LightRAG/model thật trong web demo này.** Baseline giữ kết luận ngữ nghĩa và mức tác động chưa xác định khi context chưa xác nhận. Có mục phân tích dùng được nhưng còn thiếu thì PARTIAL; không có mục dùng được thì FAILED cùng chỉ dẫn/lý do. FAILED nghiệp vụ với errors rỗng vẫn HTTP 200; lỗi thực thi giữ mã HTTP phù hợp. Không tuyên bố nghiệm thu Semantic Diff hoặc LK-13.
 
 ## Cách mở
 
@@ -27,7 +29,7 @@ Luồng đã kiểm chứng là DOCX. PDF vẫn qua bộ chuyển đổi hiện 
 
 - Một lệnh thay cụm từ X bằng Y ở một Điều, tùy chọn một khoản và một điểm. Cụm cũ phải xuất hiện duy nhất; after_basis là DERIVED và không gán new_quote như nguyên văn.
 - Thay nguyên đơn vị bằng một đoạn trích dẫn đóng/mở đầy đủ sau chỉ dẫn sửa đổi. Nhãn Điều/khoản/điểm của đoạn thay thế phải khớp đích; after_basis là QUOTED.
-- Đối chiếu số văn bản từ header V1 và chỉ dẫn/phần heading trong S. Chỉ dẫn nhắm văn bản khác giữ OTHER_DOCUMENT, không ghép chỉ vì trùng số Điều.
+- Đối chiếu số hiệu từ header V1 và chỉ dẫn/heading S, hoặc tên văn bản khớp nguyên dòng header sau chuẩn hóa. Chỉ APPLIES khi có căn cứ xác minh, không chỉ vì trùng số Điều. Số hiệu đã xác định khác V1 giữ OTHER_DOCUMENT; thiếu căn cứ giữ UNRESOLVED, không mặc định V1.
 - Chỉ dẫn bổ sung/bãi bỏ, nhiều đích, đích không duy nhất, cụm từ không duy nhất, quote hỏng hoặc đánh lại số chưa được thực hiện; giữ chỉ dẫn và cảnh báo trong báo cáo.
 - Khi không nhận diện được chỉ dẫn, trả INSTRUCTIONS_NOT_RECOGNIZED, không suy ra “không có thay đổi”. Đây là bộ nhận diện mẫu hẹp, chưa chứng minh bao phủ mọi cách diễn đạt pháp luật.
 
@@ -77,7 +79,7 @@ python -m unittest discover -s test/schema_suite -v
 python -m unittest discover -s test/context_suite -v
 ```
 
-- Web/backend mới: 12/12 đạt, gồm ba bộ thật, tái dựng after_text từ diff, DERIVED không có quote giả, ngoài phạm vi và phần dùng được cùng tồn tại, đích/cụm từ mơ hồ, sai văn bản, quote hỏng, file hỏng/rỗng/sai định dạng và nhiều tham chiếu.
+- Web/backend: lần ghi nhận 11/11 có 12/12 đạt; sau hai commit sửa lỗi tại c192f43 có 30/30 đạt ngày 12/11. Bao gồm ba bộ thật, dựng lại after_text, DERIVED không giả quote, sai danh tính văn bản, ngoài phạm vi và phân biệt FAILED nghiệp vụ/lỗi thực thi. Kết quả sau đồng bộ docs ở common-baseline.md.
 - Schema nền: 51 test, 49 đạt và 2 expected failures đã biết.
 - Context/LightRAG: 26 test, 24 đạt và 2 real-service tests skipped. Không tuyên bố LightRAG thật đã chạy.
 - Trình duyệt Edge: đã thử nạp mẫu, chọn file qua file chooser, thêm nhiều tham chiếu, bỏ file, gửi HTTP, xem kết quả và cảnh báo sai định dạng. Không có lỗi console trong lần kiểm tra. Chưa kiểm chứng riêng trên thiết bị di động hoặc trình duyệt khác.
@@ -87,4 +89,4 @@ python -m unittest discover -s test/context_suite -v
 
 Chọn model/provider và môi trường chạy; xác nhận bộ gold; nối LightRAG thật với lifecycle/cách ly đã thiết kế; review context trước Semantic; kiểm chứng kết quả ngữ nghĩa và rubric. Không bật cờ “context đầy đủ” chỉ để có significance khác null. Không mở rộng thành phân tích mọi kiểu sửa đổi hoặc kết luận hiệu lực khi chưa có bằng chứng.
 
-Thay đổi hiện ở local; chưa commit/push trong đợt làm web demo. Ảnh demo-summary.png có trước đợt này vẫn được giữ nguyên.
+Code demo và sửa lỗi đã commit/push đến c192f43; đợt đồng bộ tài liệu hiện tại chưa tự commit/push hoặc merge main. Ảnh demo-summary.png có trước đợt web demo, không phải ảnh tạo mới trong lần cập nhật này.

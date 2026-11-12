@@ -1,0 +1,369 @@
+{
+  "input": {
+    "comparison_id": "sample-deadline-reduction",
+    "base_document": {
+      "document_id": "v1",
+      "role": "BASE",
+      "filename": "sample-base.docx"
+    },
+    "amendment_document": {
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "filename": "sample-amendment.docx"
+    },
+    "reference_documents": [],
+    "results": [
+      {
+        "amendment": {
+          "amendment_id": "a1",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Thay thế Điều 2 của Văn bản mẫu A bằng nội dung sau:"
+          },
+          "target_document": "v1",
+          "target_locator": "Điều 2",
+          "target_unit_ids": [
+            "v1:n2"
+          ],
+          "applicability": "APPLIES",
+          "before_text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+          "after_text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+          "after_basis": "QUOTED",
+          "evidence": [
+            {
+              "document_id": "v1",
+              "source_refs": [
+                "block:2"
+              ],
+              "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+            },
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:2"
+              ],
+              "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "Điều 3 quy định thời hạn tại Điều 2 tính theo ngày làm việc.",
+            "evidence": [
+              {
+                "document_id": "v1",
+                "source_refs": [
+                  "block:3"
+                ],
+                "quote": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+              }
+            ],
+            "references": []
+          },
+          "needs_review": false,
+          "review_reason": ""
+        },
+        "text_diff": {
+          "amendment_id": "a1",
+          "changes": [
+            {
+              "type": "REPLACE",
+              "old_text": "30",
+              "new_text": "15",
+              "old_start": 36,
+              "old_end": 38,
+              "new_start": 36,
+              "new_end": 38
+            }
+          ]
+        },
+        "semantic_diff": {
+          "amendment_id": "a1",
+          "changes": [
+            {
+              "change_id": "a1:c1",
+              "is_meaningful_change": true,
+              "diff_details": "Thời hạn nộp báo cáo giảm từ 30 xuống 15 ngày làm việc.",
+              "aspects": [
+                {
+                  "aspect_id": "a1:c1:time",
+                  "field_group": "TIME_QUANTITY",
+                  "old_value": "30 ngày làm việc",
+                  "new_value": "15 ngày làm việc",
+                  "interpretation": "Doanh nghiệp có ít thời gian hơn để nộp báo cáo; mốc nhận thông báo giữ nguyên.",
+                  "evidence": [
+                    {
+                      "document_id": "v1",
+                      "source_refs": [
+                        "block:2"
+                      ],
+                      "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+                    },
+                    {
+                      "document_id": "s",
+                      "source_refs": [
+                        "block:2"
+                      ],
+                      "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+                    },
+                    {
+                      "document_id": "v1",
+                      "source_refs": [
+                        "block:3"
+                      ],
+                      "quote": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+                    }
+                  ],
+                  "old_quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+                  "new_quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+                  "needs_review": false,
+                  "review_reason": ""
+                }
+              ],
+              "evidence": [
+                {
+                  "document_id": "v1",
+                  "source_refs": [
+                    "block:2"
+                  ],
+                  "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+                },
+                {
+                  "document_id": "s",
+                  "source_refs": [
+                    "block:2"
+                  ],
+                  "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+                },
+                {
+                  "document_id": "v1",
+                  "source_refs": [
+                    "block:3"
+                  ],
+                  "quote": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+                }
+              ],
+              "old_quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+              "new_quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+              "needs_review": false,
+              "review_reason": ""
+            }
+          ],
+          "needs_review": false,
+          "review_reason": ""
+        },
+        "scoring": [
+          {
+            "change_id": "a1:c1",
+            "category": "TIME_QUANTITY",
+            "significance": null,
+            "is_critical": null,
+            "reason": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review.",
+            "needs_review": true,
+            "review_reason": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review."
+          }
+        ]
+      }
+    ],
+    "warnings": [
+      {
+        "stage": "scoring",
+        "code": "SCORING_REVIEW_PENDING",
+        "message": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review.",
+        "amendment_id": "a1"
+      }
+    ],
+    "errors": []
+  },
+  "expected_output": {
+    "comparison_id": "sample-deadline-reduction",
+    "base_document": {
+      "document_id": "v1",
+      "role": "BASE",
+      "filename": "sample-base.docx"
+    },
+    "amendment_document": {
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "filename": "sample-amendment.docx"
+    },
+    "reference_documents": [],
+    "status": "PARTIAL",
+    "results": [
+      {
+        "amendment": {
+          "amendment_id": "a1",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Thay thế Điều 2 của Văn bản mẫu A bằng nội dung sau:"
+          },
+          "target_document": "v1",
+          "target_locator": "Điều 2",
+          "target_unit_ids": [
+            "v1:n2"
+          ],
+          "applicability": "APPLIES",
+          "before_text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+          "after_text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+          "after_basis": "QUOTED",
+          "evidence": [
+            {
+              "document_id": "v1",
+              "source_refs": [
+                "block:2"
+              ],
+              "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+            },
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:2"
+              ],
+              "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "Điều 3 quy định thời hạn tại Điều 2 tính theo ngày làm việc.",
+            "evidence": [
+              {
+                "document_id": "v1",
+                "source_refs": [
+                  "block:3"
+                ],
+                "quote": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+              }
+            ],
+            "references": []
+          },
+          "needs_review": false,
+          "review_reason": ""
+        },
+        "text_diff": {
+          "amendment_id": "a1",
+          "changes": [
+            {
+              "type": "REPLACE",
+              "old_text": "30",
+              "new_text": "15",
+              "old_start": 36,
+              "old_end": 38,
+              "new_start": 36,
+              "new_end": 38
+            }
+          ]
+        },
+        "semantic_diff": {
+          "amendment_id": "a1",
+          "changes": [
+            {
+              "change_id": "a1:c1",
+              "is_meaningful_change": true,
+              "diff_details": "Thời hạn nộp báo cáo giảm từ 30 xuống 15 ngày làm việc.",
+              "aspects": [
+                {
+                  "aspect_id": "a1:c1:time",
+                  "field_group": "TIME_QUANTITY",
+                  "old_value": "30 ngày làm việc",
+                  "new_value": "15 ngày làm việc",
+                  "interpretation": "Doanh nghiệp có ít thời gian hơn để nộp báo cáo; mốc nhận thông báo giữ nguyên.",
+                  "evidence": [
+                    {
+                      "document_id": "v1",
+                      "source_refs": [
+                        "block:2"
+                      ],
+                      "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+                    },
+                    {
+                      "document_id": "s",
+                      "source_refs": [
+                        "block:2"
+                      ],
+                      "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+                    },
+                    {
+                      "document_id": "v1",
+                      "source_refs": [
+                        "block:3"
+                      ],
+                      "quote": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+                    }
+                  ],
+                  "old_quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+                  "new_quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+                  "needs_review": false,
+                  "review_reason": ""
+                }
+              ],
+              "evidence": [
+                {
+                  "document_id": "v1",
+                  "source_refs": [
+                    "block:2"
+                  ],
+                  "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+                },
+                {
+                  "document_id": "s",
+                  "source_refs": [
+                    "block:2"
+                  ],
+                  "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+                },
+                {
+                  "document_id": "v1",
+                  "source_refs": [
+                    "block:3"
+                  ],
+                  "quote": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+                }
+              ],
+              "old_quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+              "new_quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+              "needs_review": false,
+              "review_reason": ""
+            }
+          ],
+          "needs_review": false,
+          "review_reason": ""
+        },
+        "scoring": [
+          {
+            "change_id": "a1:c1",
+            "category": "TIME_QUANTITY",
+            "significance": null,
+            "is_critical": null,
+            "reason": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review.",
+            "needs_review": true,
+            "review_reason": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review."
+          }
+        ]
+      }
+    ],
+    "warnings": [
+      {
+        "stage": "scoring",
+        "code": "SCORING_REVIEW_PENDING",
+        "message": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review.",
+        "amendment_id": "a1"
+      }
+    ],
+    "errors": []
+  },
+  "metadata": {
+    "kind": "SYNTHETIC_HANDOFF_TARGET_NOT_RUNTIME_PROOF",
+    "upstream_commit": "cf62188b5f1e366957666a4b0edb6003da5679d5",
+    "upstream_path": "data/module_handoff_fixtures/analysis_to_pipeline/deadline_reduction.json",
+    "decision_date": "2026-11-12",
+    "implementation_status": "NOT_VERIFIED_AGAINST_ALL_MODULES",
+    "docs_baseline_commit": "6dbda8da7a050e4d21f354c5e59765244e2f176a"
+  }
+}

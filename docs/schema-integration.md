@@ -1,10 +1,16 @@
 # Hợp đồng schema chung và hướng dẫn tích hợp
 
+## Trạng thái nền chung ngày 12/11/2026
+
+Tài liệu lấy bản Dũng `6dbda8d`, đối chiếu code LightRAG `c192f43`; [common-baseline.md](common-baseline.md) ghi trạng thái và task còn thiếu. Schema giữ nguyên. Dùng `backend.demo:app` để chạy nền DOCX: runner đã nối Adapter/Linker/Text Diff/Context/Semantic/Scorer giới hạn, validate nguồn và report. `backend.main:app` riêng vẫn chưa cấu hình runner. Các mô tả PR #2 dưới đây là lịch sử nhập schema, không phải mọi module hiện tại còn trống.
+
+Fixture chung ở [data/module_handoff_fixtures](../data/module_handoff_fixtures/README.md): 9 điểm nối từ Dũng, thêm ca lỗi. Ca giảm thời hạn giữ significance/is_critical=null, review có lý do và report PARTIAL. Wrapper index_ready/query_text/displayed_evidence chỉ dùng trong fixture. Không thêm trường vào contract runtime. target_document đã xác minh là document_id; chưa xác minh giữ applicability=UNRESOLVED, không mặc định v1.
+
 ## Căn cứ và phạm vi nhập
 
 Nhóm đã chọn hợp đồng tại commit `b6a13f98b9a7357b9fbb0936aba6bda065d03fcb` của nhánh `feat/ducanh-backend-integration`. Các file [contracts.py](../backend/app/schemas/contracts.py), [validation.py](../backend/app/schemas/validation.py), [report_validation.py](../backend/app/schemas/report_validation.py) và `__init__.py` được giữ nguyên từng byte so với commit căn cứ. Không nhập Pipeline, API, storage, runner, Parser hoặc các dependency không liên quan từ nhánh đó.
 
-Schema đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2), commit main `a8a906a474a67e89195987ca757f7315c22231db`. Tài liệu đồng bộ được chuẩn bị trên nền commit này; nội dung docs mới trên bachdung/docs (`b20ba5806772d8bb1f5f41f55548471eb8e251e0`) và bản docs đã được Dũng duyệt được giữ khi tương thích schema. Chỉ chuyển tài liệu, không merge nguyên nhánh docs cũ để tránh kéo ngược mã nguồn/cấu trúc.
+Schema đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2), commit `a8a906a`.
 
 ## Cấu trúc và kiểm tra có sẵn
 
@@ -24,7 +30,7 @@ Tám nhóm: SUBJECT_OBJECT, RIGHTS_DUTIES_ACTIONS, CONDITIONS_EXCEPTIONS, TIME_Q
 
 ## Cung cấp kho nguồn và Clause từ Pipeline hiện tại
 
-Main trả ParsedDocument(document, tree, source_format); tree chứa source_blocks, articles, outside, warnings và summary. Các đối tượng này chưa phải ExtractedDocument hoặc Clause. document_adapter.py hiện là khung; ví dụ dưới là cách bàn giao để owner hiện thực tiếp, không phải adapter production đã được merge.
+Pipeline trả ParsedDocument(document, tree, source_format); tree chứa source_blocks, articles, outside, warnings và summary. Các đối tượng native này chưa phải ExtractedDocument hoặc Clause. Nhánh hiện tại đã có adapt_documents(parsed) trong document_adapter.py, trả BoundaryData(documents, clauses, units), bao gồm Điều/Khoản/Điểm và mapping PDF_TEXT. Ví dụ dưới là minh họa lịch sử chỉ lấy Điều; khi nối module dùng adapter đã có, không sao chép ví dụ để bỏ mất Khoản/Điểm hoặc tạo kho nguồn thứ hai.
 
 ```python
 from backend.app.schemas.contracts import ExtractedDocument, Clause
@@ -68,13 +74,15 @@ validate_report(report)
 
 Giữ nguyên text của mọi block, kể cả bảng/outside; các field native như kind và segments có thể lưu riêng để không mất thông tin. Không dùng full_text mọi cấp làm kho block vì sẽ lặp nội dung. Với PDF chuyển sang DOCX, file_type phản ánh đầu vào PDF_TEXT, nhưng source_ref/offset vẫn thuộc DOCX đã parse; giữ cảnh báo mapping PDF chưa xác minh. Không hứa node_id ổn định giữa các lần parse; fixture main thực tế sinh v1:n2 cho Điều đầu tiên trong ví dụ, nên không hardcode v1:n1.
 
-## Tương thích và việc cần nối tiếp
+## Tương thích trên nền main cũ và việc cần nối tiếp
+
+Các ghi nhận main/PR #2 dưới đây nói về nền f76610e; runner demo đã bổ sung trên nhánh hiện tại theo mục trạng thái đầu tài liệu. Pipeline tổng quát chưa thay validation bằng validation dùng kho nguồn; Dũng tiếp tục khi gắn runner chính thức.
 
 - Main đã trả cùng envelope base_document/amendment_document/reference_documents/results. Schema đã merge không tự bật validation: pipeline.py, backend/main.py, router và runner không bị sửa trong PR #2. Không có analysis_runner vẫn FAILED/ANALYSIS_NOT_CONFIGURED và API hiện trả HTTP 501.
 - Thọ hiện thực document_adapter theo kho nguồn/Clause trên, giữ metadata native để linker/context dùng; linker tạo AmendmentItem, không biến S thành V2 đầy đủ. Reference không có Điều vẫn giữ blocks, có thể có clauses rỗng.
 - Ngọc Anh trả TextDiffResult với amendment_id và offset Python [start,end) trên đúng before/after. Tuấn Anh trả SemanticDiffResult và list[ScoringResult]; Dũng nối bằng ID trong cùng amendment, không làm phẳng hay bỏ chỉ dẫn chưa có changes.
 - Đức Anh review schema, context và kế hoạch đánh giá; Dũng + Đức Anh thực hiện AI Adapter và LightRAG theo phân công. LightRAG HTTP/lifecycle vẫn cần LK-13; schema không xác nhận API dịch vụ đã có.
-- Frontend đọc identity từ ba trường tài liệu, duyệt results và changes, ghép scoring theo change_id trong result. Nếu tiếp tục chức năng nhận xét, Tuấn Anh/Dũng chốt khóa và trạng thái riêng trong phiên; không thêm decision/note vào schema backend.
+- Frontend đọc identity từ ba trường tài liệu, duyệt results và changes, ghép scoring theo change_id trong result. Nhận xét hai loại triển khai sau theo mục riêng; chưa thêm decision/note vào schema backend.
 - Endpoint/upload không thay trong PR schema: main hiện POST /api/compare, doc_v1/doc_s/reference_files. Định hướng tên upload khác trong docs vẫn là việc LK-11 cần review; không dùng việc chọn schema để tự chuyển API.
 
 ## Giới hạn giữ nguyên và ví dụ cần review riêng
@@ -87,13 +95,13 @@ Giữ nguyên text của mọi block, kể cả bảng/outside; các field nativ
 | Review không thay thế readiness | Item thiếu đích nhưng đang needs_review có thể qua một số kiểm tra | Pipeline cần chính sách có thể chạy bước nào; không coi qua schema là đủ căn cứ |
 | PARTIAL/FAILED chưa được kiểm chứng đầy đủ | Report PARTIAL rỗng và không có lý do vẫn có thể qua validator | Dũng/owner review tiêu chí kết quả dùng được và lý do bắt buộc |
 | Metadata và ref list còn cần kiểm tra đầu vào | Kho documents key không khớp document_id, source_refs lặp hoặc input malformed | Adapter validate nguồn/Clause trước; tăng validation là PR riêng |
-| Nhận xét frontend chưa có contract | Không có change khi semantic_diff = null; ID thay sau bổ sung tài liệu | Chốt khóa nhận xét và cách đối chiếu bằng fixture, không tự thêm ReviewItem |
+| Nhận xét hai loại — giai đoạn sau | Chưa có contract lưu hoặc cơ chế kết hợp | Chốt khi triển khai sau chức năng cốt lõi; không tự thêm ReviewItem |
 
 Hai giới hạn đầu có test expectedFailure để ghi nhận thực tế, không phải tính năng được chấp nhận hoặc đã sửa. Các đề xuất tăng kiểm tra ở bảng trên chưa là quyết định mới của nhóm. Giữ code căn cứ là chủ đích phạm vi PR, không bỏ qua những giới hạn này khi nghiệm thu toàn hệ thống.
 
-## API và HTTP status đối chiếu với main
+## API và HTTP status hiện tại
 
-Căn cứ [backend/main.py](../backend/main.py), chưa kiểm thử HTTP runtime trong đợt này. Route thực thi nằm ở main.py; [api/compare.py](../backend/app/api/compare.py) còn trống.
+Căn cứ [backend/main.py](../backend/main.py) tại c192f43; demo dùng lại route qua Request.app.state.analysis_runner, có kiểm thử HTTP trong test/demo_suite. Route thực thi vẫn ở main.py; [api/compare.py](../backend/app/api/compare.py) còn trống. GET /health dưới đây mô tả app main; demo health trả comparison_ready=true, lightrag_connection=disabled và model=not_selected.
 
 | Đầu vào/điều kiện trong code | Phản hồi hiện có |
 | --- | --- |
@@ -102,7 +110,8 @@ Căn cứ [backend/main.py](../backend/main.py), chưa kiểm thử HTTP runtime
 | Báo cáo SUCCESS hoặc PARTIAL | HTTP 200 với ComparisonReport và X-Comparison-ID |
 | FAILED / ANALYSIS_NOT_CONFIGURED | HTTP 501 với ComparisonReport; mặc định khi chưa gắn runner |
 | FAILED / PROCESSING_TIMEOUT | HTTP 504, trừ khi cùng có ANALYSIS_NOT_CONFIGURED thì nhánh 501 được ưu tiên |
-| FAILED khác | HTTP 500 với ComparisonReport |
+| FAILED, xử lý xong nhưng không có kết quả dùng được và errors rỗng | HTTP 200 với ComparisonReport, giữ chỉ dẫn và lý do |
+| FAILED có errors thực thi/dịch vụ khác | HTTP 500 với ComparisonReport |
 | Sai định dạng; quá dung lượng; file rỗng/quá số tham chiếu | HTTP 415; 413; 422 với detail, không phải ComparisonReport |
 | PipelineInputError hoặc thiếu upload bắt buộc | HTTP 422; lỗi dependency validation upload do FastAPI xử lý, body khác report |
 | Đang có lượt so sánh khác | HTTP 503, Retry-After: 5 |
@@ -110,23 +119,19 @@ Căn cứ [backend/main.py](../backend/main.py), chưa kiểm thử HTTP runtime
 
 Giới hạn mặc định trong code là 20 MiB/file, 60 MiB tổng, 5 file tham chiếu và deadline 300 giây; đây là cấu hình phát triển qua LEGAL_* env, chưa là chỉ tiêu nghiệm thu. Lock theo process và cleanup đồng bộ hiện tại vẫn giữ nguyên. Schema không mô tả error body detail của FastAPI; frontend phải xử lý cả report và lỗi HTTP.
 
-Khác biệt cần LK-11 review: giữ hay đổi tên upload, alias/tương thích nếu đổi; chuẩn hóa HTTP error body; đưa route sang compare.py; cơ chế truy nguồn sau cleanup. Không quyết định hoặc hiện thực các thay đổi đó ở PR tài liệu.
+Khác biệt cần LK-11 review: giữ hay đổi tên upload, alias/tương thích nếu đổi; chuẩn hóa HTTP error body; đưa route sang compare.py; cơ chế mở thêm nguồn sau cleanup. Đoạn trích và vị trí đã trả trong báo cáo được hiển thị theo [Architecture §4.3](architecture.md#43-vị-trí-lưu-và-vòng-đời).
 
-## ReviewRecord và đề xuất mở rộng hợp đồng — chỉ để review
+## Nhận xét — phạm vi mở rộng chưa có contract
 
-ReviewRecord không tồn tại trong contracts.py; nhận xét là chức năng frontend còn dự kiến, chưa có kiểu dữ liệu/enum/khóa lưu chính thức. Không ghi decision/note vào ScoringResult hoặc báo cáo AI. Tuấn Anh/Dũng cần chốt đơn vị nhận xét (amendment hay change), khóa phiên, trường hợp semantic_diff=null, mapping sau phân tích lại, tính bền vững và trạng thái cần kiểm tra lại. Các tên UNREVIEWED/REVIEWED/RECHECK_REQUIRED trong kiến trúc chỉ mô tả hành vi dự kiến, chưa là enum backend.
+Nhận xét của người dùng thuộc phạm vi mở rộng. Xem [SRS](srs.md#9-phạm-vi-mở-rộng) để tra phạm vi.
 
-| Đề xuất có thể cần bổ sung | Lý do/ví dụ để review | Bên review và trạng thái |
-| --- | --- | --- |
-| Dữ liệu đọc nguồn riêng hoặc metadata nguồn kèm report | Sau cleanup, filename/EvidenceRef không chứa nội dung block; frontend cần giữ nguồn hay nhận kèm qua cơ chế riêng? | Dũng + Thọ + Đức Anh + Tuấn Anh; chưa chọn trường, chưa thêm contract |
-| Định danh/phiên bản hỗ trợ đối chiếu nhận xét giữa lần chạy | c1 có thể xuất hiện trong nhiều amendment hoặc đổi khi chạy lại; không tự dùng change_id làm khóa toàn cục | Tuấn Anh + Dũng + Đức Anh; chưa chọn khóa/field mới |
-| ReviewRecord với nội dung nhận xét và trạng thái | Chưa có semantic change vẫn có thể muốn nhận xét một chỉ dẫn | Tuấn Anh + Dũng; ưu tiên bàn riêng ở frontend, mọi đề xuất đưa vào schema backend phải PR review riêng |
-
-Các mục trên là câu hỏi cần chốt, không phải quyết định bổ sung trường. LegacyScoringResult/BaselineSemanticDiffResult/AlignedPair vẫn có trong code để tương thích lịch sử, không phải lựa chọn hợp đồng V1–S song song.
+Giữ contracts.py/validator; thay đổi contract sau này cần bên giao/nhận review.
 
 ## Chạy độc lập và dependency
 
 Chạy từ repo root, Python 3.11 trở lên. requirements.txt chỉ thêm pydantic 2.13.4 và typing_extensions 4.16.0, đã cài và chạy kiểm tra trong venv sạch trên Python 3.12.14; các dependency chuyển tiếp do pip giải quyết và được kiểm tra bằng pip check. Không lấy nguyên requirements của nhánh Đức Anh vì có dependency cho API/storage ngoài phạm vi. API/PDF cần FastAPI, uvicorn, multipart và thư viện converter theo module khi thực hiện PR runtime; không tuyên bố requirements schema đã đủ chạy mọi tính năng.
+
+Đoạn trên ghi lịch sử dependency của PR schema. Trên nền hiện tại, cài `requirements-demo.txt` để có FastAPI/uvicorn/multipart/python-docx và HTTP client, chạy `backend.demo:app` theo README. Không cần cài dịch vụ/model cho demo DOCX; PDF cần dependency converter riêng và chưa kiểm chứng xuyên luồng. Kiểm thử mới nhất xem [common-baseline.md](common-baseline.md#kiểm-chứng).
 
 ```bash
 python -m venv .venv
@@ -139,4 +144,4 @@ python -m unittest discover -s test/schema_suite -p "test_*.py" -v
 
 Fixture [common_contract.json](../test/fixtures/reports/common_contract.json) là dữ liệu giả định để kiểm tra contract, không là nhãn pháp lý hoặc bằng chứng chất lượng mô hình. Test tích hợp dùng DOCX tối thiểu tự dựng bằng thư viện chuẩn và Parser có sẵn của main; không cần import API, storage, LightRAG hay mô hình. Ngưỡng F1 90%/Critical Recall 95% vẫn dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; test schema không xác nhận hai ngưỡng đó.
 
-Kết quả chạy lại trên main sau PR #2: [báo cáo kiểm thử và các điểm còn mở](schema-verification-report.md).
+Bộ kiểm tra hiện có theo dõi hai giới hạn bằng expected failure: kiểm tra tính duy nhất của `change_id` xuyên báo cáo và dựng lại toàn bộ nội dung bằng Text Diff.

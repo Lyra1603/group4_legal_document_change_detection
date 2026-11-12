@@ -55,7 +55,7 @@ Giữ tên tải về trong `original_filename`. Tên nội bộ đề xuất:
 
 ### 2.3. Thư mục, chuyển định dạng và manifest
 
-`data/` nằm ngang cấp `docs/`; giữ các folder chính theo cấu trúc đã chốt. Dùng `data/raw/case_*/` cho hồ sơ nguồn và bộ mẫu, `data/test_parser/` và `data/test_pdf_to_docx/` cho mẫu kiểm tra tương ứng. Fixture hợp đồng dùng `test/fixtures/`, không đổi thành `tests/`. Mã mẫu vẫn ổn định như T1-001; T1 là nhóm mục đích dữ liệu, không bắt buộc là folder chính.
+`data/raw/case_*/` chứa hồ sơ nguồn, nhãn tham chiếu và bằng chứng. `data/test_parser/` và `data/test_pdf_to_docx/` chứa mẫu kiểm tra bộ đọc/chuyển đổi. `data/module_handoff_fixtures/` chứa fixture bàn giao giữa 9 điểm nối. `test/fixtures/` chứa dữ liệu được bộ test sử dụng, ví dụ fixture kiểm thử schema. Mã mẫu như T1-001 dùng để tra cứu theo mục đích.
 
 ```text
 data/
@@ -180,8 +180,8 @@ Phân biệt Điều chứa chỉ dẫn trong S với Điều/Khoản/Điểm b�
 | --- | --- |
 | Thay toàn bộ Điều/Khoản/Điểm bằng nội dung được cung cấp | AMEND; lấy đúng đơn vị trước trong V1 và nội dung thay thế trong S; after_basis = QUOTED |
 | Thay/bổ sung từ hoặc cụm từ trong một phạm vi | AMEND; giữ chỉ dẫn và phạm vi; nếu suy ra câu cục bộ sau sửa đổi, after_basis = DERIVED |
-| Bổ sung đơn vị mới | ADD; ghi vị trí chèn, before_text = null vì chưa tồn tại; không gọi là thiếu căn cứ chỉ vì không tìm được đơn vị mới trong V1 |
-| Bãi bỏ nội dung được chỉ định | REPEAL; giữ nội dung trước và chỉ dẫn trong S; after_text = null, after_basis = ABSENT |
+| Bổ sung đơn vị mới | ADD. Ghi đúng vị trí chèn và dùng toàn văn đơn vị chứa trước và sau nếu đủ căn cứ. |
+| Bãi bỏ nội dung được chỉ định | REPEAL khi bãi bỏ cả đơn vị. Giữ chỉ dẫn S và toàn văn đơn vị chứa trước và sau nếu đối chiếu được. Khi chỉ xóa một cụm trong đơn vị còn tồn tại, ghi AMEND. |
 | Không xác định được thao tác hoặc vị trí | UNRESOLVED ở trường tương ứng; giữ nguồn và lý do cần kiểm tra |
 
 Không chỉ dựa vào một từ khóa để xác định thay toàn bộ hay thay cụm từ; đọc đầy đủ đối tượng, phạm vi và ngoại lệ. Nội dung không được nhắc trong S không phải bị bãi bỏ. Giữ nhãn Điều có hậu tố chữ, không tự đánh lại số. Với tách/gộp hoặc vị trí mơ hồ, ghi phần xác định được và phần cần review.
@@ -190,7 +190,7 @@ Không chỉ dựa vào một từ khóa để xác định thay toàn bộ hay 
 
 ### 4.6. Nội dung cục bộ, ngữ cảnh và dẫn chiếu
 
-`before_text` là nội dung trước trong V1; `after_text` là nội dung cục bộ sau sửa đổi. Phân biệt nội dung trích trực tiếp (`QUOTED`), suy ra từ chỉ dẫn (`DERIVED`), không tồn tại (`ABSENT`) và chưa xác định (`UNRESOLVED`) theo SRS. Chưa biết không được thay bằng chuỗi rỗng như đã bãi bỏ.
+Phiên 1 giữ toàn văn cùng một đơn vị đối chiếu ở cả hai trạng thái. Với sửa nội dung của Điểm, Khoản hoặc Điều hiện có, đơn vị đối chiếu là toàn văn đơn vị đó. Khi thêm hoặc bãi bỏ cả một đơn vị, dùng đơn vị chứa nhỏ nhất còn tồn tại ở hai phía, ví dụ toàn Điều khi thêm hoặc bãi bỏ một Khoản. Vị trí đích vẫn ghi chính xác Điểm, Khoản hoặc Điều mà S chỉ ra. Nếu chỉ dẫn có nhiều đích, giữ đủ đích và căn cứ cho từng đích. Ghi `QUOTED` khi toàn bộ đoạn sau là nguyên văn trong S. Ghi `DERIVED` khi dựng lại từ V1 và chỉ dẫn trong S. Phân biệt phía vắng mặt đã biết với nội dung chưa xác định theo [SRS](srs.md#12-amendmentitem-và-analysiscontext).
 
 Nội dung suy ra không được đặt vào quote như nguyên văn nguồn. `new_quote` có thể là null nếu không có câu sau được trích trực tiếp; giữ bằng chứng của V1 và chỉ dẫn S, giải thích phép suy ra. Trường hợp suy ra rõ ràng không tự là thiếu căn cứ.
 
@@ -257,7 +257,7 @@ Trạng thái quản lý nhãn đề xuất: DRAFT → IN_REVIEW → ACCEPTED, h
 
 Lưu label_version, guideline_version, người/thời điểm gán và review, hash file V1/S và toàn bộ tài liệu tham chiếu được cung cấp, nhật ký quyết định. Sửa input thì review lại nhãn liên quan. Đổi guideline thì rà những nhãn chịu ảnh hưởng; giữ lịch sử thay vì ghi đè không dấu vết.
 
-Pilot tuần 6 có ví dụ không đổi, đổi diễn đạt, đổi nghĩa, nhiều khía cạnh, bổ sung/bãi bỏ, S sửa nhiều văn bản, hiệu lực có ngoại lệ, đủ/thiếu dẫn chiếu và chưa xác định; ghi độ thống nhất và ca bất đồng để chỉnh guideline. Quy mô cuối và split theo test_evaluation_plan.md, không đặt số lượng tùy ý trong tài liệu này. Khóa nhãn test và quy tắc trước đánh giá; các biến thể cùng nguồn/chuỗi sửa đổi giữ chung nhóm split.
+Pilot phiên 1 dùng các ca trong [kế hoạch kiểm thử](test_evaluation_plan.md). Ghi độ thống nhất và ca bất đồng trước khi cập nhật hướng dẫn. Các biến thể cùng nguồn hoặc chuỗi sửa đổi giữ chung nhóm split.
 
 Chỉ đưa vào bộ đánh giá khi bộ đầu vào được kiểm tra, nhãn được ACCEPTED và cấu trúc đã validate. ACCEPTED có thể bao gồm nhãn mong đợi “chưa đủ căn cứ” ở mẫu cố ý thiếu tài liệu nếu người review đã xác nhận giới hạn đó; khác với UNRESOLVED do người gán nhãn còn bất đồng. Báo riêng SYNTHETIC và DERIVED_REAL; số liệu từ mẫu giả định không đại diện tự động cho dữ liệu thực tế. Lỗi trích xuất/liên kết của hệ thống không làm thay đổi nhãn chuẩn đã kiểm tra bằng tài liệu nguồn.
 
@@ -423,9 +423,8 @@ V1 có Điều 2 gồm khoản 1 “Tổ chức A phải nộp báo cáo” và 
 
 Gán AMEND, đích khoản 1 Điều 2, khía cạnh SUBJECT_OBJECT vì thêm tổ chức B. Giữ khoản 2 làm bằng chứng ngữ cảnh để giải thích nghĩa vụ nộp trong 10 ngày cũng liên quan đến chủ thể được bổ sung. Không gán TIME_QUANTITY như thời hạn vừa đổi; không cần dựng toàn bộ V2 để lập nhãn này.
 
-
 ### 7.6. Fixture hợp đồng và dữ liệu phiên
 
-Fixture mỗi điểm nối lưu dưới `test/fixtures/`, có input, output mong đợi, phiên bản hợp đồng, căn cứ nguồn và hai owner review. Bên nhận dùng fixture để phát triển độc lập trước khi có output thật; output thật phải qua cùng kiểm tra. Các ca tối thiểu theo Workflow. Số Điều/Khoản/Điểm mong đợi phải được review từ nguồn độc lập, không chỉ chép summary của Parser làm đáp án.
+Fixture bàn giao nằm trong [data/module_handoff_fixtures](../data/module_handoff_fixtures/README.md). Mỗi ca có cùng mã ở cả 9 thư mục, kể cả khi kỳ vọng của điểm nối là bỏ qua. Thể hiện điều kiện bỏ qua trong fixture và giữ payload nghiệp vụ theo schema. Bên giao và bên nhận cùng review input, output và căn cứ nguồn.
 
 Nhãn chi tiết AmendmentItem/SemanticDiffResult/ScoringResult được giữ để phân tích lỗi; báo cáo API đóng gói AmendmentResult trong results. Dữ liệu nhận xét người dùng trong phiên thuộc frontend, kiểu còn chờ; không tự là gold, không tự dùng để huấn luyện hoặc chấm điểm. Khi kiểm tra bổ sung tài liệu, có fixture nội dung không đổi, nội dung đổi, mục mới, không ghép được và lượt thất bại; không tự lấy quyết định cũ làm đáp án của lượt mới.
