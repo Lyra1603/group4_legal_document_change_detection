@@ -132,7 +132,8 @@ def compare_documents(
         http_status = 200
         if report["status"] == "FAILED":
             http_status = (501 if "ANALYSIS_NOT_CONFIGURED" in codes
-                           else 504 if "PROCESSING_TIMEOUT" in codes else 500)
+                           else 504 if "PROCESSING_TIMEOUT" in codes
+                           else 500 if report["errors"] else 200)
         return JSONResponse(status_code=http_status, content=report,
                             headers={"X-Comparison-ID": comparison_id})
     except PipelineInputError as exc:

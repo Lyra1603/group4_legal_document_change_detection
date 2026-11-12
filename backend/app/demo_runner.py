@@ -17,6 +17,33 @@ from .context.semantic_bridge import run_semantic_stage
 from .schemas.report_validation import validate_amendment, validate_report, validate_sources
 
 
+def _needs_review(value):
+    if isinstance(value, dict):
+        return value.get('needs_review') is True or any(_needs_review(v) for v in value.values())
+    if isinstance(value, list):
+        return any(_needs_review(v) for v in value)
+    return False
+
+
+def classify_demo_results(results):
+    """Text comparison is usable even when semantics need review or changes=[].
+
+    This demo supports AMEND before/after pairs. A skipped/unresolved item alone
+    is not a usable analysis; informational warnings alone do not force PARTIAL.
+    """
+    usable = [r for r in results if r['amendment']['applicability'] == 'APPLIES'
+              and r['amendment']['operation'] == 'AMEND'
+              and r['amendment']['before_text'] is not None
+              and r['amendment']['after_text'] is not None
+              and r['text_diff'] is not None]
+    if not usable:
+        return 'FAILED'
+    if (len(usable) != len(results) or _needs_review(results)
+            or any(r['semantic_diff'] is None or r['scoring'] is None for r in usable)):
+        return 'PARTIAL'
+    return 'SUCCESS'
+
+
 def run_demo_analysis(parsed, comparison_id, deadline):
     boundary = adapt_documents(parsed)
     check_deadline(deadline)
@@ -54,10 +81,14 @@ def run_demo_analysis(parsed, comparison_id, deadline):
         validate_sources(result, boundary.documents)
         warnings.extend(context.issues)
         results.append(result)
+    status = classify_demo_results(results)
+    if status == 'FAILED':
+        warnings.append(issue('analysis', 'NO_USABLE_ANALYSIS',
+                              'Đã xử lý đầu vào nhưng chưa tạo được mục phân tích dùng được; xem chỉ dẫn và lý do đi kèm. Không kết luận không có thay đổi.'))
     report = {'comparison_id': comparison_id,
               'base_document': next(p.document.identity() for p in parsed if p.document.role == 'BASE'),
               'amendment_document': next(p.document.identity() for p in parsed if p.document.role == 'AMENDMENT'),
               'reference_documents': [p.document.identity() for p in parsed if p.document.role == 'REFERENCE'],
-              'status': 'PARTIAL', 'results': results, 'warnings': warnings, 'errors': []}
+              'status': status, 'results': results, 'warnings': warnings, 'errors': []}
     validate_report(report)
-    return AnalysisOutcome('PARTIAL', results, warnings, [])
+    return AnalysisOutcome(status, results, warnings, [])

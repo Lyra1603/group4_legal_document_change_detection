@@ -119,7 +119,7 @@ class WebDemoTests(unittest.TestCase):
     def test_unrecognized_instructions_not_no_change(self):
         response=self.compare(docx('Điều 1. Nội dung','Một.'),docx('Điều 1. Nội dung','Không có mẫu chỉ dẫn nhận diện được.'))
         report=response.json(); validate_report(report)
-        self.assertEqual(report['status'],'PARTIAL')
+        self.assertEqual(report['status'],'FAILED')
         self.assertIn('INSTRUCTIONS_NOT_RECOGNIZED',{w['code'] for w in report['warnings']})
 
     def test_reference_attachment_never_confirms_completeness(self):
