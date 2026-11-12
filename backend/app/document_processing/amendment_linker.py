@@ -5,6 +5,7 @@ whole point/clause/article replacement. Does not infer legal effect or identity
 from a matching article number alone when S names another document.
 """
 import re
+import unicodedata
 
 from ..schemas.report_validation import validate_amendment
 
@@ -13,8 +14,11 @@ DOC_CODE = re.compile(r'\b\d+/\d{4}/[\wĐđ-]+', re.I)
 LOCATOR = re.compile(r'\bĐiều\s+(\d+[a-zđ]?)\b', re.I)
 CLAUSE = re.compile(r'\bkhoản\s+(\d+[a-zđ]?)\b', re.I)
 POINT = re.compile(r'\bđiểm\s+([a-zđ])\b', re.I)
-ACTION = re.compile(r'^(?:Sửa đổi|Bổ sung|Bãi bỏ|Thay thế|Đánh lại số|Chuyển|Tách|Hợp nhất|Thay\s+(?:cụm\s+)?từ)\b|^(?:Điểm|Khoản|Điều)\s+.+?\bđược\s+(?:sửa đổi|thay thế|bãi bỏ)', re.I)
+ACTION = re.compile(r'^(?:Sửa đổi|Bổ sung|Bãi bỏ|Thay thế|Đánh lại số|Chuyển|Tách|Hợp nhất|Thay\s+(?:cụm\s+)?từ)\b|^(?:Điểm|Khoản|Điều)\s+.+?\bđược\s+(?:sửa đổi|thay thế|bãi bỏ|bổ sung|chuyển|tách|hợp nhất|đánh lại số)', re.I)
 PHRASE = re.compile(r'Thay\s+(?:cụm\s+)?từ\s+[“"](?P<old>[^”"]+)[”"]\s+bằng\s+(?:cụm\s+từ\s+|từ\s+)?[“"](?P<new>[^”"]+)[”"]\s+tại\s+(?P<locator>.+?)\.?$', re.I)
+DOCUMENT_NAME = re.compile(
+    r'\bvăn bản\s+.+?(?=\s+(?:bằng\s+nội dung|như sau|được\s|tại\s)|[,.;:\n]|$)', re.I)
+DOCUMENT_REFERENCE = re.compile(r'\b(?:văn bản|thông tư|nghị định|quyết định|pháp lệnh|luật)\b', re.I)
 
 
 def issue(code, message, aid=None):
@@ -24,6 +28,58 @@ def issue(code, message, aid=None):
 def _body(text):
     text = re.sub(r'^\s*Điều\s+\d+[a-zđ]?\s*[.:]\s*', '', text, flags=re.I)
     return re.sub(r'^\s*\d+\s*\.\s*', '', text).strip()
+
+
+def _normalize_identity(text):
+    return ' '.join(unicodedata.normalize('NFC', text).casefold().split()).strip(' .;:')
+
+
+def _document_hint(text):
+    """Read only the target part of a phrase command, not its quoted payload."""
+    phrase = PHRASE.search(text)
+    target = phrase['locator'] if phrase else text
+    codes = list(dict.fromkeys(_normalize_identity(code) for code in DOC_CODE.findall(target)))
+    names = list(dict.fromkeys(_normalize_identity(m.group()) for m in DOCUMENT_NAME.finditer(target)))
+    return codes, names, bool(DOCUMENT_REFERENCE.search(target))
+
+
+def _target_document(text, scope, base_header):
+    """Require positive identity evidence before touching V1.
+
+    For unresolved/other documents the string retains an unverified source label,
+    not an invented document_id. Consumers must check applicability first.
+    """
+    codes, names, explicit = _document_hint(text)
+    if not (codes or names or explicit):
+        codes, names, _ = _document_hint(scope)
+    hint = ', '.join(codes or names)
+    reason = ('TARGET_DOCUMENT_UNRESOLVED',
+              'Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.')
+    if len(codes) == 1:
+        base_numbers = list(dict.fromkeys(_normalize_identity(m.group(1)) for m in NUMBER.finditer(base_header)))
+        if len(base_numbers) == 1:
+            if codes[0] == base_numbers[0]:
+                return 'APPLIES', 'v1', None
+            return 'OTHER_DOCUMENT', hint, ('TARGET_OTHER_DOCUMENT', 'Số hiệu văn bản đích đã xác định khác V1 đã chọn.')
+    elif not codes and len(names) == 1:
+        # Exact whole header-line match, never a substring or fuzzy-name match.
+        header_names = {_normalize_identity(line) for line in base_header.splitlines()
+                        if re.fullmatch(r'\s*văn bản\s+[^\n]+', line, re.I)}
+        if len(header_names) == 1 and names[0] in header_names:
+            return 'APPLIES', 'v1', None
+    return 'UNRESOLVED', hint, reason
+
+
+def _operation(text):
+    if re.search(r'^(?:Bãi bỏ)\b|\bđược bãi bỏ\b', text, re.I):
+        return 'REPEAL', False
+    if re.search(r'^Bổ sung\b|\bđược bổ sung\b', text, re.I):
+        return 'ADD', False
+    if re.search(r'^(?:Sửa đổi|Thay thế|Thay\s+(?:cụm\s+)?từ)\b|\bđược\s+(?:sửa đổi|thay thế)\b', text, re.I):
+        # Explicitly excluded actions cannot become AMEND via a quoted payload.
+        if not re.match(r'^(?:Chuyển|Tách|Hợp nhất|Đánh lại số)\b', text, re.I):
+            return 'AMEND', True
+    return 'UNRESOLVED', False
 
 
 def _quoted(blocks, index):
@@ -52,9 +108,12 @@ def _quoted(blocks, index):
 def link_amendments(boundary):
     documents, units = boundary.documents, boundary.units
     blocks = documents['s']['blocks']
-    base_header = '\n'.join(b['text'] for b in documents['v1']['blocks'][:8])
-    match = NUMBER.search(base_header)
-    base_number = match.group(1).casefold() if match else None
+    header_blocks = []
+    for block in documents['v1']['blocks']:
+        if re.match(r'^\s*Điều\s+\d+[a-zđ]?\s*[.:]', block['text'], re.I):
+            break
+        header_blocks.append(block['text'])
+    base_header = '\n'.join(header_blocks)
     items, warnings = [], []
     scope = ''
     consumed = -1
@@ -74,7 +133,7 @@ def link_amendments(boundary):
         aid = f"s:amendment_{len(items)+1}"
         instruction = {'document_id': 's', 'source_refs': [block['source_ref']], 'quote': raw}
         item = {'amendment_id': aid, 'operation': 'UNRESOLVED', 'instruction': instruction,
-                'target_document': 'v1', 'target_locator': text, 'target_unit_ids': [],
+                'target_document': '', 'target_locator': text, 'target_unit_ids': [],
                 'applicability': 'UNRESOLVED', 'before_text': None, 'after_text': None,
                 'after_basis': 'UNRESOLVED', 'evidence': [instruction], 'effect_info': [],
                 'context': {'general_context': '', 'evidence': [], 'references': []},
@@ -84,12 +143,11 @@ def link_amendments(boundary):
             consumed = quote[2]
         locators = LOCATOR.findall(text)
         clauses, points = CLAUSE.findall(text), POINT.findall(text)
-        codes = DOC_CODE.findall(text) or DOC_CODE.findall(scope)
-        reason = None
-        if codes and (base_number is None or codes[0].casefold() != base_number):
-            item['target_document'] = codes[0]
-            item['applicability'] = 'OTHER_DOCUMENT'
-            reason = ('TARGET_OTHER_DOCUMENT', 'Chỉ dẫn nhắm văn bản khác hoặc chưa đối chiếu được định danh với V1 đã chọn.')
+        applicability, document, reason = _target_document(text, scope, base_header)
+        item['target_document'] = document
+        item['operation'], supported_operation = _operation(text)
+        if applicability != 'APPLIES':
+            item['applicability'] = applicability
         elif len(locators) != 1 or len(clauses) > 1 or len(points) > 1 or (points and not clauses):
             reason = ('UNSUPPORTED_LOCATOR', 'Demo cần đúng một Điều, tùy chọn một khoản và một điểm; chưa hỗ trợ nhiều đích.')
         else:
@@ -100,11 +158,9 @@ def link_amendments(boundary):
             else:
                 target = targets[0]
                 item.update(applicability='APPLIES', target_locator=target['id'], target_unit_ids=[target['unit_id']])
-                if re.search(r'^(?:Bổ sung|Bãi bỏ)\b|được bãi bỏ', text, re.I):
-                    item['operation'] = 'ADD' if re.match('Bổ sung', text, re.I) else 'REPEAL'
-                    reason = ('UNSUPPORTED_OPERATION', 'Demo chưa triển khai bổ sung/bãi bỏ; giữ nguyên chỉ dẫn để kiểm tra.')
+                if not supported_operation:
+                    reason = ('UNSUPPORTED_OPERATION', 'Demo chưa hỗ trợ thao tác này; giữ chỉ dẫn và đích, không tự chuyển thành AMEND.')
                 else:
-                    item['operation'] = 'AMEND'
                     phrase = PHRASE.search(text)
                     if phrase and target['content'].count(phrase['old']) == 1:
                         item.update(before_text=target['content'], after_text=target['content'].replace(phrase['old'], phrase['new'], 1), after_basis='DERIVED')

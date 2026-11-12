@@ -21,6 +21,14 @@ def docx(*paragraphs):
     return output.getvalue()
 
 
+def base_docx(*paragraphs):
+    return docx('Văn bản mẫu A', *paragraphs)
+
+
+def amendment_docx(*paragraphs):
+    return docx('Điều 1. Sửa đổi một số điều của Văn bản mẫu A', *paragraphs)
+
+
 class WebDemoTests(unittest.TestCase):
     def setUp(self):
         self.client = TestClient(app)
@@ -62,8 +70,8 @@ class WebDemoTests(unittest.TestCase):
                     self.assertTrue(all(score['significance'] is None for score in result['scoring']))
 
     def test_literal_phrase_derivation_is_not_source_quote(self):
-        response = self.compare(docx('Điều 2. Thời hạn','Phải báo cáo trong 30 ngày.'),
-                                docx('Điều 1. Sửa đổi','Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'))
+        response = self.compare(base_docx('Điều 2. Thời hạn','Phải báo cáo trong 30 ngày.'),
+                                amendment_docx('Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'))
         report = response.json(); validate_report(report)
         result = report['results'][0]
         self.assertEqual(result['amendment']['after_basis'],'DERIVED')
@@ -71,8 +79,8 @@ class WebDemoTests(unittest.TestCase):
         self.assertIsNone(result['semantic_diff']['changes'][0]['new_quote'])
 
     def test_out_of_scope_but_supported_item_survives(self):
-        response = self.compare(docx('Điều 2. Thời hạn','Phải báo cáo trong 30 ngày.'),
-            docx('Điều 1. Sửa đổi','Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.','Bãi bỏ Điều 2.'))
+        response = self.compare(base_docx('Điều 2. Thời hạn','Phải báo cáo trong 30 ngày.'),
+            amendment_docx('Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.','Bãi bỏ Điều 2.'))
         report = response.json(); validate_report(report)
         self.assertEqual(len(report['results']),2)
         self.assertIsNotNone(report['results'][0]['text_diff'])
@@ -81,15 +89,15 @@ class WebDemoTests(unittest.TestCase):
         self.assertEqual(report['results'][1]['amendment']['instruction']['quote'],'Bãi bỏ Điều 2.')
 
     def test_ambiguous_old_phrase_not_replaced(self):
-        response = self.compare(docx('Điều 2. Thời hạn','30 ngày hoặc 30 ngày.'),
-            docx('Điều 1. Sửa đổi','Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'))
+        response = self.compare(base_docx('Điều 2. Thời hạn','30 ngày hoặc 30 ngày.'),
+            amendment_docx('Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'))
         report = response.json(); validate_report(report)
         self.assertIsNone(report['results'][0]['amendment']['after_text'])
         self.assertIn('PHRASE_NOT_UNIQUE',{w['code'] for w in report['warnings']})
 
     def test_missing_and_duplicate_target_are_not_guessed(self):
         for paragraphs in [('Điều 3. Khác','Nội dung.'),('Điều 2. Một','30 ngày.','Điều 2. Hai','30 ngày.')]:
-            response = self.compare(docx(*paragraphs),docx('Điều 1. Sửa đổi','Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'))
+            response = self.compare(base_docx(*paragraphs),amendment_docx('Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'))
             report = response.json(); validate_report(report)
             self.assertIsNone(report['results'][0]['text_diff'])
             self.assertIn('TARGET_NOT_UNIQUE',{w['code'] for w in report['warnings']})
@@ -103,8 +111,8 @@ class WebDemoTests(unittest.TestCase):
 
     def test_broken_quote_and_relabel_not_applied(self):
         for new in ['“2. Thiếu dấu đóng','“3. Sai nhãn.”']:
-            response=self.compare(docx('Điều 2. Thời hạn','2. Trước.'),
-                docx('Điều 1. Sửa đổi','Điều 2 được sửa đổi như sau:',new))
+            response=self.compare(base_docx('Điều 2. Thời hạn','2. Trước.'),
+                amendment_docx('Điều 2 được sửa đổi như sau:',new))
             report=response.json(); validate_report(report)
             self.assertIsNone(report['results'][0]['amendment']['after_text'])
 
@@ -115,8 +123,8 @@ class WebDemoTests(unittest.TestCase):
         self.assertIn('INSTRUCTIONS_NOT_RECOGNIZED',{w['code'] for w in report['warnings']})
 
     def test_reference_attachment_never_confirms_completeness(self):
-        response=self.compare(docx('Điều 2. Nội dung','30 ngày.'),
-            docx('Điều 1. Sửa đổi','Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'),references=[docx('Định nghĩa chưa đối chiếu.')])
+        response=self.compare(base_docx('Điều 2. Nội dung','30 ngày.'),
+            amendment_docx('Thay cụm từ “30 ngày” bằng “15 ngày” tại Điều 2.'),references=[docx('Định nghĩa chưa đối chiếu.')])
         report=response.json(); validate_report(report)
         self.assertEqual(len(report['reference_documents']),1)
         self.assertIn('REFERENCES_NOT_ANALYZED',{w['code'] for w in report['warnings']})
