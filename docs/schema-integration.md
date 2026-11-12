@@ -4,7 +4,7 @@
 
 Nhóm đã chọn hợp đồng tại commit `b6a13f98b9a7357b9fbb0936aba6bda065d03fcb` của nhánh `feat/ducanh-backend-integration`. Các file [contracts.py](../backend/app/schemas/contracts.py), [validation.py](../backend/app/schemas/validation.py), [report_validation.py](../backend/app/schemas/report_validation.py) và `__init__.py` được giữ nguyên từng byte so với commit căn cứ. Không nhập Pipeline, API, storage, runner, Parser hoặc các dependency không liên quan từ nhánh đó.
 
-Schema đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2), commit main `a8a906a474a67e89195987ca757f7315c22231db`. Tài liệu đồng bộ được chuẩn bị trên nền commit này; nội dung docs mới trên bachdung/docs (`b20ba5806772d8bb1f5f41f55548471eb8e251e0`) và bản docs đã được Dũng duyệt được giữ khi tương thích schema. Chỉ chuyển tài liệu, không merge nguyên nhánh docs cũ để tránh kéo ngược mã nguồn/cấu trúc.
+Schema đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2), commit `a8a906a`.
 
 ## Cấu trúc và kiểm tra có sẵn
 
@@ -70,12 +70,6 @@ Giữ nguyên text của mọi block, kể cả bảng/outside; các field nativ
 
 ## Tương thích và việc cần nối tiếp
 
-Nhánh `ducanh_bachdung/integrate_LightRAG`, commit `e47e049ada29fdab95dcd39a5d0ad14d98c3b411`, đã có client HTTP, chunk builder, source registry, context builder và `context/semantic_bridge.py`. Có demo DOCX với adapter, Linker hẹp, Text Diff, baseline Semantic/Scorer và report PARTIAL. Demo chạy riêng bằng `backend.demo:app`; `backend.main:app` vẫn chưa cấu hình runner mặc định. Frontend demo là HTML/CSS/JavaScript, chưa thay định hướng frontend chính thức.
-
-Chưa kiểm chứng LightRAG Server/model/index/KG thật; web demo tắt LightRAG. Bridge hiện chạy Context (gồm retrieval khi cấu hình) song song Text Diff rồi ghép trước Semantic; còn tách index/query và dùng Text Diff tạo query để khớp luồng mục tiêu mới. Rule baseline đã có, model fallback chưa tích hợp. Kết quả nhánh thử nghiệm không tự xác nhận đã merge main/nghiệm thu.
-
-Căn cứ: [báo cáo tích hợp](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/lightrag-integration-report.md), [demo và giới hạn](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/local-web-demo.md). Kết quả test trong các báo cáo chưa được chạy lại trong đợt sửa tài liệu này.
-
 - Main đã trả cùng envelope base_document/amendment_document/reference_documents/results. Schema đã merge không tự bật validation: pipeline.py, backend/main.py, router và runner không bị sửa trong PR #2. Không có analysis_runner vẫn FAILED/ANALYSIS_NOT_CONFIGURED và API hiện trả HTTP 501.
 - Thọ hiện thực document_adapter theo kho nguồn/Clause trên, giữ metadata native để linker/context dùng; linker tạo AmendmentItem, không biến S thành V2 đầy đủ. Reference không có Điều vẫn giữ blocks, có thể có clauses rỗng.
 - Ngọc Anh trả TextDiffResult với amendment_id và offset Python [start,end) trên đúng before/after. Tuấn Anh trả SemanticDiffResult và list[ScoringResult]; Dũng nối bằng ID trong cùng amendment, không làm phẳng hay bỏ chỉ dẫn chưa có changes.
@@ -116,11 +110,11 @@ Căn cứ [backend/main.py](../backend/main.py), chưa kiểm thử HTTP runtime
 
 Giới hạn mặc định trong code là 20 MiB/file, 60 MiB tổng, 5 file tham chiếu và deadline 300 giây; đây là cấu hình phát triển qua LEGAL_* env, chưa là chỉ tiêu nghiệm thu. Lock theo process và cleanup đồng bộ hiện tại vẫn giữ nguyên. Schema không mô tả error body detail của FastAPI; frontend phải xử lý cả report và lỗi HTTP.
 
-Khác biệt cần LK-11 review: giữ hay đổi tên upload, alias/tương thích nếu đổi; chuẩn hóa HTTP error body; đưa route sang compare.py; cơ chế truy nguồn sau cleanup. Không quyết định hoặc hiện thực các thay đổi đó ở PR tài liệu.
+Khác biệt cần LK-11 review: giữ hay đổi tên upload, alias/tương thích nếu đổi; chuẩn hóa HTTP error body; đưa route sang compare.py; cơ chế mở thêm nguồn sau cleanup. Đoạn trích và vị trí đã trả trong báo cáo được hiển thị theo [Architecture §4.3](architecture.md#43-vị-trí-lưu-và-vòng-đời).
 
 ## Nhận xét — phạm vi mở rộng chưa có contract
 
-Nhận xét là chức năng dự kiến sau khi các chức năng cốt lõi hoàn thiện, chỉ liệt kê trong phạm vi mở rộng, không là module chính hoặc điều kiện nghiệm thu bản đầu. Hai loại: (1) nhận xét sau phiên được lưu để phục vụ phát triển; (2) nhận xét trong phiên kết hợp nhận xét có sẵn để xem xét và cập nhật kết luận. Khi triển khai, giữ phân biệt kết luận ban đầu/cập nhật và căn cứ thay đổi; không tự coi nhận xét là gold/nhãn huấn luyện. Cách lưu, API, định danh, nguồn nhận xét có sẵn và cơ chế kết hợp chưa chốt; chưa mở rộng schema chung.
+Nhận xét của người dùng thuộc phạm vi mở rộng. Xem [SRS](srs.md#9-phạm-vi-mở-rộng) để tra phạm vi.
 
 Giữ contracts.py/validator; thay đổi contract sau này cần bên giao/nhận review.
 
@@ -139,4 +133,4 @@ python -m unittest discover -s test/schema_suite -p "test_*.py" -v
 
 Fixture [common_contract.json](../test/fixtures/reports/common_contract.json) là dữ liệu giả định để kiểm tra contract, không là nhãn pháp lý hoặc bằng chứng chất lượng mô hình. Test tích hợp dùng DOCX tối thiểu tự dựng bằng thư viện chuẩn và Parser có sẵn của main; không cần import API, storage, LightRAG hay mô hình. Ngưỡng F1 90%/Critical Recall 95% vẫn dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; test schema không xác nhận hai ngưỡng đó.
 
-Kết quả chạy lại trên main sau PR #2: [báo cáo kiểm thử và các điểm còn mở](schema-verification-report.md).
+Bộ kiểm tra hiện có theo dõi hai giới hạn bằng expected failure: kiểm tra tính duy nhất của `change_id` xuyên báo cáo và dựng lại toàn bộ nội dung bằng Text Diff.

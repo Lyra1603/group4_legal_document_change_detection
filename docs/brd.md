@@ -105,7 +105,7 @@ Phân tích tập trung vào phần thay đổi, sử dụng thông tin tổng q
 
 Hiển thị bằng chứng là chức năng chính: đọc đoạn nguồn, tài liệu/vị trí gắn với nhận định; phân biệt nguyên văn và nội dung suy ra.
 
-Nhận xét là chức năng dự kiến sau khi các chức năng cốt lõi hoàn thiện, chỉ liệt kê trong phạm vi mở rộng, không là module chính hoặc điều kiện nghiệm thu bản đầu. Hai loại: (1) nhận xét sau phiên được lưu để phục vụ phát triển; (2) nhận xét trong phiên kết hợp nhận xét có sẵn để xem xét và cập nhật kết luận. Khi triển khai, giữ phân biệt kết luận ban đầu/cập nhật và căn cứ thay đổi; không tự coi nhận xét là gold/nhãn huấn luyện. Cách lưu, API, định danh, nguồn nhận xét có sẵn và cơ chế kết hợp chưa chốt; chưa mở rộng schema chung.
+Nhận xét của người dùng thuộc phạm vi mở rộng. Xem [SRS](srs.md#9-phạm-vi-mở-rộng) để tra phạm vi.
 
 - Danh sách yêu cầu sửa đổi, bổ sung, bãi bỏ và vị trí bị tác động trong V1.
 - Nội dung trước thay đổi, nội dung hoặc chỉ dẫn sửa đổi trong S và phần chữ khác biệt khi xác định được.
@@ -300,7 +300,7 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 - Có hướng dẫn gán nhãn, tiêu chí mức độ và quy trình xử lý bất đồng.
 - Tách dữ liệu phát triển/validation khỏi tập test độc lập; không dùng tập test cuối để điều chỉnh thuật toán hoặc ngưỡng.
 - Khóa dữ liệu test và quy tắc đối chiếu trước khi đánh giá cuối.
-- Quy tắc đối chiếu thay đổi dự đoán với đáp án tham chiếu phải thống nhất, tránh tính trùng. Áp dụng matching 1–1 trước; matching 1–n bổ sung sau khi hoàn thành 1–1, theo test_evaluation_plan.md.
+- Đánh giá theo đáp án tham chiếu đã review, tính cả phát hiện sai và bỏ sót. Xem [kế hoạch kiểm thử](test_evaluation_plan.md) để tra cách đối chiếu và chia tập.
 - Phải tính cả phát hiện sai và bỏ sót, kể cả thay đổi bị mất do đọc tài liệu, tách cấu trúc, trích yêu cầu sửa đổi hoặc liên kết sai.
 - Kết quả chưa chắc chắn không tự được tính là phát hiện đúng. Cách xử lý phải theo SRS và test_evaluation_plan.md.
 - Khi không có mẫu phù hợp để tính một chỉ số, ghi không xác định và lý do, không tự ghi 100%.
@@ -355,20 +355,13 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 | Người dùng tin tuyệt đối vào kết quả | Sử dụng nhận định thiếu kiểm chứng | Nhắc rõ vai trò hỗ trợ, lý do và phần chưa xác định trong báo cáo. |
 | Lộ nội dung tài liệu qua log hoặc tệp tạm | Ảnh hưởng tính riêng tư của dữ liệu | Không log toàn văn; kiểm soát truy cập và vòng đời tệp tạm theo thiết kế triển khai. |
 
-## 14. Ví dụ nghiệp vụ để xây dựng bộ kiểm thử
+## 14. Ví dụ nghiệp vụ
 
-**Toàn bộ ví dụ trong mục này là giả định, không trích dẫn quy định pháp luật hiện hành.** Nội dung cũ lấy từ V1; nội dung mới hoặc chỉ dẫn sửa đổi lấy từ S. Mức độ cụ thể chỉ được gán sau khi đối chiếu hướng dẫn gán nhãn đã chốt.
+- Thời hạn đổi từ 30 xuống 15 ngày. Người dùng cần thấy công việc nào bị ảnh hưởng, mốc bắt đầu tính hạn và nguồn quy định.
+- Cụm “có thể cung cấp” đổi thành “phải cung cấp”. Người dùng cần thấy sự thay đổi về nghĩa vụ và điều kiện hoặc ngoại lệ liên quan.
+- Chỉ dẫn đổi văn bản dẫn chiếu nhưng thiếu tài liệu cần đối chiếu. Người dùng cần biết thông tin nào còn thiếu và phần kết luận nào có thể sử dụng.
 
-| Mã | Nội dung cũ → mới | Điều cần kiểm tra |
-| --- | --- | --- |
-| EX-01 | “Trong thời hạn 30 ngày” → “Trong thời hạn 15 ngày” | Nhận biết giảm thời hạn; xác định hoạt động và chủ thể liên quan từ ngữ cảnh; không chỉ báo thay số. |
-| EX-02 | “Có thể cung cấp” → “Phải cung cấp” | Nhận biết khả năng chuyển từ lựa chọn sang nghĩa vụ; đọc đầy đủ điều kiện và ngoại lệ. |
-| EX-03 | “Áp dụng đối với tổ chức” → “Áp dụng đối với tổ chức và cá nhân” | Nhận biết mở rộng đối tượng; giữ đúng bằng chứng. |
-| EX-04 | Một câu được viết lại nhưng nội dung được người gán nhãn xác nhận tương đương | Phát hiện khác biệt chữ và giải thích căn cứ không đổi nội dung quy định. |
-| EX-05 | Điều 5 cũ thành Điều 6 mới, nội dung giữ nguyên | Nhận diện chỉ dẫn đánh lại số trong S; không tự diễn giải thành bãi bỏ và bổ sung nội dung. |
-| EX-06 | Một Điều cũ được phân thành hai Điều mới | Liên kết chỉ dẫn tách/gộp với Điều gốc; cảnh báo nếu chưa xác định đủ nội dung bị tác động. |
-| EX-07 | Một đoạn không đọc được hoặc một giai đoạn xử lý bị lỗi | Báo phần bị ảnh hưởng; không kết luận toàn bộ không thay đổi. |
-| EX-08 | Sửa một dẫn chiếu nhưng tài liệu được dẫn chiếu không có trong đầu vào | Chỉ ra thay đổi dẫn chiếu, yêu cầu tài liệu bổ sung và giới hạn kết luận; phân tích lại khi đủ nội dung trước/sau. |
+Xem [các ca tham chiếu trong hướng dẫn gán nhãn](data-annotation-guide.md#72-các-ca-tham-chiếu) và [kế hoạch kiểm thử](test_evaluation_plan.md) để tra ví dụ và kỳ vọng chi tiết.
 
 ## 15. Liên kết và thống nhất tài liệu
 
@@ -378,6 +371,4 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 | SRS | Cụ thể hóa yêu cầu chức năng, dữ liệu, trạng thái, ràng buộc và cách kiểm chứng. |
 | Architecture | Thiết kế các module, luồng xử lý và các quyết định triển khai để đáp ứng SRS. |
 | README | Giới thiệu dự án, phạm vi và trạng thái triển khai thực tế; chỉ dẫn đến tài liệu chi tiết. |
-| Annotation Guideline và Workflow | Ví dụ phân loại, tiêu chí mức độ, đáp án tham chiếu, quy trình và cách tính chỉ số. |
-
-
+| Hướng dẫn gán nhãn và kế hoạch đánh giá | Cách tạo đáp án tham chiếu, xử lý bất đồng và đo chất lượng. |

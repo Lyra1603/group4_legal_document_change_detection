@@ -85,7 +85,7 @@ Không đợi mọi module xong mới thử ghép: tích hợp từng điểm n�
 
 Nhánh công việc của Dũng + Đức Anh: `ducanh_bachdung/integrate_LightRAG`, phục vụ tích hợp thử nghiệm/demo; không thay `main` làm nhánh tích hợp chung và không đổi tên nhánh hiện có.
 
-Nhóm dùng một nhánh tích hợp được thông báo rõ. Cấu trúc chuẩn lấy từ plan_lightrag; main hiện là nhánh chung, đã nhận cấu trúc nền và schema qua PR #2 (`a8a906a`). Tạo nhánh task từ origin/main đã cập nhật; không merge nguyên nhánh docs cũ nếu kéo theo code hoặc cấu trúc không thuộc task.
+Nhóm thông báo nhánh tích hợp cho từng phiên. `main` là mốc cấu trúc và hợp đồng schema đã merge. Mỗi việc triển khai dùng nhánh riêng và đưa kết quả vào nhánh chung qua PR.
 
 - Tạo branch từ nhánh tích hợp đã cập nhật, theo một task/phạm vi cụ thể.
 - Không tự lập nhánh chung mới hoặc tạo branch không rõ mục đích. Thành viên được tạo branch công việc theo quy ước, không cần xin phép lại cho từng task đã nhận.
@@ -150,22 +150,9 @@ Không triển khai Evaluator riêng. Các phép kiểm tra tự động và scr
 
 ### 4.2. Những cặp cần kiểm tra
 
-Sau adapter, Context chuẩn bị chunk, registry và nhập chỉ mục song song nhánh Linker xác định đích/trước-sau → Text Diff. Điểm ghép chờ index sẵn sàng và TextDiffResult, kết hợp chỉ dẫn, trước/sau và vùng chữ đổi để tạo query. LightRAG truy xuất qua HTTP, registry kiểm tra nguồn/quote rồi mới chuyển sang Semantic. Semantic dùng rule trước, model khi cần; Scorer và Pipeline nhận kết quả cùng bằng chứng/cảnh báo để tổng hợp report.
+Dùng [bảng chín điểm nối](module.md#4-đầu-vàođầu-ra-và-các-điểm-nối) để xác định bên giao, bên nhận, input, output và fixture. Bên giao tự kiểm tra payload và nguồn. Bên nhận chạy với fixture rồi với đầu ra thật. Với điểm nối mà hai phía có cùng owner, mời một người khác review. Ghi điều kiện bỏ qua trong ca tương ứng khi bước thiếu đầu vào.
 
-Bổ sung điểm nối: Text Diff → ghép query; index → điểm ghép; query/registry → Semantic; report/bằng chứng → frontend.
-
-| Điểm nối | Hai bên kiểm tra chính |
-| --- | --- |
-| Xử lý tài liệu/Linker → Text Diff | Thọ ↔ Ngọc Anh |
-| Text Diff → Semantic Change | Ngọc Anh ↔ Tuấn Anh |
-| Xử lý tài liệu/nguồn → Pipeline/API | Thọ ↔ Dũng |
-| Text Diff → Pipeline/API | Ngọc Anh ↔ Dũng |
-| Semantic Change/Scorer → Pipeline/API | Tuấn Anh ↔ Dũng |
-| AI Adapter → Semantic Change/Scorer | Dũng + Đức Anh ↔ Tuấn Anh |
-| Context → bên nhận | Đức Anh ↔ Ngọc Anh/Tuấn Anh/Dũng ở từng điểm nối |
-| Gọi/tích hợp LightRAG → nguồn/context/Pipeline | Dũng + Đức Anh phối hợp Thọ về nguồn, Đức Anh về context và Dũng về Pipeline |
-
-Đây là các điểm nối chức năng; có thể nằm cùng một folder hoặc có bước chuẩn hóa/ngữ cảnh ở giữa. Dùng bảng LK-02 trong decision.md để xác định đúng dữ liệu trao đổi. Semantic Change và Scorer cùng Tuấn Anh: vẫn cần kiểm thử điểm nối nội bộ, Dũng review khi nhận kết quả để tích hợp.
+Các module và điểm nối nằm trên luồng runtime trong [Architecture](architecture.md#41-một-lượt-phân-tích). Nhóm phát triển bán song song bằng fixture đã thống nhất.
 
 ### 4.3. Trình tự kiểm thử một điểm nối
 
@@ -218,3 +205,10 @@ Phân biệt: A trả sai contract → A sửa; A đúng nhưng B dùng sai → 
 - [ ] Reviewer cần thiết xác nhận; Dũng hoặc người được giao thực hiện tích hợp.
 
 Phân biệt **đã code**, **đã tự kiểm tra**, **đã kiểm thử chéo**, **đã merge** và **đã chạy toàn luồng**. Chỉ báo trạng thái đã có bằng chứng; merge một điểm nối không tự xác nhận toàn bộ hệ thống đã hoàn thành.
+
+## 6. Chốt kết quả theo phiên code
+
+- Trước phiên, Đức Anh xác nhận phạm vi và người phụ trách. Mỗi task có owner, reviewer, điểm nối, fixture và điều kiện đạt. Các quy tắc dùng chung tra tại [Decision](decision.md).
+- Cuối phiên, owner gửi commit, lệnh và kết quả chạy, ca lỗi tái hiện được, phần đang dùng mock, giới hạn và đề xuất thay đổi. Đức Anh điều phối tổng hợp. Dũng đối chiếu nghiệp vụ và các điểm nối Pipeline/API.
+- Khi thay đổi hợp đồng, bên giao và bên nhận cùng review. Đức Anh điều phối thay đổi schema nếu cần. Dũng và các owner liên quan review quy tắc căn cứ, nhãn hoặc phạm vi nghiệp vụ. Quyết định đã xác nhận ghi vào `decision.md`, yêu cầu bị ảnh hưởng cập nhật tại SRS, và fixture được cập nhật cùng hai phía.
+- Owner có thể chọn thuật toán nội bộ theo phạm vi được giao và báo thay đổi môi trường. Thay đổi phạm vi, mốc hoặc ownership được xác nhận với những người liên quan. Bản kế hoạch cập nhật đầu ra và phụ thuộc của phiên sau theo kết quả chạy.

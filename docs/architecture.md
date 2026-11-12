@@ -5,22 +5,15 @@
 **Nhóm trưởng:** Dương Đức Anh
 **Thành viên:** Bạch Công Dũng, Dương Đức Anh, Bùi Quang Thọ, Đoàn Ngọc Anh, Đỗ Tuấn Anh
 **Phiên bản:** 1.4.0
-**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), User Research (tài liệu dự kiến, chưa có), [Implementation Plan](implementation-plan.md), [Module](module.md), [Workflow](workflow.md), [Workflow](workflow.md)
-
+**Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), User Research (tài liệu dự kiến, chưa có), [Implementation Plan](implementation-plan.md), [Module](module.md), [Workflow](workflow.md)
 
 Tài liệu xác định kiến trúc mục tiêu và phân công triển khai. Hiện trạng mã nguồn dưới đây là thông tin đã được ghi nhận, chưa phải kết quả nghiệm thu repository đang sử dụng. Schema và fixture trong mã nguồn cần được đồng bộ với hợp đồng mục tiêu trước khi tích hợp; tài liệu không xác nhận các thay đổi mã nguồn đã hoàn thành.
 
 Hợp đồng chung đã chốt theo schema Đức Anh tại commit b6a13f98b9a7357b9fbb0936aba6bda065d03fcb: ComparisonReport có base_document/amendment_document/reference_documents/results, mỗi result là AmendmentResult. SemanticChange/ChangeAspect và ScoringResult dùng tám nhóm theo report_validation.py. Nhận xét hai loại triển khai sau theo mục 4.2; đợt này không mở rộng schema backend. Xem [SRS mục 1.7](srs.md).
 
-## 1. Lựa chọn kiến trúc và hiện trạng
+## 1. Lựa chọn kiến trúc và hiện trạng theo main
 
-Nhánh `ducanh_bachdung/integrate_LightRAG`, commit `e47e049ada29fdab95dcd39a5d0ad14d98c3b411`, đã có client HTTP, chunk builder, source registry, context builder và `context/semantic_bridge.py`. Có demo DOCX với adapter, Linker hẹp, Text Diff, baseline Semantic/Scorer và report PARTIAL. Demo chạy riêng bằng `backend.demo:app`; `backend.main:app` vẫn chưa cấu hình runner mặc định. Frontend demo là HTML/CSS/JavaScript, chưa thay định hướng frontend chính thức.
-
-Chưa kiểm chứng LightRAG Server/model/index/KG thật; web demo tắt LightRAG. Bridge hiện chạy Context (gồm retrieval khi cấu hình) song song Text Diff rồi ghép trước Semantic; còn tách index/query và dùng Text Diff tạo query để khớp luồng mục tiêu mới. Rule baseline đã có, model fallback chưa tích hợp. Kết quả nhánh thử nghiệm không tự xác nhận đã merge main/nghiệm thu.
-
-Căn cứ: [báo cáo tích hợp](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/lightrag-integration-report.md), [demo và giới hạn](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/local-web-demo.md). Kết quả test trong các báo cáo chưa được chạy lại trong đợt sửa tài liệu này.
-
-Hệ thống tập trung vào người dùng sinh viên Luật: hiểu thay đổi, đọc bằng chứng, nhận biết giới hạn, ghi nhận nhận xét và kiểm tra lại sau bổ sung. Lõi xử lý V1–S cung cấp dữ liệu cho báo cáo, giao diện và đánh giá theo hợp đồng dữ liệu mục tiêu. Chỉ tiêu chất lượng được xác định theo phạm vi và phép đo của hệ thống.
+Hệ thống tập trung vào người dùng sinh viên Luật: hiểu thay đổi, đọc bằng chứng, nhận biết giới hạn và kiểm tra lại sau khi bổ sung tài liệu. Lõi xử lý V1–S cung cấp dữ liệu cho báo cáo, giao diện và đánh giá theo hợp đồng dữ liệu mục tiêu. Chỉ tiêu chất lượng được xác định theo phạm vi và phép đo của hệ thống.
 
 Frontend và backend nghiệp vụ được tách; backend xử lý trong cùng request, frontend giữ file và báo cáo trong phiên; nhận xét phát triển sau. **Đã chốt phương án tích hợp: backend nghiệp vụ gọi LightRAG Server riêng qua HTTP.** Dịch vụ có thể chạy trên cùng máy qua localhost hoặc trên máy riêng được cấu hình; việc chọn phiên bản, endpoint và tham số không thay đổi quyết định tích hợp qua HTTP. Internet chỉ cần theo nơi chạy mô hình/tài nguyên; chưa cam kết offline toàn hệ thống. Phạm vi đầu tiên là retrieval, chưa giao LightRAG sinh báo cáo thay đổi hoàn chỉnh hoặc thay linker/scorer.
 
@@ -33,7 +26,7 @@ Frontend và backend nghiệp vụ được tách; backend xử lý trong cùng 
 | Context, change_analysis | Phần lớn là khung trong cấu trúc nền | Owner triển khai theo contract/fixture chung |
 | evaluation/ | Giữ thư mục và file hiện có | Không triển khai Evaluator độc lập; kiểm thử do owner tại từng điểm nối phối hợp |
 | Frontend | Khung, chưa có ứng dụng chạy hoàn chỉnh | React/TypeScript là định hướng frontend; môi trường và thư viện cụ thể chốt ở yêu cầu frontend trong SRS |
-| LightRAG | Nhánh thử nghiệm có client/contract tests; chưa chạy server thật | Release/API/model/index lifecycle theo LK-13 và CN-04 |
+| LightRAG | Cấu trúc main có file client | Release/API/model/index lifecycle theo LK-13 và CN-04 |
 | Test | Thư mục khung tên test/ | Giữ tên test/; owner bổ sung kiểm thử, không đổi tests/ riêng trong docs |
 
 Ba file nền main/pipeline/requirements được ghi nhận đã có trong mã nguồn nền, có envelope cùng hình dạng hợp đồng chung nhưng chưa kiểm tra kết quả lồng nhau và thiếu runner phân tích. Đọc/parse hợp lệ hiện báo FAILED/ANALYSIS_NOT_CONFIGURED (HTTP 501). /health chỉ báo API và runner, chưa kiểm tra LightRAG. Chọn công nghệ hoặc có hook không chứng minh đã tích hợp hoặc nghiệm thu.
@@ -82,54 +75,76 @@ Các module nghiệp vụ gọi nhau bằng hàm/contract; HTTP LightRAG đượ
 
 ## 3. Cấu trúc mã nguồn và dữ liệu
 
-Cố định cấu trúc chính theo branch `plan_lightrag`: dùng `backend/app/`, `frontend/`, `test/`, `data/`, `deploy/`, `runtime/` và `docs/`. Không tự đổi tên, xóa hoặc chuyển vị trí các folder chính. Danh sách file chính bắt buộc và người chịu trách nhiệm nằm trong [Module](module.md). Owner được thêm file hỗ trợ trong module; đổi cấu trúc hoặc giao diện chung phải được bên bị ảnh hưởng review trước khi tích hợp. Cây dưới là cấu trúc đã chốt, không xác nhận mọi file đã có implementation.
+Cây thư mục dưới đây lấy từ `main` tại `f76610e`. Các file Python của backend được liệt kê để định vị module. Xem [Module](module.md) để tra trách nhiệm từng file.
 
 ```text
 .
+├── .gitignore
+├── README.md
 ├── backend/
-│   ├── main.py
-│   └── app/
-│       ├── pipeline.py
-│       ├── api/
-│       │   └── compare.py
-│       ├── schemas/
-│       │   ├── contracts.py
-│       │   ├── validation.py
-│       │   └── report_validation.py
-│       ├── config.py
-│       ├── document_processing/
-│       │   ├── pdf_to_docx.py
-│       │   ├── parser/
-│       │   │   └── legal_structure_parser.py
-│       │   ├── document_adapter.py
-│       │   └── amendment_linker.py
-│       ├── context/
-│       │   ├── chunk_builder.py
-│       │   ├── source_registry.py
-│       │   ├── lightrag_client.py
-│       │   └── context_builder.py
-│       ├── change_analysis/
-│       │   ├── text_diff.py
-│       │   ├── semantic_diff.py
-│       │   ├── scorer.py
-│       │   └── ai_adapter.py
-│       └── evaluation/
-│           └── evaluator.py       # Giữ cấu trúc, không triển khai riêng
-├── frontend/
-├── test/
-│   ├── unit/
-│   ├── integration/
-│   ├── e2e/
-│   └── fixtures/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── compare.py
+│   │   ├── change_analysis/
+│   │   │   ├── ai_adapter.py
+│   │   │   ├── scorer.py
+│   │   │   ├── semantic_diff.py
+│   │   │   └── text_diff.py
+│   │   ├── config.py
+│   │   ├── context/
+│   │   │   ├── chunk_builder.py
+│   │   │   ├── context_builder.py
+│   │   │   ├── lightrag_client.py
+│   │   │   └── source_registry.py
+│   │   ├── document_processing/
+│   │   │   ├── amendment_linker.py
+│   │   │   ├── document_adapter.py
+│   │   │   ├── parser/
+│   │   │   │   └── legal_structure_parser.py
+│   │   │   └── pdf_to_docx.py
+│   │   ├── evaluation/
+│   │   │   └── evaluator.py
+│   │   ├── pipeline.py
+│   │   └── schemas/
+│   │       ├── __init__.py
+│   │       ├── contracts.py
+│   │       ├── report_validation.py
+│   │       └── validation.py
+│   └── main.py
 ├── data/
 │   ├── raw/
-│   │   └── case_*/
+│   │   ├── case_01/
+│   │   ├── case_02/
+│   │   └── case_03/
 │   ├── test_parser/
+│   │   └── case_01/
 │   └── test_pdf_to_docx/
-├── deploy/
-│   └── lightrag/
-├── runtime/
-└── docs/
+│       ├── case_01/
+│       └── case_02/
+├── docs/
+├── frontend/
+│   ├── public/
+│   └── src/
+│       ├── assets/
+│       ├── components/
+│       ├── pages/
+│       ├── services/
+│       └── styles/
+├── requirements.txt
+└── test/
+    ├── e2e/
+    ├── fixtures/
+    │   ├── amendments/
+    │   ├── documents/
+    │   └── reports/
+    ├── integration/
+    ├── schema_suite/
+    └── unit/
+        ├── change_analysis/
+        ├── context/
+        ├── document_processing/
+        ├── evaluation/
+        └── schemas/
 ```
 
 Parser hiện tự đọc DOCX, trả dict gồm articles/outside/source_blocks/warnings/status/summary. Node giữ children, segments, full_text, source_refs; không là knowledge graph. Giữ implementation trước, chưa bắt refactor Reader riêng; Thọ chủ trì adapter và mapping nguồn, phối hợp Dũng kiểm tra dữ liệu để Đức Anh/Ngọc Anh/Tuấn Anh sử dụng được. Reference không có Điều nhưng có blocks/bảng vẫn có thể làm căn cứ; native Parser status không thay ComparisonReport.status.
@@ -146,7 +161,7 @@ Sau adapter, Context chuẩn bị chunk, registry và nhập chỉ mục song so
 
 Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển bằng chứng có nguồn cùng lỗi/cảnh báo và phạm vi bị ảnh hưởng cho module nhận đầu ra theo contract chung. Bên nhận kiểm tra dữ liệu, không bỏ cảnh báo hoặc biến thiếu căn cứ thành không có thay đổi. Pipeline tổng hợp trạng thái báo cáo, không thay owner xử lý lỗi nội bộ.
 
-API giữ doc_v1/doc_s/reference_files; Pipeline cấp comparison_id, đọc/parse/adapter, thực hiện luồng chi tiết ở mục 4.1.1 rồi validate report. Trả nguồn đủ để frontend đọc bằng chứng sau cleanup; giữ chỉ dẫn chưa phân tích được. Index phục vụ nhiều chỉ dẫn cùng comparison; cách ly/cleanup thật còn cần kiểm chứng.
+API giữ doc_v1/doc_s/reference_files; Pipeline cấp comparison_id, đọc/parse/adapter, thực hiện luồng chi tiết ở mục 4.1.1 rồi validate report. Báo cáo giữ bằng chứng đã đối chiếu và chỉ dẫn chưa phân tích được. Index phục vụ nhiều chỉ dẫn cùng comparison; cách ly/cleanup thật còn cần kiểm chứng.
 
 #### 4.1.1. Luồng mục tiêu sau Document Processing khi tích hợp LightRAG
 
@@ -168,15 +183,17 @@ G --> H["Scorer và report"]
 
 Gửi lại V1/S cùng tham chiếu trong request mới; lượt thất bại giữ báo cáo cũ.
 
-Nhận xét là chức năng dự kiến sau khi các chức năng cốt lõi hoàn thiện, chỉ liệt kê trong phạm vi mở rộng, không là module chính hoặc điều kiện nghiệm thu bản đầu. Hai loại: (1) nhận xét sau phiên được lưu để phục vụ phát triển; (2) nhận xét trong phiên kết hợp nhận xét có sẵn để xem xét và cập nhật kết luận. Khi triển khai, giữ phân biệt kết luận ban đầu/cập nhật và căn cứ thay đổi; không tự coi nhận xét là gold/nhãn huấn luyện. Cách lưu, API, định danh, nguồn nhận xét có sẵn và cơ chế kết hợp chưa chốt; chưa mở rộng schema chung.
+Nhận xét của người dùng thuộc phạm vi mở rộng. Xem [SRS](srs.md#9-phạm-vi-mở-rộng) để tra phạm vi.
 
 ### 4.3. Vị trí lưu và vòng đời
+
+Khi đọc V1, S và tài liệu tham chiếu, Adapter gắn định danh và vị trí nguồn cho các đoạn. Các module truyền bằng chứng bằng `EvidenceRef` gồm `document_id`, `source_refs` và `quote`. Pipeline đối chiếu với kho nguồn trước khi trả báo cáo và dọn file tạm. Frontend dùng dữ liệu đã trả để hiện đoạn trích và vị trí khi người dùng chọn **Hiện bằng chứng** trong lượt đang mở. Việc mở thêm đoạn nguồn hoặc lưu bằng chứng qua lượt khác cần quyết định riêng về nơi giữ và quyền đọc.
 
 | Dữ liệu | Nơi giữ | Vòng đời |
 | --- | --- | --- |
 | File đã chọn, report/nguồn | Frontend | Trong phiên; chưa bảo đảm sau đóng/tải lại tab; cảnh báo trước đổi phiên |
 | Nhận xét hai loại (giai đoạn sau) | Chưa chốt nơi lưu | Nhận xét sau phiên cần được lưu; cơ chế và vòng đời chốt khi triển khai |
-| File gốc/chuyển đổi dùng xử lý | Backend runtime | Theo comparison; dọn khi không còn tác vụ dùng, kể cả lỗi |
+| File gốc/chuyển đổi dùng xử lý | Vùng tệp tạm của backend | Theo comparison; dọn khi không còn tác vụ dùng, kể cả lỗi |
 | Chỉ mục và cache chứa nội dung | LightRAG/storage đã cấu hình | Cách ly và dọn theo comparison phải kiểm chứng; Server chạy liên tục không có nghĩa dữ liệu được giữ lâu dài |
 | Nhãn/gold và dữ liệu nghiên cứu | Bộ dữ liệu được quản lý riêng | Không nhập nhãn, V2 đối chiếu hoặc dữ liệu người dùng vào index ngoài chủ định |
 | Log | Backend/dịch vụ | ID, bước, lỗi, thời gian; giới hạn lưu chờ LK-12/LK-13; không toàn văn/ghi chú/khóa |
@@ -206,7 +223,6 @@ Phân công chức năng theo LK-01 trong [decision.md](decision.md). Không m�
 
 Không triển khai thêm database lịch sử, account, cộng tác, job/queue hoặc học lại từ nhận xét ở đợt này. Không triển khai module Evaluator độc lập. Các owner bên giao và bên nhận cùng kiểm thử hợp đồng, review cách sử dụng dữ liệu và thử tích hợp; Dũng điều phối tích hợp/Pipeline/API; Đức Anh điều phối kế hoạch đánh giá; các owner thực hiện và kiểm tra chéo; Dũng hỗ trợ dữ liệu/nhãn và kiểm tra nghiệp vụ; Dũng chủ trì nghiên cứu khả năng sử dụng; không lấy chất lượng mô hình làm bằng chứng giao diện hiệu quả hoặc ngược lại. React/TypeScript là định hướng frontend, yêu cầu frontend trong SRS xác nhận môi trường và thư viện; giới hạn, mô hình và ngân sách chưa là cam kết.
 
-
 ### Các quyết định triển khai cần hoàn thiện
 
 Phương án LightRAG Server qua HTTP đã được chốt. Các việc sau là chi tiết hiện thực và kiểm chứng trong phương án này:
@@ -217,7 +233,6 @@ Phương án LightRAG Server qua HTTP đã được chốt. Các việc sau là 
 - Dùng ComparisonReport/results và tám nhóm theo schema chung; hoàn thiện adapter nguồn/Clause, wiring validator và fixture API; dữ liệu nhận xét frontend và multipart upload chốt riêng. Kiểm thử SUCCESS/PARTIAL/FAILED.
 - Áp dụng phân công chức năng đã chốt ở LK-01: Ngọc Anh làm Text Diff; Tuấn Anh làm Semantic Change/Scorer; Dũng làm tích hợp/API; Dũng + Đức Anh làm AI Adapter. Đã chốt Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá; còn hoàn thiện chi tiết triển khai và kiểm chứng. Không tự gán owner toàn folder change_analysis.
 - Triển khai bán song song: thống nhất contract, schema và fixture trước; bên nhận phát triển với mock/fixture trong khi bên giao hoàn thiện; tích hợp từng điểm nối, không đợi cả chuỗi xong. Chi tiết theo [Workflow](workflow.md) và [Workflow](workflow.md).
-
 
 ### Phát triển theo hợp đồng và hiện trạng schema
 

@@ -36,7 +36,6 @@ Các đường dẫn tới test, fixture và script cụ thể được bổ sun
 | Có implementation | Tự kiểm tra module; kiểm tra điểm nối với đầu ra thật; tích hợp sớm | Có kết quả và giới hạn, không chỉ có code test |
 | Chuẩn bị đánh giá chính thức | Cố định phiên bản, cấu hình, dữ liệu, nhãn, matching và phép đo | Các phần phụ thuộc đã rõ; không còn lỗi chặn phép đo |
 
-
 Một phần có thể sẵn sàng trước phần khác. Không cần chờ toàn bộ decision.md hoặc module.md hoàn tất để kiểm tra module có đủ đặc tả. Riêng LK-13 giữ thứ tự chốt đã quy định trong decision.md: có thể khảo sát và chuẩn bị ca kiểm tra, nhưng chỉ chốt chi tiết còn lại sau các quyết định khác.
 
 ## 4. Trách nhiệm và điều phối
@@ -69,7 +68,7 @@ Owner tự kiểm tra trước bàn giao. Bên giao và bên nhận kiểm tra c
 
 ## 6. Danh mục kiểm tra ban đầu
 
-Bổ sung ca: index chạy song song Linker/Text Diff; query chờ cả hai nhánh và sử dụng đúng TextDiffResult; lỗi một nhánh không bị che. Kiểm tra quote/document_id/source_ref qua retrieval → Semantic/Scorer → frontend, kể cả sau cleanup. Kiểm tra rule trước/model khi cần, lỗi model không tạo kết luận giả; owner giao/nhận lỗi cùng bằng chứng. Nhận xét hai loại là backlog giai đoạn sau, không là điều kiện nghiệm thu bản đầu.
+Bổ sung ca: index chạy song song Linker/Text Diff; query chờ cả hai nhánh và sử dụng đúng TextDiffResult; lỗi một nhánh không bị che. Kiểm tra quote/document_id/source_refs qua retrieval → Semantic/Scorer → frontend. Sau cleanup, kiểm tra UI vẫn hiện được đoạn trích và vị trí từ báo cáo đã nhận. Kiểm tra rule trước/model khi cần, lỗi model không tạo kết luận giả; owner giao/nhận lỗi cùng bằng chứng. Nhận xét hai loại là backlog giai đoạn sau, không là điều kiện nghiệm thu bản đầu.
 
 Các mã dưới đây là mã của kế hoạch này, không phải mã quyết định mới. Đây là phạm vi chuẩn bị, chưa xác nhận các test đã được hiện thực hoặc đã đạt.
 
@@ -89,6 +88,20 @@ Các mã dưới đây là mã của kế hoạch này, không phải mã quyế
 | TEP-12 | LightRAG và vòng đời | Sẵn sàng nhập/query, mapping, cách ly lượt chạy, cleanup và lỗi dịch vụ | Release/API thực tế theo LK-13; chưa chốt payload hoặc cấu hình trong kế hoạch này |
 
 Mỗi module chọn các ca liên quan; không bắt buộc mọi test gọi mô hình hoặc dịch vụ thật. Kiểm tra dịch vụ thật vẫn cần có khi xác nhận tích hợp thật. Mock/fixture phải được đánh dấu rõ.
+
+### Bộ ca bàn giao phiên 1
+
+Một mã ca xuất hiện ở cả 9 thư mục trong [bộ fixture](../data/module_handoff_fixtures/README.md). Mỗi file ghi input và output mong đợi hoặc điều kiện bỏ qua kèm lý do. Danh sách tên ca phải trùng nhau giữa 9 thư mục. Khi đủ bộ dự kiến sẽ có 5 ca × 9 điểm nối = 45 JSON.
+
+| Ca | Nguồn | Điều kiện đạt chính | Trạng thái |
+| --- | --- | --- | --- |
+| `deadline_reduction` | Fixture hiện có | Thay cả đơn vị, giữ hai bản toàn văn, kiểm chứng offset, nhận định và bằng chứng đến UI | Đã có fixture tại 9 điểm nối |
+| Sửa cục bộ | `case_06` | Giữ toàn bộ vị trí thuộc chỉ dẫn được chọn, dựng toàn văn trước/sau từng đơn vị và giữ nguyên văn chỉ dẫn S | Chuẩn bị sau khi hoàn thiện docs |
+| Bổ sung | `case_08` | Giữ vị trí chèn và kiểm tra nội dung được thêm giữa hai trạng thái của cùng đơn vị chứa | Chuẩn bị sau khi hoàn thiện docs |
+| Bãi bỏ | `case_07` | Giữ đầy đủ đích của chỉ dẫn được chọn và đối chiếu phần bị bỏ trong toàn văn đơn vị chứa | Chuẩn bị sau khi hoàn thiện docs |
+| Thiếu đích | Biến thể ca sửa cục bộ | Giữ chỉ dẫn, lý do cần kiểm tra và mục báo cáo. Bỏ qua bước thiếu điều kiện | Chuẩn bị sau khi hoàn thiện docs |
+
+Tách ba kết quả khi báo cáo: fixture qua contract, tích hợp với đầu ra thật, và đánh giá chất lượng trên dữ liệu có nhãn. Điều phối đánh giá do Đức Anh phụ trách. Sau phiên 1, dùng báo cáo từng module để bổ sung ca lỗi và tiêu chí chấm còn mở.
 
 ## 7. Mẫu hoàn thiện từng ca kiểm tra
 
@@ -134,13 +147,7 @@ Giữ cùng dữ liệu và điều kiện so sánh; ghi các khác biệt cấu
 
 ## 9. Điều kiện bàn giao và báo cáo
 
-Nhánh `ducanh_bachdung/integrate_LightRAG`, commit `e47e049ada29fdab95dcd39a5d0ad14d98c3b411`, đã có client HTTP, chunk builder, source registry, context builder và `context/semantic_bridge.py`. Có demo DOCX với adapter, Linker hẹp, Text Diff, baseline Semantic/Scorer và report PARTIAL. Demo chạy riêng bằng `backend.demo:app`; `backend.main:app` vẫn chưa cấu hình runner mặc định. Frontend demo là HTML/CSS/JavaScript, chưa thay định hướng frontend chính thức.
-
-Chưa kiểm chứng LightRAG Server/model/index/KG thật; web demo tắt LightRAG. Bridge hiện chạy Context (gồm retrieval khi cấu hình) song song Text Diff rồi ghép trước Semantic; còn tách index/query và dùng Text Diff tạo query để khớp luồng mục tiêu mới. Rule baseline đã có, model fallback chưa tích hợp. Kết quả nhánh thử nghiệm không tự xác nhận đã merge main/nghiệm thu.
-
-Căn cứ: [báo cáo tích hợp](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/lightrag-integration-report.md), [demo và giới hạn](https://github.com/Lyra1603/group4_legal_document_change_detection/blob/e47e049ada29fdab95dcd39a5d0ad14d98c3b411/docs/local-web-demo.md). Kết quả test trong các báo cáo chưa được chạy lại trong đợt sửa tài liệu này.
-
-Theo báo cáo nhánh: demo 12/12 đạt; context 24 đạt, 2 real-service tests skipped; schema 49 đạt, 2 expected failures. Chưa chạy lại trong đợt sửa docs; số test không chứng minh chất lượng pháp lý hoặc LightRAG thật.
+Ghi riêng kết quả validator, kết quả luồng có mock và kết quả gọi dịch vụ thật. Đánh giá chất lượng nghiệp vụ dùng tập có nhãn đã review và phương pháp ghi ở mục 8.
 
 Một phần đủ điều kiện bàn giao khi có đặc tả liên quan đã chốt, code, mẫu vào ra, kiểm tra phù hợp, kết quả, cách chạy và giới hạn; bên nhận sử dụng được đầu ra thật. Trạng thái đủ đặc tả, đã hiện thực và đã tích hợp/kiểm tra phải được ghi riêng.
 

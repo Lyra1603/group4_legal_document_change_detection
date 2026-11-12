@@ -11,7 +11,6 @@ Schema Đức Anh đã merge vào main qua [PR #2](https://github.com/Lyra1603/g
 - [Quyết định đã chốt/còn mở](docs/decision.md)
 - [Hướng dẫn schema, API hiện tại và adapter còn thiếu](docs/schema-integration.md)
 - [Kế hoạch kiểm thử](docs/test_evaluation_plan.md)
-- [Kết quả xác nhận schema](docs/schema-verification-report.md)
 - [Workflow](docs/workflow.md)
 
 Kiểm tra schema từ repo root, Python 3.11 trở lên; đã chạy Python 3.12.14:
@@ -25,7 +24,7 @@ python -m pip check
 python -m unittest discover -s test/schema_suite -p "test_*.py" -v
 ```
 
-requirements.txt ghim Pydantic 2.13.4 và typing_extensions 4.16.0. Lần xác nhận: 51 test, 49 đạt và 2 expected failures ghi nhận giới hạn hiện tại; không phải 51 test đều đạt. Chi tiết, lệnh và môi trường ở báo cáo kiểm thử.
+requirements.txt ghim Pydantic 2.13.4 và typing_extensions 4.16.0. Lần xác nhận: 51 test, 49 đạt và 2 expected failures ghi nhận giới hạn hiện tại; không phải 51 test đều đạt. Xem [hướng dẫn tích hợp schema](docs/schema-integration.md) để chạy lại kiểm tra.
 
 Backend có upload/đọc/parse; chưa có runner phân tích hoặc wiring validator trong Pipeline. POST /api/compare hiện nhận doc_v1/doc_s/reference_files ở backend/main.py; chưa gắn runner trả HTTP 501 / ANALYSIS_NOT_CONFIGURED sau đọc/parse hợp lệ. LightRAG Server qua HTTP đã chốt phương án, chưa hiện thực tích hợp. requirements.txt hiện chỉ đủ dependency schema; cài runtime API/PDF là việc riêng theo hướng dẫn, không giả định cài requirements là chạy được toàn hệ thống.
 
