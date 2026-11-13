@@ -162,9 +162,9 @@
             "category": "TIME_QUANTITY",
             "significance": null,
             "is_critical": null,
-            "reason": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review.",
+            "reason": "Chưa thống nhất mức tác động theo rubric; chờ nhóm Semantic Diff/Scorer (Dũng, Đức Anh, Ngọc Anh) review.",
             "needs_review": true,
-            "review_reason": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review."
+            "review_reason": "Chưa thống nhất mức tác động theo rubric; chờ nhóm Semantic Diff/Scorer (Dũng, Đức Anh, Ngọc Anh) review."
           }
         ]
       }
@@ -173,7 +173,7 @@
       {
         "stage": "scoring",
         "code": "SCORING_REVIEW_PENDING",
-        "message": "Chưa thống nhất mức tác động theo rubric; chờ Dũng và Tuấn Anh review.",
+        "message": "Chưa thống nhất mức tác động theo rubric; chờ nhóm Semantic Diff/Scorer (Dũng, Đức Anh, Ngọc Anh) review.",
         "amendment_id": "a1"
       }
     ],

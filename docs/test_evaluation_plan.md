@@ -45,9 +45,10 @@ Phân công chức năng phải theo LK-01 đã chốt, không sao chép các b�
 | Phạm vi | Trách nhiệm hiện có | Trách nhiệm kiểm chứng đề xuất |
 | --- | --- | --- |
 | Xử lý tài liệu, Parser, adapter và linker | Thọ | Tự kiểm tra từ nguồn thật; bên nhận review output và vị trí nguồn |
-| Text Diff | Ngọc Anh | Tự kiểm tra vùng đổi, offset và khả năng tái tạo khi contract cho phép; Tuấn Anh review dữ liệu nhận |
-| Semantic Diff và Scorer | Tuấn Anh | Kiểm tra ngữ nghĩa, bằng chứng, ranh giới mức và trạng thái thiếu căn cứ; Dũng review phần dùng để tổng hợp/nghiệp vụ |
+| Text Diff | Ngọc Anh | Tự kiểm tra vùng đổi, offset và khả năng tái tạo khi contract cho phép; bên nhận Semantic Diff review dữ liệu bàn giao |
+| Semantic Diff và Scorer | Dũng + Đức Anh + Ngọc Anh | Kiểm tra ngữ nghĩa, bằng chứng, ranh giới mức và trạng thái thiếu căn cứ; Dũng review phần dùng để tổng hợp/nghiệp vụ |
 | Tích hợp, Pipeline và API nghiệp vụ | Dũng | Kiểm tra tổng hợp, truyền cảnh báo/lỗi và luồng API; phối hợp bên cung cấp và frontend |
+| UI và xử lý lỗi trả về | Tuấn Anh | Kiểm tra hiển thị lỗi, cảnh báo, trạng thái và phần kết quả còn dùng được. |
 | AI Adapter | Dũng và Đức Anh | Kiểm tra phản hồi hợp lệ/không hợp lệ, lỗi, giới hạn và việc giữ nguồn; phân chia nội bộ theo CN-08 |
 | Gọi/tích hợp LightRAG | Dũng + Đức Anh | Phối hợp kiểm tra dịch vụ, tích hợp context/Pipeline và vòng đời dữ liệu |
 | Context và schema | Đức Anh phụ trách schema và context | Hợp đồng dùng chung được bên giao/nhận thống nhất; đồng bộ module.md |

@@ -26,7 +26,7 @@ ComparisonReport chứa comparison_id, base_document, amendment_document, refere
 
 Không hàm nào tự chứng minh suy luận pháp lý đúng. validate_report không gọi validate_sources hoặc validate_amendment; chỉ gọi một hàm không thay toàn bộ kiểm tra. SourceBlock không bắt buộc định dạng prefix cụ thể: block:N được chấp nhận khi tồn tại trong đúng tài liệu và quote khớp. Khóa phụ không mặc định bị TypeAdapter từ chối; hàm validate_payload không trả lại đối tượng đã chuẩn hóa để thay đầu vào.
 
-Tám nhóm: SUBJECT_OBJECT, RIGHTS_DUTIES_ACTIONS, CONDITIONS_EXCEPTIONS, TIME_QUANTITY, PROCEDURE_AUTHORITY, CONSEQUENCES_SANCTIONS, DEFINITIONS_REFERENCES, SCOPE_EFFECT_TRANSITION. category thuộc các nhóm đó, WORDING_ONLY hoặc null; category khác null của thay đổi nghĩa phải có trong aspects. Có thể dùng LOW/MEDIUM/HIGH/CRITICAL hoặc null theo ràng buộc scoring. Thứ tự ưu tiên khi nhiều category đều hợp lệ và rubric cụ thể vẫn do Tuấn Anh/Dũng review, không tự suy từ tập enum.
+Tám nhóm: SUBJECT_OBJECT, RIGHTS_DUTIES_ACTIONS, CONDITIONS_EXCEPTIONS, TIME_QUANTITY, PROCEDURE_AUTHORITY, CONSEQUENCES_SANCTIONS, DEFINITIONS_REFERENCES, SCOPE_EFFECT_TRANSITION. category thuộc các nhóm đó, WORDING_ONLY hoặc null; category khác null của thay đổi nghĩa phải có trong aspects. Có thể dùng LOW/MEDIUM/HIGH/CRITICAL hoặc null theo ràng buộc scoring. Thứ tự ưu tiên khi nhiều category đều hợp lệ và rubric cụ thể vẫn do Dũng + Đức Anh + Ngọc Anh review, không tự suy từ tập enum.
 
 ## Cung cấp kho nguồn và Clause từ Pipeline hiện tại
 
@@ -80,7 +80,7 @@ Các ghi nhận main/PR #2 dưới đây nói về nền f76610e; runner demo đ
 
 - Main đã trả cùng envelope base_document/amendment_document/reference_documents/results. Schema đã merge không tự bật validation: pipeline.py, backend/main.py, router và runner không bị sửa trong PR #2. Không có analysis_runner vẫn FAILED/ANALYSIS_NOT_CONFIGURED và API hiện trả HTTP 501.
 - Thọ hiện thực document_adapter theo kho nguồn/Clause trên, giữ metadata native để linker/context dùng; linker tạo AmendmentItem, không biến S thành V2 đầy đủ. Reference không có Điều vẫn giữ blocks, có thể có clauses rỗng.
-- Ngọc Anh trả TextDiffResult với amendment_id và offset Python [start,end) trên đúng before/after. Tuấn Anh trả SemanticDiffResult và list[ScoringResult]; Dũng nối bằng ID trong cùng amendment, không làm phẳng hay bỏ chỉ dẫn chưa có changes.
+- Ngọc Anh trả TextDiffResult với amendment_id và offset Python [start,end) trên đúng before/after. Dũng + Đức Anh + Ngọc Anh bàn giao SemanticDiffResult và list[ScoringResult]; Dũng nối bằng ID trong cùng amendment, không làm phẳng hay bỏ chỉ dẫn chưa có changes.
 - Đức Anh review schema, context và kế hoạch đánh giá; Dũng + Đức Anh thực hiện AI Adapter và LightRAG theo phân công. LightRAG HTTP/lifecycle vẫn cần LK-13; schema không xác nhận API dịch vụ đã có.
 - Frontend đọc identity từ ba trường tài liệu, duyệt results và changes, ghép scoring theo change_id trong result. Nhận xét hai loại triển khai sau theo mục riêng; chưa thêm decision/note vào schema backend.
 - Endpoint/upload không thay trong PR schema: main hiện POST /api/compare, doc_v1/doc_s/reference_files. Định hướng tên upload khác trong docs vẫn là việc LK-11 cần review; không dùng việc chọn schema để tự chuyển API.
@@ -91,7 +91,7 @@ Các ghi nhận main/PR #2 dưới đây nói về nền f76610e; runner demo đ
 | --- | --- | --- |
 | ID chưa kiểm tra toàn comparison | Hai amendment khác ID đều chứa change_id = c1 vẫn được chấp nhận | Dùng khóa ghép amendment_id/change_id hay buộc change_id toàn cục; chưa đổi validator |
 | Chưa kiểm tra reconstruction toàn diff | before có 30, after có 15, nhưng changes = [] vẫn được chấp nhận | Ngọc Anh/Dũng review kiểm tra bao phủ, thứ tự và thao tác chồng lấn |
-| Không kiểm tra mọi trường quote độc lập | old_quote/new_quote là str thường; chỉ EvidenceRef được đối chiếu nguồn | Tuấn Anh/Thọ chốt mapping từng quote; không giả định mọi quote đã được validate |
+| Không kiểm tra mọi trường quote độc lập | old_quote/new_quote là str thường; chỉ EvidenceRef được đối chiếu nguồn | Nhóm Semantic Diff phối hợp Thọ chốt mapping từng quote; không giả định mọi quote đã được validate |
 | Review không thay thế readiness | Item thiếu đích nhưng đang needs_review có thể qua một số kiểm tra | Pipeline cần chính sách có thể chạy bước nào; không coi qua schema là đủ căn cứ |
 | PARTIAL/FAILED chưa được kiểm chứng đầy đủ | Report PARTIAL rỗng và không có lý do vẫn có thể qua validator | Dũng/owner review tiêu chí kết quả dùng được và lý do bắt buộc |
 | Metadata và ref list còn cần kiểm tra đầu vào | Kho documents key không khớp document_id, source_refs lặp hoặc input malformed | Adapter validate nguồn/Clause trước; tăng validation là PR riêng |

@@ -6,6 +6,8 @@
 
 Quyết định Đức Anh: lấy tài liệu Dũng làm nền, một bộ fixture tại 9 điểm nối; ca 30 → 15 ngày giữ mức tác động null và report PARTIAL; giữ thiết kế index song song Linker/Text Diff rồi query; giữ báo cáo lịch sử. ADD/REPEAL, nhiều đích, model và retrieval thật tiếp tục sau merge nền DOCX.
 
+Phân công cập nhật ngày 13/11 theo commit Dũng `ad4c272`, đã được Đức Anh duyệt: Semantic Diff và Scorer do Dũng + Đức Anh + Ngọc Anh phụ trách; Tuấn Anh tập trung UI và xử lý/hiển thị lỗi, cảnh báo, trạng thái từ Pipeline/API. Chưa chốt người làm chính từng chức năng trong nhóm ba người; không tự phân công thêm trong đợt nhận tài liệu này.
+
 ## Cách chạy và luồng hiện tại
 
 Theo [README gốc](../README.md#chạy-nền-docx-hiện-tại): cài `requirements-demo.txt`, chạy `python -m uvicorn backend.demo:app --host 127.0.0.1 --port 8000`, mở http://127.0.0.1:8000. Không cần model, API key, Node hoặc LightRAG Server cho luồng này. `backend.main:app` chưa gắn runner và trả 501 sau đầu vào hợp lệ; tên module main không phải tên nhánh Git.
@@ -20,8 +22,8 @@ Upload V1/S/tham chiếu → Pipeline đọc/Parser → Adapter kho nguồn/Clau
 | Linker | Xác minh số hiệu hoặc tên header chính xác; sửa cụm từ duy nhất/đoạn QUOTED tại một đích; DERIVED không giả quote S | Thọ triển khai ADD/REPEAL bằng đơn vị chứa, nhiều đích, thao tác phụ thuộc. Chưa bao phủ mọi kiểu câu; không coi không nhận diện được là không có thay đổi |
 | Text Diff | TextDiffResult, offset ký tự Python; kiểm thử dựng lại after_text | Ngọc Anh review ca mở rộng và hai chuỗi cùng đơn vị |
 | Context/LightRAG | Chunk/registry/client HTTP, kiểm thử mô phỏng; bridge chạy Context và Text Diff song song; demo client=None | Đức Anh + Dũng tách index/query, query nhận TextDiffResult sau hai nhánh; Ngọc Anh bàn giao diff; kiểm chứng dịch vụ thật sau chọn môi trường/model |
-| Semantic/AI Adapter | Rule hẹp; demo chưa xác nhận context đầy đủ, kết luận chưa rõ giữ null/review; AI Adapter chưa có implementation | Tuấn Anh hoàn thiện rule/model; Dũng + Đức Anh gọi model/validate output; không ép context_complete để sinh nhãn |
-| Scorer | Null khi chưa đủ căn cứ; có rule HIGH cho ca thời hạn hẹp khi ngữ nghĩa đã xác nhận, demo chưa đi vào nhánh này | Tuấn Anh + Dũng duyệt rubric trước khi bật nhánh chấm mức; fixture 30 → 15 không mặc định MEDIUM/HIGH |
+| Semantic/AI Adapter | Rule hẹp; demo chưa xác nhận context đầy đủ, kết luận chưa rõ giữ null/review; AI Adapter chưa có implementation | Dũng + Đức Anh + Ngọc Anh hoàn thiện Semantic; Dũng + Đức Anh gọi model/validate output; không ép context_complete để sinh nhãn |
+| Scorer | Null khi chưa đủ căn cứ; có rule HIGH cho ca thời hạn hẹp khi ngữ nghĩa đã xác nhận, demo chưa đi vào nhánh này | Dũng + Đức Anh + Ngọc Anh review rubric trước khi bật nhánh chấm mức; fixture 30 → 15 không mặc định MEDIUM/HIGH |
 | Pipeline/API | Demo runner validate amendment/source/report; Pipeline nền kiểm tra envelope; HTTP phân biệt FAILED nghiệp vụ và lỗi thực thi | Dũng tích hợp runner chính thức/validation chung; route còn ở main.py, api/compare.py là khung |
 | Frontend | HTML/CSS/JavaScript chọn file, diff/quote/source_ref/cảnh báo; report FAILED vẫn hiện item | Tuấn Anh tiếp tục từ demo; React/TypeScript là hướng mục tiêu, chưa bắt buộc trước merge |
 

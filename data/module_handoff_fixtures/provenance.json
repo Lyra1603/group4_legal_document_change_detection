@@ -51,5 +51,17 @@
     "data/module_handoff_fixtures/retrieval_to_context/deadline_reduction.json",
     "data/module_handoff_fixtures/semantic_to_scorer/deadline_reduction.json",
     "data/module_handoff_fixtures/text_diff_and_index_to_query/deadline_reduction.json"
-  ]
+  ],
+  "ownership_update": {
+    "branch": "bachdung/docs",
+    "commit": "ad4c272c7f5426bbc9c5891112c8e6cfe4f6f4b0",
+    "approved_date": "2026-11-13",
+    "semantic_and_scorer": [
+      "Dũng",
+      "Đức Anh",
+      "Ngọc Anh"
+    ],
+    "frontend": "Tuấn Anh",
+    "scope": "Owner labels and review responsibility only; keep null severity/PARTIAL, sources, offsets and schema unchanged."
+  }
 }

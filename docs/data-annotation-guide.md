@@ -230,7 +230,7 @@ Chỉ đổi nghĩa đã xác định không gán LOW theo rubric hiện tại. 
 
 ## 6. Review, xử lý bất đồng và quản lý phiên bản nhãn
 
-Phân công nhân sự theo Architecture và Module: Dũng quản lý dữ liệu/nhãn và review nghiệp vụ; Tuấn Anh phụ trách Semantic Change/Scorer, Ngọc Anh phụ trách Text Diff; Dũng điều phối tích hợp/API, Dũng + Đức Anh phụ trách AI Adapter; Đức Anh điều phối kế hoạch đánh giá; hai owner tại mỗi điểm nối kiểm tra chéo output và cách sử dụng. Không có Evaluator độc lập. Mỗi cặp có người gán nhãn và một người review khác; không tự review bản mình như kiểm tra độc lập. Khi có người có chuyên môn pháp luật tham gia, ghi rõ vai trò và phạm vi kiểm tra; không mặc định nhóm đã có chuyên gia.
+Phân công nhân sự theo Architecture và Module: Dũng quản lý dữ liệu/nhãn và review nghiệp vụ; Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff và Scorer, Ngọc Anh phụ trách Text Diff; Dũng điều phối tích hợp/API, Dũng + Đức Anh phụ trách AI Adapter; Đức Anh điều phối kế hoạch đánh giá; hai owner tại mỗi điểm nối kiểm tra chéo output và cách sử dụng. Không có Evaluator độc lập. Mỗi cặp có người gán nhãn và một người review khác; không tự review bản mình như kiểm tra độc lập. Khi có người có chuyên môn pháp luật tham gia, ghi rõ vai trò và phạm vi kiểm tra; không mặc định nhóm đã có chuyên gia.
 
 ### 6.1. Checklist review
 

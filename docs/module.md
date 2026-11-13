@@ -31,9 +31,9 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 | --- | --- | --- | --- |
 | api/ | Dũng | Owner Pipeline, frontend và các bên dùng API | Báo cáo đã chốt theo schema chung; endpoint/upload và mapping còn chờ |
 | schemas/ | Đức Anh | Owner bên cung cấp và bên nhận từng kiểu dữ liệu | Hợp đồng chung đã chọn; validator đã merge qua PR #2, wiring Pipeline còn chờ |
-| document_processing/ | Thọ | Đức Anh, Ngọc Anh, Tuấn Anh theo điểm nối; Dũng review nguồn/nghiệp vụ | ExtractedDocument/Clause/AmendmentItem đã chốt; mapping cây native và thuật toán còn chờ |
-| context/ | Đức Anh phụ trách context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG | Thọ cung cấp nguồn; Ngọc Anh/Tuấn Anh nhận ngữ cảnh; Dũng nhận phần tích hợp | HTTP đã chốt; chi tiết LightRAG chờ LK-13 sau các quyết định còn lại |
-| change_analysis/ | Chốt theo chức năng ở LK-01, không gán owner chung toàn folder | Ngọc Anh: Text Diff; Tuấn Anh: Semantic Change/Scorer; Dũng + Đức Anh: AI Adapter | Phân công và kiểu dữ liệu chung đã chốt; thuật toán/giao diện gọi chi tiết còn chờ |
+| document_processing/ | Thọ | Đức Anh, Ngọc Anh theo điểm nối; Dũng review nguồn/nghiệp vụ | ExtractedDocument/Clause/AmendmentItem đã chốt; mapping cây native và thuật toán còn chờ |
+| context/ | Đức Anh phụ trách context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG | Thọ cung cấp nguồn; Dũng + Đức Anh + Ngọc Anh nhận ngữ cảnh cho Semantic Diff; Dũng nhận phần tích hợp | HTTP đã chốt; chi tiết LightRAG chờ LK-13 sau các quyết định còn lại |
+| change_analysis/ | Chốt theo chức năng ở LK-01, không gán owner chung toàn folder | Ngọc Anh: Text Diff; Dũng + Đức Anh + Ngọc Anh: Semantic Change/Scorer; Dũng + Đức Anh: AI Adapter | Phân công và kiểu dữ liệu chung đã chốt; thuật toán/giao diện gọi chi tiết còn chờ |
 | evaluation/ | Không triển khai như module riêng | Test chuyển sang các owner và test/ | Giữ cấu trúc, không giao lại đầu việc Evaluator |
 
 | Thành phần ngoài các folder trên | Người phụ trách | Ghi chú |
@@ -41,7 +41,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 | backend/main.py | Dũng | Khởi tạo ứng dụng, đăng ký thành phần backend |
 | backend/app/pipeline.py | Dũng | Điều phối và tổng hợp báo cáo |
 | backend/app/config.py | Dũng điều phối cấu hình tích hợp/API; Đức Anh phối hợp phần kỹ thuật liên quan | Dũng + Đức Anh phối hợp cấu hình LightRAG |
-| frontend/ | Tuấn Anh theo phân công hiện có | Cần xác nhận khối lượng sau khi nhận thêm Semantic Diff; không tự chuyển người |
+| frontend/ | Tuấn Anh | Hiển thị báo cáo và xử lý lỗi, cảnh báo, trạng thái do Pipeline/API trả về |
 | Dữ liệu, nghiệp vụ, nhãn/fixture nghiệp vụ và tài liệu tổng quát | Dũng | Owner liên quan phối hợp, người review nhãn khác người tạo |
 
 ## 3. Đặc tả từng module
@@ -109,7 +109,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 
 **Đầu ra:** Cây/nguồn chuẩn hóa; chỉ dẫn sửa đổi, vị trí đích, nội dung cục bộ, hiệu lực và cảnh báo theo schema chung; adapter từ cây native còn cần hiện thực.
 
-**Bên kết nối:** Thọ → Đức Anh ở nguồn/context; Thọ → Dũng ở Pipeline/API; Thọ → Ngọc Anh/Tuấn Anh qua dữ liệu trước/sau và căn cứ.
+**Bên kết nối:** Thọ → Đức Anh ở nguồn/context; Thọ → Dũng ở Pipeline/API; Thọ → Ngọc Anh ở đầu vào Text Diff và cung cấp căn cứ cho nhóm Semantic Diff.
 
 **File hỗ trợ:** được thêm trong module theo quy định mục 1; tên/cấu trúc nội bộ chỉ cố định khi owner đề xuất và các bên liên quan thống nhất.
 
@@ -136,7 +136,7 @@ File hỗ trợ trên nhánh: `semantic_bridge.py` ghép Context/Text Diff trư�
 
 **Đầu ra:** Ngữ cảnh có nguồn, tình trạng tài liệu tham chiếu, cảnh báo và trạng thái retrieval/index theo hợp đồng.
 
-**Bên kết nối:** Thọ cung cấp nguồn; Ngọc Anh/Tuấn Anh dùng context; Pipeline quản lý luồng và việc dọn.
+**Bên kết nối:** Thọ cung cấp nguồn; Dũng + Đức Anh + Ngọc Anh dùng context cho Semantic Diff; Pipeline quản lý luồng và việc dọn.
 
 **File hỗ trợ:** được thêm trong module theo quy định mục 1; tên/cấu trúc nội bộ chỉ cố định khi owner đề xuất và các bên liên quan thống nhất.
 
@@ -146,22 +146,22 @@ File hỗ trợ trên nhánh: `semantic_bridge.py` ghép Context/Text Diff trư�
 
 ### 3.5. change_analysis/
 
-**Owner:** Phân theo chức năng đã chốt tại LK-01: Ngọc Anh — Text Diff; Tuấn Anh — Semantic Change/Scorer; Dũng + Đức Anh — AI Adapter. Không tự gán owner chung toàn folder.
+**Owner:** Phân theo chức năng đã chốt tại LK-01: Ngọc Anh — Text Diff; Dũng + Đức Anh + Ngọc Anh — Semantic Change/Scorer; Dũng + Đức Anh — AI Adapter. Không tự gán owner chung toàn folder.
 
 **Nhiệm vụ và ranh giới:** Phân tích chữ và nghĩa trên nội dung trước/sau cục bộ có ngữ cảnh; phân loại và chấm tác động theo bằng chứng. Không tự dựng dữ liệu nguồn hoặc xóa cảnh báo của bước trước.
 
 | File chính | Trách nhiệm |
 | --- | --- |
 | text_diff.py | Ngọc Anh: xác định vùng INSERT/DELETE/REPLACE theo hai chuỗi cục bộ. |
-| semantic_diff.py | Tuấn Anh: rule trước, model khi cần; xác định Semantic Change, giải thích, bằng chứng và trường hợp chưa đủ căn cứ. |
-| scorer.py | Tuấn Anh: phân loại/chấm mức tác động theo kết quả ngữ nghĩa và rubric chung. |
+| semantic_diff.py | Dũng + Đức Anh + Ngọc Anh: rule trước, model khi cần; xác định Semantic Change, giải thích, bằng chứng và trường hợp chưa đủ căn cứ. |
+| scorer.py | Dũng + Đức Anh + Ngọc Anh: phân loại/chấm mức tác động theo kết quả ngữ nghĩa và rubric chung. |
 | ai_adapter.py | Dũng + Đức Anh: đóng gói gọi mô hình và kiểm tra output; chi tiết cách gọi/giao diện còn chờ CN-08/LK-02. |
 
 **Đầu vào:** Yêu cầu sửa đổi có nội dung trước/sau và context; Text Diff được cung cấp cho Semantic Diff khi có.
 
 **Đầu ra:** TextDiffResult, SemanticDiffResult và list[ScoringResult] theo contracts.py; Pipeline đặt vào AmendmentResult trong ComparisonReport.results.
 
-**Bên kết nối:** Ngọc Anh → Tuấn Anh ở Text Diff; Semantic Change → Scorer là điểm nối nội bộ của Tuấn Anh; các phần → Dũng ở Pipeline/API; Dũng + Đức Anh cung cấp AI Adapter.
+**Bên kết nối:** Ngọc Anh bàn giao Text Diff cho nhóm Semantic Diff. Semantic Diff → Scorer là điểm nối giữa hai chức năng cùng do Dũng + Đức Anh + Ngọc Anh phụ trách; các phần → Dũng ở Pipeline/API; Dũng + Đức Anh cung cấp AI Adapter.
 
 **File hỗ trợ:** được thêm trong module theo quy định mục 1; tên/cấu trúc nội bộ chỉ cố định khi owner đề xuất và các bên liên quan thống nhất.
 
@@ -202,10 +202,10 @@ Phiên 1 giữ toàn văn cùng một đơn vị đối chiếu ở cả hai tr�
 | Linker → Text Diff | Thọ → Ngọc Anh | `AmendmentItem` có hai trạng thái đủ căn cứ | `TextDiffResult` và offset theo hai chuỗi | Bỏ qua item chưa đủ nội dung để diff | [Ca mẫu](../data/module_handoff_fixtures/document_to_text_diff/deadline_reduction.json) · LK-04/05/07 |
 | Text Diff + chỉ mục → Ghép query | Ngọc Anh + Đức Anh → Đức Anh + Dũng | Chỉ dẫn, trước/sau, `TextDiffResult` và chỉ mục đã sẵn sàng | Truy vấn cho đúng `amendment_id` | Chờ đủ dữ liệu ở hai nhánh. Ghi rõ lý do nếu bỏ qua | [Ca mẫu](../data/module_handoff_fixtures/text_diff_and_index_to_query/deadline_reduction.json) · LK-06/07/13 |
 | Retrieval → Context | Dũng + Đức Anh → Đức Anh | `AmendmentItem` và ứng viên nguồn đã ánh xạ | `AmendmentItem` bổ sung `AnalysisContext` và căn cứ đã đối chiếu | Giữ lý do khi kết quả truy xuất rỗng, lỗi hoặc thiếu căn cứ | [Ca mẫu](../data/module_handoff_fixtures/retrieval_to_context/deadline_reduction.json) · LK-04/06/12/13 |
-| Context + Text Diff → Semantic Diff | Đức Anh + Ngọc Anh → Tuấn Anh | `AmendmentItem` có context và `TextDiffResult` nếu đã tạo | `SemanticDiffResult` khớp `amendment_id` | Chạy rule trước và dùng model khi cần theo CN-06. Báo giới hạn khi thiếu căn cứ | [Ca mẫu](../data/module_handoff_fixtures/context_and_text_diff_to_semantic/deadline_reduction.json) · CN-06/LK-06–09/12 |
-| Semantic Diff → Scorer | Tuấn Anh → Tuấn Anh | `AmendmentItem` và `SemanticDiffResult` | Danh sách `ScoringResult` nối theo `change_id` | Giữ mức độ chưa xác định theo LK-10. Có reviewer khác khi kiểm thử chéo | [Ca mẫu](../data/module_handoff_fixtures/semantic_to_scorer/deadline_reduction.json) · LK-09/10/12 |
+| Context + Text Diff → Semantic Diff | Đức Anh + Ngọc Anh → Dũng + Đức Anh + Ngọc Anh | `AmendmentItem` có context và `TextDiffResult` nếu đã tạo | `SemanticDiffResult` khớp `amendment_id` | Chạy rule trước và dùng model khi cần theo CN-06. Báo giới hạn khi thiếu căn cứ | [Ca mẫu](../data/module_handoff_fixtures/context_and_text_diff_to_semantic/deadline_reduction.json) · CN-06/LK-06–09/12 |
+| Semantic Diff → Scorer | Nhóm Semantic Diff → Nhóm Scorer (cùng phân công LK-01) | `AmendmentItem` và `SemanticDiffResult` | Danh sách `ScoringResult` nối theo `change_id` | Giữ mức độ chưa xác định theo LK-10. Có reviewer khác khi kiểm thử chéo | [Ca mẫu](../data/module_handoff_fixtures/semantic_to_scorer/deadline_reduction.json) · LK-09/10/12 |
 | Phân tích → Pipeline/API | Các owner → Dũng | Định danh tài liệu, kết quả từng item, cảnh báo và lỗi | `ComparisonReport` qua validator | Giữ item có bước chưa chạy và ghi lý do | [Ca mẫu](../data/module_handoff_fixtures/analysis_to_pipeline/deadline_reduction.json) · LK-11/12 |
-| API → Frontend | Dũng → Tuấn Anh | `ComparisonReport` hoặc lỗi HTTP theo API | Hiển thị trước/sau, kết luận, trạng thái và bằng chứng | Hiện `quote` và vị trí đã trả. Mục chưa xử lý phải nhìn thấy được | [Ca mẫu](../data/module_handoff_fixtures/api_to_frontend/deadline_reduction.json) · LK-11/12 |
+| API → Frontend | Dũng → Tuấn Anh | `ComparisonReport` hoặc lỗi HTTP theo API | Hiển thị trước/sau, kết luận, bằng chứng và xử lý lỗi, cảnh báo, trạng thái trả về | Hiện `quote` và vị trí đã trả. Mục chưa xử lý phải nhìn thấy được | [Ca mẫu](../data/module_handoff_fixtures/api_to_frontend/deadline_reduction.json) · LK-11/12 |
 
 Các fixture mô tả hợp đồng tại từng điểm nối. Trạng thái chỉ mục, câu query và dữ liệu hiển thị trong fixture dùng để mô phỏng, theo [README của bộ fixture](../data/module_handoff_fixtures/README.md). Tên hàm và chi tiết tích hợp còn mở được chốt khi có kết quả chạy.
 
@@ -229,7 +229,7 @@ Phân biệt ba trạng thái: đủ đặc tả, đã hiện thực và đã t�
 | --- | --- | --- |
 | Folder chính và danh sách file chính | Đã có cấu trúc làm căn cứ | Review phạm vi file và giữ ổn định đường dẫn |
 | LightRAG qua HTTP | Đã chốt phương án | CN-03/CN-04 và LK-13 còn chi tiết kỹ thuật |
-| Semantic Diff giao Tuấn Anh; bỏ Evaluator riêng | Đã chốt phân công chức năng | Hoàn thiện contract/fixture và trách nhiệm test |
+| Semantic Diff và Scorer giao Dũng + Đức Anh + Ngọc Anh; bỏ Evaluator riêng | Đã chốt phân công chức năng | Hoàn thiện contract/fixture và trách nhiệm test |
 | Phân công change_analysis/AI Adapter | Đã chốt theo chức năng | LK-01; CN-05/CN-06/CN-07/CN-08 còn lựa chọn triển khai |
 | Người gọi/tích hợp LightRAG | Đã chốt Dũng + Đức Anh | Chi tiết kỹ thuật còn chờ CN-04/LK-13; LK-13 chốt sau các quyết định còn lại |
 | Hợp đồng dữ liệu và báo cáo | Đã chốt dùng schema Đức Anh | LK-08 đến LK-11 đã ghi nhận; adapter/wiring, thuật toán, rubric và API chi tiết còn chờ |

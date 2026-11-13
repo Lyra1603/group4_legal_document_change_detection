@@ -4,6 +4,8 @@ Nguồn fixture ban đầu là `bachdung/docs-data` tại **cf62188b5f1e36695766
 
 **Đây là dữ liệu giả định để phát triển và kiểm tra hợp đồng. Không phải output chạy thật, gold đã được review, index sẵn sàng thật hoặc LightRAG đã truy xuất thành công.** Các khóa input/expected_output/metadata và expected trong ca lỗi là vỏ fixture, không thêm trường vào schema runtime.
 
+Phân công đã được Đức Anh duyệt ngày 13/11 theo commit Dũng `ad4c272`: Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff/Scorer; Tuấn Anh nhận report/lỗi từ API để hiển thị UI. Chỉ đổi nhãn owner và người review rubric; không đổi nguồn, offset, schema, mức độ null hoặc report PARTIAL. Chi tiết nguồn cập nhật ở provenance.json.
+
 ## Ca xuyên suốt deadline_reduction
 
 V1 có Điều 2 yêu cầu báo cáo trong 30 ngày và Điều 3 quy định ngày làm việc; S thay Điều 2 bằng đoạn 15 ngày trích nguyên văn. Nguyên văn nguồn và offset của Dũng được giữ. Các thay đổi thống nhất:
@@ -21,10 +23,10 @@ V1 có Điều 2 yêu cầu báo cáo trong 30 ngày và Điều 3 quy định n
 | document_to_text_diff | Thọ → Ngọc Anh | AmendmentItem → TextDiffResult |
 | text_diff_and_index_to_query | Ngọc Anh + Đức Anh → Đức Anh/Dũng | Index + diff + item → yêu cầu query |
 | retrieval_to_context | Đức Anh/Dũng → Đức Anh | Ứng viên EvidenceRef → context đã kiểm tra |
-| context_and_text_diff_to_semantic | Đức Anh + Ngọc Anh → Tuấn Anh | Item có context + diff → SemanticDiffResult |
-| semantic_to_scorer | Tuấn Anh → Tuấn Anh | SemanticDiffResult → list[ScoringResult] |
+| context_and_text_diff_to_semantic | Đức Anh + Ngọc Anh → Dũng + Đức Anh + Ngọc Anh | Item có context + diff → SemanticDiffResult |
+| semantic_to_scorer | Nhóm Semantic Diff → Nhóm Scorer (Dũng + Đức Anh + Ngọc Anh) | SemanticDiffResult → list[ScoringResult] |
 | analysis_to_pipeline | Các owner → Dũng | Kết quả và issue → ComparisonReport |
-| api_to_frontend | Dũng → Tuấn Anh | Report → các giá trị cần hiển thị |
+| api_to_frontend | Dũng → Tuấn Anh | Report → trước/sau, bằng chứng, kết luận, lỗi, cảnh báo và trạng thái |
 
 `index_ready`, `query_text`, `candidate_evidence`, `displayed_evidence` và `significance_label` là quy ước fixture, không tự trở thành tên hàm, API LightRAG hoặc field schema chung. Fixture Adapter → Linker chưa cung cấp `BoundaryData.units` của implementation hiện tại; owner phải chốt binding/adapter nội bộ, không sửa schema chỉ để giữ đối tượng hỗ trợ này.
 
