@@ -1,0 +1,397 @@
+{
+  "comparison_id": "17fa7634-cecf-45b9-b895-b0d49d95257b",
+  "base_document": {
+    "document_id": "v1",
+    "role": "BASE",
+    "filename": "22_2019_TT-NHNN_v1.docx"
+  },
+  "amendment_document": {
+    "document_id": "s",
+    "role": "AMENDMENT",
+    "filename": "08_2020_TT-NHNN.docx"
+  },
+  "reference_documents": [],
+  "status": "PARTIAL",
+  "results": [
+    {
+      "amendment": {
+        "amendment_id": "s:amendment_1",
+        "operation": "AMEND",
+        "instruction": {
+          "document_id": "s",
+          "source_refs": [
+            "block:12"
+          ],
+          "quote": "Khoản 5 Điều 16 được sửa đổi, bổ sung như sau:"
+        },
+        "target_document": "v1",
+        "target_locator": "Điều 16 / khoản 5",
+        "target_unit_ids": [
+          "v1:n213"
+        ],
+        "applicability": "APPLIES",
+        "before_text": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2020: 40%;\nb) Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 34%;\nd) Từ ngày 01 tháng 10 năm 2022: 30%.",
+        "after_text": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 40%;\nb) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 37%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 34%;\nd) Từ ngày 01 tháng 10 năm 2023: 30%.",
+        "after_basis": "QUOTED",
+        "evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:12"
+            ],
+            "quote": "Khoản 5 Điều 16 được sửa đổi, bổ sung như sau:"
+          },
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:13",
+              "block:14",
+              "block:15",
+              "block:16",
+              "block:17"
+            ],
+            "quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 40%;\nb) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 37%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 34%;\nd) Từ ngày 01 tháng 10 năm 2023: 30%."
+          },
+          {
+            "document_id": "v1",
+            "source_refs": [
+              "block:326",
+              "block:327",
+              "block:328",
+              "block:329",
+              "block:330"
+            ],
+            "quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2020: 40%;\nb) Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 34%;\nd) Từ ngày 01 tháng 10 năm 2022: 30%."
+          }
+        ],
+        "effect_info": [],
+        "context": {
+          "general_context": "",
+          "evidence": [],
+          "references": []
+        },
+        "needs_review": true,
+        "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý."
+      },
+      "text_diff": {
+        "amendment_id": "s:amendment_1",
+        "changes": [
+          {
+            "type": "REPLACE",
+            "old_text": "0",
+            "new_text": "1",
+            "old_start": 226,
+            "old_end": 227,
+            "new_start": 226,
+            "new_end": 227
+          },
+          {
+            "type": "DELETE",
+            "old_text": ") Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc",
+            "new_text": "",
+            "old_start": 235,
+            "old_end": 306,
+            "new_start": 235,
+            "new_end": 235
+          },
+          {
+            "type": "INSERT",
+            "old_text": "",
+            "new_text": "7%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 3",
+            "old_start": 372,
+            "old_end": 372,
+            "new_start": 301,
+            "new_end": 372
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "2",
+            "new_text": "3",
+            "old_start": 406,
+            "old_end": 407,
+            "new_start": 406,
+            "new_end": 407
+          }
+        ]
+      },
+      "semantic_diff": {
+        "amendment_id": "s:amendment_1",
+        "changes": [
+          {
+            "change_id": "s:amendment_1:change_1",
+            "is_meaningful_change": null,
+            "diff_details": "Đã tính thay đổi chữ; chưa đủ căn cứ kết luận tác động ngữ nghĩa.",
+            "aspects": [],
+            "evidence": [
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "block:12"
+                ],
+                "quote": "Khoản 5 Điều 16 được sửa đổi, bổ sung như sau:"
+              },
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "block:13",
+                  "block:14",
+                  "block:15",
+                  "block:16",
+                  "block:17"
+                ],
+                "quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 40%;\nb) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 37%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 34%;\nd) Từ ngày 01 tháng 10 năm 2023: 30%."
+              },
+              {
+                "document_id": "v1",
+                "source_refs": [
+                  "block:326",
+                  "block:327",
+                  "block:328",
+                  "block:329",
+                  "block:330"
+                ],
+                "quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2020: 40%;\nb) Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 34%;\nd) Từ ngày 01 tháng 10 năm 2022: 30%."
+              }
+            ],
+            "old_quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2020: 40%;\nb) Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 34%;\nd) Từ ngày 01 tháng 10 năm 2022: 30%.",
+            "new_quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 40%;\nb) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 37%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 34%;\nd) Từ ngày 01 tháng 10 năm 2023: 30%.",
+            "needs_review": true,
+            "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+          }
+        ],
+        "needs_review": true,
+        "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+      },
+      "scoring": [
+        {
+          "change_id": "s:amendment_1:change_1",
+          "category": null,
+          "significance": null,
+          "is_critical": null,
+          "reason": "Chưa chấm mức tác động khi ngữ nghĩa/ngữ cảnh chưa xác nhận.",
+          "needs_review": true,
+          "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "UNCLOSED_QUOTATION",
+      "message": "v1: Ngoặc trích dẫn không đóng; giữ nguyên phần còn lại trong khối trích dẫn, cần kiểm tra.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 3 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 1 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 2 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 1 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 2 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 1 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 2 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 1 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 2 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 3 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 1 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 2 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 3 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 1 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 2 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "DUPLICATE_CLAUSE",
+      "message": "v1: Lặp nhãn Khoản 3 trong cùng cấp; cần kiểm tra ranh giới.",
+      "amendment_id": null
+    },
+    {
+      "stage": "linker",
+      "code": "CONTEXT_NOT_CONFIRMED",
+      "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+      "amendment_id": "s:amendment_1"
+    },
+    {
+      "stage": "context",
+      "code": "LIGHTRAG_DISABLED",
+      "message": "LightRAG chưa bật vì chưa chốt dịch vụ/model; đang dùng nguồn cục bộ, không giả lập retrieval.",
+      "amendment_id": null
+    },
+    {
+      "stage": "semantic",
+      "code": "LOCAL_BASELINE_ONLY",
+      "message": "Demo quy tắc cục bộ; model chưa chọn, không tự xác nhận ngữ cảnh hoặc mức tác động.",
+      "amendment_id": null
+    }
+  ],
+  "errors": []
+}

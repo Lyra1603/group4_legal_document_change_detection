@@ -1,0 +1,6 @@
+{
+  "mode": "REAL_HTTP_PROBE",
+  "healthy": false,
+  "code": "SERVER_UNAVAILABLE_OR_INVALID_RESPONSE",
+  "retrieval_executed": false
+}

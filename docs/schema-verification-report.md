@@ -1,5 +1,7 @@
 # Xác nhận đồng bộ tài liệu và kiểm thử schema sau PR #2
 
+**Báo cáo lịch sử:** giữ làm bằng chứng theo commit/môi trường ghi dưới đây, không phải trạng thái nhánh LightRAG hiện tại. Kiểm tra mới ở [common-baseline.md](common-baseline.md). Các nhận định về module chưa triển khai chỉ thuộc mốc cũ.
+
 ## Căn cứ và phạm vi
 
 - Main đã fetch: `a8a906a474a67e89195987ca757f7315c22231db`, merge [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2).
