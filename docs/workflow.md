@@ -16,7 +16,7 @@ Tài liệu quy định cách thành viên phối hợp từ lúc chốt lựa c
 
 Quy tắc Git và các checklist dưới đây là đề xuất vận hành của bản đầu tiên, không khẳng định nhóm đã thông qua hoặc GitHub đã bật cấu hình bảo vệ. Quyết định và phân công mới nhất được nhóm xác nhận là căn cứ; khi tài liệu còn lệch nhau, cập nhật phần liên quan trước khi dựa vào đó để triển khai.
 
-Theo phân công hiện có: Dũng phụ trách tích hợp/API và dữ liệu/docs; Thọ phụ trách xử lý tài liệu; Ngọc Anh phụ trách Text Diff; Tuấn Anh phụ trách Semantic Change và Scorer; Dũng + Đức Anh phụ trách AI Adapter. Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá.
+Theo phân công hiện có: Dũng phụ trách tích hợp/API và dữ liệu/docs; Thọ phụ trách xử lý tài liệu; Ngọc Anh phụ trách Text Diff; Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff và Scorer; Tuấn Anh phụ trách UI và xử lý lỗi trả về; Dũng + Đức Anh phụ trách AI Adapter. Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá.
 
 ## 2. Quy trình làm việc
 

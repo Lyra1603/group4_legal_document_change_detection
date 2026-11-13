@@ -147,7 +147,7 @@ Cây thư mục dưới đây lấy từ `main` tại `f76610e`. Các file Pytho
         └── schemas/
 ```
 
-Parser hiện tự đọc DOCX, trả dict gồm articles/outside/source_blocks/warnings/status/summary. Node giữ children, segments, full_text, source_refs; không là knowledge graph. Giữ implementation trước, chưa bắt refactor Reader riêng; Thọ chủ trì adapter và mapping nguồn, phối hợp Dũng kiểm tra dữ liệu để Đức Anh/Ngọc Anh/Tuấn Anh sử dụng được. Reference không có Điều nhưng có blocks/bảng vẫn có thể làm căn cứ; native Parser status không thay ComparisonReport.status.
+Parser hiện tự đọc DOCX, trả dict gồm articles/outside/source_blocks/warnings/status/summary. Node giữ children, segments, full_text, source_refs; không là knowledge graph. Giữ implementation trước, chưa bắt refactor Reader riêng; Thọ chủ trì adapter và mapping nguồn, phối hợp Dũng kiểm tra dữ liệu để các bên nhận dữ liệu tại điểm nối sử dụng được. Reference không có Điều nhưng có blocks/bảng vẫn có thể làm căn cứ; native Parser status không thay ComparisonReport.status.
 
 Source_ref hiện là block:N. Offset segment tính theo ký tự Python [start,end) trên text block; node_id không là khóa ghép phiên bản. Với PDF chuyển đổi, chỉ nói đúng nguồn DOCX đã có; mapping trang PDF là đầu ra cần kiểm chứng, không suy từ số block. LK-04 và yêu cầu hiển thị nguồn trong SRS phải xử lý chuyển chỉ số khi frontend dùng quy ước khác.
 
@@ -212,11 +212,11 @@ Với lỗi từng bước, giữ chỉ dẫn/căn cứ đã có và chỉ PARTI
 
 | Owner | Trách nhiệm chính | Quyết định liên quan |
 | --- | --- | --- |
-| Bạch Công Dũng | Dữ liệu, docs, nghiệp vụ; Pipeline, tích hợp và API; cùng Đức Anh phụ trách AI Adapter và gọi/tích hợp LightRAG | LK-01, LK-02, LK-11, LK-12, CN-04, CN-08, LK-13 |
-| Dương Đức Anh | Schema và context; cùng Dũng phụ trách AI Adapter và gọi/tích hợp LightRAG; điều phối kế hoạch đánh giá | LK-01, LK-03, LK-04, LK-06, CN-03, CN-04, CN-08, LK-13 |
+| Bạch Công Dũng | Dữ liệu, docs, nghiệp vụ; Pipeline, tích hợp và API; cùng Đức Anh và Ngọc Anh phụ trách Semantic Diff và Scorer; cùng Đức Anh phụ trách AI Adapter và gọi/tích hợp LightRAG | LK-01, LK-02, LK-11, LK-12, CN-04, CN-08, LK-13 |
+| Dương Đức Anh | Schema và context; cùng Dũng và Ngọc Anh phụ trách Semantic Diff và Scorer; cùng Dũng phụ trách AI Adapter và gọi/tích hợp LightRAG; điều phối kế hoạch đánh giá | LK-01, LK-03, LK-04, LK-06, CN-03, CN-04, CN-08, LK-13 |
 | Bùi Quang Thọ | Chuyển đổi, Parser, document_adapter; trích/liên kết chỉ dẫn và hiệu lực | CN-01, CN-02, LK-03, LK-04, LK-05 |
-| Đỗ Tuấn Anh | Semantic Change/Semantic Diff và Scorer; frontend/session theo phân công hiện có | CN-06, CN-07, LK-07, LK-08, LK-09, LK-10 |
-| Đoàn Ngọc Anh | Text Diff và kiểm thử chéo các điểm nối liên quan | CN-05, LK-05, LK-07 |
+| Đỗ Tuấn Anh | Frontend/session, hiển thị báo cáo và xử lý lỗi, cảnh báo, trạng thái trả về | LK-01, LK-11, LK-12 |
+| Đoàn Ngọc Anh | Text Diff và kiểm thử chéo các điểm nối liên quan; cùng Dũng và Đức Anh phụ trách Semantic Diff và Scorer | CN-05, CN-06, CN-07, LK-01, LK-05, LK-07 |
 | Người gọi/tích hợp LightRAG | Dũng + Đức Anh | CN-04, LK-13 |
 
 Phân công chức năng theo LK-01 trong [decision.md](decision.md). Không mặc định một người sở hữu toàn folder change_analysis khi các chức năng được giao cho nhiều người. Đổi thuật toán nội bộ theo phạm vi owner; đổi contract phải được bên giao/nhận review và cập nhật schema/fixture. Quy trình làm việc, Git và kiểm thử theo [workflow.md](workflow.md); không tạo hệ thống mã quyết định D-xx song song.
@@ -231,7 +231,7 @@ Phương án LightRAG Server qua HTTP đã được chốt. Các việc sau là 
 - Chọn LLM/embedding, cấu hình storage, thông tin kết nối, timeout/retry và ngân sách tài nguyên.
 - Chốt chunking, source registry và fixture ánh xạ quote về đúng nguồn; kiểm chứng dữ liệu không lẫn giữa các comparison.
 - Dùng ComparisonReport/results và tám nhóm theo schema chung; hoàn thiện adapter nguồn/Clause, wiring validator và fixture API; dữ liệu nhận xét frontend và multipart upload chốt riêng. Kiểm thử SUCCESS/PARTIAL/FAILED.
-- Áp dụng phân công chức năng đã chốt ở LK-01: Ngọc Anh làm Text Diff; Tuấn Anh làm Semantic Change/Scorer; Dũng làm tích hợp/API; Dũng + Đức Anh làm AI Adapter. Đã chốt Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá; còn hoàn thiện chi tiết triển khai và kiểm chứng. Không tự gán owner toàn folder change_analysis.
+- Áp dụng phân công chức năng đã chốt ở LK-01: Ngọc Anh làm Text Diff; Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff và Scorer; Tuấn Anh phụ trách UI và xử lý lỗi trả về; Dũng làm tích hợp/API; Dũng + Đức Anh làm AI Adapter. Đã chốt Dũng + Đức Anh gọi/tích hợp LightRAG; Đức Anh phụ trách context và điều phối kế hoạch đánh giá; còn hoàn thiện chi tiết triển khai và kiểm chứng. Không tự gán owner toàn folder change_analysis.
 - Triển khai bán song song: thống nhất contract, schema và fixture trước; bên nhận phát triển với mock/fixture trong khi bên giao hoàn thiện; tích hợp từng điểm nối, không đợi cả chuỗi xong. Chi tiết theo [Workflow](workflow.md) và [Workflow](workflow.md).
 
 ### Phát triển theo hợp đồng và hiện trạng schema

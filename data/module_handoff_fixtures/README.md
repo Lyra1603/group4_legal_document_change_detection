@@ -11,10 +11,10 @@ Ca `deadline_reduction.json` xuyên suốt từ nguồn đến báo cáo. V1 yê
 | [Document/Linker → Text Diff](document_to_text_diff/deadline_reduction.json) | Thọ → Ngọc Anh | `AmendmentItem` → `TextDiffResult` thay đúng hai ký tự ở đoạn cục bộ |
 | [Text Diff + chỉ mục → Ghép query](text_diff_and_index_to_query/deadline_reduction.json) | Ngọc Anh + Đức Anh → Đức Anh/Dũng | Chỉ dẫn, `TextDiffResult` và chỉ mục đã sẵn sàng → nội dung query minh họa |
 | [Retrieval → Context](retrieval_to_context/deadline_reduction.json) | Đức Anh/Dũng → Đức Anh | `AmendmentItem` và ứng viên nguồn đã ánh xạ sang dạng `EvidenceRef` → `AmendmentItem` bổ sung ngữ cảnh sau khi đối chiếu nguyên văn |
-| [Context + Text Diff → Semantic Diff](context_and_text_diff_to_semantic/deadline_reduction.json) | Đức Anh + Ngọc Anh → Tuấn Anh | `AmendmentItem` đã có ngữ cảnh và `TextDiffResult` → `SemanticDiffResult` có khía cạnh `TIME_QUANTITY` |
-| [Semantic Diff → Scorer](semantic_to_scorer/deadline_reduction.json) | Tuấn Anh → Tuấn Anh | `AmendmentItem` và `SemanticDiffResult` → danh sách `ScoringResult` theo `change_id` |
+| [Context + Text Diff → Semantic Diff](context_and_text_diff_to_semantic/deadline_reduction.json) | Đức Anh + Ngọc Anh → Dũng + Đức Anh + Ngọc Anh | `AmendmentItem` đã có ngữ cảnh và `TextDiffResult` → `SemanticDiffResult` có khía cạnh `TIME_QUANTITY` |
+| [Semantic Diff → Scorer](semantic_to_scorer/deadline_reduction.json) | Nhóm Semantic Diff → Nhóm Scorer (cùng phân công LK-01) | `AmendmentItem` và `SemanticDiffResult` → danh sách `ScoringResult` theo `change_id` |
 | [Các module phân tích → Pipeline/API](analysis_to_pipeline/deadline_reduction.json) | Các owner → Dũng | Định danh tài liệu, `AmendmentResult` và các danh sách lỗi/cảnh báo → `ComparisonReport` |
-| [API → Frontend](api_to_frontend/deadline_reduction.json) | Dũng → Tuấn Anh | `ComparisonReport` → nội dung cần hiển thị gồm thay đổi, mức tác động và bằng chứng |
+| [API → Frontend](api_to_frontend/deadline_reduction.json) | Dũng → Tuấn Anh | `ComparisonReport` → nội dung cần hiển thị gồm thay đổi, mức tác động, bằng chứng, lỗi, cảnh báo và trạng thái |
 
 Offset `TextChange` dùng chỉ số ký tự Python và khoảng nửa mở `[start, end)` trên đúng `before_text` hoặc `after_text`. Tra nguồn theo cặp `document_id` và `source_refs`. Có thể lấy kho nguồn từ `adapter_to_linker/deadline_reduction.json` để đối chiếu mọi quote trong ca. `context` rỗng ở đầu ra Linker vì Context sẽ điền sau bước query và kiểm chứng.
 

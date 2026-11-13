@@ -22,7 +22,7 @@ Dũng và Đức Anh phụ trách tích hợp LightRAG Server qua HTTP theo LK-1
 
 ### CN-06 — Phương pháp Semantic Diff
 
-Semantic Diff dùng rule trước, model khi cần. Kết luận phải kèm căn cứ hoặc ghi rõ phần chưa xác định.
+Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff. Semantic Diff dùng rule trước, model khi cần. Kết luận phải kèm căn cứ hoặc ghi rõ phần chưa xác định.
 
 ### CN-08 — AI Adapter và tổ chức gọi mô hình
 
@@ -45,15 +45,15 @@ Các mã CN-02 (Linker), CN-05 (Text Diff), CN-07 (Scorer) và chi tiết thuậ
 | Dữ liệu + docs | Dũng | Dữ liệu, nghiệp vụ, tài liệu và phối hợp fixture/nhãn |
 | Xử lý dữ liệu/tài liệu | Thọ | Chuyển đổi, Parser, adapter, trích và liên kết chỉ dẫn sửa đổi |
 | Text Diff | Ngọc Anh | Phân tích phần chữ thay đổi |
-| Semantic Change/Semantic Diff | Tuấn Anh | Phân tích thay đổi nghĩa và tạo nhận định có bằng chứng |
-| Classifier & Scorer | Tuấn Anh | Theo người chủ trì CN-07 |
+| Semantic Change/Semantic Diff | Dũng + Đức Anh + Ngọc Anh | Phân tích thay đổi nghĩa và tạo nhận định có bằng chứng |
+| Classifier & Scorer | Dũng + Đức Anh + Ngọc Anh | Phân loại và chấm mức tác động theo kết quả ngữ nghĩa |
 | Tích hợp + API | Dũng | Pipeline, tổng hợp đầu ra và API nghiệp vụ; không đồng nhất với phần gọi LightRAG |
 | AI Adapter/gọi mô hình | Dũng + Đức Anh | Theo người chủ trì CN-08; phân chia công việc nội bộ sẽ được điền tại CN-08 |
 | Gọi/tích hợp LightRAG | Dũng + Đức Anh | Phụ trách gọi/tích hợp dịch vụ theo phương án HTTP đã chốt |
 | Context | Đức Anh | Chuẩn bị chunk, truy vấn, chọn và kiểm tra ngữ cảnh/căn cứ |
 | Điều phối kế hoạch đánh giá | Đức Anh | Tổng hợp yêu cầu từ thành viên, tổ chức hoàn thiện kế hoạch và theo dõi thực hiện |
 
-Tuấn Anh phụ trách phần hiển thị báo cáo ở điểm nối API → Frontend. Vai trò từng đầu ra và bên nhận được cụ thể hóa trong [Module](module.md).
+Tuấn Anh phụ trách UI, gồm hiển thị báo cáo và xử lý lỗi, cảnh báo, trạng thái nhận từ Pipeline/API. Các module phát hiện và báo lỗi của phần mình. Pipeline/API tổng hợp và trả về frontend. Vai trò từng đầu ra và bên nhận được cụ thể hóa trong [Module](module.md).
 
 ### LK-02 — Các cặp liên kết và giao diện giữa module/chức năng
 
@@ -93,7 +93,7 @@ Dùng tám `field_group` đã có. Với thay đổi nghĩa, category khác null
 
 ### LK-10 — Semantic Diff → Classifier & Scorer
 
-`ScoringResult` nối tới thay đổi bằng `change_id`. Khi có căn cứ gán nhóm khía cạnh nhưng chưa đủ căn cứ chấm mức độ, giữ nhóm đã xác định, dùng `significance = null`, `is_critical = null`, `needs_review = true` và ghi lý do. Rubric chi tiết và cách xử lý lỗi theo bước sẽ được cập nhật từ báo cáo của các thành viên sau lần chạy phiên 1.
+Dũng + Đức Anh + Ngọc Anh phụ trách Scorer. `ScoringResult` nối tới thay đổi bằng `change_id`. Khi có căn cứ gán nhóm khía cạnh nhưng chưa đủ căn cứ chấm mức độ, giữ nhóm đã xác định, dùng `significance = null`, `is_critical = null`, `needs_review = true` và ghi lý do. Rubric chi tiết và cách xử lý lỗi theo bước sẽ được cập nhật từ báo cáo của các thành viên sau lần chạy phiên 1.
 
 ### LK-11 — Báo cáo Pipeline → API/frontend
 
@@ -102,6 +102,8 @@ API trả `ComparisonReport` gồm kết quả theo `AmendmentResult`. Đầu v�
 ### LK-12 — Null, rỗng, cảnh báo, lỗi và trạng thái
 
 Khi chưa xác định được đích, giữ chỉ dẫn, thao tác đã nhận diện và bằng chứng. Dùng `applicability = UNRESOLVED`, `needs_review = true` và lý do. Giữ mục trong báo cáo và để các kết quả phân tích chưa chạy là `null`.
+
+Các module báo lỗi và cảnh báo của phần mình. Dũng tổng hợp và trả qua Pipeline/API. Tuấn Anh xử lý và hiển thị lỗi, cảnh báo và trạng thái trả về trên UI.
 
 Giữ ràng buộc `SUCCESS`/`PARTIAL`/`FAILED` của schema. Mã lỗi, chính sách tiếp tục theo từng bước và quy tắc tổng hợp còn mở được cập nhật khi Đức Anh chạy phiên 1 và nhóm đối chiếu báo cáo của các owner.
 

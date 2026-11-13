@@ -110,7 +110,7 @@ Quy định:
 
 ### 1.3 SemanticDiffResult (Hợp đồng kết quả phân tích ngữ nghĩa)
 
-Owner triển khai Semantic Diff là Tuấn Anh. Tám field_group dưới đây là danh mục dùng chung của ChangeAspect và category trong ScoringResult theo report_validation.py; không yêu cầu danh mục phân loại bốn nhóm riêng.
+Phân công Semantic Diff theo [LK-01](decision.md#lk-01--phân-công-theo-modulechức-năng). Tám field_group dưới đây là danh mục dùng chung của ChangeAspect và category trong ScoringResult theo report_validation.py; không yêu cầu danh mục phân loại bốn nhóm riêng.
 
 ```python
 class ChangeAspect:
@@ -228,7 +228,7 @@ theo guideline; ví dụ không mặc định là CRITICAL.
 
 ### 1.4 ScoringResult (Hợp đồng phân loại và chấm từng thay đổi)
 
-Tuấn Anh phụ trách Scorer. category theo tám mã GROUPS hoặc WORDING_ONLY/null, được kiểm tra bởi report_validation.py; rubric và thứ tự ưu tiên của guideline còn cần review, không phải điều kiện enum mới.
+Phân công Scorer theo LK-01. category theo tám mã GROUPS hoặc WORDING_ONLY/null, được kiểm tra bởi report_validation.py; rubric và thứ tự ưu tiên của guideline còn cần review, không phải điều kiện enum mới.
 
 ```
 class ScoringResult:
@@ -370,7 +370,7 @@ Thứ tự kiểm tra: validate_payload(ExtractedDocument, document) và validat
 | FR-02 | Parser | Một ExtractedDocument → list[Clause] và blocks được giữ | Tách Điều, giữ Khoản/Điểm và nguồn; giữ bảng/ngữ cảnh ngoài Điều để truy xuất khi cần |
 | FR-03 | Trích yêu cầu và liên kết | V1, S đã phân tích cấu trúc → list[AmendmentItem] | Trích sửa/bổ sung/bãi bỏ; định vị văn bản và Điều/Khoản/Điểm; phân biệt yêu cầu sửa văn bản khác; cảnh báo đích chưa rõ |
 | FR-04 | Text Diff | AmendmentItem đủ nội dung cục bộ → TextDiffResult | Chỉ rõ thêm/xóa/thay thế; tọa độ khớp before_text/after_text; không diff toàn bộ V1 với S |
-| FR-05 | Semantic Diff — rule trước, model khi cần | AmendmentItem có context và TextDiffResult nếu có → SemanticDiffResult | Tuấn Anh phân tích nghĩa/bằng chứng; bộ tổng hợp giữ SemanticDiffResult trong AmendmentResult, không ép nhãn khi chưa rõ |
+| FR-05 | Semantic Diff — rule trước, model khi cần | AmendmentItem có context và TextDiffResult nếu có → SemanticDiffResult | Semantic Diff phân tích nghĩa/bằng chứng; bộ tổng hợp giữ SemanticDiffResult trong AmendmentResult, không ép nhãn khi chưa rõ |
 | FR-06 | Classifier & Scorer | AmendmentItem và SemanticDiffResult → list[ScoringResult] | Chọn nhãn và mức độ theo tiêu chí; is_critical nhất quán với significance; có lý do |
 | FR-07 | Kiểm thử chéo và đầu-cuối | Fixture/đáp án chuẩn, đầu ra thật và kết quả tích hợp | Hai owner kiểm tra hợp đồng và cách dùng; tính sai/bỏ sót khi đo, không triển khai Evaluator riêng |
 | FR-08 | Upload và xem kết quả | V1, S và tài liệu tham chiếu nếu có → báo cáo | Chọn đúng vai trò, hiển thị thay đổi, nguồn, hiệu lực, mức độ, tài liệu thiếu; cho phép bổ sung và phân tích lại |
@@ -444,7 +444,7 @@ Ví dụ:
 |---|---|
 | Đầu vào | Một `AmendmentItem`, AnalysisContext và kết quả Text Diff nếu có; giữ ngữ cảnh liên quan và bằng chứng |
 | Xử lý | Phân biệt sửa cách diễn đạt với thay đổi nội dung, như quyền, nghĩa vụ, chủ thể, điều kiện, thời hạn hoặc chế tài |
-| Đầu ra | SemanticDiffResult theo mục 1.3; Tuấn Anh chủ trì, Pipeline tổng hợp AmendmentResult theo mục 1.7 |
+| Đầu ra | SemanticDiffResult theo mục 1.3, Pipeline tổng hợp AmendmentResult theo mục 1.7 |
 | Chưa đủ căn cứ | Đánh dấu cần kiểm tra; không tự kết luận là sửa văn phong |
 | Ranh giới trách nhiệm | Semantic Diff xác định khía cạnh, field_group, nội dung trước/sau và diễn giải; Classifier & Scorer chọn nhãn tổng thể và chấm mức độ sau |
 
@@ -466,7 +466,7 @@ Tiêu chí nghiệm thu tối thiểu:
 |---|---|
 | Đầu vào | `AmendmentItem` và kết quả Semantic Diff |
 | Xử lý | Xác định loại thay đổi và mức độ theo bộ tiêu chí thống nhất của nhóm |
-| Đầu ra | list[ScoringResult], một kết quả cho mỗi SemanticChange; Tuấn Anh chủ trì |
+| Đầu ra | list[ScoringResult], một kết quả cho mỗi SemanticChange |
 | Yêu cầu | Mức độ phải có lý do dựa trên nội dung và bằng chứng của thay đổi |
 
 Nhãn tổng thể category dùng tám mã tại mục 1.3 hoặc WORDING_ONLY/null theo mục 1.4; operation thể hiện sửa/bổ sung/bãi bỏ, aspects giữ toàn bộ nội dung khía cạnh.
@@ -631,7 +631,7 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 
 Luồng chạy có thứ tự không buộc các owner chờ nhau hoàn thành mới code. Mỗi điểm nối có input/output mẫu đã review, phiên bản schema ghi trong metadata fixture riêng và kiểm tra tự động; không thêm schema_version vào payload chung. JSON dùng lưu fixture, module trong backend bàn giao dict/list theo TypedDict đã chốt. Không bắt mỗi bước ghi file JSON hoặc gọi HTTP. Bên nhận code với fixture/mock, bên giao tạo output thật theo cùng hợp đồng; hai bên kiểm tra chéo khi tích hợp. Các file bắt buộc và giới hạn sửa cấu trúc theo [Module](module.md); Git/PR theo [Workflow](workflow.md).
 
-Phân công chức năng theo LK-01 trong decision.md: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Change/Scorer; Dũng + Đức Anh AI Adapter. Schema chung đã chốt theo commit căn cứ; chữ ký hàm, mapping và hành vi chưa được code căn cứ quy định vẫn cần owner/bên nhận review.
+Phân công chức năng theo LK-01 trong decision.md: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff và Scorer; Tuấn Anh phụ trách UI và xử lý lỗi trả về; Dũng + Đức Anh AI Adapter. Schema chung đã chốt theo commit căn cứ; chữ ký hàm, mapping và hành vi chưa được code căn cứ quy định vẫn cần owner/bên nhận review.
 
 ## 9. Phạm vi mở rộng
 

@@ -28,4 +28,4 @@ requirements.txt ghim Pydantic 2.13.4 và typing_extensions 4.16.0. Lần xác n
 
 Backend có upload/đọc/parse; chưa có runner phân tích hoặc wiring validator trong Pipeline. POST /api/compare hiện nhận doc_v1/doc_s/reference_files ở backend/main.py; chưa gắn runner trả HTTP 501 / ANALYSIS_NOT_CONFIGURED sau đọc/parse hợp lệ. LightRAG Server qua HTTP đã chốt phương án, chưa hiện thực tích hợp. requirements.txt hiện chỉ đủ dependency schema; cài runtime API/PDF là việc riêng theo hướng dẫn, không giả định cài requirements là chạy được toàn hệ thống.
 
-Phân công: Dũng dữ liệu/docs và Pipeline/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Diff/Scorer và frontend; Đức Anh schema/context và điều phối đánh giá; Dũng + Đức Anh AI Adapter và gọi/tích hợp LightRAG.
+Phân công: Dũng dữ liệu/docs và Pipeline/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff và Scorer; Tuấn Anh phụ trách UI và xử lý lỗi trả về; Đức Anh schema/context và điều phối đánh giá; Dũng + Đức Anh AI Adapter và gọi/tích hợp LightRAG.
