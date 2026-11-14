@@ -47,6 +47,11 @@ Nguồn tham khảo nội bộ được ghi trong docstring từng module; đây
 
 Frontend hiện là prototype HTML/CSS/JavaScript cùng origin, không cần Node để chạy. Không chọn thay công nghệ frontend cuối cùng cho nhóm. Nội dung file hiển thị bằng text node; không đưa nguyên văn vào innerHTML. Không có tài khoản, database lịch sử hoặc lưu nhận xét.
 
+Giao diện phân biệt lỗi đầu vào theo mã HTTP, lỗi kết nối và lỗi máy chủ. Trong
+báo cáo, `PARTIAL`/`FAILED` vẫn giữ các mục và cảnh báo; “Chưa biết: thiếu căn
+cứ”, “Chưa xử lý được” và “Không đổi nghĩa” là ba trạng thái khác nhau, không
+được hiểu lẫn thành không có thay đổi.
+
 ## Bằng chứng chạy thật
 
 Đã gửi file DOCX qua HTTP tới server local đang chạy, sau đó validate ComparisonReport. Đầu vào giữ nguyên, không lấy file V2 làm S.

@@ -2,6 +2,11 @@
 const $ = selector => document.querySelector(selector);
 const state = {v1: [], s: [], references: [], busy: false, config: null, report: null};
 const labels = {SUCCESS: 'Hoàn thành', PARTIAL: 'Cần kiểm tra thêm', FAILED: 'Xử lý thất bại'};
+const statusDetails = {
+  SUCCESS: 'Các mục đã có thể hiển thị theo dữ liệu backend trả về.',
+  PARTIAL: 'Một số mục hoặc căn cứ chưa đủ để kết luận; không đồng nghĩa không có thay đổi.',
+  FAILED: 'Không tạo được phân tích hoàn chỉnh; hãy đọc lỗi và cảnh báo bên dưới.'
+};
 const operations = {AMEND: 'Sửa đổi', ADD: 'Bổ sung', REPEAL: 'Bãi bỏ', UNRESOLVED: 'Chưa xác định thao tác'};
 const groups = {TIME_QUANTITY:'Thời gian / số lượng', SUBJECT_OBJECT:'Chủ thể / đối tượng',
   RIGHTS_DUTIES_ACTIONS:'Quyền / nghĩa vụ', CONDITIONS_EXCEPTIONS:'Điều kiện / ngoại lệ',
@@ -84,7 +89,8 @@ function sourceLabel(evidence, identities) {
 function addIssue(container, issue, error = false) {
   const box = node('div', undefined, `report-issue${error ? ' error' : ''}`);
   box.append(node('strong',issue.message || issue.code || 'Chưa xử lý được.'));
-  if (issue.code) box.append(node('div',issue.code,'source'));
+  const metadata = [issue.stage, issue.code].filter(Boolean).join(' · ');
+  if (metadata) box.append(node('div',metadata,'source'));
   container.append(box);
 }
 function pane(title, text, changes, side) {
@@ -129,7 +135,10 @@ function renderItem(result, warnings, identities, index) {
     const changes = result.semantic_diff?.changes || [];
     if (!changes.length) semantic.append(node('p','Chưa có kết luận ngữ nghĩa để hiển thị.'));
     for (const change of changes) {
-      semantic.append(node('span', change.is_meaningful_change === null ? 'Chưa xác định' : change.is_meaningful_change ? 'Có đổi nghĩa' : 'Không đổi nghĩa', 'badge warning'));
+      const meaningLabel = change.is_meaningful_change === null
+        ? 'Chưa biết: thiếu căn cứ'
+        : change.is_meaningful_change ? 'Có đổi nghĩa' : 'Không đổi nghĩa';
+      semantic.append(node('span', meaningLabel, `badge ${change.is_meaningful_change === false ? '' : 'warning'}`));
       semantic.append(node('p',change.diff_details));
       if (change.review_reason) semantic.append(node('p',change.review_reason));
     }
@@ -155,6 +164,7 @@ function renderReport(report) {
   const identities = Object.fromEntries([report.base_document,report.amendment_document,...(report.reference_documents||[])].filter(Boolean).map(d=>[d.document_id,d]));
   const meta = $('#report-meta'); meta.replaceChildren();
   meta.append(node('span',labels[report.status] || report.status,`badge ${report.status === 'FAILED' ? 'error' : 'warning'}`));
+  meta.append(node('p',statusDetails[report.status] || 'Trạng thái do backend trả về.','status-description'));
   meta.append(node('p',`V1: ${report.base_document?.filename || ''} · S: ${report.amendment_document?.filename || ''}`,'meta'));
   meta.append(node('p',`Mã đối chiếu: ${report.comparison_id}`,'source'));
   const results = report.results || [], summary = $('#report-summary'); summary.replaceChildren();
@@ -199,10 +209,16 @@ $('#compare-form').addEventListener('submit', async event => {
     if (Array.isArray(report.results) && report.comparison_id) renderReport(report);
     else {
       const detail = report.detail;
-      throw new Error(Array.isArray(detail) ? 'Đầu vào chưa hợp lệ hoặc thiếu file bắt buộc.' : typeof detail === 'string' ? detail : detail?.message || 'Máy chủ chưa xử lý được yêu cầu.');
+      const category = response.status >= 400 && response.status < 500 ? 'Lỗi đầu vào'
+        : response.status >= 500 ? 'Lỗi máy chủ' : 'Phản hồi không hợp lệ';
+      const detailMessage = Array.isArray(detail) ? 'Thiếu hoặc sai file bắt buộc.'
+        : typeof detail === 'string' ? detail : detail?.message || 'Máy chủ chưa trả được kết quả.';
+      throw new Error(`${category} (HTTP ${response.status}): ${detailMessage}`);
     }
   } catch(error) {
-    message(error.name === 'AbortError' ? 'Hết thời gian chờ phản hồi. Máy chủ có thể vẫn đang kết thúc xử lý; hãy kiểm tra lại trước khi gửi tiếp.' : error.message === 'Failed to fetch' ? 'Không kết nối được máy chủ. Kiểm tra dịch vụ rồi thử lại.' : error.message,true);
+    message(error.name === 'AbortError' ? 'Hết thời gian chờ phản hồi. Máy chủ có thể vẫn đang kết thúc xử lý; hãy kiểm tra lại trước khi gửi tiếp.'
+      : error.message === 'Failed to fetch' ? 'Lỗi kết nối: không kết nối được máy chủ. Kiểm tra dịch vụ rồi thử lại.'
+      : error.message,true);
   } finally {clearTimeout(timer); setBusy(false);}
 });
 
