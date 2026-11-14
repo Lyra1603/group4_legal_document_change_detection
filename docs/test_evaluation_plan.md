@@ -36,7 +36,6 @@ Các đường dẫn tới test, fixture và script cụ thể được bổ sun
 | Có implementation | Tự kiểm tra module; kiểm tra điểm nối với đầu ra thật; tích hợp sớm | Có kết quả và giới hạn, không chỉ có code test |
 | Chuẩn bị đánh giá chính thức | Cố định phiên bản, cấu hình, dữ liệu, nhãn, matching và phép đo | Các phần phụ thuộc đã rõ; không còn lỗi chặn phép đo |
 
-
 Một phần có thể sẵn sàng trước phần khác. Không cần chờ toàn bộ decision.md hoặc module.md hoàn tất để kiểm tra module có đủ đặc tả. Riêng LK-13 giữ thứ tự chốt đã quy định trong decision.md: có thể khảo sát và chuẩn bị ca kiểm tra, nhưng chỉ chốt chi tiết còn lại sau các quyết định khác.
 
 ## 4. Trách nhiệm và điều phối
@@ -46,9 +45,10 @@ Phân công chức năng phải theo LK-01 đã chốt, không sao chép các b�
 | Phạm vi | Trách nhiệm hiện có | Trách nhiệm kiểm chứng đề xuất |
 | --- | --- | --- |
 | Xử lý tài liệu, Parser, adapter và linker | Thọ | Tự kiểm tra từ nguồn thật; bên nhận review output và vị trí nguồn |
-| Text Diff | Ngọc Anh | Tự kiểm tra vùng đổi, offset và khả năng tái tạo khi contract cho phép; Tuấn Anh review dữ liệu nhận |
-| Semantic Diff và Scorer | Tuấn Anh | Kiểm tra ngữ nghĩa, bằng chứng, ranh giới mức và trạng thái thiếu căn cứ; Dũng review phần dùng để tổng hợp/nghiệp vụ |
+| Text Diff | Ngọc Anh | Tự kiểm tra vùng đổi, offset và khả năng tái tạo khi contract cho phép; bên nhận Semantic Diff review dữ liệu bàn giao |
+| Semantic Diff và Scorer | Dũng + Đức Anh + Ngọc Anh | Kiểm tra ngữ nghĩa, bằng chứng, ranh giới mức và trạng thái thiếu căn cứ; Dũng review phần dùng để tổng hợp/nghiệp vụ |
 | Tích hợp, Pipeline và API nghiệp vụ | Dũng | Kiểm tra tổng hợp, truyền cảnh báo/lỗi và luồng API; phối hợp bên cung cấp và frontend |
+| UI và xử lý lỗi trả về | Tuấn Anh | Kiểm tra hiển thị lỗi, cảnh báo, trạng thái và phần kết quả còn dùng được. |
 | AI Adapter | Dũng và Đức Anh | Kiểm tra phản hồi hợp lệ/không hợp lệ, lỗi, giới hạn và việc giữ nguồn; phân chia nội bộ theo CN-08 |
 | Gọi/tích hợp LightRAG | Dũng + Đức Anh | Phối hợp kiểm tra dịch vụ, tích hợp context/Pipeline và vòng đời dữ liệu |
 | Context và schema | Đức Anh phụ trách schema và context | Hợp đồng dùng chung được bên giao/nhận thống nhất; đồng bộ module.md |
@@ -69,6 +69,8 @@ Owner tự kiểm tra trước bàn giao. Bên giao và bên nhận kiểm tra c
 
 ## 6. Danh mục kiểm tra ban đầu
 
+Bổ sung ca: index chạy song song Linker/Text Diff; query chờ cả hai nhánh và sử dụng đúng TextDiffResult; lỗi một nhánh không bị che. Kiểm tra quote/document_id/source_refs qua retrieval → Semantic/Scorer → frontend. Sau cleanup, kiểm tra UI vẫn hiện được đoạn trích và vị trí từ báo cáo đã nhận. Kiểm tra rule trước/model khi cần, lỗi model không tạo kết luận giả; owner giao/nhận lỗi cùng bằng chứng. Nhận xét hai loại là backlog giai đoạn sau, không là điều kiện nghiệm thu bản đầu.
+
 Các mã dưới đây là mã của kế hoạch này, không phải mã quyết định mới. Đây là phạm vi chuẩn bị, chưa xác nhận các test đã được hiện thực hoặc đã đạt.
 
 | Mã | Phạm vi | Tình huống/rủi ro cần kiểm tra | Căn cứ xác định expected output |
@@ -87,6 +89,22 @@ Các mã dưới đây là mã của kế hoạch này, không phải mã quyế
 | TEP-12 | LightRAG và vòng đời | Sẵn sàng nhập/query, mapping, cách ly lượt chạy, cleanup và lỗi dịch vụ | Release/API thực tế theo LK-13; chưa chốt payload hoặc cấu hình trong kế hoạch này |
 
 Mỗi module chọn các ca liên quan; không bắt buộc mọi test gọi mô hình hoặc dịch vụ thật. Kiểm tra dịch vụ thật vẫn cần có khi xác nhận tích hợp thật. Mock/fixture phải được đánh dấu rõ.
+
+### Bộ ca bàn giao phiên 1
+
+**Nền merge và kế hoạch mở rộng:** bộ chung hiện có 9 file deadline_reduction, 2 ca chặn query và 6 ca lỗi (17 JSON ca), cùng provenance. Ca chung giữ mức độ null và PARTIAL; expected Semantic là giả định kỹ thuật, chưa là nhãn review hoặc output demo. Các ca bên dưới là kế hoạch sau merge, không đòi 45 JSON trước khi dùng nền DOCX. case_06/07/08 ở nhánh Dũng 6dbda8d, chưa nhập local đợt này; cần lấy nguồn và kiểm chứng PDF trước khi dùng. Test nguồn/contract, module thật và dịch vụ thật được báo riêng theo [nền chung](common-baseline.md).
+
+Một mã ca xuất hiện ở cả 9 thư mục trong [bộ fixture](../data/module_handoff_fixtures/README.md). Mỗi file ghi input và output mong đợi hoặc điều kiện bỏ qua kèm lý do. Danh sách tên ca phải trùng nhau giữa 9 thư mục. Khi đủ bộ dự kiến sẽ có 5 ca × 9 điểm nối = 45 JSON.
+
+| Ca | Nguồn | Điều kiện đạt chính | Trạng thái |
+| --- | --- | --- | --- |
+| `deadline_reduction` | Fixture hiện có | Thay cả đơn vị, giữ hai bản toàn văn, kiểm chứng offset, nhận định và bằng chứng đến UI | Đã có fixture tại 9 điểm nối |
+| Sửa cục bộ | `case_06` | Giữ toàn bộ vị trí thuộc chỉ dẫn được chọn, dựng toàn văn trước/sau từng đơn vị và giữ nguyên văn chỉ dẫn S | Chuẩn bị sau khi hoàn thiện docs |
+| Bổ sung | `case_08` | Giữ vị trí chèn và kiểm tra nội dung được thêm giữa hai trạng thái của cùng đơn vị chứa | Chuẩn bị sau khi hoàn thiện docs |
+| Bãi bỏ | `case_07` | Giữ đầy đủ đích của chỉ dẫn được chọn và đối chiếu phần bị bỏ trong toàn văn đơn vị chứa | Chuẩn bị sau khi hoàn thiện docs |
+| Thiếu đích | Biến thể ca sửa cục bộ | Giữ chỉ dẫn, lý do cần kiểm tra và mục báo cáo. Bỏ qua bước thiếu điều kiện | Chuẩn bị sau khi hoàn thiện docs |
+
+Tách ba kết quả khi báo cáo: fixture qua contract, tích hợp với đầu ra thật, và đánh giá chất lượng trên dữ liệu có nhãn. Điều phối đánh giá do Đức Anh phụ trách. Sau phiên 1, dùng báo cáo từng module để bổ sung ca lỗi và tiêu chí chấm còn mở.
 
 ## 7. Mẫu hoàn thiện từng ca kiểm tra
 
@@ -131,6 +149,8 @@ Owner đề xuất baseline đơn giản, phù hợp với câu hỏi cần ki�
 Giữ cùng dữ liệu và điều kiện so sánh; ghi các khác biệt cấu hình. Phân tích lỗi theo nhóm tình huống và phân biệt lỗi bắt nguồn từ Parser/linker/context với lỗi Semantic Diff/Scorer. Có thể chạy riêng bước sau bằng đầu vào chuẩn đã review để hỗ trợ tìm nguyên nhân; kết quả đó không thay thế đánh giá toàn luồng.
 
 ## 9. Điều kiện bàn giao và báo cáo
+
+Ghi riêng kết quả validator, kết quả luồng có mock và kết quả gọi dịch vụ thật. Đánh giá chất lượng nghiệp vụ dùng tập có nhãn đã review và phương pháp ghi ở mục 8.
 
 Một phần đủ điều kiện bàn giao khi có đặc tả liên quan đã chốt, code, mẫu vào ra, kiểm tra phù hợp, kết quả, cách chạy và giới hạn; bên nhận sử dụng được đầu ra thật. Trạng thái đủ đặc tả, đã hiện thực và đã tích hợp/kiểm tra phải được ghi riêng.
 

@@ -1,0 +1,44 @@
+{
+  "repository": "https://github.com/HKUDS/LightRAG",
+  "release": "v1.5.7",
+  "commit": "28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c",
+  "license": "MIT",
+  "copied_or_modified_upstream_python_files": [],
+  "copied_non_python_files": [
+    {"upstream": "LICENSE", "local": "deploy/lightrag/UPSTREAM-LICENSE.txt", "changes": "None"}
+  ],
+  "runtime_reuse": [
+    {"path": "Dockerfile", "use": "Compose remote build of unmodified pinned upstream checkout"},
+    {"path": "docker-entrypoint.sh", "use": "Original upstream container entrypoint"},
+    {"path": "lightrag/", "use": "Original server, extraction, index, graph, query, storage and provider bindings inside container"},
+    {"path": "pyproject.toml", "use": "Original server dependencies, installed by upstream Dockerfile"},
+    {"path": "uv.lock", "use": "Original dependency lock consumed by upstream Dockerfile"}
+  ],
+  "reviewed_sources_not_copied_into_application": [
+    "lightrag/api/routers/query_routes.py",
+    "lightrag/api/routers/document_routes.py",
+    "lightrag/api/routers/graph_routes.py",
+    "lightrag/api/config.py",
+    "lightrag/api/lightrag_server.py",
+    "lightrag/__init__.py",
+    "lightrag/_version.py",
+    "pyproject.toml",
+    "docker-compose.yml",
+    "Dockerfile",
+    "env.example",
+    "LICENSE"
+  ],
+  "derived_configuration": [
+    {"local": "deploy/lightrag/.env.example", "basis": "env.example", "changes": "Small provider/storage subset, placeholders, unique workspace, Vietnamese summaries"},
+    {"local": "deploy/lightrag/compose.yaml", "basis": "Dockerfile and docker-compose.yml", "changes": "Pinned remote build, loopback port, per-Compose-project named volumes, required key/workspace"}
+  ],
+  "project_owned_code": [
+    "backend/app/config.py",
+    "backend/app/context/chunk_builder.py",
+    "backend/app/context/source_registry.py",
+    "backend/app/context/lightrag_client.py",
+    "backend/app/context/context_builder.py",
+    "backend/app/context/semantic_bridge.py"
+  ],
+  "limitations": "Upstream source pinned; upstream base-image tags and external model behavior are not transitively immutable. Container has not been built or run in this environment."
+}

@@ -1,7 +1,6 @@
- <h1 align="center">Group 4 – Legal Document Change Detection</h1>
+# Group 4 — Legal Document Change Detection
 
-* **Đề tài:** Project 7 – Legal Document Change Detection (Engineering / R&D )
-* **Bài toán:** Phát hiện các thay đổi **CÓ Ý NGHĨA** pháp lý (Semantic Diff) giữa hai phiên bản văn bản quy phạm pháp luật Việt Nam, phân biệt rạch ròi với những thay đổi về văn phong/chính tả thông thường.
+Dự án POCS đối chiếu văn bản gốc V1 với văn bản sửa đổi S và tài liệu tham chiếu nếu có. Báo cáo trình bày thay đổi chữ, thay đổi nghĩa, mức độ tác động, bằng chứng và phần chưa xử lý.
 
 **Tài liệu dự án (Yêu cầu đọc theo thứ tự):**
 1. [BRD](brd.md): mục tiêu và phạm vi.
@@ -16,16 +15,22 @@
    đề xuất và các điểm cần phối hợp.
 9. [Báo cáo đề xuất quyết định POCS của Tuấn Anh](bao-cao-de-xuat-owner-tuan-anh.docx):
    nội dung theo mẫu owner decision.
-10. Mã nguồn: kiểm tra đúng branch trước khi sử dụng schema/implementation.
+10. [Kế hoạch kiểm thử và đánh giá](test_evaluation_plan.md): cách kiểm tra
+    các điểm nối.
+11. [Hướng dẫn gán nhãn](data-annotation-guide.md): quy ước dữ liệu.
+12. [Tích hợp và kiểm tra schema](schema-integration.md): hợp đồng và runtime.
+13. [Nền chung đang chạy và việc còn thiếu](common-baseline.md): đối chiếu
+    implementation.
+14. [Cách mở web demo](local-web-demo.md): chạy giao diện cục bộ.
+15. Mã nguồn: kiểm tra đúng branch trước khi sử dụng schema/implementation.
 
----
+Tài liệu lấy nền từ nhánh Dũng `bachdung/docs` tại `6dbda8d`, bổ sung theo quyết định Đức Anh ngày 12/11/2026. Thiết kế mục tiêu bên dưới không đồng nghĩa mọi chức năng đã có code. Nền hiện tại chạy bằng `backend.demo:app` theo README gốc, dùng DOCX và chưa bật LightRAG/model; không dùng `backend.main:app` để kỳ vọng có kết quả phân tích. Bảng đối chiếu implementation và kết quả kiểm thử tập trung tại [common-baseline.md](common-baseline.md).
 
-## 1. Minimum Architecture dự kiến
+Luồng mục tiêu nhận tài liệu và trả báo cáo trong một request đồng bộ. Các module backend bàn giao theo schema chung. LightRAG là dịch vụ retrieval riêng qua HTTP. Xem [luồng xử lý](architecture.md#4-luồng-phân-tích-dữ-liệu-và-phiên) để tra sơ đồ và vòng đời nguồn.
 
-Thiết kế mục tiêu của bản đầu sử dụng request đồng bộ: backend xử lý hai file và
-trả ComparisonReport trong cùng request; không dùng job nền
-hoặc API polling.
+Cấu trúc chuẩn lấy từ `main`. [Architecture §3](architecture.md#3-cấu-trúc-mã-nguồn-và-dữ-liệu) liệt kê các thư mục và file backend theo mốc Git được đối chiếu.
 
+<<<<<<< HEAD
 Các module xử lý nằm trong `backend/app/`, gọi nhau qua hàm/hợp đồng dùng chung. Luồng: đọc/chuyển đổi và Parser → adapter/linker → context/LightRAG HTTP → Text Diff → Semantic Diff → Scorer → Pipeline tổng hợp `ComparisonReport.results` cùng base_document/amendment_document/reference_documents. Không diff toàn bộ V1 với S; Text Diff cần nội dung trước/sau cục bộ đã được xác định.
 
 LightRAG Server riêng qua HTTP là phương án đã chốt. Phạm vi đầu là retrieval; source registry kiểm tra nguồn, không dùng retrieval score làm mức tác động. Không triển khai Evaluator độc lập; giữ folder cũ, owner kiểm thử chéo tại từng điểm nối; Dũng điều phối tích hợp/Pipeline/API, Đức Anh điều phối kế hoạch đánh giá.
@@ -99,3 +104,6 @@ thử hiện tại: **4/4 test passed**.
 
 Các dữ liệu trên là fixture tổng hợp phục vụ phát triển, chưa phải bộ dữ liệu
 đánh giá chính thức.
+=======
+Change F1 ≥ 90% và Critical Change Recall ≥ 95% là các ngưỡng dự tính. Xem [kế hoạch đánh giá](test_evaluation_plan.md#82-phép-đo-cần-đề-xuất-và-chốt) để tra phương pháp đo và mốc xác nhận.
+>>>>>>> origin/main
