@@ -2,38 +2,16 @@
 """Tách cấu trúc Điều - Khoản - Điểm từ DOCX, Python >= 3.10, không cần pip.
 
 CLI (chạy ở thư mục gốc dự án):
-    python backend/app/document_processing/legal_structure_parser.py input.docx output.json
+    python backend/app/document_processing/parser/legal_structure_parser.py input.docx output.json
 API:
-    from legal_structure_parser import parse_docx
+    from backend.app.document_processing.parser.legal_structure_parser import parse_docx
     result = parse_docx("input.docx")
 
-Đầu ra schema_version=1.0:
-- articles: các Điều của thân văn bản, có children là Khoản/Điểm/QUOTATION.
-- Mỗi node có kind, label, heading, node_id, children, segments, source_refs,
-  full_text. segments chỉ là phần trực tiếp của node (không gồm children);
-  full_text gồm cả các con, giữ chữ/số/dấu và xuống dòng của nguồn.
-- QUOTATION chứa cây nội dung được trích (không phải Điều cấp ngoài của S).
-- source_blocks giữ nguyên chữ trong từng paragraph/bảng của word/document.xml.
-  source_ref + start/end trong segments là khoảng [start,end), tính từ 0 theo
-  ký tự Python trong source_blocks[].text, không phải byte hoặc trang Word.
-- outside giữ phần mở đầu, đề mục và phần sau thân bài, không vứt bỏ.
-- warnings nêu phần cần kiểm tra; status chỉ nói về việc tách cấu trúc.
-
-Căn cứ thiết kế lấy từ bản DOCX người dùng cung cấp (không kiểm định hiệu lực):
-1. 78/2025/NĐ-CP: Điều 63 (cấp bố cục, Điều có thể không có Khoản), Điều 69
-   khoản 4 (nhãn bổ sung có chữ/số).
-2. Phụ lục I của 187/2025/NĐ-CP: Mục 1, Phần III, mục 2 điểm b
-   (Điều N., Khoản N., Điểm a)); Phần II mục 5 (nhãn Điều/Khoản bổ sung).
-3. 79/2025/NĐ-CP dùng để thử văn bản thường, có Điều không có Khoản.
-Chỉ dùng quy tắc cấu trúc, không dùng font/cỡ chữ/ngày hiệu lực làm điều kiện.
-
-Giới hạn: đầu vào phải có nhãn là chữ đọc được, ở đầu paragraph hoặc dòng
-Word. Không đoán ranh giới nhiều khoản bị dính trên cùng một dòng; không tự
-khôi phục nhãn Word đánh số tự động. Bảng giữ nguyên dưới dạng nguồn và không
-phân tích các ô thành Điều/Khoản/Điểm. Chỉ xét thân chính trước phụ lục/khối
-ký; văn bản ban hành kèm theo cần xử lý riêng. Trích dẫn nhiều dòng dùng dấu
-ngoặc kép cong “...”; ngoặc thẳng nhiều dòng được giữ và cảnh báo, không suy
-đoán. Không trích chỉ dẫn, liên kết V1-S, dựng V2 hoặc phân tích thay đổi.
+Đầu ra schema_version=1.0: articles, outside, source_blocks, warnings, summary.
+Thân văn bản được cắt tại 'Nơi nhận' hoặc 'PHỤ LỤC' đầu tiên sau Điều cuối;
+phần sau đó đưa vào outside với region AFTER_BODY, không gán vào Điều nào.
+Khối trích dẫn “…” không đóng trong nguồn được đóng trước tiêu đề Điều hoặc
+khoản hết hiệu lực; mọi trường hợp như vậy đều có cảnh báo UNCLOSED_QUOTATION.
 """
 from __future__ import annotations
 
@@ -55,13 +33,17 @@ ARTICLE = re.compile(rf"^Điều\s+([0-9]+{SUFFIX}*)\.\s*(.*)$", re.IGNORECASE)
 CLAUSE = re.compile(rf"^([0-9]+{SUFFIX}*)\.\s+(.*)$", re.IGNORECASE)
 POINT = re.compile(rf"^([{LETTERS}][0-9]*)\)\s*(.*)$", re.IGNORECASE)
 SECTION = re.compile(r"^(?:Phần|Chương|Mục|Tiểu mục)\s+(?:[IVXLCDM]+|[0-9]+|thứ\s+\S+)(?:\s|[.:]|$)", re.IGNORECASE)
-ANNEX = re.compile(r"^PHỤ LỤC(?:\s+[IVXLCDM0-9]+)?\s*[.:]?\s*$", re.IGNORECASE)
+ANNEX = re.compile(r"^\s*PHỤ LỤC(?:\s+[IVXLCDM0-9]+)?\s*[.:]?\s*$", re.IGNORECASE)
 SIGNATURE = re.compile(r"^(?:Nơi nhận\s*:|(?:TM\.|KT\.|TL\.|TUQ\.)\s+)", re.IGNORECASE)
+NOI_NHAN = re.compile(r"(?:^|\n)\s*Nơi nhận\s*:", re.IGNORECASE)
+# Khoản hết hiệu lực của Điều 24 (văn bản gốc), không phải nội dung trích dẫn.
+EXPIRY_CLAUSE = re.compile(r"^3\.\s*Các văn bản, quy định sau đây hết hiệu lực", re.IGNORECASE)
 
 
 def _text(element: ET.Element) -> str:
     """Đọc chữ hiển thị, kể cả hyperlink; bỏ chữ đã đánh dấu xóa."""
     out = []
+
     def visit(el):
         if el.tag in {W + "del", W + "moveFrom"}:
             return
@@ -74,6 +56,7 @@ def _text(element: ET.Element) -> str:
         else:
             for child in el:
                 visit(child)
+
     visit(element)
     return "".join(out)
 
@@ -86,6 +69,7 @@ def _read_docx(path: Path):
             raise ValueError("DOCX không có w:body.")
         if body.find(".//w:del", NS) is not None or body.find(".//w:ins", NS) is not None:
             warnings.append({"code": "TRACKED_CHANGES", "message": "Đọc chữ ở trạng thái chấp nhận thay đổi; cần kiểm tra bản Word có track changes.", "source_refs": []})
+
         def read_children(parent):
             for el in parent:
                 if el.tag == W + "p":
@@ -94,7 +78,6 @@ def _read_docx(path: Path):
                     if el.find("w:pPr/w:numPr", NS) is not None:
                         warnings.append({"code": "AUTO_NUMBERING", "message": "Paragraph có đánh số Word; nhãn không có trong chữ có thể chưa được tách.", "source_refs": [ref]})
                 elif el.tag == W + "tbl":
-                    # XML lưu ô merge một lần; không lặp ô như Table.rows.cells.
                     rows = []
                     for row in el.findall("w:tr", NS):
                         rows.append("\t".join("\n".join(_text(p) for p in cell.iter(W + "p")) for cell in row.findall("w:tc", NS)))
@@ -107,8 +90,20 @@ def _read_docx(path: Path):
                     if _text(el).strip():
                         blocks.append({"source_ref": f"block:{len(blocks) + 1}", "kind": "UNSUPPORTED", "text": _text(el)})
                         warnings.append({"code": "UNSUPPORTED_BLOCK", "message": "Giữ chữ của khối Word chưa hỗ trợ; không tách cấu trúc khối này.", "source_refs": [blocks[-1]["source_ref"]]})
+
         read_children(body)
     return blocks, warnings
+
+
+def _cut_at_annex(blocks):
+    """Tách thân văn bản khỏi phần sau: dừng tại 'Nơi nhận' hoặc 'PHỤ LỤC' đầu tiên."""
+    for i, b in enumerate(blocks):
+        text = b["text"].strip()
+        if b["kind"] == "PARAGRAPH" and ANNEX.match(text):
+            return blocks[:i], blocks[i:]
+        if NOI_NHAN.search(text):
+            return blocks[:i], blocks[i:]
+    return blocks, []
 
 
 def _lines(blocks):
@@ -132,7 +127,6 @@ def _trim(line):
 
 
 def _recognize(text):
-    # NFC dùng riêng cho nhận diện; segments/full_text luôn lấy nguyên văn.
     t = unicodedata.normalize("NFC", text)
     for kind, pattern in (("ARTICLE", ARTICLE), ("CLAUSE", CLAUSE), ("POINT", POINT)):
         match = pattern.match(t)
@@ -168,7 +162,6 @@ class _Parser:
         root = self.node("QUOTED_CONTENT" if quoted else "BODY")
         outside = []
         article = clause = point = None
-        after_body = False
         section_title_pending = False
         i = 0
         while i < len(lines):
@@ -180,33 +173,21 @@ class _Parser:
                 i += 1
                 continue
             if raw["kind"] != "PARAGRAPH":
-                if not quoted and article is not None and re.search(r"(?:^|\n)\s*Nơi nhận\s*:", t, re.IGNORECASE):
-                    after_body = True
-                if not quoted and (article is None or after_body):
-                    outside.append({"region": "AFTER_BODY" if after_body else "BEFORE_BODY", **raw})
+                if not quoted and (article is None or NOI_NHAN.search(t)):
+                    outside.append({"region": "BEFORE_BODY" if article is None else "AFTER_BODY", **raw})
                 else:
                     self.add(current, raw)
                     self.warn("TABLE_NOT_PARSED", "Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.", [raw])
                 i += 1
                 continue
-            if not quoted and (ANNEX.match(t) or (article is not None and SIGNATURE.match(t))):
-                after_body = True
-            if after_body:
-                outside.append({"region": "AFTER_BODY", **raw})
-                i += 1
-                continue
-            # Chỉ mở khối trích dẫn khi ngoặc mở nằm đầu dòng, không phải
-            # mọi cụm từ ngắn được đặt trong ngoặc kép ở giữa câu.
             if t.startswith('“'):
-                gathered = []
                 depth = 0
+                gathered = []
                 closed = False
-                interrupted = False
                 j = i
                 while j < len(lines):
                     part = lines[j]
-                    if j > i and not quoted and _instruction(_trim(part)["text"]):
-                        interrupted = True
+                    if j > i and not quoted and (ARTICLE.match(_trim(part)["text"]) or EXPIRY_CLAUSE.match(_trim(part)["text"])):
                         break
                     gathered.append(part)
                     for ch in part["text"]:
@@ -219,10 +200,9 @@ class _Parser:
                         break
                     j += 1
                 if not closed:
-                    self.warn("UNCLOSED_QUOTATION", "Ngoặc trích dẫn không đóng; giữ nguyên phần còn lại trong khối trích dẫn, cần kiểm tra.", gathered)
+                    self.warn("UNCLOSED_QUOTATION", "Ngoặc trích dẫn không đóng trong nguồn; khối được đóng trước tiêu đề Điều hoặc khoản hết hiệu lực, cần kiểm tra.", gathered)
                 q = self.node("QUOTATION")
                 current["children"].append(q)
-                # q sở hữu nguyên văn, kể cả ngoặc và dấu kết thúc.
                 for part in gathered:
                     self.add(q, part)
                 inner = [dict(x) for x in gathered]
@@ -235,7 +215,7 @@ class _Parser:
                         inner[-1] = {**last, "text": last["text"][:pos], "end": last["start"] + pos}
                 subtree, _ = self.parse(inner, quoted=True)
                 q["quoted_structure"] = subtree
-                i = j if interrupted else j + 1
+                i = j + 1 if closed else j
                 continue
             if t.startswith('"'):
                 self.warn("STRAIGHT_QUOTE", "Dòng bắt đầu bằng ngoặc kép thẳng; giữ nội dung, không tách nhãn bên trong dòng này.", [raw])
@@ -259,18 +239,13 @@ class _Parser:
                     continue
                 section_title_pending = False
             found = _recognize(t)
-            # Một số file sửa đổi đóng ngoặc ngay sau tên Mục rồi để các
-            # Điều bổ sung phía sau không có ngoặc mở (187/2025 có dạng này).
-            # Không đẩy các Điều đó lên cấp S. Chỉ suy ranh giới khi có cả
-            # chỉ dẫn '... như sau' và nhãn Điều lệch trình tự; luôn cảnh báo.
             if not quoted and found and not _instruction(t) and article is not None:
                 expected = str(int(re.match(r"[0-9]+", article["label"])[0]) + 1)
                 owner = point or clause
                 instruction = "\n".join(self.blocks[s["source_ref"]]["text"][s["start"]:s["end"]] for s in owner["segments"]) if owner else ""
                 previous_quote = bool(owner and owner["children"] and owner["children"][-1]["kind"] == "QUOTATION")
                 is_outer_article = found[0] == "ARTICLE" and found[1] == expected
-                if previous_quote and not is_outer_article and re.search(r"(?:sửa đổi|bổ sung).*như sau\s*:\s*$", instruction, re.IGNORECASE):
-                    gathered = []
+                if previous_quote and not is_outer_article and not EXPIRY_CLAUSE.match(t) and re.search(r"(?:sửa đổi|bổ sung).*như sau\s*:\s*$", instruction, re.IGNORECASE):
                     j = i
                     while j < len(lines):
                         candidate = _recognize(_trim(lines[j])["text"])
@@ -342,25 +317,23 @@ class _Parser:
 
 
 def parse_docx(input_path: str | Path, document_id: str | None = None) -> dict:
-    """Đọc DOCX thành dict JSON; không sửa file đầu vào, không gọi mạng/AI.
-
-    document_id có thể truyền từ pipeline; mặc định là SHA256 của file.
-    Định danh node chỉ có ý nghĩa trong kết quả của file, không dùng làm khóa
-    để tự ghép nhận xét hoặc tự liên kết thay đổi giữa các phiên bản.
-    """
+    """Đọc DOCX thành dict JSON; không sửa file đầu vào, không gọi mạng/AI."""
     path = Path(input_path)
     if path.suffix.lower() != ".docx":
         raise ValueError("Chỉ nhận .docx; PDF cần được chuyển đổi trước.")
     document_id = document_id or "doc_" + hashlib.sha256(path.read_bytes()).hexdigest()[:16]
     blocks, warnings = _read_docx(path)
+    body, tail = _cut_at_annex(blocks)
     parser = _Parser(blocks, document_id)
-    root, outside = parser.parse(_lines(blocks))
+    root, outside = parser.parse(_lines(body))
+    outside.extend({"region": "AFTER_BODY", **x} for b in tail for x in _lines([b]))
     parser.finish(root)
     root.pop("_all_segments", None)
     articles = [n for n in root["children"] if n["kind"] == "ARTICLE"]
     if not articles:
         parser.warn("NO_ARTICLES", "Không tìm thấy Điều dạng 'Điều N.' trong thân chính.", [])
     warnings.extend(parser.warnings)
+
     def count(nodes):
         result = {"articles": 0, "clauses": 0, "points": 0, "quotations": 0}
         names = {"ARTICLE": "articles", "CLAUSE": "clauses", "POINT": "points", "QUOTATION": "quotations"}
@@ -371,6 +344,7 @@ def parse_docx(input_path: str | Path, document_id: str | None = None) -> dict:
             for k in result:
                 result[k] += sub[k]
         return result
+
     return {"schema_version": "1.0", "document_id": document_id, "filename": path.name,
             "status": "FAILED" if not articles else ("PARTIAL" if warnings else "SUCCESS"),
             "articles": articles, "outside": outside, "source_blocks": blocks,
