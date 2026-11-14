@@ -88,6 +88,7 @@ python -m unittest discover -s test/context_suite -v
 - Schema nền: 51 test, 49 đạt và 2 expected failures đã biết.
 - Context/LightRAG: 26 test, 24 đạt và 2 real-service tests skipped. Không tuyên bố LightRAG thật đã chạy.
 - Trình duyệt Edge: đã thử nạp mẫu, chọn file qua file chooser, thêm nhiều tham chiếu, bỏ file, gửi HTTP, xem kết quả và cảnh báo sai định dạng. Không có lỗi console trong lần kiểm tra. Chưa kiểm chứng riêng trên thiết bị di động hoặc trình duyệt khác.
+- Kiểm tra lại sau commit `6062dd3` ngày 14/11/2026: nạp `case_02`, gửi API thật và hiển thị đúng `PARTIAL`, cảnh báo có `stage/code`, diff trước/sau, trạng thái “Chưa biết: thiếu căn cứ”, mức tác động chưa xác định và 3 bằng chứng nguồn.
 - Nút xuất JSON có implementation Blob/download; thao tác bắt sự kiện download của công cụ kiểm thử bị timeout, chưa xác nhận độc lập file tải xuống trên trình duyệt. Các báo cáo HTTP đã được lưu và validate bằng script ở trên.
 
 ## Việc còn để hoàn thành demo có AI/retrieval
