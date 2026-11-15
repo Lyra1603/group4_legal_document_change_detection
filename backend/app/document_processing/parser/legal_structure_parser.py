@@ -10,8 +10,8 @@ API:
 Đầu ra schema_version=1.0: articles, outside, source_blocks, warnings, summary.
 Thân văn bản được cắt tại 'Nơi nhận' hoặc 'PHỤ LỤC' đầu tiên sau Điều cuối;
 phần sau đó đưa vào outside với region AFTER_BODY, không gán vào Điều nào.
-Khối trích dẫn “…” không đóng trong nguồn được đóng trước tiêu đề Điều hoặc
-khoản hết hiệu lực; mọi trường hợp như vậy đều có cảnh báo UNCLOSED_QUOTATION.
+Khối trích dẫn “…” được đóng theo cặp ngoặc. Nếu nguồn không đóng ngoặc, parser
+đóng khối trước tiêu đề Điều hoặc khoản hết hiệu lực và ghi UNCLOSED_QUOTATION.
 """
 from __future__ import annotations
 
@@ -140,6 +140,37 @@ def _instruction(text):
     return bool(found and re.match(r"(?:Sửa đổi|Bổ sung|Bãi bỏ|Thay thế)\b", found[2], re.IGNORECASE))
 
 
+def _scan_quote(lines, start, quoted, stop_on_outer_heading):
+    """Gom các dòng từ start cho đến khi cặp ngoặc “” cân bằng.
+
+    stop_on_outer_heading=False: chỉ dựa vào cặp ngoặc (dùng khi trích dẫn đóng đúng).
+    stop_on_outer_heading=True: thêm điều kiện ngắt tại tiêu đề Điều/khoản hết hiệu lực
+    (dùng khi nguồn thiếu dấu đóng).
+    Trả về (gathered, closed, j) với j là chỉ số dòng dừng.
+    """
+    depth = 0
+    gathered = []
+    closed = False
+    j = start
+    while j < len(lines):
+        part = lines[j]
+        if j > start and not quoted and stop_on_outer_heading:
+            ptxt = _trim(part)["text"]
+            if ARTICLE.match(ptxt) or EXPIRY_CLAUSE.match(ptxt):
+                break
+        gathered.append(part)
+        for ch in part["text"]:
+            if ch == '“':
+                depth += 1
+            elif ch == '”':
+                depth -= 1
+        if depth <= 0:
+            closed = True
+            break
+        j += 1
+    return gathered, closed, j
+
+
 class _Parser:
     def __init__(self, blocks, document_id):
         self.blocks = {b["source_ref"]: b for b in blocks}
@@ -181,25 +212,11 @@ class _Parser:
                 i += 1
                 continue
             if t.startswith('“'):
-                depth = 0
-                gathered = []
-                closed = False
-                j = i
-                while j < len(lines):
-                    part = lines[j]
-                    if j > i and not quoted and (ARTICLE.match(_trim(part)["text"]) or EXPIRY_CLAUSE.match(_trim(part)["text"])):
-                        break
-                    gathered.append(part)
-                    for ch in part["text"]:
-                        if ch == '“':
-                            depth += 1
-                        elif ch == '”':
-                            depth -= 1
-                    if depth <= 0:
-                        closed = True
-                        break
-                    j += 1
+                # Ưu tiên cặp ngoặc: Điều bên trong trích dẫn hợp lệ không làm đóng khối.
+                gathered, closed, j = _scan_quote(lines, i, quoted, stop_on_outer_heading=False)
                 if not closed:
+                    # Nguồn thiếu dấu đóng: quay về quy tắc ngắt tại tiêu đề Điều ngoài.
+                    gathered, closed, j = _scan_quote(lines, i, quoted, stop_on_outer_heading=True)
                     self.warn("UNCLOSED_QUOTATION", "Ngoặc trích dẫn không đóng trong nguồn; khối được đóng trước tiêu đề Điều hoặc khoản hết hiệu lực, cần kiểm tra.", gathered)
                 q = self.node("QUOTATION")
                 current["children"].append(q)
@@ -246,6 +263,7 @@ class _Parser:
                 previous_quote = bool(owner and owner["children"] and owner["children"][-1]["kind"] == "QUOTATION")
                 is_outer_article = found[0] == "ARTICLE" and found[1] == expected
                 if previous_quote and not is_outer_article and not EXPIRY_CLAUSE.match(t) and re.search(r"(?:sửa đổi|bổ sung).*như sau\s*:\s*$", instruction, re.IGNORECASE):
+                    gathered = []
                     j = i
                     while j < len(lines):
                         candidate = _recognize(_trim(lines[j])["text"])

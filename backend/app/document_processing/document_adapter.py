@@ -1,4 +1,4 @@
-"""Chuyển dict của parse_docx sang BoundaryData theo schemas (không đọc lại file)."""
+"""Chuyển ParsedDocument (runner) hoặc dict của parse_docx sang BoundaryData theo schemas."""
 from dataclasses import dataclass
 
 from ..schemas.contracts import Clause
@@ -13,22 +13,72 @@ class BoundaryData:
     units: dict
 
 
-def _extracted(parsed, role):
+def _get(obj, name, default=None):
+    if isinstance(obj, dict):
+        return obj.get(name, default)
+    return getattr(obj, name, default)
+
+
+def _normalize(parsed):
+    """Trả dict chuẩn: document_id, role, filename, source_blocks, articles.
+
+    Chấp nhận:
+    - dict của parse_docx: có document_id, filename, source_blocks, articles;
+    - ParsedDocument của runner: có .document (identity(), role, blocks) và .tree (articles).
+    """
+    if isinstance(parsed, dict) and "document_id" in parsed:
+        return {
+            "document_id": parsed["document_id"],
+            "role": parsed.get("role"),
+            "filename": parsed["filename"],
+            "source_blocks": parsed["source_blocks"],
+            "articles": parsed.get("articles", []),
+        }
+    doc = _get(parsed, "document")
+    tree = _get(parsed, "tree")
+    if doc is None or tree is None:
+        raise TypeError(f"Không đọc được kiểu {type(parsed).__name__}: thiếu document hoặc tree")
+    identity = doc.identity() if hasattr(doc, "identity") else {}
+    blocks = _get(doc, "blocks")
+    if blocks is None:
+        blocks = _get(tree, "source_blocks")
+    if blocks is None:
+        raise TypeError("ParsedDocument không có blocks/source_blocks")
     return {
-        "document_id": parsed["document_id"],
-        "role": role,
-        "filename": parsed["filename"],
-        "file_type": "DOCX",
-        "blocks": [{"source_ref": b["source_ref"], "text": b["text"]} for b in parsed["source_blocks"]],
+        "document_id": identity.get("document_id") or _get(doc, "document_id"),
+        "role": identity.get("role") or _get(doc, "role"),
+        "filename": identity.get("filename") or _get(doc, "filename"),
+        "source_blocks": [
+            {"source_ref": _get(b, "source_ref"), "text": _get(b, "text")} for b in blocks
+        ],
+        "articles": _get(tree, "articles", []),
     }
 
 
-def adapt_documents(parsed_list, roles=("BASE", "AMENDMENT")) -> BoundaryData:
-    """parsed_list: [dict_v1, dict_s] từ parse_docx; roles tương ứng từng dict."""
+def _extracted(n):
+    return {
+        "document_id": n["document_id"],
+        "role": n["role"],
+        "filename": n["filename"],
+        "file_type": "DOCX",
+        "blocks": [{"source_ref": b["source_ref"], "text": b["text"]} for b in n["source_blocks"]],
+    }
+
+
+def adapt_documents(parsed_list, roles=None) -> BoundaryData:
+    """parsed_list: [v1, s, ref_1, ...]. Role lấy từ object; nếu thiếu thì theo vị trí:
+    đầu là BASE, thứ hai là AMENDMENT, còn lại là REFERENCE. roles (nếu truyền) ghi đè."""
+    normalized = [_normalize(p) for p in parsed_list]
+    for i, n in enumerate(normalized):
+        if roles is not None:
+            n["role"] = roles[i]
+        elif not n["role"]:
+            n["role"] = "BASE" if i == 0 else "AMENDMENT" if i == 1 else "REFERENCE"
+
     documents, clauses, units = {}, {}, {}
-    for parsed, role in zip(parsed_list, roles):
-        did = parsed["document_id"]
-        document = _extracted(parsed, role)
+    for n in normalized:
+        did = n["document_id"]
+        document = _extracted(n)
         validate_extracted_document(document)
         documents[did] = document
         clauses[did], units[did] = [], {}
@@ -60,6 +110,6 @@ def adapt_documents(parsed_list, roles=("BASE", "AMENDMENT")) -> BoundaryData:
                 if child["kind"] not in {"QUOTATION", "QUOTED_CONTENT"}:
                     walk(child, article, clause)
 
-        for article in parsed["articles"]:
+        for article in n["articles"]:
             walk(article)
     return BoundaryData(documents, clauses, units)
