@@ -85,7 +85,7 @@ Chỉ dùng `QUOTED` khi toàn bộ đoạn sau là nguyên văn từ S. Dùng `
 
 Chuẩn bị Context và chỉ mục song song với Linker → Text Diff. Khi hai nhánh có đủ dữ liệu, ghép chỉ dẫn, trước/sau và vùng chữ đổi để truy xuất, kiểm tra nguồn và cung cấp `AnalysisContext` cho Semantic Diff. [Architecture §4.1](architecture.md#41-một-lượt-phân-tích) giữ sơ đồ chi tiết.
 
-Đây là luồng mục tiêu được giữ nguyên. Bridge hiện chạy Context song song Text Diff nhưng query chưa nhận `TextDiffResult`; việc tách index/query và ghép vùng đổi là task sau merge của Đức Anh + Dũng, phối hợp Ngọc Anh. Demo hiện tắt retrieval, không báo đã hoàn thành LK-06/LK-13.
+Bridge hiện tách `context_prepare(item)` để chuẩn bị chỉ mục song song Text Diff, rồi gọi `context_work(item, text_diff)` để truy vấn sau khi cả hai hoàn tất. Query nhận chỉ dẫn, trước/sau và vùng chữ đổi; kiểm tra ID, offset và nội dung diff tại điểm nối nội bộ, không đổi schema/validator chung. Nếu index lỗi, bỏ qua query và giữ cảnh báo cho Semantic. Việc chuẩn bị chỉ mục từ Adapter song song cả Linker vẫn thuộc tích hợp Pipeline tiếp theo; demo hiện tắt retrieval. Kiểm thử HTTP mô phỏng không xác nhận hoàn thành LK-13 hoặc dịch vụ thật.
 
 ### LK-07 — Text Diff → Semantic Diff
 
