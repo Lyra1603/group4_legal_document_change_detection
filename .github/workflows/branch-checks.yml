@@ -1,0 +1,53 @@
+name: Branch checks
+
+on:
+  push:
+    branches: [ducanh/context-integration]
+  pull_request:
+    branches: [ducanh/context-integration]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: branch-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Branch Python tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      POCS_LIGHTRAG_REAL_TEST: "0"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-demo.txt
+            requirements-lightrag-client.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements-demo.txt
+
+      - name: Check dependencies
+        run: python -m pip check
+
+      - name: Check schema
+        run: python -m unittest discover -s test/schema_suite -v
+
+      - name: Check context integration
+        run: python -m unittest discover -s test/context_suite -v
+
+      - name: Check DOCX demo
+        run: python -m unittest discover -s test/demo_suite -v
+
+      - name: Check handoff fixtures
+        run: python -m unittest discover -s test/handoff_suite -v
