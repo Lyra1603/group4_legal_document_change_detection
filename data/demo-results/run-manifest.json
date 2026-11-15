@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-11-10T17:11:49.678389+00:00",
+  "mode": "REAL_HTTP_LOCAL_RULES_NO_LIGHTRAG_NO_MODEL",
+  "runs": [
+    {
+      "case": "case_01",
+      "input": {
+        "v1": {
+          "path": "data/raw/case_01/34_2017_TT-BTC_v1.docx",
+          "sha256": "521d699a1fff1228c89ff32070c62751b6d1eece393c994a7601447cbbc909da"
+        },
+        "s": {
+          "path": "data/raw/case_01/33_2019_TT-BTC_amendment.docx",
+          "sha256": "44a5167bfe5ac8debef6fc79d542d9ed1708d374cc9217de344c116d6851b564"
+        }
+      },
+      "http_status": 200,
+      "report_status": "PARTIAL",
+      "items": 2,
+      "text_diff_items": 1,
+      "elapsed_ms": 671.675,
+      "output": "data/demo-results/case_01.json",
+      "errors": []
+    },
+    {
+      "case": "case_02",
+      "input": {
+        "v1": {
+          "path": "data/raw/case_02/22_2019_TT-NHNN_v1.docx",
+          "sha256": "fa8cda22bf5babe3681be68e342944c6a7406576a62777535bd822f84371b594"
+        },
+        "s": {
+          "path": "data/raw/case_02/08_2020_TT-NHNN.docx",
+          "sha256": "0f9a379a16e409430cfb2a4b45d3984d8d045ecf9fc38242a60fe5b952606417"
+        }
+      },
+      "http_status": 200,
+      "report_status": "PARTIAL",
+      "items": 1,
+      "text_diff_items": 1,
+      "elapsed_ms": 1216.642,
+      "output": "data/demo-results/case_02.json",
+      "errors": []
+    },
+    {
+      "case": "case_03",
+      "input": {
+        "v1": {
+          "path": "data/raw/case_03/67_2007_ND-CP_v1.docx",
+          "sha256": "9d60430c4e203cdf8bea4a4a6bf49fca27e10c3e505e32ac5600c1e137f7c059"
+        },
+        "s": {
+          "path": "data/raw/case_03/13_2010_ND-CP.docx",
+          "sha256": "b7f13a6f4f6dc1b0ba891b06e9564b86a9afa2ad36b8804b4a714cc0dd4ea32f"
+        }
+      },
+      "http_status": 200,
+      "report_status": "PARTIAL",
+      "items": 13,
+      "text_diff_items": 13,
+      "elapsed_ms": 2204.599,
+      "output": "data/demo-results/case_03.json",
+      "errors": []
+    }
+  ],
+  "limits": "Source-bound text diff only; no validated semantic/severity conclusions. Input files are repo copies, not verified current legal texts."
+}

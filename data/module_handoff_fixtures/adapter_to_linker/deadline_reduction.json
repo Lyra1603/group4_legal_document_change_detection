@@ -1,0 +1,118 @@
+{
+  "input": {
+    "documents": {
+      "v1": {
+        "document_id": "v1",
+        "role": "BASE",
+        "filename": "sample-base.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Văn bản mẫu A"
+          },
+          {
+            "source_ref": "block:2",
+            "text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+          },
+          {
+            "source_ref": "block:3",
+            "text": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+          }
+        ]
+      },
+      "s": {
+        "document_id": "s",
+        "role": "AMENDMENT",
+        "filename": "sample-amendment.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Thay thế Điều 2 của Văn bản mẫu A bằng nội dung sau:"
+          },
+          {
+            "source_ref": "block:2",
+            "text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+          }
+        ]
+      }
+    },
+    "clauses": {
+      "v1": [
+        {
+          "unit_id": "v1:n2",
+          "id": "Điều 2",
+          "title": "Nộp báo cáo",
+          "content": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+          "source_refs": [
+            "block:2"
+          ]
+        },
+        {
+          "unit_id": "v1:n3",
+          "id": "Điều 3",
+          "title": "Cách tính thời hạn",
+          "content": "Thời hạn tại Điều 2 được tính theo ngày làm việc.",
+          "source_refs": [
+            "block:3"
+          ]
+        }
+      ]
+    }
+  },
+  "expected_output": [
+    {
+      "amendment_id": "a1",
+      "operation": "AMEND",
+      "instruction": {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Thay thế Điều 2 của Văn bản mẫu A bằng nội dung sau:"
+      },
+      "target_document": "v1",
+      "target_locator": "Điều 2",
+      "target_unit_ids": [
+        "v1:n2"
+      ],
+      "applicability": "APPLIES",
+      "before_text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+      "after_text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo.",
+      "after_basis": "QUOTED",
+      "evidence": [
+        {
+          "document_id": "v1",
+          "source_refs": [
+            "block:2"
+          ],
+          "quote": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+        },
+        {
+          "document_id": "s",
+          "source_refs": [
+            "block:2"
+          ],
+          "quote": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+        }
+      ],
+      "effect_info": [],
+      "context": {
+        "general_context": "",
+        "evidence": [],
+        "references": []
+      },
+      "needs_review": false,
+      "review_reason": ""
+    }
+  ],
+  "metadata": {
+    "kind": "SYNTHETIC_HANDOFF_TARGET_NOT_RUNTIME_PROOF",
+    "upstream_commit": "cf62188b5f1e366957666a4b0edb6003da5679d5",
+    "upstream_path": "data/module_handoff_fixtures/adapter_to_linker/deadline_reduction.json",
+    "decision_date": "2026-11-12",
+    "implementation_status": "NOT_VERIFIED_AGAINST_ALL_MODULES",
+    "docs_baseline_commit": "6dbda8da7a050e4d21f354c5e59765244e2f176a"
+  }
+}

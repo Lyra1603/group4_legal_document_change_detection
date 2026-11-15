@@ -1,0 +1,2 @@
+# Optional backend HTTP adapter; LightRAG server has its own environment.
+httpx==0.28.1

@@ -1,0 +1,304 @@
+{
+  "comparison_id": "7d544a48-431c-4ce3-a053-b44f34890e4f",
+  "base_document": {
+    "document_id": "v1",
+    "role": "BASE",
+    "filename": "34_2017_TT-BTC_v1.docx"
+  },
+  "amendment_document": {
+    "document_id": "s",
+    "role": "AMENDMENT",
+    "filename": "33_2019_TT-BTC_amendment.docx"
+  },
+  "reference_documents": [],
+  "status": "PARTIAL",
+  "results": [
+    {
+      "amendment": {
+        "amendment_id": "s:amendment_1",
+        "operation": "AMEND",
+        "instruction": {
+          "document_id": "s",
+          "source_refs": [
+            "block:12"
+          ],
+          "quote": "Điều 1. Sửa đổi, bổ sung khoản 1 Điều 2 Thông tư số 34/2017/TT-BTC ngày 21 tháng 4 năm 2017 của Bộ trưởng Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí thẩm định cấp giấy phép hoạt động đo đạc và bản đồ"
+        },
+        "target_document": "v1",
+        "target_locator": "Điều 2 / khoản 1",
+        "target_unit_ids": [
+          "v1:n6"
+        ],
+        "applicability": "APPLIES",
+        "before_text": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 10 Nghị định số 45/2015/NĐ-CP ngày 06 tháng 5 năm 2015 của Chính phủ về hoạt động đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này.",
+        "after_text": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 29 Nghị định số 27/2019/NĐ-CP ngày 13 tháng 3 năm 2019 của Chính phủ quy định chi tiết một số điều của Luật đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này.",
+        "after_basis": "QUOTED",
+        "evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:12"
+            ],
+            "quote": "Điều 1. Sửa đổi, bổ sung khoản 1 Điều 2 Thông tư số 34/2017/TT-BTC ngày 21 tháng 4 năm 2017 của Bộ trưởng Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí thẩm định cấp giấy phép hoạt động đo đạc và bản đồ"
+          },
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:13"
+            ],
+            "quote": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 29 Nghị định số 27/2019/NĐ-CP ngày 13 tháng 3 năm 2019 của Chính phủ quy định chi tiết một số điều của Luật đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này."
+          },
+          {
+            "document_id": "v1",
+            "source_refs": [
+              "block:16"
+            ],
+            "quote": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 10 Nghị định số 45/2015/NĐ-CP ngày 06 tháng 5 năm 2015 của Chính phủ về hoạt động đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này."
+          }
+        ],
+        "effect_info": [],
+        "context": {
+          "general_context": "",
+          "evidence": [],
+          "references": []
+        },
+        "needs_review": true,
+        "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý."
+      },
+      "text_diff": {
+        "amendment_id": "s:amendment_1",
+        "changes": [
+          {
+            "type": "REPLACE",
+            "old_text": "10",
+            "new_text": "29",
+            "old_start": 93,
+            "old_end": 95,
+            "new_start": 93,
+            "new_end": 95
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "45",
+            "new_text": "27",
+            "old_start": 109,
+            "old_end": 111,
+            "new_start": 109,
+            "new_end": 111
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "5",
+            "new_text": "9",
+            "old_start": 115,
+            "old_end": 116,
+            "new_start": 115,
+            "new_end": 116
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "06",
+            "new_text": "13",
+            "old_start": 128,
+            "old_end": 130,
+            "new_start": 128,
+            "new_end": 130
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "5",
+            "new_text": "3",
+            "old_start": 137,
+            "old_end": 138,
+            "new_start": 137,
+            "new_end": 138
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "5",
+            "new_text": "9",
+            "old_start": 146,
+            "old_end": 147,
+            "new_start": 146,
+            "new_end": 147
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "về",
+            "new_text": "quy",
+            "old_start": 162,
+            "old_end": 164,
+            "new_start": 162,
+            "new_end": 165
+          },
+          {
+            "type": "INSERT",
+            "old_text": "",
+            "new_text": "địn",
+            "old_start": 165,
+            "old_end": 165,
+            "new_start": 166,
+            "new_end": 169
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "oạ",
+            "new_text": " chi tiế",
+            "old_start": 166,
+            "old_end": 168,
+            "new_start": 170,
+            "new_end": 178
+          },
+          {
+            "type": "INSERT",
+            "old_text": "",
+            "new_text": "một số ",
+            "old_start": 170,
+            "old_end": 170,
+            "new_start": 180,
+            "new_end": 187
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "ộng",
+            "new_text": "iều của Luật",
+            "old_start": 171,
+            "old_end": 174,
+            "new_start": 188,
+            "new_end": 200
+          }
+        ]
+      },
+      "semantic_diff": {
+        "amendment_id": "s:amendment_1",
+        "changes": [
+          {
+            "change_id": "s:amendment_1:change_1",
+            "is_meaningful_change": null,
+            "diff_details": "Đã tính thay đổi chữ; chưa đủ căn cứ kết luận tác động ngữ nghĩa.",
+            "aspects": [],
+            "evidence": [
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "block:12"
+                ],
+                "quote": "Điều 1. Sửa đổi, bổ sung khoản 1 Điều 2 Thông tư số 34/2017/TT-BTC ngày 21 tháng 4 năm 2017 của Bộ trưởng Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí thẩm định cấp giấy phép hoạt động đo đạc và bản đồ"
+              },
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "block:13"
+                ],
+                "quote": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 29 Nghị định số 27/2019/NĐ-CP ngày 13 tháng 3 năm 2019 của Chính phủ quy định chi tiết một số điều của Luật đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này."
+              },
+              {
+                "document_id": "v1",
+                "source_refs": [
+                  "block:16"
+                ],
+                "quote": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 10 Nghị định số 45/2015/NĐ-CP ngày 06 tháng 5 năm 2015 của Chính phủ về hoạt động đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này."
+              }
+            ],
+            "old_quote": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 10 Nghị định số 45/2015/NĐ-CP ngày 06 tháng 5 năm 2015 của Chính phủ về hoạt động đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này.",
+            "new_quote": "1. Tổ chức đề nghị cấp giấy phép hoạt động đo đạc và bản đồ thuộc danh mục quy định tại Điều 29 Nghị định số 27/2019/NĐ-CP ngày 13 tháng 3 năm 2019 của Chính phủ quy định chi tiết một số điều của Luật đo đạc và bản đồ phải nộp phí thẩm định theo quy định tại Thông tư này.",
+            "needs_review": true,
+            "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+          }
+        ],
+        "needs_review": true,
+        "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+      },
+      "scoring": [
+        {
+          "change_id": "s:amendment_1:change_1",
+          "category": null,
+          "significance": null,
+          "is_critical": null,
+          "reason": "Chưa chấm mức tác động khi ngữ nghĩa/ngữ cảnh chưa xác nhận.",
+          "needs_review": true,
+          "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+        }
+      ]
+    },
+    {
+      "amendment": {
+        "amendment_id": "s:amendment_2",
+        "operation": "UNRESOLVED",
+        "instruction": {
+          "document_id": "s",
+          "source_refs": [
+            "block:14"
+          ],
+          "quote": "Điều 2. Sửa đổi, bổ sung Điều 3 Thông tư số 196/2016/TT-BTC ngày 08 tháng 11 năm 2016 của Bộ trưởng Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí khai thác, sử dụng thông tin dữ liệu đo đạc và bản đồ"
+        },
+        "target_document": "196/2016/TT-BTC",
+        "target_locator": "Sửa đổi, bổ sung Điều 3 Thông tư số 196/2016/TT-BTC ngày 08 tháng 11 năm 2016 của Bộ trưởng Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí khai thác, sử dụng thông tin dữ liệu đo đạc và bản đồ",
+        "target_unit_ids": [],
+        "applicability": "OTHER_DOCUMENT",
+        "before_text": null,
+        "after_text": null,
+        "after_basis": "UNRESOLVED",
+        "evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:14"
+            ],
+            "quote": "Điều 2. Sửa đổi, bổ sung Điều 3 Thông tư số 196/2016/TT-BTC ngày 08 tháng 11 năm 2016 của Bộ trưởng Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí khai thác, sử dụng thông tin dữ liệu đo đạc và bản đồ"
+          }
+        ],
+        "effect_info": [],
+        "context": {
+          "general_context": "",
+          "evidence": [],
+          "references": []
+        },
+        "needs_review": true,
+        "review_reason": "Chỉ dẫn nhắm văn bản khác hoặc chưa đối chiếu được định danh với V1 đã chọn."
+      },
+      "text_diff": null,
+      "semantic_diff": null,
+      "scoring": null
+    }
+  ],
+  "warnings": [
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "parser",
+      "code": "TABLE_NOT_PARSED",
+      "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+      "amendment_id": null
+    },
+    {
+      "stage": "linker",
+      "code": "CONTEXT_NOT_CONFIRMED",
+      "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+      "amendment_id": "s:amendment_1"
+    },
+    {
+      "stage": "linker",
+      "code": "TARGET_OTHER_DOCUMENT",
+      "message": "Chỉ dẫn nhắm văn bản khác hoặc chưa đối chiếu được định danh với V1 đã chọn.",
+      "amendment_id": "s:amendment_2"
+    },
+    {
+      "stage": "context",
+      "code": "LIGHTRAG_DISABLED",
+      "message": "LightRAG chưa bật vì chưa chốt dịch vụ/model; đang dùng nguồn cục bộ, không giả lập retrieval.",
+      "amendment_id": null
+    },
+    {
+      "stage": "semantic",
+      "code": "LOCAL_BASELINE_ONLY",
+      "message": "Demo quy tắc cục bộ; model chưa chọn, không tự xác nhận ngữ cảnh hoặc mức tác động.",
+      "amendment_id": null
+    }
+  ],
+  "errors": []
+}

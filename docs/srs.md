@@ -1,5 +1,7 @@
 # Bảng thuật ngữ
 
+**Phạm vi thiết kế và nền chạy:** SRS mô tả mục tiêu của dự án. Đối chiếu code hiện tại và phần sau merge tại [common-baseline.md](common-baseline.md). Nền chung dùng `backend.demo:app`, DOCX, chưa bật LightRAG/model; thêm/bãi bỏ và nhiều đích chưa được demo tự áp dụng. Không đổi schema trong đợt đồng bộ 12/11. Fixture 30 → 15 ngày giữ mức tác động null và report PARTIAL, không là gold ngữ nghĩa đã duyệt.
+
 | Thuật ngữ | Định nghĩa đề xuất |
 | :--- | :--- |
 | **Clause** | Một Điều trong một tài liệu, gồm định danh, nhãn Điều, tiêu đề, nội dung và vị trí nguồn |
@@ -28,7 +30,7 @@ gọi Pipeline và trả báo cáo để giao diện hiển thị.
 
 Không triển khai Evaluator như một module/đầu việc độc lập. Kiểm thử chủ yếu do owner bên cung cấp và bên nhận tại từng điểm nối cùng thực hiện; Dũng điều phối tích hợp/Pipeline/API, Đức Anh điều phối kế hoạch đánh giá. Phép đo với đáp án chuẩn được thực hiện bằng kiểm thử/script trong `test/` khi cần, không mất trách nhiệm kiểm tra nghiệp vụ.
 
-Các kiểu dữ liệu mục 1.1–1.7 dùng hợp đồng chung trong backend/app/schemas/contracts.py, đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2) trên main (`a8a906a`), nhập nguyên bản từ commit b6a13f98b9a7357b9fbb0936aba6bda065d03fcb. Các trường và validator căn cứ đã được nhóm chọn, không yêu cầu adapter báo cáo sang cấu trúc khác. Mục 1.8 chỉ nói phạm vi dữ liệu nhận xét frontend, chưa là hợp đồng backend. Thuật toán, rubric và hành vi chưa được validator kiểm tra phải được owner review riêng. Xem SRS mục 1.7 về cách gọi và giới hạn.
+Các kiểu dữ liệu mục 1.1–1.7 dùng hợp đồng chung trong backend/app/schemas/contracts.py, đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2) trên main (`a8a906a`), nhập nguyên bản từ commit b6a13f98b9a7357b9fbb0936aba6bda065d03fcb. Các trường và validator căn cứ đã được nhóm chọn, không yêu cầu adapter báo cáo sang cấu trúc khác. Mục 9 liệt kê nhận xét giai đoạn sau, chưa là hợp đồng backend. Thuật toán, rubric và hành vi chưa được validator kiểm tra phải được owner review riêng. Xem SRS mục 1.7 về cách gọi và giới hạn.
 
 ## 1. Data Structures (Cấu trúc dữ liệu dùng chung)
 
@@ -88,7 +90,7 @@ class AmendmentItem:
     target_unit_ids: list[str] # Điều trong V1; có thể rỗng nếu chưa định vị
     applicability: str        # APPLIES | OTHER_DOCUMENT | UNRESOLVED
     before_text: str | None
-    after_text: str | None     # Chỉ nội dung cục bộ, không phải V2 đầy đủ
+    after_text: str | None     # Toàn văn đơn vị đối chiếu sau áp dụng chỉ dẫn
     after_basis: str           # QUOTED | DERIVED | ABSENT | UNRESOLVED
     evidence: list[EvidenceRef]
     effect_info: list[EffectInfo]
@@ -100,8 +102,8 @@ class AmendmentItem:
 Quy định:
 - Mỗi yêu cầu độc lập có `amendment_id`; một Điều V1 có thể được nhiều yêu cầu tham chiếu. Không áp dụng quy tắc mỗi Điều xuất hiện đúng một lần.
 - Phân biệt vị trí chỉ dẫn trong S và vị trí bị tác động trong V1. Với bổ sung, định vị Điều chứa hoặc vị trí chèn; không yêu cầu nội dung mới phải tồn tại trong V1.
-- `before_text` lấy từ V1; `after_text` là nội dung thay thế trích từ S hoặc nội dung cục bộ suy ra từ chỉ dẫn rõ ràng. Nội dung suy ra dùng `DERIVED`, phải giữ bằng chứng của V1 và S, không coi là trích nguyên văn hoặc bản hợp nhất chính thức.
-- Bổ sung không có nội dung cũ: `before_text = None`. Bãi bỏ không có nội dung thay thế: `after_text = None`, `after_basis = ABSENT`; vẫn giữ chỉ dẫn bãi bỏ trong S.
+- Phiên 1 giữ toàn văn cùng một đơn vị đối chiếu ở cả hai trạng thái. Với sửa nội dung của Điểm, Khoản hoặc Điều hiện có, đơn vị đối chiếu là toàn văn đơn vị đó. Khi thêm hoặc bãi bỏ cả một đơn vị, dùng đơn vị chứa nhỏ nhất còn tồn tại ở hai phía, ví dụ toàn Điều khi thêm hoặc bãi bỏ một Khoản. Vị trí đích vẫn ghi chính xác Điểm, Khoản hoặc Điều mà S chỉ ra. Nếu chỉ dẫn có nhiều đích, giữ đủ đích và căn cứ cho từng đích. Nội dung dựng từ V1 và chỉ dẫn S dùng `DERIVED`. Chỉ dùng `QUOTED` khi toàn bộ đoạn sau là nguyên văn trong S.
+- Schema vẫn dùng giá trị `null` và `ABSENT` để biểu diễn phía đã xác định là không tồn tại. Với ca ADD/REPEAL có đơn vị chứa đối chiếu được, phiên 1 dùng hai bản toàn văn của đơn vị chứa. Khi chưa xác định được đơn vị đối chiếu, ghi giới hạn thay vì tạo chuỗi giả.
 - Không xác định được nội dung khác với không tồn tại nội dung. Trường hợp chưa rõ dùng `UNRESOLVED`, cảnh báo và không tạo kết luận thêm/bãi bỏ do thiếu đoạn nguồn.
 - Yêu cầu sửa văn bản khác dùng `OTHER_DOCUMENT`, được liệt kê là ngoài đối tượng V1 và không đưa vào phân tích thay đổi của V1. Không rõ đối tượng dùng `UNRESOLVED` và yêu cầu kiểm tra.
 - `effect_info` giữ thông tin hiệu lực/chuyển tiếp liên quan trong S. Không tự áp ngày hiệu lực chung nếu có ngoại lệ hoặc chưa rõ phạm vi; chưa xác định phải có cảnh báo. Không thấy thông tin thì danh sách rỗng kèm lý do trong `review_reason`, `needs_review = True`. Việc thiếu thông tin này không tự làm mất kết quả xác định thay đổi nội dung đã có căn cứ.
@@ -110,7 +112,7 @@ Quy định:
 
 ### 1.3 SemanticDiffResult (Hợp đồng kết quả phân tích ngữ nghĩa)
 
-Owner triển khai Semantic Diff là Tuấn Anh. Tám field_group dưới đây là danh mục dùng chung của ChangeAspect và category trong ScoringResult theo report_validation.py; không yêu cầu danh mục phân loại bốn nhóm riêng.
+Phân công Semantic Diff theo [LK-01](decision.md#lk-01--phân-công-theo-modulechức-năng). Tám field_group dưới đây là danh mục dùng chung của ChangeAspect và category trong ScoringResult theo report_validation.py; không yêu cầu danh mục phân loại bốn nhóm riêng.
 
 ```python
 class ChangeAspect:
@@ -228,7 +230,7 @@ theo guideline; ví dụ không mặc định là CRITICAL.
 
 ### 1.4 ScoringResult (Hợp đồng phân loại và chấm từng thay đổi)
 
-Tuấn Anh phụ trách Scorer. category theo tám mã GROUPS hoặc WORDING_ONLY/null, được kiểm tra bởi report_validation.py; rubric và thứ tự ưu tiên của guideline còn cần review, không phải điều kiện enum mới.
+Phân công Scorer theo LK-01. category theo tám mã GROUPS hoặc WORDING_ONLY/null, được kiểm tra bởi report_validation.py; rubric và thứ tự ưu tiên của guideline còn cần review, không phải điều kiện enum mới.
 
 ```
 class ScoringResult:
@@ -356,17 +358,11 @@ class ComparisonReport:
 - Không thay block:N khi đã trỏ đúng block và quote khớp nguyên văn. Chỉ dẫn lấy từ s; target_unit_ids kiểm tra theo clauses['v1']. Với PDF chuyển đổi, chỉ khẳng định vị trí DOCX đã parse nếu chưa có mapping về PDF gốc.
 - Hiện change_id được validator kiểm tra trùng trong từng result, aspect_id trong từng change. Duy nhất toàn comparison và tái tạo toàn bộ Text Diff là yêu cầu cần review tăng cường riêng; không tuyên bố validator hiện tại đã bảo đảm.
 
+Chi tiết cấp kho nguồn và cách gọi validator nằm trong [hướng dẫn tích hợp schema](schema-integration.md).
+
 Cách cung cấp dữ liệu cho validator: documents là dict theo document_id, mỗi giá trị là ExtractedDocument gồm document_id/role/filename/file_type/blocks. Từ ParsedDocument của main, adapter lấy tree.source_blocks và giữ nguyên source_ref/text; articles được ánh xạ thành Clause(unit_id từ node_id, id từ nhãn Điều, title từ heading, content từ full_text, source_refs). clauses là dict có khóa v1 chứa list[Clause] của V1. Metadata/segments native giữ riêng khi cần, không thêm trường vào hợp đồng chung.
 
 Thứ tự kiểm tra: validate_payload(ExtractedDocument, document) và validate_extracted_document(document) cho từng nguồn; validate_payload(Clause, clause) cho từng Clause; validate_amendment(result['amendment'], documents, clauses) cho từng result; validate_sources(report, documents); cuối cùng validate_report(report). Các hàm ở backend/app/schemas/validation.py và report_validation.py. validate_report không tự kiểm tra kho nguồn; các trường old_quote/new_quote thường cũng không tự được đối chiếu như EvidenceRef. Pipeline/runner phải được nối kiểm tra riêng, không suy đã có wiring chỉ vì có schema.
-
-### 1.8 Nhận xét người dùng trong phiên frontend
-
-Nếu nhóm tiếp tục triển khai chức năng nhận xét, dữ liệu đó nằm riêng ở frontend và không được thêm vào ComparisonReport, AmendmentResult hoặc ScoringResult của hợp đồng chung. Giữ nguyên báo cáo AI và nhãn gold; không lấy nhận xét làm nhãn huấn luyện tự động. PR #2 không bổ sung API lưu nhận xét, tài khoản, database lịch sử hoặc job; các phần đó không được tự thêm trong đợt đồng bộ tài liệu.
-
-Tuấn Anh phối hợp Dũng chốt kiểu dữ liệu nhận xét, danh mục quyết định, trạng thái review và đối chiếu sau bổ sung bằng fixture. Hướng liên kết cần review là comparison_id + amendment_id + change_id khi đã có change; yêu cầu chưa có semantic change cần khóa nhận xét riêng. Chưa chọn cấu trúc/enum mới và không coi ID của lần chạy trước đủ để ghép chắc chắn qua các lần chạy.
-
-Trong lúc chờ, giữ yêu cầu nghiệp vụ: báo cáo/nhận xét cũ không bị ghi đè khi lượt bổ sung thất bại; phần không ghép chắc chắn cần người kiểm tra lại. Chi tiết giao diện và vòng đời trong phiên được chốt ngoài hợp đồng backend.
 
 ## 2. Functional Requirements
 
@@ -376,7 +372,7 @@ Trong lúc chờ, giữ yêu cầu nghiệp vụ: báo cáo/nhận xét cũ khô
 | FR-02 | Parser | Một ExtractedDocument → list[Clause] và blocks được giữ | Tách Điều, giữ Khoản/Điểm và nguồn; giữ bảng/ngữ cảnh ngoài Điều để truy xuất khi cần |
 | FR-03 | Trích yêu cầu và liên kết | V1, S đã phân tích cấu trúc → list[AmendmentItem] | Trích sửa/bổ sung/bãi bỏ; định vị văn bản và Điều/Khoản/Điểm; phân biệt yêu cầu sửa văn bản khác; cảnh báo đích chưa rõ |
 | FR-04 | Text Diff | AmendmentItem đủ nội dung cục bộ → TextDiffResult | Chỉ rõ thêm/xóa/thay thế; tọa độ khớp before_text/after_text; không diff toàn bộ V1 với S |
-| FR-05 | Semantic Diff | AmendmentItem có context và TextDiffResult nếu có → SemanticDiffResult | Tuấn Anh phân tích nghĩa/bằng chứng; bộ tổng hợp giữ SemanticDiffResult trong AmendmentResult, không ép nhãn khi chưa rõ |
+| FR-05 | Semantic Diff — rule trước, model khi cần | AmendmentItem có context và TextDiffResult nếu có → SemanticDiffResult | Semantic Diff phân tích nghĩa/bằng chứng; bộ tổng hợp giữ SemanticDiffResult trong AmendmentResult, không ép nhãn khi chưa rõ |
 | FR-06 | Classifier & Scorer | AmendmentItem và SemanticDiffResult → list[ScoringResult] | Chọn nhãn và mức độ theo tiêu chí; is_critical nhất quán với significance; có lý do |
 | FR-07 | Kiểm thử chéo và đầu-cuối | Fixture/đáp án chuẩn, đầu ra thật và kết quả tích hợp | Hai owner kiểm tra hợp đồng và cách dùng; tính sai/bỏ sót khi đo, không triển khai Evaluator riêng |
 | FR-08 | Upload và xem kết quả | V1, S và tài liệu tham chiếu nếu có → báo cáo | Chọn đúng vai trò, hiển thị thay đổi, nguồn, hiệu lực, mức độ, tài liệu thiếu; cho phép bổ sung và phân tích lại |
@@ -402,7 +398,10 @@ Kiểm thử và phép đo ngoài luồng người dùng:
 - Báo số mẫu kiểm thử và số kết quả cần kiểm tra cùng các chỉ số.
 - Kiểm tra riêng độ đúng của liên kết đích, trích hiệu lực và yêu cầu bổ sung tài liệu. Mẫu thiếu căn cứ được đánh giá theo khả năng nhận diện giới hạn; không ép gán tác động chưa có bằng chứng. Nhãn chuẩn phải phản ánh đúng bộ tài liệu cung cấp cho mẫu, không dùng tài liệu ẩn để yêu cầu hệ thống kết luận.
 
-## 3. Thiết kế module
+## 3. Yêu cầu theo module
+
+Xem [luồng kiến trúc](architecture.md#41-một-lượt-phân-tích) và [các điểm nối](module.md#4-đầu-vàođầu-ra-và-các-điểm-nối) để xác định thứ tự xử lý.
+
 ### 3.1 Xử lý đầu vào và adapter
 
 Thọ phụ trách `document_processing/`: giữ `pdf_to_docx.py`, `document_adapter.py`, `amendment_linker.py` và `parser/legal_structure_parser.py`. PDF có lớp chữ được chuyển sang DOCX khi cần, kiểm tra nội dung và giữ liên kết nguồn. Không thêm folder Reader riêng hoặc bắt refactor code hiện có để khớp sơ đồ cũ.
@@ -447,7 +446,7 @@ Ví dụ:
 |---|---|
 | Đầu vào | Một `AmendmentItem`, AnalysisContext và kết quả Text Diff nếu có; giữ ngữ cảnh liên quan và bằng chứng |
 | Xử lý | Phân biệt sửa cách diễn đạt với thay đổi nội dung, như quyền, nghĩa vụ, chủ thể, điều kiện, thời hạn hoặc chế tài |
-| Đầu ra | SemanticDiffResult theo mục 1.3; Tuấn Anh chủ trì, Pipeline tổng hợp AmendmentResult theo mục 1.7 |
+| Đầu ra | SemanticDiffResult theo mục 1.3, Pipeline tổng hợp AmendmentResult theo mục 1.7 |
 | Chưa đủ căn cứ | Đánh dấu cần kiểm tra; không tự kết luận là sửa văn phong |
 | Ranh giới trách nhiệm | Semantic Diff xác định khía cạnh, field_group, nội dung trước/sau và diễn giải; Classifier & Scorer chọn nhãn tổng thể và chấm mức độ sau |
 
@@ -469,7 +468,7 @@ Tiêu chí nghiệm thu tối thiểu:
 |---|---|
 | Đầu vào | `AmendmentItem` và kết quả Semantic Diff |
 | Xử lý | Xác định loại thay đổi và mức độ theo bộ tiêu chí thống nhất của nhóm |
-| Đầu ra | list[ScoringResult], một kết quả cho mỗi SemanticChange; Tuấn Anh chủ trì |
+| Đầu ra | list[ScoringResult], một kết quả cho mỗi SemanticChange |
 | Yêu cầu | Mức độ phải có lý do dựa trên nội dung và bằng chứng của thay đổi |
 
 Nhãn tổng thể category dùng tám mã tại mục 1.3 hoặc WORDING_ONLY/null theo mục 1.4; operation thể hiện sửa/bổ sung/bãi bỏ, aspects giữ toàn bộ nội dung khía cạnh.
@@ -513,6 +512,10 @@ Ví dụ: đáp án có 10 thay đổi trọng yếu, hệ thống tìm đúng 8
 
 ## 4. Yêu cầu tải tài liệu và xem kết quả
 
+Khi người dùng chọn **Hiện bằng chứng**, giao diện hiện đoạn trích và vị trí nguồn từ `EvidenceRef` của kết quả đang xem. Hành vi này dùng báo cáo đã trả trong lượt hiện tại. Xem [vòng đời nguồn](architecture.md#43-vị-trí-lưu-và-vòng-đời).
+
+Hiển thị bằng chứng là chức năng chính: xem quote, tài liệu/vị trí nguồn gắn với nhận định; phân biệt nguyên văn và DERIVED. Không coi entity/relation hay retrieval score là bằng chứng đã xác minh.
+
 | Chức năng | Yêu cầu |
 |---|---|
 | Chọn đầu vào | Người dùng chọn hai file `.docx` hoặc PDF có lớp chữ, xác định rõ **văn bản gốc V1 / văn bản sửa đổi S**, có thể thêm tài liệu tham chiếu |
@@ -521,7 +524,7 @@ Ví dụ: đáp án có 10 thay đổi trọng yếu, hệ thống tìm đúng 8
 | Xem kết quả | Hiển thị từng yêu cầu sửa đổi, vị trí đích và nội dung trước/sau cục bộ; đánh dấu nội dung sau được suy ra |
 | Nhận diện tài liệu | Hiển thị tên file và vai trò từ base_document, amendment_document, reference_documents, kể cả khi tên file giống nhau hoặc báo cáo chỉ hoàn tất một phần |
 | Xem phân tích | Duyệt results, hiển thị amendment, text_diff, semantic_diff.changes và scoring theo change_id; lọc theo tám field_group/category, giữ nguồn và cảnh báo |
-| Kiểm chứng và nhận xét | Dữ liệu nhận xét chỉ trong phiên frontend, tách báo cáo AI; kiểu/khóa đối chiếu còn chờ theo mục 1.8 |
+| Nhận xét dự kiến | Hai loại theo mục 9; phát triển sau chức năng cốt lõi, không bắt buộc bản đầu |
 | Vị trí nguồn | Hiển thị EvidenceRef trong đúng V1, S hoặc tài liệu tham chiếu: trang PDF hoặc đoạn/bảng DOCX; luôn giữ nguồn chỉ dẫn trong S kể cả bãi bỏ |
 | Cần kiểm tra | Hiển thị rõ các kết quả `needs_review = true`; mức độ chưa xác định ghi “Chưa xác định” |
 | Không có thay đổi | Chỉ thông báo không tìm thấy yêu cầu sửa đổi đối với V1 theo mục 1.7; nếu chỉ sửa văn phong thì vẫn hiển thị phần sửa |
@@ -559,9 +562,15 @@ Kiểm tra chất lượng giải thích và khả năng hiểu báo cáo theo B
 - Quy mô mẫu, người tham gia, cách chấm và tiêu chí đánh giá được hoàn thiện
   trong test_evaluation_plan.md trước thử nghiệm. Nếu thành viên nhóm đóng
   vai luật sư/pháp chế hoặc sinh viên luật, phải ghi rõ giới hạn này.
-  Đây là hoạt động đánh giá ngoài luồng so sánh. Nhận xét kiểm chứng trong phiên theo mục 1.8 là dữ liệu sản phẩm riêng; không tự chuyển thành dữ liệu nghiên cứu hoặc nhãn chuẩn.
+  Đây là hoạt động đánh giá ngoài luồng so sánh. Nhận xét kiểm chứng trong phiên theo mục 9 là dữ liệu sản phẩm riêng; không tự chuyển thành dữ liệu nghiên cứu hoặc nhãn chuẩn.
 
 ## 5. Xử lý lỗi và cảnh báo
+
+Khi chưa xác định được đích, giữ chỉ dẫn, thao tác đã nhận diện và bằng chứng. Dùng `applicability = UNRESOLVED`, `needs_review = true` và lý do. Giữ mục trong báo cáo và để các kết quả phân tích chưa chạy là `null`.
+
+Khi có căn cứ gán nhóm khía cạnh nhưng chưa đủ căn cứ chấm mức độ, giữ nhóm đã xác định, dùng `significance = null`, `is_critical = null`, `needs_review = true` và ghi lý do. Rubric chi tiết và cách xử lý lỗi theo bước sẽ được cập nhật từ báo cáo của các thành viên sau lần chạy phiên 1.
+
+Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển bằng chứng có nguồn cùng lỗi/cảnh báo và phạm vi bị ảnh hưởng cho module nhận đầu ra theo contract chung. Bên nhận kiểm tra dữ liệu, không bỏ cảnh báo hoặc biến thiếu căn cứ thành không có thay đổi. Pipeline tổng hợp trạng thái báo cáo, không thay owner xử lý lỗi nội bộ.
 
 | Tình huống | Hành vi yêu cầu |
 |---|---|
@@ -605,7 +614,7 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 | Parser → Adapter | Cây articles/outside/source_blocks, nguồn, cảnh báo và summary; Parser tự đọc DOCX |
 | Adapter → Trích yêu cầu/liên kết | Điều có định danh, cấu trúc Khoản/Điểm được giữ, nguồn của V1 và S |
 | Trích yêu cầu/liên kết → Ngữ cảnh | AmendmentItem có chỉ dẫn, vị trí đích, nội dung cục bộ, bằng chứng và cảnh báo |
-| Ngữ cảnh → Text Diff/Semantic Diff | AmendmentItem kèm AnalysisContext, ReferenceRequirement và EffectInfo; Text Diff chỉ chạy khi đủ nội dung cục bộ |
+| Linker → Text Diff; chuẩn bị Context song song | AmendmentItem có trước/sau đủ căn cứ cho Text Diff; index sẵn sàng và TextDiffResult được ghép để query/kiểm tra nguồn trước Semantic |
 | Semantic Diff → Scorer | change_id, kết luận đổi nghĩa, diff_details, aspects, evidence và cảnh báo theo mục 1.3 |
 | Pipeline → giao diện | ComparisonReport theo mục 1.7: định danh tài liệu, kết quả từng yêu cầu, hiệu lực, tài liệu thiếu, nguồn, trạng thái và lỗi |
 
@@ -620,14 +629,12 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 - Thuật toán Semantic Diff; có sử dụng mô hình hoặc API ngoài không.
 - Công nghệ frontend.
 
-
-
-
-
-
-
 ### Quy tắc phát triển và kiểm tra hợp đồng
 
 Luồng chạy có thứ tự không buộc các owner chờ nhau hoàn thành mới code. Mỗi điểm nối có input/output mẫu đã review, phiên bản schema ghi trong metadata fixture riêng và kiểm tra tự động; không thêm schema_version vào payload chung. JSON dùng lưu fixture, module trong backend bàn giao dict/list theo TypedDict đã chốt. Không bắt mỗi bước ghi file JSON hoặc gọi HTTP. Bên nhận code với fixture/mock, bên giao tạo output thật theo cùng hợp đồng; hai bên kiểm tra chéo khi tích hợp. Các file bắt buộc và giới hạn sửa cấu trúc theo [Module](module.md); Git/PR theo [Workflow](workflow.md).
 
-Phân công chức năng theo LK-01 trong decision.md: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Tuấn Anh Semantic Change/Scorer; Dũng + Đức Anh AI Adapter. Schema chung đã chốt theo commit căn cứ; chữ ký hàm, mapping và hành vi chưa được code căn cứ quy định vẫn cần owner/bên nhận review.
+Phân công chức năng theo LK-01 trong decision.md: Dũng tích hợp/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff và Scorer; Tuấn Anh phụ trách UI và xử lý lỗi trả về; Dũng + Đức Anh AI Adapter. Schema chung đã chốt theo commit căn cứ; chữ ký hàm, mapping và hành vi chưa được code căn cứ quy định vẫn cần owner/bên nhận review.
+
+## 9. Phạm vi mở rộng
+
+Nhận xét có hai hướng: lưu phản hồi sau lượt phân tích để cải thiện dự án, và dùng nhận xét trong lượt để người dùng xem xét lại kết luận. Khi triển khai, giao diện phân biệt kết luận ban đầu, kết luận cập nhật và căn cứ thay đổi. API, định danh, cách lưu và cơ chế kết hợp nhận xét sẽ được chốt khi triển khai. Nhận xét là dữ liệu phản hồi cần review trước khi dùng cho đánh giá hoặc huấn luyện.

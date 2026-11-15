@@ -21,7 +21,7 @@ import os
 import tempfile
 import uuid
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile, Request
 from fastapi.responses import JSONResponse
 
 from .app.pipeline import (
@@ -53,11 +53,11 @@ _comparison_lock = Lock()
 
 
 @app.get("/health")
-def health():
-    return {"api": "ok", "comparison_ready": app.state.analysis_runner is not None,
+def health(request: Request):
+    return {"api": "ok", "comparison_ready": request.app.state.analysis_runner is not None,
             "lightrag_connection": "not_checked",
             "missing_components": list(MISSING_COMPONENTS)
-            if app.state.analysis_runner is None else []}
+            if request.app.state.analysis_runner is None else []}
 
 
 def _save_upload(upload: UploadFile, directory: Path, number: int,
@@ -93,6 +93,7 @@ def _save_upload(upload: UploadFile, directory: Path, number: int,
 
 @app.post("/api/compare")
 def compare_documents(
+    request: Request,
     doc_v1: Annotated[UploadFile, File(description="Van ban goc V1")],
     doc_s: Annotated[UploadFile, File(description="Van ban sua doi S")],
     reference_files: Annotated[list[UploadFile] | None,
@@ -125,13 +126,14 @@ def compare_documents(
             ]
             report = run_comparison(
                 documents, comparison_id, deadline=deadline,
-                analysis_runner=app.state.analysis_runner,
+                analysis_runner=request.app.state.analysis_runner,
             )
         codes = {error["code"] for error in report["errors"]}
         http_status = 200
         if report["status"] == "FAILED":
             http_status = (501 if "ANALYSIS_NOT_CONFIGURED" in codes
-                           else 504 if "PROCESSING_TIMEOUT" in codes else 500)
+                           else 504 if "PROCESSING_TIMEOUT" in codes
+                           else 500 if report["errors"] else 200)
         return JSONResponse(status_code=http_status, content=report,
                             headers={"X-Comparison-ID": comparison_id})
     except PipelineInputError as exc:

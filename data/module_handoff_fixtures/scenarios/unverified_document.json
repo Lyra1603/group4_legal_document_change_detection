@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "kind": "SYNTHETIC_SCENARIO_ASSERTIONS_NOT_FULL_RUNTIME_PAYLOAD",
+    "upstream_commit": "cf62188b5f1e366957666a4b0edb6003da5679d5",
+    "decision_date": "2026-11-12",
+    "implementation_status": "EXPECTED_SUBSET_NOT_END_TO_END_PROOF",
+    "docs_baseline_commit": "6dbda8da7a050e4d21f354c5e59765244e2f176a",
+    "regression_tests": "test/demo_suite/test_linker_regressions.py and test_report_status.py at c192f43; related cases, not execution of this JSON"
+  },
+  "description": "Không có đủ căn cứ xác minh văn bản đích chính là V1; không tự áp dụng vì trùng số Điều.",
+  "input": {
+    "documents": {
+      "v1": {
+        "document_id": "v1",
+        "role": "BASE",
+        "filename": "sample-base.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Tài liệu chưa có đủ thông tin xác minh tên/số hiệu."
+          },
+          {
+            "source_ref": "block:2",
+            "text": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo."
+          },
+          {
+            "source_ref": "block:3",
+            "text": "Thời hạn tại Điều 2 được tính theo ngày làm việc."
+          }
+        ]
+      },
+      "s": {
+        "document_id": "s",
+        "role": "AMENDMENT",
+        "filename": "sample-amendment.docx",
+        "file_type": "DOCX",
+        "blocks": [
+          {
+            "source_ref": "block:1",
+            "text": "Thay thế Điều 2 của Văn bản B bằng nội dung sau:"
+          },
+          {
+            "source_ref": "block:2",
+            "text": "Doanh nghiệp phải nộp báo cáo trong 15 ngày kể từ ngày nhận thông báo."
+          }
+        ]
+      }
+    },
+    "clauses": {
+      "v1": [
+        {
+          "unit_id": "v1:n2",
+          "id": "Điều 2",
+          "title": "Nộp báo cáo",
+          "content": "Doanh nghiệp phải nộp báo cáo trong 30 ngày kể từ ngày nhận thông báo.",
+          "source_refs": [
+            "block:2"
+          ]
+        },
+        {
+          "unit_id": "v1:n3",
+          "id": "Điều 3",
+          "title": "Cách tính thời hạn",
+          "content": "Thời hạn tại Điều 2 được tính theo ngày làm việc.",
+          "source_refs": [
+            "block:3"
+          ]
+        }
+      ]
+    }
+  },
+  "expected": {
+    "status": "FAILED",
+    "http_status": 200,
+    "usable_results": 0,
+    "items": [
+      {
+        "instruction_source_refs": [
+          "block:1"
+        ],
+        "applicability": "UNRESOLVED",
+        "target_unit_ids": [],
+        "before_text": null,
+        "after_text": null,
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null,
+        "needs_review": true,
+        "review_reason_required": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PoCS · Đối chiếu văn bản</title>
+  <link rel="stylesheet" href="/assets/styles/demo.css">
+  <script type="module" src="/assets/pages/demo.js"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/" aria-label="PoCS trang chủ"><span class="brand-icon">P</span> PoCS <span class="brand-detail">LEGAL DOCUMENTS</span></a><span class="version">Bản demo cục bộ</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">LEGAL DOCUMENT CHANGE DETECTION</p><h1>Hiểu thay đổi.<br><span>Kiểm tra từng căn cứ.</span></h1><p>Chọn văn bản gốc V1 và văn bản sửa đổi S để đối chiếu nội dung,<br class="wide"> đọc bằng chứng và nhận biết những phần cần kiểm tra thêm.</p></div>
+    <aside class="scope"><strong>Đang chạy bằng quy tắc cục bộ</strong><span>Chưa bật LightRAG hoặc model. Demo tạo thay đổi chữ từ file thật; ngữ nghĩa và mức tác động chưa đủ căn cứ sẽ được giữ là chưa xác định.</span></aside>
+    <section class="workspace" aria-labelledby="upload-title">
+      <div class="section-head"><div><p class="eyebrow">01 / TÀI LIỆU</p><h2 id="upload-title">Chuẩn bị đối chiếu</h2></div><span class="small-label">V1 + S · không phải hai phiên bản V1–V2</span></div>
+      <form id="compare-form">
+        <div class="upload-grid">
+          <div class="upload-slot" data-role="v1"><div class="slot-heading"><span class="slot-number">V1</span><h3>Văn bản gốc <span class="required">*</span></h3></div><label class="dropzone" for="v1-file"><span class="upload-icon" aria-hidden="true">↥</span><strong>Chọn văn bản gốc</strong><span>hoặc kéo thả file vào đây</span><small>DOCX hoặc PDF có lớp chữ</small><input id="v1-file" type="file" accept=".docx,.pdf" aria-label="Chọn văn bản gốc V1"></label><ul class="file-list" id="v1-list"></ul></div>
+          <div class="upload-slot" data-role="s"><div class="slot-heading"><span class="slot-number">S</span><h3>Văn bản sửa đổi <span class="required">*</span></h3></div><label class="dropzone" for="s-file"><span class="upload-icon" aria-hidden="true">↥</span><strong>Chọn văn bản sửa đổi</strong><span>hoặc kéo thả file vào đây</span><small>Chứa chỉ dẫn tác động đến V1</small><input id="s-file" type="file" accept=".docx,.pdf" aria-label="Chọn văn bản sửa đổi S"></label><ul class="file-list" id="s-list"></ul></div>
+        </div>
+        <div class="references"><div><h3>Tài liệu tham chiếu <span class="optional">Tùy chọn</span></h3><p>Có thể chọn nhiều file. Việc cung cấp file chưa xác nhận các dẫn chiếu đã được phân tích đầy đủ.</p></div><label class="secondary file-button" for="reference-files">+ Thêm tài liệu<input id="reference-files" type="file" multiple accept=".docx,.pdf" aria-label="Thêm tài liệu tham chiếu"></label></div><ul class="file-list" id="references-list"></ul>
+        <div class="sample-row"><label for="sample-select">Dùng dữ liệu có sẵn trong repo</label><select id="sample-select" aria-label="Chọn bộ dữ liệu mẫu"><option value="">Chọn một bộ V1–S…</option></select><button id="load-sample" type="button" class="text-button">Nạp file mẫu ↗</button></div>
+        <div id="form-message" class="message" role="alert" hidden></div>
+        <div class="form-footer"><p id="limits">Đang đọc cấu hình giới hạn file…</p><button class="primary" id="submit-button" type="submit" disabled>Bắt đầu đối chiếu <span aria-hidden="true">→</span></button></div>
+        <p id="processing" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span> Đang đọc và phân tích tài liệu. Vui lòng chờ…</p>
+      </form>
+    </section>
+    <section id="results" class="workspace" aria-labelledby="results-title" hidden>
+      <div class="section-head"><div><p class="eyebrow">02 / KẾT QUẢ</p><h2 id="results-title">Báo cáo đối chiếu</h2></div><button id="download-json" type="button" class="secondary">Tải báo cáo JSON ↓</button></div>
+      <div id="report-meta"></div><div id="report-summary" class="summary-grid"></div><div id="report-issues"></div><div id="report-items"></div>
+    </section>
+    <footer>PoCS · Kết quả hỗ trợ đối chiếu, cần kiểm tra căn cứ và hiệu lực trước khi sử dụng.<span>DOCX là luồng đã kiểm thử · PDF phụ thuộc bộ chuyển đổi</span></footer>
+  </main>
+</body>
+</html>

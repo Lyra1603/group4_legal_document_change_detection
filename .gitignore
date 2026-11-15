@@ -4,3 +4,7 @@ __pycache__/
 
 .vscode/
 .venv/
+runtime/lightrag/
+deploy/lightrag/.env.*
+!deploy/lightrag/.env.example
+backend/.env.lightrag

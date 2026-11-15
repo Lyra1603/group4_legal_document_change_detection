@@ -7,6 +7,8 @@
 
 ## 1. Mục đích tài liệu
 
+BRD mô tả mục tiêu sản phẩm. Nền DOCX chuẩn bị merge hỗ trợ dạng sửa hẹp theo [common-baseline.md](common-baseline.md); thêm/bãi bỏ, nhiều đích, LightRAG/model thật và đánh giá chất lượng tiếp tục sau merge. Không coi demo đã hoàn thành toàn bộ BRD.
+
 BRD mô tả vấn đề nghiệp vụ, người sử dụng, giá trị mong đợi, phạm vi, yêu cầu nghiệp vụ và tiêu chí đánh giá của hệ thống. Tài liệu tập trung vào nhu cầu của luật sư, người làm công việc pháp chế và sinh viên luật.
 
 BRD là căn cứ để nhóm xây dựng yêu cầu phần mềm trong SRS và lựa chọn thiết kế trong Architecture. Các cấu trúc dữ liệu, endpoint API, thư viện, mô hình và thuật toán được quy định trong các tài liệu kỹ thuật tương ứng.
@@ -103,13 +105,17 @@ Phân tích tập trung vào phần thay đổi, sử dụng thông tin tổng q
 
 ### 5.3. Đầu ra
 
+Hiển thị bằng chứng là chức năng chính: đọc đoạn nguồn, tài liệu/vị trí gắn với nhận định; phân biệt nguyên văn và nội dung suy ra.
+
+Nhận xét của người dùng thuộc phạm vi mở rộng. Xem [SRS](srs.md#9-phạm-vi-mở-rộng) để tra phạm vi.
+
 - Danh sách yêu cầu sửa đổi, bổ sung, bãi bỏ và vị trí bị tác động trong V1.
 - Nội dung trước thay đổi, nội dung hoặc chỉ dẫn sửa đổi trong S và phần chữ khác biệt khi xác định được.
 - Nhận định về thay đổi nội dung quy định, nhóm nội dung thay đổi, mức độ và lý do khi có đủ căn cứ.
 - Bằng chứng và vị trí nguồn trong V1, S và tài liệu tham chiếu được sử dụng.
 - Thông tin hiệu lực và chuyển tiếp được nêu trong S, kèm phạm vi áp dụng và căn cứ; phần chưa xác định phải được đánh dấu.
 - Danh sách tài liệu/nội dung tham chiếu còn thiếu, cảnh báo và lỗi xử lý.
-- Người dùng kiểm chứng, ghi quyết định và nhận xét trong phiên; dữ liệu này tách khỏi kết quả AI. Khi bổ sung tài liệu và phân tích lại, chỉ giữ trạng thái đã kiểm chứng nếu nội dung liên quan được xác nhận không đổi.
+- Nhận xét hai loại phát triển sau theo mục 5.3.
 
 ### 5.4. Phạm vi bao phủ
 
@@ -150,7 +156,7 @@ Phần mở đầu, chữ ký và phụ lục không được so sánh toàn di�
 4. Sinh viên xem giải thích về đối tượng, quyền, nghĩa vụ, điều kiện hoặc thời hạn bị thay đổi, nếu hệ thống xác định được.
 5. Sinh viên mở lại đoạn nguồn, kiểm tra nhận định và ghi nhận giới hạn cần nghiên cứu thêm.
 
-**Kết quả mong đợi:** Sinh viên có thể mô tả thay đổi bằng lời của mình và chỉ ra bằng chứng. Sinh viên ghi quyết định kiểm chứng và nhận xét trong phiên; nhận xét tách khỏi kết quả AI, không tự trở thành nhãn chuẩn và chưa bảo đảm giữ sau tải lại/đóng tab.
+**Kết quả mong đợi:** Sinh viên có thể mô tả thay đổi bằng lời của mình và chỉ ra bằng chứng. Nhận xét hai loại phát triển sau theo mục 5.3.
 
 ### 6.3. UC-03 — Rà soát trường hợp chưa chắc chắn
 
@@ -165,7 +171,7 @@ Phần mở đầu, chữ ký và phụ lục không được so sánh toàn di�
 3. Hệ thống chỉ rõ tài liệu và Điều/Khoản/bảng còn thiếu khi xác định được.
 4. Người dùng có thể tải tài liệu bổ sung để phân tích lại. Nếu không bổ sung, kết quả đã xác định vẫn được hiển thị cùng giới hạn phân tích.
 
-**Kết quả mong đợi:** Người dùng biết nhận định chưa được xác định chắc chắn. Phiên bản đầu giữ xác nhận/nhận xét kiểm chứng trong phiên, không sửa đè kết quả AI. Khi bổ sung và chạy lại, nhận xét phải được đối chiếu; nội dung đổi cần kiểm tra lại, không ghép chắc chắn thì giữ riêng nhận xét cũ. Không bắt buộc có giao diện sửa kết quả liên kết.
+**Kết quả mong đợi:** Người dùng biết nhận định chưa được xác định chắc chắn. Nhận xét hai loại phát triển sau theo mục 5.3; chưa bắt buộc giao diện sửa liên kết.
 
 ## 7. Yêu cầu nghiệp vụ
 
@@ -296,7 +302,7 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 - Có hướng dẫn gán nhãn, tiêu chí mức độ và quy trình xử lý bất đồng.
 - Tách dữ liệu phát triển/validation khỏi tập test độc lập; không dùng tập test cuối để điều chỉnh thuật toán hoặc ngưỡng.
 - Khóa dữ liệu test và quy tắc đối chiếu trước khi đánh giá cuối.
-- Quy tắc đối chiếu thay đổi dự đoán với đáp án tham chiếu phải thống nhất, tránh tính trùng. Áp dụng matching 1–1 trước; matching 1–n bổ sung sau khi hoàn thành 1–1, theo test_evaluation_plan.md.
+- Đánh giá theo đáp án tham chiếu đã review, tính cả phát hiện sai và bỏ sót. Xem [kế hoạch kiểm thử](test_evaluation_plan.md) để tra cách đối chiếu và chia tập.
 - Phải tính cả phát hiện sai và bỏ sót, kể cả thay đổi bị mất do đọc tài liệu, tách cấu trúc, trích yêu cầu sửa đổi hoặc liên kết sai.
 - Kết quả chưa chắc chắn không tự được tính là phát hiện đúng. Cách xử lý phải theo SRS và test_evaluation_plan.md.
 - Khi không có mẫu phù hợp để tính một chỉ số, ghi không xác định và lý do, không tự ghi 100%.
@@ -311,7 +317,7 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 5. Nhận định và mức độ có lý do; trường hợp thiếu căn cứ thể hiện chưa xác định.
 6. Lỗi đầu vào hoặc xử lý một phần không bị trình bày như không có thay đổi.
 7. Có báo cáo thực nghiệm, hướng dẫn sử dụng và giới hạn đã biết.
-8. Kiểm chứng/nhận xét trong phiên hoạt động đúng; bổ sung tài liệu không gắn nhầm nhận xét, không mất báo cáo cũ khi lượt mới thất bại. Phân loại theo tám nhóm/category của schema chung; rubric và ví dụ ranh giới phải được review trước đánh giá.
+8. Hiển thị bằng chứng/cảnh báo; lượt bổ sung thất bại giữ báo cáo cũ. Nhận xét phát triển sau. Giữ tám nhóm/category theo schema chung; review rubric trước đánh giá.
 
 ## 11. Ngoài phạm vi phiên bản đầu
 
@@ -351,20 +357,13 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 | Người dùng tin tuyệt đối vào kết quả | Sử dụng nhận định thiếu kiểm chứng | Nhắc rõ vai trò hỗ trợ, lý do và phần chưa xác định trong báo cáo. |
 | Lộ nội dung tài liệu qua log hoặc tệp tạm | Ảnh hưởng tính riêng tư của dữ liệu | Không log toàn văn; kiểm soát truy cập và vòng đời tệp tạm theo thiết kế triển khai. |
 
-## 14. Ví dụ nghiệp vụ để xây dựng bộ kiểm thử
+## 14. Ví dụ nghiệp vụ
 
-**Toàn bộ ví dụ trong mục này là giả định, không trích dẫn quy định pháp luật hiện hành.** Nội dung cũ lấy từ V1; nội dung mới hoặc chỉ dẫn sửa đổi lấy từ S. Mức độ cụ thể chỉ được gán sau khi đối chiếu hướng dẫn gán nhãn đã chốt.
+- Thời hạn đổi từ 30 xuống 15 ngày. Người dùng cần thấy công việc nào bị ảnh hưởng, mốc bắt đầu tính hạn và nguồn quy định.
+- Cụm “có thể cung cấp” đổi thành “phải cung cấp”. Người dùng cần thấy sự thay đổi về nghĩa vụ và điều kiện hoặc ngoại lệ liên quan.
+- Chỉ dẫn đổi văn bản dẫn chiếu nhưng thiếu tài liệu cần đối chiếu. Người dùng cần biết thông tin nào còn thiếu và phần kết luận nào có thể sử dụng.
 
-| Mã | Nội dung cũ → mới | Điều cần kiểm tra |
-| --- | --- | --- |
-| EX-01 | “Trong thời hạn 30 ngày” → “Trong thời hạn 15 ngày” | Nhận biết giảm thời hạn; xác định hoạt động và chủ thể liên quan từ ngữ cảnh; không chỉ báo thay số. |
-| EX-02 | “Có thể cung cấp” → “Phải cung cấp” | Nhận biết khả năng chuyển từ lựa chọn sang nghĩa vụ; đọc đầy đủ điều kiện và ngoại lệ. |
-| EX-03 | “Áp dụng đối với tổ chức” → “Áp dụng đối với tổ chức và cá nhân” | Nhận biết mở rộng đối tượng; giữ đúng bằng chứng. |
-| EX-04 | Một câu được viết lại nhưng nội dung được người gán nhãn xác nhận tương đương | Phát hiện khác biệt chữ và giải thích căn cứ không đổi nội dung quy định. |
-| EX-05 | Điều 5 cũ thành Điều 6 mới, nội dung giữ nguyên | Nhận diện chỉ dẫn đánh lại số trong S; không tự diễn giải thành bãi bỏ và bổ sung nội dung. |
-| EX-06 | Một Điều cũ được phân thành hai Điều mới | Liên kết chỉ dẫn tách/gộp với Điều gốc; cảnh báo nếu chưa xác định đủ nội dung bị tác động. |
-| EX-07 | Một đoạn không đọc được hoặc một giai đoạn xử lý bị lỗi | Báo phần bị ảnh hưởng; không kết luận toàn bộ không thay đổi. |
-| EX-08 | Sửa một dẫn chiếu nhưng tài liệu được dẫn chiếu không có trong đầu vào | Chỉ ra thay đổi dẫn chiếu, yêu cầu tài liệu bổ sung và giới hạn kết luận; phân tích lại khi đủ nội dung trước/sau. |
+Xem [các ca tham chiếu trong hướng dẫn gán nhãn](data-annotation-guide.md#72-các-ca-tham-chiếu) và [kế hoạch kiểm thử](test_evaluation_plan.md) để tra ví dụ và kỳ vọng chi tiết.
 
 ## 15. Liên kết và thống nhất tài liệu
 
@@ -374,6 +373,4 @@ Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tí
 | SRS | Cụ thể hóa yêu cầu chức năng, dữ liệu, trạng thái, ràng buộc và cách kiểm chứng. |
 | Architecture | Thiết kế các module, luồng xử lý và các quyết định triển khai để đáp ứng SRS. |
 | README | Giới thiệu dự án, phạm vi và trạng thái triển khai thực tế; chỉ dẫn đến tài liệu chi tiết. |
-| Annotation Guideline và Workflow | Ví dụ phân loại, tiêu chí mức độ, đáp án tham chiếu, quy trình và cách tính chỉ số. |
-
-
+| Hướng dẫn gán nhãn và kế hoạch đánh giá | Cách tạo đáp án tham chiếu, xử lý bất đồng và đo chất lượng. |

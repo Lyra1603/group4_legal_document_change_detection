@@ -1,0 +1,27 @@
+# Project-owned deployment wiring; builds the unmodified upstream Dockerfile.
+# Each comparison MUST use its own Compose project, port, workspace and volumes.
+services:
+  lightrag:
+    build:
+      context: https://github.com/HKUDS/LightRAG.git#28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c
+      dockerfile: Dockerfile
+    image: pocs-lightrag:28ff1b05
+    env_file: ${POCS_LIGHTRAG_SERVER_ENV_FILE:-.env}
+    environment:
+      HOST: 0.0.0.0
+      PORT: 9621
+      WORKSPACE: ${WORKSPACE:?Set a unique workspace}
+      LIGHTRAG_API_KEY: ${LIGHTRAG_API_KEY:?Set a server API key}
+      WORKING_DIR: /app/data/rag_storage
+      INPUT_DIR: /app/data/inputs
+      PROMPT_DIR: /app/data/prompts
+    ports:
+      - "127.0.0.1:${POCS_LIGHTRAG_PORT:-9621}:9621"
+    volumes:
+      - rag_storage:/app/data/rag_storage
+      - inputs:/app/data/inputs
+      - prompts:/app/data/prompts
+volumes:
+  rag_storage:
+  inputs:
+  prompts:
