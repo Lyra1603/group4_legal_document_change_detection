@@ -5,7 +5,7 @@ const labels = {SUCCESS: 'Hoàn thành', PARTIAL: 'Cần kiểm tra thêm', FAIL
 const statusDetails = {
   SUCCESS: 'Các mục đã có thể hiển thị theo dữ liệu backend trả về.',
   PARTIAL: 'Một số mục hoặc căn cứ chưa đủ để kết luận; không đồng nghĩa không có thay đổi.',
-  FAILED: 'Không tạo được phân tích hoàn chỉnh; hãy đọc lỗi và cảnh báo bên dưới.'
+  FAILED: 'Chưa tạo được mục phân tích dùng được; các chỉ dẫn đã nhận diện và lý do chưa xử lý được giữ bên dưới.'
 };
 const operations = {AMEND: 'Sửa đổi', ADD: 'Bổ sung', REPEAL: 'Bãi bỏ', UNRESOLVED: 'Chưa xác định thao tác'};
 const groups = {TIME_QUANTITY:'Thời gian / số lượng', SUBJECT_OBJECT:'Chủ thể / đối tượng',
@@ -93,6 +93,29 @@ function addIssue(container, issue, error = false) {
   if (metadata) box.append(node('div',metadata,'source'));
   container.append(box);
 }
+function reviewReason(value) {
+  return value || 'Cần kiểm tra thêm theo dữ liệu backend trả về.';
+}
+function renderEvidence(container, evidence, identities) {
+  if (!evidence) return;
+  const block = node('div',undefined,'evidence');
+  block.append(node('div',sourceLabel(evidence,identities),'source'),node('p',evidence.quote || ''));
+  container.append(block);
+}
+function renderEvidenceDetails(container, title, evidence, identities) {
+  if (!evidence?.length) return;
+  const details = node('details');
+  details.append(node('summary',`${title} · ${evidence.length} nguồn`));
+  evidence.forEach(item => renderEvidence(details,item,identities));
+  container.append(details);
+}
+function renderReview(container, needsReview, reason) {
+  if (!needsReview) return;
+  container.append(node('span','Cần kiểm tra','badge warning'),node('p',reviewReason(reason),'review-reason'));
+}
+function valueLabel(value) {
+  return value === null ? 'Chưa biết: thiếu căn cứ' : value;
+}
 function pane(title, text, changes, side) {
   const box = node('div',undefined,'text-pane'); box.append(node('div',title,'pane-title'));
   const content = node('pre',undefined,'text-content');
@@ -117,9 +140,11 @@ function renderItem(result, warnings, identities, index) {
   const badges = node('div'); badges.append(node('span',operations[item.operation] || item.operation,'badge'));
   if (item.applicability === 'OTHER_DOCUMENT') badges.append(node('span','Văn bản khác','badge warning'));
   else if (item.applicability === 'UNRESOLVED') badges.append(node('span','Đích chưa rõ','badge error'));
-  else badges.append(node('span','Cần kiểm tra','badge warning'));
+  else badges.append(node('span','Áp dụng cho V1','badge'));
+  if (item.needs_review) badges.append(node('span','Cần kiểm tra','badge warning'));
   header.append(badges); card.append(header);
   card.append(node('blockquote',item.instruction.quote,'instruction'), node('p',sourceLabel(item.instruction,identities),'source'));
+  if (item.needs_review) card.append(node('p',reviewReason(item.review_reason),'review-reason'));
   const local = warnings.filter(w=>w.amendment_id === item.amendment_id);
   if (result.text_diff === null) {
     if (local.length) for (const warning of local) addIssue(card,warning);
@@ -133,30 +158,57 @@ function renderItem(result, warnings, identities, index) {
     const analysis = node('div',undefined,'analysis-grid');
     const semantic = node('div'); semantic.append(node('h4','Phân tích ý nghĩa'));
     const changes = result.semantic_diff?.changes || [];
+    const scores = new Map((result.scoring || []).filter(entry => entry.change_id).map(entry => [entry.change_id,entry]));
     if (!changes.length) semantic.append(node('p','Chưa có kết luận ngữ nghĩa để hiển thị.'));
     for (const change of changes) {
+      const changeBox = node('div',undefined,'semantic-change');
       const meaningLabel = change.is_meaningful_change === null
         ? 'Chưa biết: thiếu căn cứ'
         : change.is_meaningful_change ? 'Có đổi nghĩa' : 'Không đổi nghĩa';
-      semantic.append(node('span', meaningLabel, `badge ${change.is_meaningful_change === false ? '' : 'warning'}`));
-      semantic.append(node('p',change.diff_details));
-      if (change.review_reason) semantic.append(node('p',change.review_reason));
+      changeBox.append(node('div',`${change.change_id || 'Thay đổi chưa định danh'} · ${meaningLabel}`,
+        `badge ${change.is_meaningful_change === false ? '' : 'warning'}`));
+      changeBox.append(node('p',change.diff_details || 'Chưa có diễn giải tổng thể.'));
+      renderReview(changeBox,change.needs_review,change.review_reason);
+      renderEvidenceDetails(changeBox,'Bằng chứng nhận định',change.evidence,identities);
+      for (const aspect of change.aspects || []) {
+        const aspectBox = node('div',undefined,'semantic-aspect');
+        aspectBox.append(node('strong',aspect.aspect_id || 'Khía cạnh chưa định danh'));
+        aspectBox.append(node('p',aspect.field_group ? groups[aspect.field_group] || aspect.field_group : 'Chưa xác định nhóm tác động'));
+        aspectBox.append(node('p',`Trước: ${valueLabel(aspect.old_value)} · Sau: ${valueLabel(aspect.new_value)}`));
+        aspectBox.append(node('p',aspect.interpretation || 'Chưa có diễn giải.'));
+        renderReview(aspectBox,aspect.needs_review,aspect.review_reason);
+        renderEvidenceDetails(aspectBox,'Bằng chứng khía cạnh',aspect.evidence,identities);
+        aspectBox.append(node('p',`Trích cũ: ${valueLabel(aspect.old_quote)} · Trích mới: ${valueLabel(aspect.new_quote)}`,'source'));
+        changeBox.append(aspectBox);
+      }
+      const scoreEntry = scores.get(change.change_id);
+      if (scoreEntry) {
+        const scoreBox = node('div',undefined,'score-entry');
+        scoreBox.append(node('strong','Phân loại & mức tác động'));
+        scoreBox.append(node('span',scoreEntry.significance === null ? 'Chưa xác định' : scoreEntry.significance,'badge warning'));
+        scoreBox.append(node('p',scoreEntry.category ? groups[scoreEntry.category] || scoreEntry.category : 'Chưa xác định nhóm tác động.'));
+        scoreBox.append(node('p',scoreEntry.reason || 'Chưa có lý do chấm điểm.'));
+        renderReview(scoreBox,scoreEntry.needs_review,scoreEntry.review_reason);
+        changeBox.append(scoreBox);
+        scores.delete(change.change_id);
+      }
+      semantic.append(changeBox);
     }
     const score = node('div'); score.append(node('h4','Phân loại & mức tác động'));
-    for (const entry of result.scoring || []) {
-      score.append(node('span',entry.significance || 'Chưa chấm mức tác động','badge warning'));
+    for (const entry of scores.values()) {
+      score.append(node('span',entry.significance === null ? 'Chưa xác định' : entry.significance || 'Chưa chấm mức tác động','badge warning'));
       score.append(node('p',entry.category ? groups[entry.category] || entry.category : 'Chưa xác định nhóm tác động.'));
-      score.append(node('p',entry.reason));
+      score.append(node('p',entry.reason || 'Chưa có lý do chấm điểm.'));
+      renderReview(score,entry.needs_review,entry.review_reason);
     }
+    if (!scores.size && !changes.length) score.append(node('p','Chưa có mức tác động để hiển thị.'));
     analysis.append(semantic,score); card.append(analysis);
   }
-  const all = [...item.evidence,...(item.context?.evidence || [])];
+  const all = [...(item.evidence || []),...(item.effect_info || []).flatMap(effect => effect.evidence || []),
+    ...(item.context?.evidence || [])];
   const unique = [...new Map(all.map(e=>[JSON.stringify(e),e])).values()];
   const details = node('details'); details.append(node('summary',`${unique.length} bằng chứng nguồn · xem nguyên văn`));
-  for (const evidence of unique) {
-    const block = node('div',undefined,'evidence');
-    block.append(node('div',sourceLabel(evidence,identities),'source'),node('p',evidence.quote)); details.append(block);
-  }
+  unique.forEach(evidence => renderEvidence(details,evidence,identities));
   card.append(details); return card;
 }
 function renderReport(report) {
@@ -205,14 +257,21 @@ $('#compare-form').addEventListener('submit', async event => {
   const timer = setTimeout(()=>controller.abort(),(state.config.deadline_seconds+30)*1000);
   try {
     const response = await fetch('/api/compare',{method:'POST',body:data,signal:controller.signal});
-    const report = await response.json();
-    if (Array.isArray(report.results) && report.comparison_id) renderReport(report);
+    const body = await response.text();
+    let report;
+    try {report = body ? JSON.parse(body) : null;}
+    catch (parseError) {
+      throw new Error(`Lỗi máy chủ (HTTP ${response.status}): Máy chủ trả về dữ liệu không hợp lệ, không phải JSON.`);
+    }
+    if (report && Array.isArray(report.results) && report.comparison_id) renderReport(report);
     else {
-      const detail = report.detail;
+      const detail = report?.detail;
       const category = response.status >= 400 && response.status < 500 ? 'Lỗi đầu vào'
         : response.status >= 500 ? 'Lỗi máy chủ' : 'Phản hồi không hợp lệ';
       const detailMessage = Array.isArray(detail) ? 'Thiếu hoặc sai file bắt buộc.'
-        : typeof detail === 'string' ? detail : detail?.message || 'Máy chủ chưa trả được kết quả.';
+        : typeof detail === 'string' ? detail
+        : detail ? `${detail.code ? `${detail.code}: ` : ''}${detail.message || 'Máy chủ chưa trả được kết quả.'}`
+        : 'Máy chủ chưa trả được kết quả.';
       throw new Error(`${category} (HTTP ${response.status}): ${detailMessage}`);
     }
   } catch(error) {
