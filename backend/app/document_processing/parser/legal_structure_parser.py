@@ -96,13 +96,40 @@ def _read_docx(path: Path):
 
 
 def _cut_at_annex(blocks):
-    """Tách thân văn bản khỏi phần sau: dừng tại 'Nơi nhận' hoặc 'PHỤ LỤC' đầu tiên."""
-    for i, b in enumerate(blocks):
-        text = b["text"].strip()
-        if b["kind"] == "PARAGRAPH" and ANNEX.match(text):
+    """Cắt tại Nơi nhận/PHỤ LỤC đầu tiên xuất hiện ngoài trích dẫn."""
+    quote_depth = 0
+
+    for i, block in enumerate(blocks):
+        text = block["text"]
+
+        # PHỤ LỤC chỉ được coi là ranh giới khi đang ở ngoài trích dẫn.
+        if (
+            block["kind"] == "PARAGRAPH"
+            and quote_depth <= 0
+            and ANNEX.match(text.strip())
+        ):
             return blocks[:i], blocks[i:]
-        if NOI_NHAN.search(text):
-            return blocks[:i], blocks[i:]
+
+        # Tìm Nơi nhận và xác định trạng thái trích dẫn ngay tại vị trí đó.
+        match = NOI_NHAN.search(text)
+        if match:
+            depth_at_match = quote_depth
+            for char in text[:match.start()]:
+                if char == "“":
+                    depth_at_match += 1
+                elif char == "”":
+                    depth_at_match -= 1
+
+            if depth_at_match <= 0:
+                return blocks[:i], blocks[i:]
+
+        # Cập nhật trạng thái ngoặc cho block kế tiếp.
+        for char in text:
+            if char == "“":
+                quote_depth += 1
+            elif char == "”":
+                quote_depth -= 1
+
     return blocks, []
 
 
@@ -160,9 +187,9 @@ def _scan_quote(lines, start, quoted, stop_on_outer_heading):
                 break
         gathered.append(part)
         for ch in part["text"]:
-            if ch == '“':
+            if ch == "“":
                 depth += 1
-            elif ch == '”':
+            elif ch == "”":
                 depth -= 1
         if depth <= 0:
             closed = True
@@ -203,6 +230,15 @@ class _Parser:
             if not t:
                 i += 1
                 continue
+
+            # Phần ký tên và nội dung phía sau thuộc AFTER_BODY, không thuộc Điều cuối.
+            if not quoted and article is not None and SIGNATURE.match(t):
+                outside.extend(
+                    {"region": "AFTER_BODY", **part}
+                    for part in lines[i:]
+                )
+                break
+
             if raw["kind"] != "PARAGRAPH":
                 if not quoted and (article is None or NOI_NHAN.search(t)):
                     outside.append({"region": "BEFORE_BODY" if article is None else "AFTER_BODY", **raw})
@@ -211,7 +247,7 @@ class _Parser:
                     self.warn("TABLE_NOT_PARSED", "Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.", [raw])
                 i += 1
                 continue
-            if t.startswith('“'):
+            if t.startswith("“"):
                 # Ưu tiên cặp ngoặc: Điều bên trong trích dẫn hợp lệ không làm đóng khối.
                 gathered, closed, j = _scan_quote(lines, i, quoted, stop_on_outer_heading=False)
                 if not closed:
@@ -227,7 +263,7 @@ class _Parser:
                 inner[0] = {**first, "text": first["text"][1:], "start": first["start"] + 1}
                 if closed:
                     last = inner[-1]
-                    pos = last["text"].rfind('”')
+                    pos = last["text"].rfind("”")
                     if pos >= 0:
                         inner[-1] = {**last, "text": last["text"][:pos], "end": last["start"] + pos}
                 subtree, _ = self.parse(inner, quoted=True)
