@@ -7,6 +7,8 @@ import re
 import unicodedata
 from copy import deepcopy
 
+from .text_diff import validate_text_diff
+
 
 _DEADLINE = re.compile(r'trong thời hạn (?P<value>[1-9]\d*) ngày')
 
@@ -29,10 +31,28 @@ def detect_semantic_changes(item, text_diff, *, context_complete=False):
     if item['instruction'] not in refs:
         refs.append(deepcopy(item['instruction']))
     def quoted(text, document):
-        return text if text and any(e['document_id'] == document and text in e['quote'] for e in refs) else None
+        return text if text and document and any(
+            e['document_id'] == document and e['source_refs']
+            and all(r.strip() for r in e['source_refs']) and text in e['quote']
+            for e in refs) else None
     old_quote = quoted(before, item['target_document'])
-    new_quote = quoted(after, 's') if item['after_basis'] == 'QUOTED' else None
-    reasons = [item['review_reason']] if item['needs_review'] else []
+    new_quote = quoted(after, item['instruction']['document_id']) if item['after_basis'] == 'QUOTED' else None
+    reasons = ([item['review_reason'] or 'Mục sửa đổi cần kiểm tra.']
+               if item['needs_review'] or item['review_reason'] else [])
+    if item['applicability'] != 'APPLIES' or not item['target_unit_ids']:
+        reasons.append('Chưa xác định chắc văn bản hoặc vị trí đích.')
+    if item['operation'] != 'AMEND':
+        reasons.append('Baseline chỉ hỗ trợ AMEND có nội dung trước/sau.')
+    for ref in item['context']['references']:
+        if ref['status'] != 'AVAILABLE' or not ref['evidence']:
+            reasons.append('Dẫn chiếu chưa đủ căn cứ: ' + ref['reference_id'])
+    for effect in item['effect_info']:
+        if effect['needs_review'] or effect['review_reason']:
+            reasons.append(effect['review_reason'] or 'Hiệu lực/chuyển tiếp cần kiểm tra.')
+    try:
+        validate_text_diff(item, text_diff)
+    except (ValueError, KeyError, TypeError):
+        reasons.append('Text Diff thiếu hoặc không khớp ID, nội dung và offset của mục sửa đổi.')
     if not context_complete:
         reasons.append('Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn.')
     if item['after_basis'] != 'QUOTED':

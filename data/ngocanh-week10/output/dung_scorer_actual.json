@@ -1,0 +1,13 @@
+[
+  [
+    {
+      "change_id": "s:amendment_1:change_1",
+      "category": null,
+      "significance": null,
+      "is_critical": null,
+      "reason": "Chưa chấm mức tác động khi ngữ nghĩa/ngữ cảnh chưa xác nhận.",
+      "needs_review": true,
+      "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+    }
+  ]
+]

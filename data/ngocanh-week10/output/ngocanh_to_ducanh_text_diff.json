@@ -1,0 +1,43 @@
+[
+  {
+    "amendment_id": "s:amendment_1",
+    "changes": [
+      {
+        "type": "REPLACE",
+        "old_text": "0",
+        "new_text": "1",
+        "old_start": 226,
+        "old_end": 227,
+        "new_start": 226,
+        "new_end": 227
+      },
+      {
+        "type": "DELETE",
+        "old_text": ") Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc",
+        "new_text": "",
+        "old_start": 235,
+        "old_end": 306,
+        "new_start": 235,
+        "new_end": 235
+      },
+      {
+        "type": "INSERT",
+        "old_text": "",
+        "new_text": "7%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 3",
+        "old_start": 372,
+        "old_end": 372,
+        "new_start": 301,
+        "new_end": 372
+      },
+      {
+        "type": "REPLACE",
+        "old_text": "2",
+        "new_text": "3",
+        "old_start": 406,
+        "old_end": 407,
+        "new_start": 406,
+        "new_end": 407
+      }
+    ]
+  }
+]

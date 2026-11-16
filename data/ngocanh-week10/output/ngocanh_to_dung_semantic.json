@@ -1,0 +1,50 @@
+[
+  {
+    "amendment_id": "s:amendment_1",
+    "changes": [
+      {
+        "change_id": "s:amendment_1:change_1",
+        "is_meaningful_change": null,
+        "diff_details": "Đã tính thay đổi chữ; chưa đủ căn cứ kết luận tác động ngữ nghĩa.",
+        "aspects": [],
+        "evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:12"
+            ],
+            "quote": "Khoản 5 Điều 16 được sửa đổi, bổ sung như sau:"
+          },
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:13",
+              "block:14",
+              "block:15",
+              "block:16",
+              "block:17"
+            ],
+            "quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 40%;\nb) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 37%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 34%;\nd) Từ ngày 01 tháng 10 năm 2023: 30%."
+          },
+          {
+            "document_id": "v1",
+            "source_refs": [
+              "block:326",
+              "block:327",
+              "block:328",
+              "block:329",
+              "block:330"
+            ],
+            "quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2020: 40%;\nb) Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 34%;\nd) Từ ngày 01 tháng 10 năm 2022: 30%."
+          }
+        ],
+        "old_quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2020: 40%;\nb) Từ ngày 01 tháng 10 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 37%;\nc) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 34%;\nd) Từ ngày 01 tháng 10 năm 2022: 30%.",
+        "new_quote": "5. Ngân hàng, chi nhánh ngân hàng nước ngoài phải tuân thủ tỷ lệ tối đa của nguồn vốn ngắn hạn được sử dụng để cho vay trung hạn và dài hạn theo lộ trình sau đây:\na) Từ ngày 01 tháng 01 năm 2020 đến hết ngày 30 tháng 9 năm 2021: 40%;\nb) Từ ngày 01 tháng 10 năm 2021 đến hết ngày 30 tháng 9 năm 2022: 37%;\nc) Từ ngày 01 tháng 10 năm 2022 đến hết ngày 30 tháng 9 năm 2023: 34%;\nd) Từ ngày 01 tháng 10 năm 2023: 30%.",
+        "needs_review": true,
+        "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+      }
+    ],
+    "needs_review": true,
+    "review_reason": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+  }
+]

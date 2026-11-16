@@ -8,3 +8,8 @@ runtime/lightrag/
 deploy/lightrag/.env.*
 !deploy/lightrag/.env.example
 backend/.env.lightrag
+
+# Local environments and extraction helper for the week-10 verification.
+.codex-tmp/ngocanh-py312/
+.codex-tmp/ngocanh-venv/
+.codex-tmp/read_inputs.py

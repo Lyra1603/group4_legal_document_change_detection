@@ -1,5 +1,7 @@
 # Bàn giao phần Ngọc Anh — từ tuần 6
 
+> Cập nhật 16/11/2026: nội dung dưới đây là bản lịch sử ngày 07/11. Hiện trạng tuần 10, phân công mới, kiểm thử và đầu ra thật nằm trong [báo cáo rà soát tuần 10](ngocanh-week10-work-report.md). Luồng dùng chung chạy các module `backend/app/change_analysis/`, không chạy trực tiếp bản riêng trong `src/`. Không dùng mô tả pipeline trống hoặc mức HIGH trong bản lịch sử này làm kết luận hiện tại.
+
 Ngày cập nhật: 07/11/2026. Phạm vi: PL-05/06 và phần kiểm thử/tài liệu liên quan.
 Đây là tiến độ thực hiện hiện tại, không xác nhận hoàn thành hồi tố các tuần.
 

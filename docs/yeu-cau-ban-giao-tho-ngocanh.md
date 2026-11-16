@@ -1,5 +1,7 @@
 # Yêu cầu bàn giao từ Thọ và đầu ra phân tích của Ngọc Anh
 
+> Cập nhật 16/11/2026: đây là tài liệu đề xuất ngày 07/11. Đã nhận bộ JSON thật trong `dau_ra.zip`, đối chiếu kho nguồn với DOCX case_02 và sinh đầu ra bằng module backend. Xem [báo cáo tuần 10](ngocanh-week10-work-report.md) để biết kết quả và các xác nhận còn chờ. Theo phân công tuần 10, Ngọc Anh làm chính Text Diff/Semantic; Dũng làm Scorer. Mức tác động chưa được duyệt giữ null theo LK-10.
+
 Ngày cập nhật: 07/11/2026.
 
 Tài liệu này thống nhất dữ liệu Thọ cần bàn giao để Ngọc Anh so sánh câu chữ, phân tích thay đổi ngữ nghĩa, phân loại và đánh giá mức độ quan trọng. Các yêu cầu bàn giao dưới đây là đề xuất để phối hợp; phạm vi tự động hóa hiện tại được ghi riêng để không nhầm yêu cầu với tính năng đã hoàn thành.
