@@ -1,5 +1,10 @@
 # Báo cáo công việc và bàn giao tuần 10 của Đoàn Ngọc Anh
 
+> Bổ sung 17/11/2026: xem [xử lý nhận xét](ngocanh-review-followup.md) và
+> [bằng chứng mới](../data/ngocanh-review/README.md) cho lần chạy chéo với
+> Parser/Adapter của Thọ và consumer query của Context. Dữ liệu/kết quả tuần 10
+> dưới đây được giữ nguyên để đối chiếu lịch sử.
+
 Ngày lập báo cáo: 16/11/2026. Thành viên: Đoàn Ngọc Anh, mã sinh viên 24021363. Phạm vi phụ trách chính: Text Diff và Semantic Diff theo phân công tuần 10.
 
 Phần Text Diff đã được kiểm chứng trên dữ liệu thật, trả đúng định danh và có thể dựng lại chính xác nội dung sau sửa đổi. Phần Semantic đã được bổ sung kiểm tra đầu vào, giữ nguồn và cảnh báo khi chưa đủ căn cứ. Với ca thật đang bàn giao, kết luận ngữ nghĩa và mức tác động vẫn chưa xác định do ngữ cảnh, hiệu lực chưa được xác nhận và phương pháp hiện tại còn giới hạn. Gói đầu vào, đầu ra và lệnh chạy lại đã có; xác nhận của người nhận còn chờ.

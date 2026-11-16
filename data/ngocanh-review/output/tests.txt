@@ -1,0 +1,12 @@
+test_actual_diff_reaches_http_query_contract_after_index_ready (test.handoff_suite.test_peer_handoffs.PeerHandoffTests.test_actual_diff_reaches_http_query_contract_after_index_ready) ... ok
+test_consumer_rejects_bad_id_offset_and_omitted_changes (test.handoff_suite.test_peer_handoffs.PeerHandoffTests.test_consumer_rejects_bad_id_offset_and_omitted_changes) ... ok
+test_fresh_parser_adapter_all_docx_cases (test.handoff_suite.test_peer_handoffs.PeerHandoffTests.test_fresh_parser_adapter_all_docx_cases) ... ok
+test_original_handoff_is_compared_without_rewriting_fixture (test.handoff_suite.test_peer_handoffs.PeerHandoffTests.test_original_handoff_is_compared_without_rewriting_fixture) ... ok
+test_peer_bridge_waits_for_index_and_diff_before_query (test.handoff_suite.test_peer_handoffs.PeerHandoffTests.test_peer_bridge_waits_for_index_and_diff_before_query) ... ok
+test_query_keeps_unicode_and_insert_delete_spans (test.handoff_suite.test_peer_handoffs.PeerHandoffTests.test_query_keeps_unicode_and_insert_delete_spans) ... ok
+test_real_semantic_to_scorer_uses_shared_contract (test.handoff_suite.test_peer_handoffs.PeerHandoffTests.test_real_semantic_to_scorer_uses_shared_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 2.187s
+
+OK

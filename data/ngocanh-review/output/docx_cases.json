@@ -1,0 +1,212 @@
+[
+  {
+    "case": "case_01",
+    "items": 2,
+    "diff_items": [
+      {
+        "amendment_id": "s:amendment_1",
+        "target_locator": "Điều 2 / khoản 1",
+        "changes": 11,
+        "query_contains_exact_diff": true
+      }
+    ],
+    "issues": [
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_1"
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_OTHER_DOCUMENT",
+        "message": "Số hiệu văn bản đích đã xác định khác V1 đã chọn.",
+        "amendment_id": "s:amendment_2"
+      }
+    ]
+  },
+  {
+    "case": "case_02",
+    "items": 1,
+    "diff_items": [
+      {
+        "amendment_id": "s:amendment_1",
+        "target_locator": "Điều 16 / khoản 5",
+        "changes": 4,
+        "query_contains_exact_diff": true
+      }
+    ],
+    "issues": [
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_1"
+      }
+    ]
+  },
+  {
+    "case": "case_03",
+    "items": 13,
+    "diff_items": [
+      {
+        "amendment_id": "s:amendment_1",
+        "target_locator": "Điều 4 / khoản 4",
+        "changes": 1,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_2",
+        "target_locator": "Điều 4 / khoản 5",
+        "changes": 1,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_3",
+        "target_locator": "Điều 4 / khoản 8",
+        "changes": 3,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_4",
+        "target_locator": "Điều 7",
+        "changes": 107,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_5",
+        "target_locator": "Điều 8",
+        "changes": 27,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_6",
+        "target_locator": "Điều 10 / khoản 2",
+        "changes": 7,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_7",
+        "target_locator": "Điều 10 / khoản 3 / điểm b",
+        "changes": 1,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_8",
+        "target_locator": "Điều 12",
+        "changes": 21,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_9",
+        "target_locator": "Điều 15",
+        "changes": 13,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_10",
+        "target_locator": "Điều 19 / khoản 1 / điểm a",
+        "changes": 2,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_11",
+        "target_locator": "Điều 19 / khoản 5",
+        "changes": 4,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_12",
+        "target_locator": "Điều 20 / khoản 2",
+        "changes": 1,
+        "query_contains_exact_diff": true
+      },
+      {
+        "amendment_id": "s:amendment_13",
+        "target_locator": "Điều 20 / khoản 3",
+        "changes": 2,
+        "query_contains_exact_diff": true
+      }
+    ],
+    "issues": [
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_1"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_2"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_3"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_4"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_5"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_6"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_7"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_8"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_9"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_10"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_11"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_12"
+      },
+      {
+        "stage": "linker",
+        "code": "CONTEXT_NOT_CONFIRMED",
+        "message": "Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.",
+        "amendment_id": "s:amendment_13"
+      }
+    ]
+  }
+]

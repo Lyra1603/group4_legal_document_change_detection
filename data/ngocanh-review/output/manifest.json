@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-11-16T17:19:26.109143+00:00",
+  "python": "3.12.14",
+  "ngocanh_commit": "462d70ed34f3e6f6098f1c3de456dbf8511e5894",
+  "comparison_main_commit": "e0e27e55bd72a75bbd1f19d64b927202e39eb669",
+  "peer_sources": {
+    "Tho": "ffd2f86aa135a8c6f717782baa65350010c48f9b",
+    "Context": "159e3552ce7a3ceb39dcea6ad3de767b83d359cd",
+    "blobs": [
+      {
+        "commit": "ffd2f86aa135a8c6f717782baa65350010c48f9b",
+        "path": "backend/app/document_processing/parser/legal_structure_parser.py",
+        "sha256": "13f44a968a6d9b1af46104d12940119288203efe1cc81e2a41c4168aa5e20f16"
+      },
+      {
+        "commit": "ffd2f86aa135a8c6f717782baa65350010c48f9b",
+        "path": "backend/app/document_processing/document_adapter.py",
+        "sha256": "021fac5f8935927f16dbf9e8baa5e00b7e1256544bba21656197d4119ee272b6"
+      },
+      {
+        "commit": "159e3552ce7a3ceb39dcea6ad3de767b83d359cd",
+        "path": "backend/app/context/context_builder.py",
+        "sha256": "570f8707dc241631a79bd979dd1c0389b477ab369ca2996cf0238041f7211ec3"
+      },
+      {
+        "commit": "159e3552ce7a3ceb39dcea6ad3de767b83d359cd",
+        "path": "backend/app/context/semantic_bridge.py",
+        "sha256": "14cf165aebbd9d31baf896db2428cc232ff307dc78cb3cd9f616382c73d16360"
+      }
+    ]
+  },
+  "local_code_sha256": {
+    "backend/app/change_analysis/text_diff.py": "d1c308c1adc484d138e774fe73bee87644a23091ddcbebce7ed65fa4b3afdc2f",
+    "backend/app/change_analysis/semantic_diff.py": "7fa7b39b9d9dca4a5e6557ce8d736ae62ac82b56d55a053c83b0105ce9e0afe9",
+    "backend/app/change_analysis/scorer.py": "05eda416d3759c569661adc04ba25e17512ec7ff418549d149edc7e435e020a6",
+    "backend/app/document_processing/amendment_linker.py": "18c6b3cedf4289675998de220ccac26ed07f2b605d80a5b81eb32ac1df717196",
+    "backend/app/schemas/contracts.py": "b9795feb3cb8b618f988fccc42c86a95c2eea3fd18c67704462f661cb41851d6",
+    "backend/app/schemas/report_validation.py": "afa2b9bebad5a41f24adc89084f4e6ca36165c762215d287b33c17fd0ca7bfdb",
+    "test/handoff_suite/peer_versions.py": "34a0364b074e1a9f3819b3f6dd6b52966459dec1e5feca85b0441eb985d80724",
+    "test/handoff_suite/test_peer_handoffs.py": "629df3af7447800d368ce4d9f1e145b1d9d7ebaf7651fe6be14beeed51f09fc5",
+    "test/handoff_suite/run_peer_handoffs.py": "b8aa8e83f1135a69bc7d113849ae04bc8063dc5be958c0243e216f2352da5489"
+  },
+  "input_sha256": {
+    "data/ngocanh-week10/input/ban_giao_ca_dung.json": "977bf32b357ae99eeba574f6a3c5a5867a4451a745bbbdab5ca90bf670445cdc",
+    "data/ngocanh-week10/input/ban_giao_kho_nguon.json": "bacebe0399e8d186831e6e5d4ff0c820ef462e655241ea56bdf1b14756ac847d",
+    "data/raw/case_01/34_2017_TT-BTC_v1.docx": "521d699a1fff1228c89ff32070c62751b6d1eece393c994a7601447cbbc909da",
+    "data/raw/case_01/33_2019_TT-BTC_amendment.docx": "44a5167bfe5ac8debef6fc79d542d9ed1708d374cc9217de344c116d6851b564",
+    "data/raw/case_02/22_2019_TT-NHNN_v1.docx": "fa8cda22bf5babe3681be68e342944c6a7406576a62777535bd822f84371b594",
+    "data/raw/case_02/08_2020_TT-NHNN.docx": "0f9a379a16e409430cfb2a4b45d3984d8d045ecf9fc38242a60fe5b952606417",
+    "data/raw/case_03/67_2007_ND-CP_v1.docx": "9d60430c4e203cdf8bea4a4a6bf49fca27e10c3e505e32ac5600c1e137f7c059",
+    "data/raw/case_03/13_2010_ND-CP.docx": "b7f13a6f4f6dc1b0ba891b06e9564b86a9afa2ad36b8804b4a714cc0dd4ea32f"
+  },
+  "output_sha256": {
+    "fresh_case_02.json": "ab4ef701dbb98cf9b13bc731e7f84ac0f435a398ab948aaa417d1c9de88ea07f",
+    "docx_cases.json": "e0b1218a610a446346a242cb9096b965f2af166c2036598210fadd4768cacc59",
+    "tests.txt": "23f338c2d1261776918b5945c167da304f8affd6427f4e22dce288ba239c6b79"
+  },
+  "tests": {
+    "run": 7,
+    "failures": 0,
+    "errors": 0
+  },
+  "mode": "LOCAL_CROSS_BRANCH_WITH_HTTP_CONTRACT_DOUBLE_NO_REAL_LIGHTRAG",
+  "confirmations": {
+    "Tho": "PEER_CODE_RERUN_LOCALLY_HUMAN_REVIEW_PENDING",
+    "Duc_Anh": "PEER_QUERY_CONSUMER_RERUN_LOCALLY_HUMAN_REVIEW_PENDING",
+    "Dung": "SHARED_SCORER_RERUN_LOCALLY_HUMAN_REVIEW_PENDING"
+  },
+  "limits": [
+    "No human reviewer confirmation inferred from local execution.",
+    "No complete legal context asserted for real cases; semantics remain null/review.",
+    "Synthetic Unicode/negative tests and HTTP contract double are not real legal cases.",
+    "Peer Git blobs are executed as selected; working tree runtime is not merged with PR #6/#7."
+  ]
+}

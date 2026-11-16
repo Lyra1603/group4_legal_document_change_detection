@@ -1,5 +1,11 @@
 # Đối chiếu nhiệm vụ tuần 10 và giải thích kết quả của Ngọc Anh
 
+> Bổ sung 17/11/2026: đã chạy lại Parser/Adapter mới của Thọ và consumer query
+> của Context, có 7 kiểm thử chéo đạt. Kết quả, SHA và giới hạn tại
+> [báo cáo xử lý nhận xét](ngocanh-review-followup.md). Các trạng thái “query chưa
+> dùng diff” bên dưới mô tả runtime nhánh cũ; consumer nhánh Context đã được
+> kiểm chứng riêng, chưa merge và chưa có xác nhận reviewer trực tiếp.
+
 Ngày đối chiếu: 16/11/2026. Thành viên: Đoàn Ngọc Anh. Căn cứ: bảng “Công việc của Ngọc Anh” được cung cấp, mã nguồn backend, đầu vào và kết quả trong `data/ngocanh-week10/`, cùng bộ kiểm thử riêng đã chạy đạt 12/12.
 
 Text Diff đã có kết quả thật, offset đúng và kiểm tra dựng lại nội dung sau. Semantic đã có đầu ra đúng hợp đồng và giữ trạng thái chưa xác định khi thiếu căn cứ. Chưa hoàn tất toàn bộ nhiệm vụ vì còn thiếu kiểm chứng Semantic trên Context thật đầy đủ, tích hợp diff vào query và xác nhận chạy lại của bên nhận.
