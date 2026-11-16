@@ -65,6 +65,14 @@ Tổng 115 ca: 111 đạt, 2 expected failures và 2 skipped; không gọi đó 
 
 Chưa kiểm chứng LightRAG/model thật, PDF xuyên luồng, đánh giá có gold hoặc benchmark chất lượng. Trình duyệt có bằng chứng lịch sử; đợt này không tự nhận đã thử lại tải xuống/di động. Deadline cooperative, khóa so sánh theo process: chạy một worker cho nền local; chưa xác nhận phục vụ nhiều người dùng.
 
+## Mốc cập nhật nền chung
+
+Khi chốt phiên, ghi SHA của nhánh chung, PR đã vào, ca thực sự đã chạy, kết quả và giới hạn. Kết quả kiểm chứng cũ gắn với mốc ghi ở phần trên.
+
+| SHA nền | PR | Phần đã cập nhật | Kiểm chứng tại mốc | Việc còn lại |
+| --- | --- | --- | --- | --- |
+| `eea523d` | [#5](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/5) | `case_04`–`case_08` và `data/manifest.csv` đã có trên `main`. Đây là cập nhật sau mốc lịch sử ở mục trên. | Đã đối chiếu dữ liệu trong cây Git. | Kiểm chứng PDF xuyên luồng khi đến phạm vi tích hợp PDF. |
+
 ## Điều kiện đưa vào main làm nền
 
 1. Commit/push tài liệu và fixture, mở PR để Dũng/owner review. Thay đổi local chưa tự đến máy các thành viên.

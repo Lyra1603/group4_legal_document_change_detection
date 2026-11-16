@@ -21,6 +21,10 @@ Mục tiêu là chạy được một lượt so sánh từ V1, S và tài liệ
 
 **Đầu ra khi kết thúc phiên:** Một ca chạy xuyên luồng có báo cáo qua validator và hiển thị được bằng chứng. Ghi rõ bước nào dùng đầu ra thật hoặc mô phỏng. Mỗi owner nộp kết quả chạy, lỗi có thể tái hiện và phần hợp đồng cần làm rõ. Đức Anh điều phối chốt nội dung phiên tiếp theo từ kết quả đó.
 
+### Việc chuyển sang phiên sau
+
+Khi chốt một phiên theo [Workflow §6](workflow.md#6-chốt-kết-quả-theo-phiên-code), Dũng và Đức Anh đưa các việc đã thống nhất vào phạm vi phiên tiếp theo. Mỗi việc ghi **đầu ra còn thiếu hoặc lỗi cần xử lý | owner | phụ thuộc hoặc điều kiện bắt đầu | điều kiện hoàn thành | link PR/issue**. Dùng PR hoặc issue gốc để theo dõi cách tái hiện và bản sửa.
+
 ## 2. Phiên 2 — Tích hợp các đầu ra thật
 
 Phạm vi dự kiến được xác nhận sau phiên 1.
