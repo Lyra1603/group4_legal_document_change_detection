@@ -237,4 +237,6 @@ Phân biệt ba trạng thái: đủ đặc tả, đã hiện thực và đã t�
 | Hợp đồng dữ liệu và báo cáo | Đã chốt dùng schema Đức Anh | LK-08 đến LK-11 đã ghi nhận; adapter/wiring, thuật toán, rubric và API chi tiết còn chờ |
 | Phương pháp nội bộ từng owner | Chờ owner điền lựa chọn | Các quyết định CN liên quan |
 
+Khi chốt phiên, Dũng và Đức Anh có thể ghi thêm trạng thái của đầu ra hoặc điểm nối có thay đổi. Dùng các mốc xác nhận trong [Workflow §5](workflow.md#5-checklist-xác-nhận-hoàn-thành) và ghi theo mẫu: **đầu ra hoặc điểm nối | trạng thái | PR/SHA | ca và kết quả kiểm tra | việc còn lại và owner**. Với kiểm thử mô phỏng, ghi rõ phần còn cần chạy với đầu ra thật. Dẫn về PR hoặc issue để tra chi tiết.
+
 Khi thêm/xóa một quyết định, rà lại các mã phụ thuộc tại đây. Nếu quyết định đã chốt bị thay thế, không tiếp tục dùng đặc tả cũ cho các module nhận dữ liệu.
