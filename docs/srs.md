@@ -5,21 +5,22 @@
 | **Clause** | Một Điều trong một tài liệu, gồm định danh, nhãn Điều, tiêu đề, nội dung và vị trí nguồn |
 | **AmendmentItem** | Một yêu cầu sửa đổi, bổ sung hoặc bãi bỏ trong S, kèm vị trí nguồn và vị trí đích trong V1. |
 | **V1 / S / V2** | Văn bản ban đầu / văn bản sửa đổi / bản đầy đủ sau sửa đổi. V2 không phải đầu vào hoặc đầu ra bắt buộc. |
-| **Reference document** | Tài liệu do người dùng bổ sung để cung cấp nội dung được dẫn chiếu cần cho phân tích. |
+| **Reference document** | Nguồn ngữ cảnh truy xuất từ kho dân sự hoặc do người dùng bổ sung khi cần. |
 | **Meaningful change** | Thay đổi làm đổi nội dung quy định; sửa diễn đạt chỉ được coi là không đổi nghĩa khi giữ nguyên nội dung. |
 | **Critical change** | Thay đổi nghĩa đáp ứng tiêu chí CRITICAL trong bộ tiêu chí nhóm thống nhất; thêm/xóa Điều không tự động là critical |
 
 # SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
 
-**Phiên bản tài liệu:** 1.3.0
+**Phiên bản tài liệu:** 1.4.0
+**Căn cứ nghiệp vụ:** BRD 1.2.0
 **Related Document:** [Business Requirements Document (BRD)](brd.md)
 
-Hệ thống phân tích văn bản ban đầu (V1) và văn bản sửa đổi (S) của VBQPPL Việt Nam. DOCX là định dạng chính; hỗ trợ PDF có lớp chữ, không hỗ trợ PDF scan. Người dùng cung cấp tài liệu tham chiếu khi cần. Không bắt buộc tạo bản đầy đủ sau sửa đổi (V2).
+Người dùng nộp một văn bản sửa đổi S, có thể kèm bối cảnh. Hệ thống tìm các văn bản bị sửa và phiên bản trước sửa đổi V1 trong kho VBQPPL dân sự tiếng Việt do nhóm chuẩn bị. DOCX và PDF có lớp chữ là định dạng hỗ trợ. Hệ thống dựng nội dung sau sửa đổi ở cấp quy định, phân tích thay đổi trực tiếp và tìm tác động có thể có lên quy định trong các văn bản khác.
 
 Luồng xử lý:
-V1 + S + tài liệu tham chiếu nếu có → Reader → Parser → Trích yêu cầu sửa đổi và liên kết với V1 → Chuẩn bị ngữ cảnh, kiểm tra dẫn chiếu → Text Diff tại phần thay đổi → Semantic Diff → Classifier & Scorer → Báo cáo.
+S + bối cảnh tùy chọn → Reader/Parser → Trích yêu cầu từ S → Agent truy xuất văn bản, phiên bản và quy định đích trong kho dân sự → Dựng nội dung trước/sau và chuẩn bị ngữ cảnh → Text Diff → Semantic Diff → Classifier & Scorer → Tìm và kiểm chứng tác động gián tiếp → Báo cáo cấp S. LightRAG hỗ trợ truy xuất. LLM và bộ quy tắc dân sự hỗ trợ diễn giải và chấm mức độ.
 
-Reader và Parser chạy riêng cho từng tài liệu. Phân tích tập trung vào từng yêu cầu trong S tác động đến V1, định vị đến Điều/Khoản/Điểm hoặc cụm từ được chỉ định. Không ghép toàn bộ V1 và S một–một; không coi phần V1 không được nhắc đến là bị xóa.
+Reader và Parser xử lý từng nguồn. Hệ thống tách các yêu cầu độc lập từ S, giữ vị trí chỉ dẫn và định vị từng đích đến Điều/Khoản/Điểm hoặc cụm từ. Mỗi đích đã xác định được đưa vào luồng đối chiếu theo phiên bản tương ứng.
 
 Ngữ cảnh gồm thông tin tổng quát của V1 về phạm vi, đối tượng và mục đích điều chỉnh, cùng định nghĩa, điều kiện, ngoại lệ và nội dung dẫn chiếu liên quan. Không bắt buộc phân tích mọi đoạn không thay đổi. Thiếu tài liệu phải chỉ rõ căn cứ cần bổ sung và giữ các kết quả đã xác định.
 
@@ -28,7 +29,7 @@ gọi Pipeline và trả báo cáo để giao diện hiển thị.
 
 Không triển khai Evaluator như một module/đầu việc độc lập. Kiểm thử chủ yếu do owner bên cung cấp và bên nhận tại từng điểm nối cùng thực hiện; Dũng điều phối tích hợp/Pipeline/API, Đức Anh điều phối kế hoạch đánh giá. Phép đo với đáp án chuẩn được thực hiện bằng kiểm thử/script trong `test/` khi cần, không mất trách nhiệm kiểm tra nghiệp vụ.
 
-Các kiểu dữ liệu mục 1.1–1.7 dùng hợp đồng chung trong backend/app/schemas/contracts.py, đã merge qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2) trên main (`a8a906a`), nhập nguyên bản từ commit b6a13f98b9a7357b9fbb0936aba6bda065d03fcb. Các trường và validator căn cứ đã được nhóm chọn, không yêu cầu adapter báo cáo sang cấu trúc khác. Mục 9 liệt kê nhận xét giai đoạn sau, chưa là hợp đồng backend. Thuật toán, rubric và hành vi chưa được validator kiểm tra phải được owner review riêng. Xem SRS mục 1.7 về cách gọi và giới hạn.
+Các kiểu dữ liệu mục 1.1–1.7 mô tả hợp đồng backend hiện có cho một đích. Mục 1.8 đặc tả hợp đồng cấp S cần triển khai. Các bộ kiểm tra của hợp đồng hiện có tiếp tục áp dụng ở cấp từng đích. Kiểm tra quan hệ giữa nhiều đích, văn bản và bằng chứng tác động thuộc hợp đồng cấp S.
 
 ## 1. Data Structures (Cấu trúc dữ liệu dùng chung)
 
@@ -103,7 +104,7 @@ Quy định:
 - Phiên 1 giữ toàn văn cùng một đơn vị đối chiếu ở cả hai trạng thái. Với sửa nội dung của Điểm, Khoản hoặc Điều hiện có, đơn vị đối chiếu là toàn văn đơn vị đó. Khi thêm hoặc bãi bỏ cả một đơn vị, dùng đơn vị chứa nhỏ nhất còn tồn tại ở hai phía, ví dụ toàn Điều khi thêm hoặc bãi bỏ một Khoản. Vị trí đích vẫn ghi chính xác Điểm, Khoản hoặc Điều mà S chỉ ra. Nếu chỉ dẫn có nhiều đích, giữ đủ đích và căn cứ cho từng đích. Nội dung dựng từ V1 và chỉ dẫn S dùng `DERIVED`. Chỉ dùng `QUOTED` khi toàn bộ đoạn sau là nguyên văn trong S.
 - Schema vẫn dùng giá trị `null` và `ABSENT` để biểu diễn phía đã xác định là không tồn tại. Với ca ADD/REPEAL có đơn vị chứa đối chiếu được, phiên 1 dùng hai bản toàn văn của đơn vị chứa. Khi chưa xác định được đơn vị đối chiếu, ghi giới hạn thay vì tạo chuỗi giả.
 - Không xác định được nội dung khác với không tồn tại nội dung. Trường hợp chưa rõ dùng `UNRESOLVED`, cảnh báo và không tạo kết luận thêm/bãi bỏ do thiếu đoạn nguồn.
-- Yêu cầu sửa văn bản khác dùng `OTHER_DOCUMENT`, được liệt kê là ngoài đối tượng V1 và không đưa vào phân tích thay đổi của V1. Không rõ đối tượng dùng `UNRESOLVED` và yêu cầu kiểm tra.
+- `OTHER_DOCUMENT` chỉ mô tả quan hệ với V1 của một báo cáo đối chiếu cục bộ. Pipeline cấp S phải định tuyến yêu cầu đến báo cáo của đích tương ứng hoặc giữ ở danh sách chưa xử lý cùng lý do. Không rõ đối tượng dùng trạng thái `UNRESOLVED` trong hợp đồng cục bộ.
 - `effect_info` giữ thông tin hiệu lực/chuyển tiếp liên quan trong S. Không tự áp ngày hiệu lực chung nếu có ngoại lệ hoặc chưa rõ phạm vi; chưa xác định phải có cảnh báo. Không thấy thông tin thì danh sách rỗng kèm lý do trong `review_reason`, `needs_review = True`. Việc thiếu thông tin này không tự làm mất kết quả xác định thay đổi nội dung đã có căn cứ.
 - `references` chỉ ra nội dung dẫn chiếu cần thiết. Đổi dẫn chiếu A → B cần căn cứ cả A và B để phân tích tác động trước–sau nếu chưa có trong đầu vào. File có mặt nhưng chưa tìm được đúng nội dung vẫn là `UNRESOLVED`.
 - Ngữ cảnh tổng quát không thay thế việc đọc đoạn gốc, định nghĩa, điều kiện và ngoại lệ liên quan. Kết luận dựa trên tài liệu tham chiếu phải có `EvidenceRef` tương ứng.
@@ -155,7 +156,7 @@ Quy định:
   True = đổi nghĩa; False = không đổi nghĩa;
   None = chưa đủ căn cứ kết luận.
 - Kết luận chưa xác định phải có needs_review = True.
-- Bằng chứng phải lấy từ V1, S hoặc tài liệu tham chiếu đã cung cấp; mỗi đoạn trích có EvidenceRef xác định tài liệu và vị trí.
+- Bằng chứng lấy từ phiên bản V1 đã chọn, S hoặc tài liệu tham chiếu truy xuất từ kho hay được bổ sung. Mỗi đoạn trích có EvidenceRef xác định tài liệu và vị trí.
 - Cảnh báo từ bước liên kết phải được giữ trong kết quả.
 - changes rỗng chỉ biểu thị không có nhận định ngữ nghĩa được tạo; yêu cầu sửa đổi vẫn phải hiển thị. Lỗi hoặc thiếu căn cứ phải ghi rõ, không suy ra không có thay đổi.
 
@@ -314,7 +315,9 @@ Quy định:
 - Chưa xác định được một phía: không chạy Text Diff, trả None ở báo cáo kèm cảnh báo. Không dùng chuỗi rỗng thay cho nội dung chưa biết.
 - Nội dung giống nhau có changes = []; chỉ dẫn sửa đổi và phân tích hiệu lực vẫn được giữ. Không diff toàn bộ V1 với S.
 
-### 1.7 ComparisonReport và AmendmentResult
+### 1.7 ComparisonReport và AmendmentResult cấp văn bản đích
+
+`ComparisonReport` là kết quả đối chiếu cục bộ cho một phiên bản V1. Các ID cục bộ `v1`, `s` và bộ kiểm tra hiện có áp dụng trong phạm vi báo cáo này. Báo cáo cấp S ánh xạ chúng về định danh phiên bản thực tế theo mục 1.8.
 
 ```python
 class AmendmentResult:
@@ -362,20 +365,41 @@ Cách cung cấp dữ liệu cho validator: documents là dict theo document_id,
 
 Thứ tự kiểm tra: validate_payload(ExtractedDocument, document) và validate_extracted_document(document) cho từng nguồn; validate_payload(Clause, clause) cho từng Clause; validate_amendment(result['amendment'], documents, clauses) cho từng result; validate_sources(report, documents); cuối cùng validate_report(report). Các hàm ở backend/app/schemas/validation.py và report_validation.py. validate_report không tự kiểm tra kho nguồn; các trường old_quote/new_quote thường cũng không tự được đối chiếu như EvidenceRef. Pipeline/runner phải được nối kiểm tra riêng, không suy đã có wiring chỉ vì có schema.
 
+### 1.8 Hợp đồng báo cáo cấp S
+
+Bảng mô tả dữ liệu tối thiểu cần triển khai. Tên trường dùng để đặc tả điểm nối. Hợp đồng API và validator thực thi cần được cập nhật tương ứng.
+
+| Trường | Nội dung tối thiểu |
+|---|---|
+| `analysis_id`, `amendment_document` | ID lượt xử lý, định danh S và nguồn đọc được. |
+| `corpus_snapshot_id`, `coverage` | Phiên bản kho dân sự dùng cho lượt chạy, phạm vi đã rà soát và phần còn thiếu. |
+| `targets` | Mỗi phần tử có ID đích, định danh văn bản, định danh phiên bản, nguồn và căn cứ chọn phiên bản. Kèm `ComparisonReport` cục bộ nếu đã phân tích, cùng ánh xạ ID nguồn cục bộ sang định danh cấp S. |
+| `unresolved_amendments` | ID yêu cầu, thao tác hoặc đích được nêu, đoạn nguồn trong S, lý do và các ứng viên khi có. Phân biệt thiếu văn bản, thiếu phiên bản, ngoài kho, mơ hồ và lỗi xử lý. |
+| `indirect_impacts` | Danh sách nhận định có hoặc còn thiếu căn cứ về quy định của B, có liên kết về thay đổi trực tiếp. |
+| `status`, `warnings`, `errors` | Trạng thái và vấn đề theo từng bước, đích hoặc tác động. Tách phần đã rà soát với phần chưa chạy hoặc bị giới hạn. |
+
+Mỗi nhận định gián tiếp có ID riêng, ID đích, `amendment_id` và `change_id` khi có thay đổi nghĩa tương ứng, định danh văn bản/phiên bản B, vị trí quy định B, giải thích quan hệ và tác động có thể xảy ra, trích dẫn về quy định V1 bị sửa và quy định B, cùng nguồn trung gian nếu dùng. Khi thiếu căn cứ, giữ dữ kiện đã kiểm tra, đánh dấu cần rà soát và chỉ rõ phần còn thiếu. Nhận định có đủ căn cứ vẫn được diễn đạt theo phạm vi tác động có thể xác định từ nguồn.
+
+Nếu một chỉ dẫn áp dụng cho nhiều đích, giữ một mã chỉ dẫn cấp S và liên kết đến từng kết quả cục bộ tương ứng. Dùng tổ hợp ID đích và ID cục bộ để định danh một kết quả đối chiếu. Mọi liên kết cấp S phải phân giải được theo ID đích và ID cục bộ. Kiểm tra trích dẫn với phiên bản nguồn tương ứng. Hệ thống giữ kết quả hữu ích khi một đích hoặc bước tác động gián tiếp chưa hoàn tất. Danh sách rỗng chỉ thể hiện kết quả sau khi bước liên quan đã chạy, với phạm vi rà soát được ghi rõ. `SUCCESS` áp dụng khi các bước bắt buộc hoàn thành trong phạm vi công bố, `PARTIAL` khi còn phần chưa xử lý nhưng có kết quả hữu ích, và `FAILED` khi không thể cung cấp kết quả hữu ích.
+
 ## 2. Functional Requirements
 
 | Mã | Chức năng | Đầu vào → đầu ra | Tiêu chí nghiệm thu tối thiểu |
 |---|---|---|---|
 | FR-01 | Reader | Một file → ExtractedDocument | Đọc DOCX/PDF text, giữ thứ tự và vị trí nguồn; không đọc được phải báo lỗi |
 | FR-02 | Parser | Một ExtractedDocument → list[Clause] và blocks được giữ | Tách Điều, giữ Khoản/Điểm và nguồn; giữ bảng/ngữ cảnh ngoài Điều để truy xuất khi cần |
-| FR-03 | Trích yêu cầu và liên kết | V1, S đã phân tích cấu trúc → list[AmendmentItem] | Trích sửa/bổ sung/bãi bỏ; định vị văn bản và Điều/Khoản/Điểm; phân biệt yêu cầu sửa văn bản khác; cảnh báo đích chưa rõ |
+| FR-03 | Trích yêu cầu từ S | S đã phân tích cấu trúc → danh sách yêu cầu | Giữ ID, thao tác, chỉ dấu văn bản/Điều/Khoản/Điểm đích và vị trí nguồn trong S. Việc trích không đòi hỏi V1 đã có. |
 | FR-04 | Text Diff | AmendmentItem đủ nội dung cục bộ → TextDiffResult | Chỉ rõ thêm/xóa/thay thế; tọa độ khớp before_text/after_text; không diff toàn bộ V1 với S |
 | FR-05 | Semantic Diff — rule trước, model khi cần | AmendmentItem có context và TextDiffResult nếu có → SemanticDiffResult | Semantic Diff phân tích nghĩa/bằng chứng; bộ tổng hợp giữ SemanticDiffResult trong AmendmentResult, không ép nhãn khi chưa rõ |
-| FR-06 | Classifier & Scorer | AmendmentItem và SemanticDiffResult → list[ScoringResult] | Chọn nhãn và mức độ theo tiêu chí; is_critical nhất quán với significance; có lý do |
+| FR-06 | Classifier & Scorer | AmendmentItem và SemanticDiffResult → list[ScoringResult] | Áp dụng rubric dân sự, giữ căn cứ và lý do. is_critical nhất quán với significance. |
 | FR-07 | Kiểm thử chéo và đầu-cuối | Fixture/đáp án chuẩn, đầu ra thật và kết quả tích hợp | Hai owner kiểm tra hợp đồng và cách dùng; tính sai/bỏ sót khi đo, không triển khai Evaluator riêng |
-| FR-08 | Upload và xem kết quả | V1, S và tài liệu tham chiếu nếu có → báo cáo | Chọn đúng vai trò, hiển thị thay đổi, nguồn, hiệu lực, mức độ, tài liệu thiếu; cho phép bổ sung và phân tích lại |
-| FR-09 | Ngữ cảnh và dẫn chiếu | V1, yêu cầu sửa đổi, các tài liệu đã cung cấp → AnalysisContext | Giữ thông tin tổng quát và ngữ cảnh liên quan; tìm đúng nội dung dẫn chiếu, báo thiếu cụ thể; không tự thu thập tài liệu |
+| FR-08 | Upload và xem kết quả | S, bối cảnh và tài liệu bổ sung nếu có → báo cáo cấp S | Hiển thị đích, phiên bản, thay đổi, tác động, nguồn, hiệu lực, mức độ và phần chưa xử lý. |
+| FR-09 | Ngữ cảnh và dẫn chiếu | V1, yêu cầu sửa đổi và nguồn truy xuất/bổ sung → AnalysisContext | Tìm đúng nội dung dẫn chiếu trong kho dân sự, giữ nguồn và báo cụ thể phần còn thiếu. |
 | FR-10 | Hiệu lực và chuyển tiếp | S và yêu cầu sửa đổi → list[EffectInfo] | Giữ nội dung, phạm vi áp dụng và bằng chứng; ngoại lệ/chưa rõ phải cảnh báo; không tự xác minh hiệu lực thực tế |
+| FR-11 | Truy xuất và giải quyết đích | Yêu cầu từ S và kho dân sự → đích và phiên bản trước sửa đổi | Tìm mọi đích đã nhận diện trong S. Dùng định danh, nguồn, vị trí điều khoản và căn cứ thời điểm/phạm vi áp dụng để kiểm tra lựa chọn. Giữ yêu cầu và lý do nếu chưa xác định được. |
+| FR-12 | Dựng trạng thái sau sửa đổi | Yêu cầu đã liên kết và nguồn → AmendmentItem | Dựng nội dung cục bộ theo chỉ dẫn S, giữ vị trí đích, nguồn và xuất xứ QUOTED/DERIVED/ABSENT. Cảnh báo thao tác chưa thực hiện được. |
+| FR-13 | Tìm và kiểm chứng tác động gián tiếp | Thay đổi trực tiếp và kho dân sự → các nhận định về B | Tìm ứng viên dù S và V1 không nêu B. Kiểm tra quy định B sử dụng phần nào của quy định V1 và giải thích tác động dựa trên nguồn kiểm chứng được. |
+| FR-14 | Tổng hợp báo cáo cấp S | Kết quả từng đích, yêu cầu chưa giải quyết và tác động → báo cáo mục 1.8 | Giữ truy vết nguồn và liên kết kết quả giữa các bước. Hiển thị phạm vi kho, trạng thái và căn cứ còn thiếu. |
 
 Các ngưỡng Change F1 ≥ 90% và Critical Change Recall ≥ 95% là dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md; chưa phải ngưỡng nghiệm thu chính thức. Đo trên bộ kiểm thử độc lập; đây chưa phải chất lượng đã được chứng minh của mã nguồn hiện tại.
 
@@ -394,11 +418,11 @@ Kiểm thử và phép đo ngoài luồng người dùng:
 - Kết quả cần kiểm tra chưa được giải quyết không tính là tìm đúng.
 - Mẫu số bằng 0 trả null kèm lý do; không báo đạt mục tiêu.
 - Báo số mẫu kiểm thử và số kết quả cần kiểm tra cùng các chỉ số.
-- Kiểm tra riêng độ đúng của liên kết đích, trích hiệu lực và yêu cầu bổ sung tài liệu. Mẫu thiếu căn cứ được đánh giá theo khả năng nhận diện giới hạn; không ép gán tác động chưa có bằng chứng. Nhãn chuẩn phải phản ánh đúng bộ tài liệu cung cấp cho mẫu, không dùng tài liệu ẩn để yêu cầu hệ thống kết luận.
+- Kiểm tra riêng độ đúng của liên kết đích, trích hiệu lực và yêu cầu bổ sung tài liệu. Mẫu thiếu căn cứ được đánh giá theo khả năng nhận diện giới hạn; không ép gán tác động chưa có bằng chứng. Nhãn chuẩn phải phản ánh nguồn có trong phiên bản kho dùng cho ca kiểm thử và nguồn bổ sung nếu có.
 
 ## 3. Yêu cầu theo module
 
-Xem [luồng kiến trúc](architecture.md#41-một-lượt-phân-tích) và [các điểm nối](module.md#4-đầu-vàođầu-ra-và-các-điểm-nối) để xác định thứ tự xử lý.
+Các tài liệu Architecture, Module và kế hoạch kiểm thử cần đồng bộ với hợp đồng cấp S khi triển khai.
 
 ### 3.1 Xử lý đầu vào và adapter
 
@@ -416,13 +440,13 @@ Thọ và bên nhận chốt cấu trúc JSON fixture, định danh, đơn vị 
 
 | Nội dung | Quy định |
 |---|---|
-| Đầu vào | V1 và S sau Reader/Parser |
-| Xử lý | Trích từng yêu cầu sửa/bổ sung/bãi bỏ; nhận diện văn bản đích, Điều/Khoản/Điểm/cụm từ và liên kết với V1 |
-| Đầu ra | list[AmendmentItem] theo mục 1.2 |
+| Đầu vào | S sau Reader/Parser và các phiên bản V1 truy xuất từ kho theo yêu cầu |
+| Xử lý | Trích từng yêu cầu sửa/bổ sung/bãi bỏ trong S. Tìm đích, kiểm tra phiên bản và liên kết Điều/Khoản/Điểm trước khi dựng nội dung cục bộ. |
+| Đầu ra | AmendmentItem cho từng đích đã liên kết và yêu cầu chưa giải quyết ở báo cáo cấp S |
 | Yêu cầu | Một Điều có thể có nhiều yêu cầu; phân biệt số Điều trong S với vị trí đích; không coi nội dung không được nhắc đến là bãi bỏ |
 | Chưa rõ | Giữ chỉ dẫn nguồn, cảnh báo; không tự áp sửa đổi khi thiếu căn cứ |
 
-Bước chuẩn bị ngữ cảnh lấy thông tin tổng quát và nội dung liên quan từ V1, kiểm tra tài liệu dẫn chiếu người dùng cung cấp, tạo AnalysisContext. Nội dung hiệu lực/chuyển tiếp trong S được gắn qua EffectInfo; giữ ngoại lệ và phần chưa xác định. Đức Anh phụ trách context, giữ hợp đồng dữ liệu mục 1.2; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG. Phương án LightRAG Server qua HTTP đã chốt; chi tiết LK-13 chốt sau các quyết định khác. Client quản lý nhập, sẵn sàng, truy vấn và dọn dữ liệu từng comparison; source_registry ánh xạ về nguyên văn. Chưa chốt endpoint/payload/release thì phải kiểm chứng, không tự coi kết quả retrieval là bằng chứng đúng hoặc mức tác động.
+Bước chuẩn bị ngữ cảnh lấy định nghĩa, ngoại lệ và quy định dẫn chiếu từ phiên bản V1, kho dân sự hoặc nguồn bổ sung. Gắn hiệu lực/chuyển tiếp từ S qua EffectInfo. LightRAG hỗ trợ tìm ứng viên nguồn. Pipeline kiểm tra lại định danh, phiên bản, vị trí và nguyên văn trước khi dùng ứng viên làm căn cứ. Dữ liệu bổ sung theo lượt được quản lý riêng với kho dùng chung.
 
 ### 3.4 Module Text Diff — tìm những đoạn chữ thay đổi: Sau khi xác định nội dung trước/sau cục bộ, Text Diff chỉ ra chữ nào được thêm, xóa hoặc thay thế.
 
@@ -485,9 +509,9 @@ Không triển khai Evaluator độc lập, không giao Tuấn Anh đầu việc
 
 | Nội dung | Quy định |
 |---|---|
-| Đầu vào | Kết quả pipeline và bộ đáp án chuẩn của cùng các cặp V1–S và bộ tài liệu tham chiếu tương ứng |
+| Đầu vào | Các ca chỉ nộp S, kho dân sự cố định và đáp án có đích/phiên bản, thay đổi trực tiếp và tác động gián tiếp đã rà soát |
 | Xử lý | Đối chiếu các thay đổi dự đoán với đáp án chuẩn |
-| Đầu ra | Precision, Recall, Change F1, Critical Change Recall |
+| Đầu ra | Độ đúng truy xuất văn bản/phiên bản, Precision, Recall, Change F1, Critical Change Recall cho thay đổi trực tiếp và phép đo riêng cho tác động gián tiếp |
 | Cách sử dụng | Chạy khi kiểm thử, đánh giá; không bắt buộc chạy mỗi lần người dùng so sánh |
 
 Ý nghĩa các chỉ số:
@@ -506,7 +530,21 @@ Yêu cầu nghiệm thu cần ghi:
 - Tập kiểm thử không được dùng để điều chỉnh thuật toán.
 - Chỉ số không tính được do mẫu số bằng 0 trả null kèm lý do; không báo đạt mục tiêu.
 
+Ca nghiệm thu tối thiểu:
+- Chỉ nộp S và kiểm tra đúng văn bản, phiên bản và Điều/Khoản/Điểm. Có ca S sửa nhiều văn bản, ca nhiều phiên bản khả dĩ và ca đích nằm ngoài kho.
+- S rút thời hạn tại V1 từ 30 ngày xuống 15 ngày. B sử dụng thời hạn đó dù S và V1 không nêu tên B. Kiểm tra đúng quy định B, mối liên hệ, tác động và trích dẫn.
+- B có quan hệ với V1 nhưng phần bị sửa không ảnh hưởng đến cách áp dụng của B. Có ca riêng thiếu căn cứ để kết luận, cần hiển thị trạng thái rà soát.
+- Tính lỗi truy xuất làm mất thay đổi trực tiếp vào phép đo đầu cuối. Đo riêng TP/FP/FN của tác động gián tiếp trên phạm vi đã gán nhãn và rà soát chất lượng giải thích, trích dẫn. Ngưỡng riêng cho truy xuất và tác động gián tiếp cần thống nhất trong kế hoạch đánh giá.
+
 Ví dụ: đáp án có 10 thay đổi trọng yếu, hệ thống tìm đúng 8 → Critical Change Recall = 80%.
+
+### 3.8 Kho dân sự và truy xuất
+
+Kho do nhóm chuẩn bị, có danh mục phiên bản có thể truy vết. Mỗi bản lưu định danh văn bản, định danh phiên bản, nguồn, thông tin hiệu lực khi có và chỉ mục Điều/Khoản/Điểm trỏ về đoạn gốc. Khi không đủ thông tin thời điểm hoặc có nhiều phiên bản khả dĩ, giữ ứng viên cùng lý do cần rà soát. Danh mục cụ thể và quy trình chuẩn bị dữ liệu thuộc kế hoạch dữ liệu.
+
+### 3.9 Phân tích tác động gián tiếp
+
+Agent truy xuất các quy định có khả năng phụ thuộc vào quy định V1 bị sửa. Với từng ứng viên B, lấy nguyên văn quy định liên quan và đối chiếu cách B sử dụng quy định V1 với nội dung trước/sau. Quan hệ dẫn chiếu hoặc độ tương đồng dùng để tìm ứng viên. Căn cứ báo tác động phải giải thích phần thay đổi liên quan đến điều kiện, nghĩa vụ, thời hạn hoặc nội dung áp dụng trong B. Nếu quan hệ có thật nhưng phần thay đổi không ảnh hưởng đến B, loại ứng viên khỏi danh sách tác động. Nếu chưa đủ căn cứ để phân định, ghi nhận nội dung cần rà soát. Phương pháp tìm quan hệ không có dẫn chiếu trực tiếp và ngưỡng đánh giá cần được xác nhận qua thử nghiệm.
 
 ## 4. Yêu cầu tải tài liệu và xem kết quả
 
@@ -516,16 +554,16 @@ Hiển thị bằng chứng là chức năng chính: xem quote, tài liệu/vị
 
 | Chức năng | Yêu cầu |
 |---|---|
-| Chọn đầu vào | Người dùng chọn hai file `.docx` hoặc PDF có lớp chữ, xác định rõ **văn bản gốc V1 / văn bản sửa đổi S**, có thể thêm tài liệu tham chiếu |
+| Chọn đầu vào | Một S dạng DOCX/PDF có lớp chữ là tệp bắt buộc. Bối cảnh và tài liệu bổ sung là tùy chọn. |
 | Bắt đầu so sánh | Người dùng nhấn “So sánh”; hệ thống kiểm tra file rồi chạy pipeline |
 | Trạng thái xử lý | Hiển thị đang xử lý, hoàn thành, hoàn thành một phần hoặc thất bại; phân biệt hoàn thành với kết quả còn cần kiểm tra |
-| Xem kết quả | Hiển thị từng yêu cầu sửa đổi, vị trí đích và nội dung trước/sau cục bộ; đánh dấu nội dung sau được suy ra |
-| Nhận diện tài liệu | Hiển thị tên file và vai trò từ base_document, amendment_document, reference_documents, kể cả khi tên file giống nhau hoặc báo cáo chỉ hoàn tất một phần |
+| Xem kết quả | Hiển thị thay đổi trước/sau theo từng đích và đánh dấu phần được dựng. Hiển thị tác động lên B với quy định liên quan, trích dẫn và liên kết về thay đổi trực tiếp. |
+| Nhận diện tài liệu | Hiển thị S, từng đích và phiên bản được dùng, căn cứ lựa chọn, nguồn tham chiếu và phần chưa xác định. |
 | Xem phân tích | Duyệt results, hiển thị amendment, text_diff, semantic_diff.changes và scoring theo change_id; lọc theo tám field_group/category, giữ nguồn và cảnh báo |
 | Nhận xét dự kiến | Hai loại theo mục 9; phát triển sau chức năng cốt lõi, không bắt buộc bản đầu |
 | Vị trí nguồn | Hiển thị EvidenceRef trong đúng V1, S hoặc tài liệu tham chiếu: trang PDF hoặc đoạn/bảng DOCX; luôn giữ nguồn chỉ dẫn trong S kể cả bãi bỏ |
 | Cần kiểm tra | Hiển thị rõ các kết quả `needs_review = true`; mức độ chưa xác định ghi “Chưa xác định” |
-| Không có thay đổi | Chỉ thông báo không tìm thấy yêu cầu sửa đổi đối với V1 theo mục 1.7; nếu chỉ sửa văn phong thì vẫn hiển thị phần sửa |
+| Không có thay đổi | Chỉ hiển thị kết luận trong phạm vi đã xử lý đầy đủ. Yêu cầu chưa định vị hoặc chưa phân tích phải hiển thị kèm lý do. |
 | Tài liệu bổ sung | Hiển thị văn bản và vị trí còn thiếu theo ReferenceRequirement; cho phép tải bổ sung và gửi lại để phân tích; không bổ sung thì giữ báo cáo cùng giới hạn |
 | Hiệu lực/chuyển tiếp | Hiển thị nội dung, phạm vi áp dụng và bằng chứng trong EffectInfo; phần chưa xác định phải có cảnh báo |
 
@@ -572,14 +610,15 @@ Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển 
 
 | Tình huống | Hành vi yêu cầu |
 |---|---|
-| Thiếu một trong hai file hoặc sai định dạng | Không chạy; yêu cầu chọn đủ hai file `.docx` hoặc PDF có lớp chữ |
+| Thiếu S hoặc S sai định dạng | Dừng và hướng dẫn nộp S dạng DOCX hoặc PDF có lớp chữ |
 | File hỏng, có mật khẩu hoặc không đọc được chữ | Dừng xử lý; báo rõ file nào gặp lỗi |
 | Parser không tìm được Điều trong V1 hoặc S | Báo lỗi cấu trúc; không trả kết quả “không có thay đổi” |
 | Đích sửa đổi mơ hồ hoặc chỉ dẫn tách/gộp chưa xác định đủ | Cảnh báo cần kiểm tra; không coi phần chưa liên kết chắc chắn là bổ sung/bãi bỏ đã xác nhận |
 | Phân tích nghĩa hoặc chấm mức độ chưa đủ căn cứ | Đánh dấu `needs_review = true`; kết luận chưa xác định để `null` |
 | Một bước xử lý thất bại | Báo bước gặp lỗi; nếu hiển thị kết quả một phần, phải ghi rõ báo cáo chưa hoàn tất |
 | Thiếu hoặc sai nội dung tham chiếu | Giữ kết quả đã xác định; báo PARTIAL và chỉ rõ tài liệu/nội dung cần bổ sung; không tự suy luận tác động |
-| S chứa yêu cầu sửa văn bản khác | Ghi OTHER_DOCUMENT, không áp dụng vào V1 |
+| S sửa nhiều văn bản | Phân tích theo từng đích. Nếu đích ngoài kho, thiếu hoặc chưa xác định được phiên bản, giữ chỉ dẫn trong S, lý do và các ứng viên khi có |
+| Thiếu căn cứ về tác động lên B | Giữ thông tin đã kiểm tra và chỉ rõ căn cứ còn thiếu. Hiển thị phạm vi kho đã rà soát. |
 | Chưa rõ hiệu lực hoặc ngoại lệ chuyển tiếp | Giữ trích dẫn, cảnh báo phạm vi chưa xác định; không tự gán một ngày cho mọi thay đổi |
 Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý; không hiển thị lỗi kỹ thuật nội bộ cho người dùng.
 
@@ -589,15 +628,15 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 |---|---|
 | Cấu hình | Giới hạn dung lượng file và thời gian xử lý phải cấu hình được; giá trị cụ thể cần nhóm thống nhất trước nghiệm thu |
 | Tính toàn vẹn | Không âm thầm cắt bỏ nội dung; nếu không xử lý hết tài liệu phải thông báo rõ |
-| Truy vết | Mỗi lần so sánh có `comparison_id`; ghi lại bước xử lý và lỗi để phục vụ kiểm tra |
-| Quản lý file | File tải lên chỉ dùng để xử lý; không yêu cầu lưu lịch sử hoặc kho pháp luật dùng chung. File tạm được xóa sau mỗi request; giao diện giữ lựa chọn file để người dùng gửi lại kèm tài liệu bổ sung |
+| Truy vết | Dùng analysis_id cho lượt xử lý và comparison_id cho kết quả từng đích. Giữ phiên bản kho, các bước và lỗi. |
+| Quản lý file | Tách kho dân sự do nhóm chuẩn bị với tài liệu tạm theo lượt. Dữ liệu bổ sung theo lượt được dọn sau xử lý. |
 | Bảo mật | Không ghi toàn bộ nội dung tài liệu vào log. Nếu dùng API bên ngoài, phải thống nhất việc gửi dữ liệu và quản lý khóa API |
 | Đo hiệu năng | Ghi nhận thời gian xử lý và kích thước tài liệu; chỉ chốt mục tiêu tốc độ sau khi đo trên bộ tài liệu mẫu và môi trường xác định |
 
 - Reader phải trích xuất toàn bộ nội dung có thể đọc được, giữ bảng và vị trí nguồn. Tài liệu PDF được đọc trực tiếp hoặc chuyển đổi trong Reader phải giữ khả năng truy nguồn; lựa chọn công cụ không làm thay đổi hợp đồng đầu ra.
 - Không so sánh toàn diện phần mở đầu, chữ ký hoặc phụ lục; nội dung đọc được ở các phần này có thể dùng làm ngữ cảnh hoặc bằng chứng, bao gồm bảng được dẫn chiếu.
 - Không xử lý hết yêu cầu trong S hoặc phần nguồn cần thiết phải báo PARTIAL/FAILED, không báo hoàn tất toàn bộ.
-- Bản đầu sử dụng request đồng bộ: backend nhận V1, S và tài liệu tham chiếu nếu có, chạy Pipeline và trả báo cáo trong cùng request.
+- Request đồng bộ hiện tại nhận S bắt buộc, bối cảnh và tài liệu bổ sung tùy chọn. Đo thời gian truy xuất nhiều đích và tác động gián tiếp để xác nhận giới hạn vận hành trước nghiệm thu.
 - Khi bổ sung tài liệu, giao diện gửi lại các file đầu vào kèm tài liệu mới trong một request đồng bộ để phân tích lại; không yêu cầu lưu trạng thái xử lý trên server.
 - Không sử dụng job nền hoặc API polling trong bản đầu.
 - Giao diện hiển thị đang xử lý, ngăn gửi lặp và không tự gửi lại khi timeout.
@@ -610,11 +649,11 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 | Dữ liệu | Nội dung tối thiểu |
 |---|---|
 | Parser → Adapter | Cây articles/outside/source_blocks, nguồn, cảnh báo và summary; Parser tự đọc DOCX |
-| Adapter → Trích yêu cầu/liên kết | Điều có định danh, cấu trúc Khoản/Điểm được giữ, nguồn của V1 và S |
+| Adapter → Trích yêu cầu/liên kết | Cấu trúc, định danh và nguồn S để trích yêu cầu. Đích và phiên bản V1 thu được qua bước truy xuất. |
 | Trích yêu cầu/liên kết → Ngữ cảnh | AmendmentItem có chỉ dẫn, vị trí đích, nội dung cục bộ, bằng chứng và cảnh báo |
 | Linker → Text Diff; chuẩn bị Context song song | AmendmentItem có trước/sau đủ căn cứ cho Text Diff; index sẵn sàng và TextDiffResult được ghép để query/kiểm tra nguồn trước Semantic |
 | Semantic Diff → Scorer | change_id, kết luận đổi nghĩa, diff_details, aspects, evidence và cảnh báo theo mục 1.3 |
-| Pipeline → giao diện | ComparisonReport theo mục 1.7: định danh tài liệu, kết quả từng yêu cầu, hiệu lực, tài liệu thiếu, nguồn, trạng thái và lỗi |
+| Pipeline → giao diện | Báo cáo cấp S theo mục 1.8, chứa kết quả đối chiếu từng đích, tác động gián tiếp, nguồn, phạm vi và lỗi |
 
 ## 8. Các quyết định cần chú ý khi triển khai/nghiệm thu
 
@@ -622,9 +661,9 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 - Ví dụ ranh giới giữa 8 nhóm field_group, quy tắc chia/gộp thay đổi
   và chọn category tổng thể từ aspects; danh mục mã theo mục 1.3–1.4.
 - Quy tắc đối chiếu dự đoán với ground truth theo test_evaluation_plan.md: áp dụng matching 1–1 trước; trường hợp chia/gộp cần matching 1–n được bổ sung sau khi hoàn thành 1–1.
-- Bộ dữ liệu V1–S phát triển và kiểm thử độc lập, kèm nhãn vị trí đích, bằng chứng, hiệu lực và tình trạng đủ/thiếu tài liệu tham chiếu.
+- Danh mục và phiên bản kho dân sự, bộ ca chỉ nộp S có đáp án đích/phiên bản, vị trí, bằng chứng, hiệu lực và tác động gián tiếp.
 - Giới hạn dung lượng, thời gian xử lý và môi trường đo hiệu năng.
-- Thuật toán Semantic Diff; có sử dụng mô hình hoặc API ngoài không.
+- Cấu hình truy xuất LightRAG, bộ quy tắc và rubric dân sự, cách kiểm chứng ứng viên B và ngưỡng đánh giá riêng.
 - Công nghệ frontend.
 
 ### Quy tắc phát triển và kiểm tra hợp đồng
