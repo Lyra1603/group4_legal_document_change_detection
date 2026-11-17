@@ -1,21 +1,22 @@
-name: Branch checks
+name: Project checks
 
 on:
   push:
-    branches: [ducanh/context-integration]
+    branches: ["**"]
   pull_request:
-    branches: [ducanh/context-integration]
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: branch-checks-${{ github.event.pull_request.number || github.ref }}
+  group: project-checks-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   tests:
-    name: Branch Python tests
+    name: Python tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -39,6 +40,23 @@ jobs:
 
       - name: Check dependencies
         run: python -m pip check
+
+      # PR checkout includes main. Older feature branches can lack PR #6 tests;
+      # main and PRs targeting main must discover a non-empty suite.
+      - name: Check Parser and Adapter
+        if: ${{ github.event_name == 'pull_request' || github.ref_name == 'main' || hashFiles('test/unit/document_processing/test_*.py') != '' }}
+        run: |
+          python - <<'PY'
+          import unittest
+
+          suite = unittest.defaultTestLoader.discover(
+              'test/unit/document_processing', pattern='test_*.py'
+          )
+          if suite.countTestCases() == 0:
+              raise SystemExit('Parser/Adapter tests are required but none were found')
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          raise SystemExit(0 if result.wasSuccessful() else 1)
+          PY
 
       - name: Check schema
         run: python -m unittest discover -s test/schema_suite -v
