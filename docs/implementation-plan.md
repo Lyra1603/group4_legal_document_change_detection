@@ -8,6 +8,10 @@ Ba phiên phía dưới là kế hoạch lõi V1–S trước thay đổi nghi�
 
 Luồng mục tiêu và phụ thuộc mới ở Architecture/Module: chuẩn bị kho dân sự và mapping nguồn → trích yêu cầu từ S, xác định đích/phiên bản → tái sử dụng lõi từng đích → kiểm chứng tác động gián tiếp → báo cáo cấp S. Các bên có thể phát triển song song bằng fixture đã review, không bắt chờ toàn module. Phải chốt contract của các điểm nối mới trước khi triển khai phần phụ thuộc. Owner, phạm vi phiên và thời hạn mới cần nhóm xác nhận từ tiến độ thật.
 
+### Phạm vi bổ sung sau khi đối chiếu Use Case
+
+Các yêu cầu mục tiêu ở SRS UI-01–UI-10 được triển khai cùng các điểm nối cấp S: bổ sung/thay V1, phân tích từ S khi thiếu V1, kiểm tra phạm vi theo từng đích, coverage nhiều đích, chuỗi căn cứ, lượt bổ sung mới trong cùng UI, kết thúc phiên và thử lại E4. Nhóm cần hoàn thiện hợp đồng và fixture trước phần phụ thuộc, dùng các ca UC-M/UC-A/UC-E trong kế hoạch kiểm thử làm tiêu chí. E6 tiếp tục là đề xuất. Các dòng phân công và ba phiên lõi phía dưới được đọc theo mốc lịch sử.
+
 ## 1. Phiên 1 — Hoàn thiện luồng cơ sở V1–S
 
 **Điểm bắt đầu đã có:** [nền DOCX](common-baseline.md) chạy bằng `backend.demo:app`; không triển khai lại từ khung hoặc chờ AI để merge nền. Bảng dưới là đích hoàn thiện của phiên. Trước merge chỉ yêu cầu phạm vi DOCX hiện tại, lỗi chặn đã sửa và fixture/tài liệu thống nhất; ADD/REPEAL/nhiều đích, query từ Text Diff và dịch vụ thật tiếp tục sau merge. Nếu thử mock, giữ riêng trong test và ghi rõ, không đưa đáp án fixture vào demo thật.

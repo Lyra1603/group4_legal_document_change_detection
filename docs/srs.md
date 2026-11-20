@@ -13,8 +13,8 @@
 
 # SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
 
-**Phiên bản tài liệu:** 1.4.0
-**Căn cứ nghiệp vụ:** BRD 1.2.0
+**Phiên bản tài liệu:** 1.5.0
+**Căn cứ nghiệp vụ:** BRD 1.3.0
 **Related Document:** [Business Requirements Document (BRD)](brd.md)
 
 Người dùng nộp một văn bản sửa đổi S, có thể kèm bối cảnh. Hệ thống tìm các văn bản bị sửa và phiên bản trước sửa đổi V1 trong kho VBQPPL dân sự tiếng Việt do nhóm chuẩn bị. DOCX và PDF có lớp chữ là định dạng hỗ trợ. Hệ thống dựng nội dung sau sửa đổi ở cấp quy định, phân tích thay đổi trực tiếp và tìm tác động có thể có lên quy định trong các văn bản khác.
@@ -369,6 +369,8 @@ Cách cung cấp dữ liệu cho validator: documents là dict theo document_id,
 
 Thứ tự kiểm tra: validate_payload(ExtractedDocument, document) và validate_extracted_document(document) cho từng nguồn; validate_payload(Clause, clause) cho từng Clause; validate_amendment(result['amendment'], documents, clauses) cho từng result; validate_sources(report, documents); cuối cùng validate_report(report). Các hàm ở backend/app/schemas/validation.py và report_validation.py. validate_report không tự kiểm tra kho nguồn; các trường old_quote/new_quote thường cũng không tự được đối chiếu như EvidenceRef. Pipeline/runner phải được nối kiểm tra riêng, không suy đã có wiring chỉ vì có schema.
 
+Ở cấp S, thiếu V1 vẫn cho phép giữ kết quả phân tích từ chỉ dẫn S và nguồn hợp lệ còn lại. Các kết luận này giữ nguồn và giới hạn theo yêu cầu ở mục 4.1, gắn với yêu cầu chưa giải quyết khi chưa có binding đích. Kiểu dữ liệu chi tiết cho kết quả này cần được thiết kế cùng validator cấp S. Các trường cục bộ hiện có tiếp tục tuân thủ quy tắc nguồn/null của từng đích.
+
 ### 1.8 Hợp đồng báo cáo cấp S
 
 Bảng mô tả dữ liệu tối thiểu cần triển khai. Tên trường dùng để đặc tả điểm nối. Hợp đồng API và validator thực thi cần được cập nhật tương ứng.
@@ -378,7 +380,7 @@ Bảng mô tả dữ liệu tối thiểu cần triển khai. Tên trường dù
 | `analysis_id`, `amendment_document` | ID lượt xử lý, định danh S và nguồn đọc được. |
 | `corpus_snapshot_id`, `coverage` | Phiên bản kho dân sự dùng cho lượt chạy, phạm vi đã rà soát và phần còn thiếu. |
 | `targets` | Mỗi phần tử có ID đích, định danh văn bản, định danh phiên bản, nguồn và căn cứ chọn phiên bản. Kèm `ComparisonReport` cục bộ nếu đã phân tích, cùng ánh xạ ID nguồn cục bộ sang định danh cấp S. |
-| `unresolved_amendments` | ID yêu cầu, thao tác hoặc đích được nêu, đoạn nguồn trong S, lý do và các ứng viên khi có. Phân biệt thiếu văn bản, thiếu phiên bản, ngoài kho, mơ hồ và lỗi xử lý. |
+| `unresolved_amendments` | ID yêu cầu, thao tác hoặc đích được nêu, đoạn nguồn trong S, lý do và các ứng viên khi có. Phân biệt thiếu văn bản, thiếu phiên bản, ngoài kho, mơ hồ, ngoài phạm vi hỗ trợ và lỗi xử lý. Giữ liên kết đến kết luận có căn cứ từ S/nguồn sẵn có khi còn thiếu V1. |
 | `indirect_impacts` | Danh sách nhận định có hoặc còn thiếu căn cứ về quy định của B, có liên kết về thay đổi trực tiếp. |
 | `status`, `warnings`, `errors` | Trạng thái và vấn đề theo từng bước, đích hoặc tác động. Tách phần đã rà soát với phần chưa chạy hoặc bị giới hạn. |
 
@@ -568,7 +570,7 @@ Hiển thị bằng chứng là chức năng chính: xem quote, tài liệu/vị
 | Vị trí nguồn | Hiển thị EvidenceRef trong đúng V1, S hoặc tài liệu tham chiếu: trang PDF hoặc đoạn/bảng DOCX; luôn giữ nguồn chỉ dẫn trong S kể cả bãi bỏ |
 | Cần kiểm tra | Hiển thị rõ các kết quả `needs_review = true`; mức độ chưa xác định ghi “Chưa xác định” |
 | Không có thay đổi | Chỉ hiển thị kết luận trong phạm vi đã xử lý đầy đủ. Yêu cầu chưa định vị hoặc chưa phân tích phải hiển thị kèm lý do. |
-| Tài liệu bổ sung | Hiển thị văn bản và vị trí còn thiếu theo ReferenceRequirement; cho phép tải bổ sung và gửi lại để phân tích; không bổ sung thì giữ báo cáo cùng giới hạn |
+| Tài liệu bổ sung | Hiển thị văn bản, phiên bản và vị trí còn thiếu; cho bổ sung hoặc chọn “Hiện tại không có tài liệu”, tiếp tục theo UI-01–UI-02. |
 | Hiệu lực/chuyển tiếp | Hiển thị nội dung, phạm vi áp dụng và bằng chứng trong EffectInfo; phần chưa xác định phải có cảnh báo |
 
 Quy định hiển thị vị trí nguồn:
@@ -604,6 +606,27 @@ Kiểm tra chất lượng giải thích và khả năng hiểu báo cáo theo B
   vai luật sư/pháp chế hoặc sinh viên luật, phải ghi rõ giới hạn này.
   Đây là hoạt động đánh giá ngoài luồng so sánh. Nhận xét kiểm chứng trong phiên theo mục 9 là dữ liệu sản phẩm riêng; không tự chuyển thành dữ liệu nghiên cứu hoặc nhãn chuẩn.
 
+### 4.1. Tương tác thiếu nguồn, phiên và bằng chứng
+
+| Mã | Hành vi mục tiêu có thể kiểm thử |
+| --- | --- |
+| UI-01 | Khi chưa tìm được V1 hoặc điều khoản cần thiết, liệt kê phần thiếu và cho chọn “Bổ sung tài liệu” hoặc “Hiện tại không có tài liệu”. Khi chọn lựa chọn thứ hai, tiếp tục phân tích S và nguồn hợp lệ sẵn có, trình bày kết luận có căn cứ và chỉ rõ phần trước/sau hoặc tác động chưa xác định. Giữ kết quả của các đích khác. |
+| UI-02 | Kiểm tra V1 bổ sung về định dạng, phạm vi, định danh, phiên bản và quan hệ với S. Khi không khớp, nêu dấu hiệu và yêu cầu thay file. Người dùng có thể chọn chưa có tài liệu để xử lý theo UI-01. |
+| UI-03 | Kiểm tra phạm vi dân sự tại tiếp nhận S và nguồn bổ sung, ghi căn cứ. Khi chưa chắc chắn thì yêu cầu làm rõ. Văn bản dân sự chưa có trong kho được báo thiếu nguồn. Với S nhiều lĩnh vực, ghi nhận đích ngoài phạm vi và tiếp tục các đích dân sự đủ căn cứ. |
+| UI-04 | Đếm riêng văn bản đích, yêu cầu sửa đổi và điều khoản đủ/thiếu nguồn. Liệt kê từng phần cần bổ sung. Nhiều phiên bản ứng viên của cùng văn bản cần căn cứ lựa chọn trước khi đối chiếu. |
+| UI-05 | Phân biệt tài liệu ngữ cảnh giúp hiểu thay đổi trực tiếp với B là đối tượng rà soát tác động. Một nguồn có thể mang cả hai vai trò. Mỗi tác động lên B phải liên kết quy định B sử dụng phần nào của V1, thay đổi liên quan và bằng chứng. |
+| UI-06 | Người làm UI chọn cách tô nền, chữ đậm hoặc đánh dấu kèm nhãn, hỗ trợ nhận biết ngoài màu sắc. Hiển thị căn cứ chọn V1, trước/sau, nhận định thay đổi, căn cứ liên hệ B khi có, kết luận và giới hạn. Chỉ rõ mắt xích thiếu dữ liệu. |
+| UI-07 | Bổ sung tài liệu tạo lượt phân tích mới với S và nguồn cần thiết trong cùng trải nghiệm UI. Giữ báo cáo trước trong khi chờ và khi lượt mới thất bại; báo cáo mới được phân biệt theo lượt và nguồn đã dùng. |
+| UI-08 | Sau khi nhận báo cáo, người dùng mở bằng chứng nhiều lần dù tài nguyên xử lý tạm đã được dọn. “Kết thúc phiên” xóa báo cáo, trạng thái và lựa chọn đang giữ trên UI. |
+| UI-09 | Hoàn tất xử lý xét theo phạm vi kết quả, bằng chứng và giới hạn. Nhận xét là chức năng mở rộng. Đánh giá đúng/sai của kết luận được ghi nhận riêng trong nghiệm thu kể cả khi trạng thái là SUCCESS. |
+| UI-10 | Cho phép người dùng chủ động thử lại sau lỗi dịch vụ theo E4. Dùng lại dữ liệu đã kiểm tra còn hợp lệ nếu còn lưu; nếu dữ liệu cần thiết đã dọn hoặc thay đổi thì tạo lượt phân tích mới. Thông báo phần được chạy lại, tránh gửi lặp và giữ báo cáo có sẵn khi thử lại lỗi. |
+
+Nếu bằng chứng chưa truy cập được, thông báo phần gặp lỗi và cho mở lại. Khi chưa khôi phục được, ghi rõ chưa đáp ứng điều kiện xem bằng chứng của nhận định liên quan; giữ nội dung có nguồn đã trả và cho kết thúc phiên theo yêu cầu.
+
+### 4.2. Nhánh hủy đang đề xuất
+
+E6 tiếp tục ở mức đề xuất. Nếu đưa nút hủy trong lúc xử lý vào bản đầu, cần chốt cách ghi nhận hủy, dừng bước tiếp theo, theo dõi tác vụ backend còn chạy và cleanup. Chỉ đưa nhánh này thành điều kiện nghiệm thu khi nhóm xác nhận phạm vi và đầu ra kỳ vọng.
+
 ## 5. Xử lý lỗi và cảnh báo
 
 Khi chưa xác định được đích, giữ chỉ dẫn, thao tác đã nhận diện và bằng chứng. Dùng `applicability = UNRESOLVED`, `needs_review = true` và lý do. Giữ mục trong báo cáo và để các kết quả phân tích chưa chạy là `null`.
@@ -626,6 +649,10 @@ Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển 
 | Chưa rõ hiệu lực hoặc ngoại lệ chuyển tiếp | Giữ trích dẫn, cảnh báo phạm vi chưa xác định; không tự gán một ngày cho mọi thay đổi |
 Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý; không hiển thị lỗi kỹ thuật nội bộ cho người dùng.
 
+Thiếu V1 được xử lý theo UI-01. V1 bổ sung sai đích được xử lý theo UI-02. Thiếu nguồn của một đích chỉ giới hạn phần phụ thuộc vào nguồn đó. Kết quả dựa trên S phải giữ căn cứ nguyên văn và phần chưa thể đối chiếu; bộ kiểm tra cấp S cần kiểm chứng các quan hệ này.
+
+Tài liệu ngoài phạm vi và tài liệu dân sự thiếu trong kho được xử lý theo UI-03. Lỗi retrieval được ghi là lỗi truy xuất; việc xác định thiếu nguồn hoặc phạm vi cần kiểm tra căn cứ độc lập.
+
 ## 6. Yêu cầu vận hành
 
 | Nội dung | Yêu cầu |
@@ -641,7 +668,7 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 - Không so sánh toàn diện phần mở đầu, chữ ký hoặc phụ lục; nội dung đọc được ở các phần này có thể dùng làm ngữ cảnh hoặc bằng chứng, bao gồm bảng được dẫn chiếu.
 - Không xử lý hết yêu cầu trong S hoặc phần nguồn cần thiết phải báo PARTIAL/FAILED, không báo hoàn tất toàn bộ.
 - API mục tiêu dự kiến dùng request đồng bộ, nhận S bắt buộc, bối cảnh và tài liệu bổ sung tùy chọn. API đang chạy vẫn nhận V1 + S; chưa có endpoint chỉ S. Đo thời gian truy xuất nhiều đích và tác động gián tiếp để xác nhận giới hạn vận hành trước nghiệm thu.
-- Khi bổ sung tài liệu, giao diện gửi lại các file đầu vào kèm tài liệu mới trong một request đồng bộ để phân tích lại; không yêu cầu lưu trạng thái xử lý trên server.
+- Khi bổ sung tài liệu, giao diện gửi S và nguồn cần thiết trong lượt phân tích mới theo UI-07. Báo cáo và bằng chứng trả về có đủ dữ liệu để tiếp tục xem sau cleanup; UI-08 quy định thời điểm kết thúc phiên.
 - Không sử dụng job nền hoặc API polling trong bản đầu.
 - Giao diện hiển thị đang xử lý, ngăn gửi lặp và không tự gửi lại khi timeout.
 - Giới hạn số lượng/dung lượng file, thời gian xử lý và cách trả lỗi được quy định trong API contract và cấu hình triển khai.
