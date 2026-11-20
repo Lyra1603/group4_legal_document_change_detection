@@ -9,11 +9,25 @@
 
 Tài liệu quy định cách chuẩn bị và thực hiện kiểm thử module, kiểm tra điểm nối, kiểm tra toàn luồng và đánh giá chất lượng phương pháp. Viết khung từ sớm để yêu cầu kiểm chứng được xem xét khi owner đề xuất cách triển khai, không chờ toàn bộ module.md hoàn thành.
 
-Đầu vào nghiệp vụ là V1, văn bản sửa đổi S và tài liệu tham chiếu khi cần. S chứa chỉ dẫn sửa đổi, không mặc định là bản V2 đầy đủ. Kế hoạch bao gồm cả xử lý thành công, thiếu căn cứ, chưa xác định và thất bại.
+Đầu vào mục tiêu là S cùng kho dân sự cố định và nguồn bổ sung nếu có. V1 + S + tham chiếu vẫn là đầu vào của lõi/demo hiện có để kiểm thử hồi quy. S chứa chỉ dẫn sửa đổi, không mặc định là bản V2 đầy đủ. Kế hoạch bao gồm cả xử lý thành công, thiếu căn cứ, chưa xác định và thất bại.
 
 Đây là kế hoạch của POCS. Việc lấy ý kiến người dùng của HCI được quản lý theo dự án HCI; không mặc định biến thành yêu cầu đánh giá riêng của POCS.
 
 Không triển khai lại một module Evaluator độc lập. Có thể dùng test hoặc script để tính số đo; mỗi phép đo phải có dữ liệu, quy tắc và kết quả kiểm chứng được.
+
+### Cập nhật kiểm chứng cho nghiệp vụ chỉ S — 20/11/2026
+
+Giữ các ca V1–S phía dưới làm kiểm thử lõi/hồi quy. Nghiệm thu mới cần cố định snapshot kho dân sự, nguồn/phiên bản và gold được review độc lập; không nhập đáp án hoặc kết quả mong đợi vào index.
+
+| Lớp đánh giá | Ca cần có và bằng chứng |
+| --- | --- |
+| Truy xuất đích/phiên bản | Chỉ S, nhiều đích, đúng số hiệu nhưng sai phiên bản, nhiều ứng viên, thiếu bản/ngoài kho. Đối chiếu gold đích/phiên bản/điều khoản và lý do cần kiểm tra |
+| Thay đổi trực tiếp | Trước/sau cùng đơn vị, nghĩa/mức độ/nguồn; đo cả khi V1 do hệ thống tìm. Lỗi tìm sai V1 làm mất thay đổi phải tính vào lỗi đầu cuối |
+| Tác động gián tiếp | Có B chịu tác động dù S/V1 không nêu B; B liên quan nhưng không chịu tác động; quan hệ suy ra chưa đủ căn cứ. Review đúng điều khoản B, liên kết về thay đổi gốc, giải thích và trích dẫn |
+| Coverage và lỗi | Phân biệt đã rà soát không thấy với chưa chạy, retrieval rỗng/lỗi hoặc kho thiếu. Một đích lỗi vẫn giữ kết quả đích khác |
+| Nguồn và vòng đời | Hai lượt cùng dùng kho, nguồn tải lên không lẫn, cleanup chỉ dọn tạm và không xóa kho/index chung; quote về đúng phiên bản |
+
+Báo riêng chất lượng truy xuất, thay đổi trực tiếp, tác động gián tiếp và đầu cuối; TP/FP/FN và quy tắc matching gián tiếp cần chốt trên gold trước khi tính. Đo độ trễ, độ ổn định, chi phí và truy vết trên cùng dữ liệu khi bật/tắt retrieval. Không tự đặt ngưỡng nghiệm thu mới. Kiểm thử HTTP mô phỏng và dịch vụ thật phải ghi tách biệt. Bộ mẫu cụ thể, phương pháp gán nhãn tác động, giới hạn quan hệ và ngưỡng vẫn còn mở.
 
 ## 2. Quan hệ với các tài liệu khác
 
@@ -92,7 +106,7 @@ Mỗi module chọn các ca liên quan; không bắt buộc mọi test gọi mô
 
 ### Bộ ca bàn giao phiên 1
 
-**Nền merge và kế hoạch mở rộng:** bộ chung hiện có 9 file deadline_reduction, 2 ca chặn query và 6 ca lỗi (17 JSON ca), cùng provenance. Ca chung giữ mức độ null và PARTIAL; expected Semantic là giả định kỹ thuật, chưa là nhãn review hoặc output demo. Các ca bên dưới là kế hoạch sau merge, không đòi 45 JSON trước khi dùng nền DOCX. case_06/07/08 ở nhánh Dũng 6dbda8d, chưa nhập local đợt này; cần lấy nguồn và kiểm chứng PDF trước khi dùng. Test nguồn/contract, module thật và dịch vụ thật được báo riêng theo [nền chung](common-baseline.md).
+**Nền merge và kế hoạch mở rộng:** bộ chung hiện có 9 file deadline_reduction, 2 ca chặn query và 6 ca lỗi (17 JSON ca), cùng provenance. Ca chung giữ mức độ null và PARTIAL; expected Semantic là giả định kỹ thuật, chưa là nhãn review hoặc output demo. Các ca bên dưới là kế hoạch sau merge, không đòi 45 JSON trước khi dùng nền DOCX. Các case PDF đã vào main sau PR #5; chưa là kho dân sự đã duyệt hoặc bằng chứng PDF xuyên luồng. Test nguồn/contract, module thật và dịch vụ thật được báo riêng theo [nền chung](common-baseline.md).
 
 Một mã ca xuất hiện ở cả 9 thư mục trong [bộ fixture](../data/module_handoff_fixtures/README.md). Mỗi file ghi input và output mong đợi hoặc điều kiện bỏ qua kèm lý do. Danh sách tên ca phải trùng nhau giữa 9 thư mục. Khi đủ bộ dự kiến sẽ có 5 ca × 9 điểm nối = 45 JSON.
 

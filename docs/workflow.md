@@ -4,6 +4,10 @@
 **Phiên bản:** Bản đầu tiên
 **Trạng thái:** Bản dự thảo để nhóm đọc và thống nhất áp dụng
 
+## Cập nhật phạm vi ngày 20/11/2026
+
+Architecture/BRD/SRS mới định hướng chỉ S trong kho dân sự. Nền code sau PR #7 vẫn là demo V1–S; chín fixture lịch sử chỉ kiểm lõi từng đích. Các ví dụ V1–S và mốc nhánh tháng 11 bên dưới đọc theo phạm vi đó, không coi là đầy đủ điểm nối hệ thống mới. Giữ quy trình bán song song, review bên giao/nhận và main qua PR; thay đổi contract cấp S phải kèm schema/validator/fixture và kế hoạch chuyển tiếp trước khi tích hợp code. Không tự thay bảng phân công hoặc lịch sử báo cáo trong đợt tài liệu.
+
 ## 1. Mục đích và phạm vi
 
 Tài liệu quy định cách thành viên phối hợp từ lúc chốt lựa chọn đến khi code được kiểm tra và tích hợp. Quy trình chung: **chốt → code song song → tự kiểm tra → kiểm thử lẫn nhau → sửa lỗi → tích hợp**.

@@ -1,5 +1,20 @@
 # Nền DOCX chung — trạng thái và bàn giao
 
+## Hiện trạng ngày 20/11/2026 sau PR #7
+
+Mốc main: `95e1d79f42e682fba361ecf36fc45321f52a2d9d`. Phần căn cứ và kết quả 12/11 phía dưới là lịch sử, không dùng làm trạng thái mới nhất. BRD/SRS kế thừa từ PR #9 (`e745237`) và Architecture mới mô tả hệ thống mục tiêu chỉ S trong kho dân sự, chưa phải demo đã có.
+
+| Phần | Trạng thái ở mốc main này |
+| --- | --- |
+| Chạy demo | Giữ README: backend.demo:app, DOCX V1 + S + tham chiếu, route /api/compare; backend.main:app chưa gắn runner |
+| Parser/Adapter | PR #6 đã merge, có test/unit/document_processing; các bộ PDF case_04–08 và manifest đã ở main, chưa xác nhận PDF xuyên luồng |
+| Context bridge | PR #7 chuẩn bị index song song Text Diff, chờ cả hai rồi query có diff, kiểm tra ID/offset/nội dung và giữ lỗi/review |
+| Dịch vụ | Demo client=None; HTTP mô phỏng chưa chứng minh LightRAG/model thật. Client dành server/storage riêng một comparison, chưa là kho dân sự bền vững |
+| CI | Workflow Project checks có job Python tests, kiểm Parser/Adapter, schema, Context, demo và handoff; xem run gắn SHA, không suy cấu hình bảo vệ nhánh từ file workflow |
+| Chưa có | Kho dân sự đã duyệt/phiên bản, trích yêu cầu độc lập V1, xác định đích, tác động gián tiếp, báo cáo/API/schema/validator cấp S |
+
+Bằng chứng CI trước merge: [PR #7 run 43988347418](https://github.com/Lyra1603/group4_legal_document_change_detection/actions/runs/43988347418), commit `4178ec9`, các bước kiểm tra đều success. Đây là kiểm thử CI của lõi hiện có, không phải nghiệm thu nghiệp vụ chỉ S hoặc retrieval thật. Đợt đồng bộ này chỉ sửa tài liệu; kết quả kiểm tra mới được ghi trong PR, không ghi đè báo cáo lịch sử.
+
 ## Căn cứ
 
 Đồng bộ ngày 12/11/2026 trên `ducanh_bachdung/integrate_LightRAG`. Tài liệu lấy từ `bachdung/docs` tại **6dbda8da7a050e4d21f354c5e59765244e2f176a**; code đối chiếu tại **c192f43b785f9a38a64c8ca6e4166c0e40622528**, gồm sửa Linker `f0ed2d7`. Schema giữ nguyên so với main `f76610e`. Tài liệu này không xác nhận thay đổi đã commit/push hoặc merge.
@@ -79,4 +94,4 @@ Khi chốt phiên, ghi SHA của nhánh chung, PR đã vào, ca thực sự đã
 2. Giữ lệnh demo, input API và schema; kiểm thử hồi quy đạt. Người nhận chạy README trên máy mình trước khi báo bàn giao.
 3. Thông báo main là nền DOCX giới hạn. Thành viên cập nhật nhánh task từ main sau khi PR merge, bảo toàn code đang làm của họ; không reset nhánh cá nhân.
 
-Giữ kế hoạch 3 phiên của Dũng, nhận việc theo bảng trên. Không cần làm lại module đã có hoặc nhập nhánh cũ để thay implementation bằng khung.
+Kế hoạch ba phiên cũ còn dùng để tham khảo lõi V1–S; các điểm nối chỉ S và tác động gián tiếp cần kế hoạch bổ sung được nhóm xác nhận. Không cần làm lại module đã có hoặc nhập nhánh cũ để thay implementation bằng khung.

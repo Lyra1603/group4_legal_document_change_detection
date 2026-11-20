@@ -2,6 +2,12 @@
 
 Phạm vi nghiệp vụ lấy từ [BRD](brd.md), yêu cầu và dữ liệu từ [SRS](srs.md), cấu trúc và luồng chạy từ [Architecture](architecture.md). Xem [Decision](decision.md) để tra các quyết định đã chốt và [Workflow](workflow.md) để thực hiện quy trình làm việc.
 
+## Phạm vi kế hoạch sau cập nhật nghiệp vụ ngày 20/11/2026
+
+Ba phiên phía dưới là kế hoạch lõi V1–S trước thay đổi nghiệp vụ, không phải toàn bộ công việc để nghiệm thu hệ thống chỉ S. PR #7 đã hoàn thành điểm ghép query từ Text Diff ở bridge; các câu coi đó là việc tương lai đọc theo mốc lịch sử. Giữ kế hoạch và phân công này làm tham khảo, không tự gán thêm task/deadline bằng đợt cập nhật tài liệu.
+
+Luồng mục tiêu và phụ thuộc mới ở Architecture/Module: chuẩn bị kho dân sự và mapping nguồn → trích yêu cầu từ S, xác định đích/phiên bản → tái sử dụng lõi từng đích → kiểm chứng tác động gián tiếp → báo cáo cấp S. Các bên có thể phát triển song song bằng fixture đã review, không bắt chờ toàn module. Phải chốt contract của các điểm nối mới trước khi triển khai phần phụ thuộc. Owner, phạm vi phiên và thời hạn mới cần nhóm xác nhận từ tiến độ thật.
+
 ## 1. Phiên 1 — Hoàn thiện luồng cơ sở V1–S
 
 **Điểm bắt đầu đã có:** [nền DOCX](common-baseline.md) chạy bằng `backend.demo:app`; không triển khai lại từ khung hoặc chờ AI để merge nền. Bảng dưới là đích hoàn thiện của phiên. Trước merge chỉ yêu cầu phạm vi DOCX hiện tại, lỗi chặn đã sửa và fixture/tài liệu thống nhất; ADD/REPEAL/nhiều đích, query từ Text Diff và dịch vụ thật tiếp tục sau merge. Nếu thử mock, giữ riêng trong test và ghi rõ, không đưa đáp án fixture vào demo thật.
