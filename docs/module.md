@@ -232,6 +232,18 @@ Các fixture mô tả hợp đồng tại từng điểm nối. Trạng thái ch
 
 Binding code hiện tại: `adapt_documents(parsed) -> BoundaryData(documents, clauses, units)`; `link_amendments(boundary) -> (items, issues)`; `compute_text_diff(item)`; `detect_semantic_changes(item, text_diff)`; `score_changes(semantic)` (chưa nhận item riêng như wrapper fixture); runner `(parsed, comparison_id, deadline) -> AnalysisOutcome`. Fixture đóng gói input không quy định chữ ký hàm. Khi nối dùng adapter tại bên gọi, không sửa contract TypedDict hoặc buộc mọi module đổi hàm theo tên khóa JSON. PR #7 đã thực hiện điểm ghép query sau Text Diff và chuẩn bị index bằng kiểm thử HTTP mô phỏng; demo vẫn tắt retrieval. Đây là lõi từng đích, không phải query tìm V1 từ S hoặc tìm tác động lên B.
 
+### Bổ sung điểm nối từ quyết định Use Case ngày 20/11/2026
+
+| Điểm nối | Dữ liệu và hành vi cần bàn giao |
+| --- | --- |
+| Tiếp nhận/giải quyết đích → UI | Phạm vi có căn cứ, ứng viên phiên bản, dấu hiệu V1 không khớp và danh sách nguồn còn thiếu. UI cho thay file hoặc chọn “Hiện tại không có tài liệu”. |
+| Phân tích thiếu V1 → Tổng hợp cấp S | Chỉ dẫn S, nguồn hợp lệ đã dùng, nhận định có căn cứ, phần trước/sau hoặc tác động chưa xác định. Liên kết về yêu cầu chưa giải quyết; giữ kết quả đích khác. Kiểu dữ liệu và validator cấp S cần review. |
+| Tổng hợp → UI | Đếm riêng văn bản, yêu cầu và điều khoản đủ/thiếu nguồn; chuỗi căn cứ của từng nhận định và các vai trò ngữ cảnh/đối tượng tác động. Người làm UI chọn cách làm nổi bật có nhãn. |
+| Bổ sung/thử lại → Điều phối | Lượt bổ sung là lượt phân tích mới. E4 kiểm tra dữ liệu hợp lệ còn lưu trước khi tiếp tục, hoặc chạy mới nếu đã cleanup. Giữ báo cáo trước khi lượt mới lỗi và tránh gửi lặp. |
+| UI → Kết thúc phiên | Xóa báo cáo, trạng thái và lựa chọn giữ trên UI. Trước thao tác đó, vẫn xem bằng chứng đã trả dù backend dọn tài nguyên tạm. |
+
+Thành công chức năng không phụ thuộc vào nhận xét. Độ đúng của đầu ra vẫn phải kiểm tra trong nghiệm thu. E6 hủy khi đang xử lý tiếp tục là đề xuất theo SRS §4.2. Các yêu cầu này cần fixture mới và đầu ra thật để kiểm tra điểm nối.
+
 ## 5. Phối hợp triển khai bán song song
 
 Thực hiện quy trình chốt → code song song → kiểm thử chéo → tích hợp theo [workflow.md](workflow.md). Các cặp cụ thể theo LK-02 trong decision.md. File này xác định nhiệm vụ/đầu ra từng module, không định nghĩa một quy trình vận hành khác.

@@ -2,7 +2,7 @@
 
 **Dự án:** Legal Document Change Detection
 **Nhóm:** Group 4
-**Phiên bản tài liệu:** 1.2.0
+**Phiên bản tài liệu:** 1.3.0
 **Phạm vi phiên bản đầu:** Người dùng nộp một văn bản sửa đổi (S). Hệ thống truy xuất văn bản bị sửa và phân tích thay đổi trực tiếp, tác động gián tiếp trong kho văn bản quy phạm pháp luật tiếng Việt thuộc lĩnh vực dân sự.
 
 **Trạng thái ngày 20/11/2026:** phạm vi chỉ S/kho dân sự là mục tiêu phát triển. Demo trên main sau PR #7 vẫn nhận V1 + S, chưa có truy xuất đích hoặc tác động gián tiếp thật. Tài liệu không xác nhận các chức năng này đã hoàn thành.
@@ -35,6 +35,8 @@ Việc đọc và so sánh thủ công có thể gặp các khó khăn sau:
 Hệ thống được xây dựng để hỗ trợ tìm kiếm, đối chiếu và ưu tiên rà soát các thay đổi. Người dùng tiếp tục chịu trách nhiệm kiểm tra văn bản nguồn và đưa ra kết luận cho công việc của mình.
 
 ## 3. Người dùng và các bên liên quan
+
+Sinh viên luật và người nghiên cứu là nhóm ưu tiên; luật sư và người làm pháp chế, gồm pháp vụ doanh nghiệp, là nhóm bổ sung. Khi trực tiếp gửi S, bổ sung tài liệu và xem báo cáo, họ cùng đóng vai trò actor chính của Use Case. Mức ưu tiên nhóm người dùng được ghi theo mục tiêu sản phẩm.
 
 ### 3.1. Luật sư và người làm pháp chế — nhóm sử dụng bổ sung
 
@@ -97,7 +99,9 @@ Việc liệt kê vai trò không có nghĩa dự án đã tuyển được ngư
 - DOCX là định dạng chính. Hỗ trợ PDF có lớp văn bản đọc được.
 - Hệ thống tự tìm một hoặc nhiều văn bản bị sửa, phiên bản làm căn cứ trước sửa đổi (V1) cho từng thay đổi và tài liệu liên quan trong kho đã chuẩn bị. S cung cấp chỉ dẫn sửa đổi, còn V1 cung cấp nội dung trước sửa đổi.
 - Kho gồm văn bản quy phạm pháp luật tiếng Việt thuộc lĩnh vực dân sự do nhóm chuẩn bị. Danh mục văn bản, nguồn và các phiên bản được lập chỉ mục cần được chốt trong kế hoạch dữ liệu. Báo cáo nêu phần vượt phạm vi kho hoặc thiếu phiên bản; phiên bản đầu chưa tự tìm thêm trên Internet. Chọn V1 phải có căn cứ về phiên bản và thời điểm; khi mơ hồ giữ ứng viên, không tự chọn bản mới nhất.
-- Khi thiếu căn cứ sau khi truy xuất, hệ thống chỉ rõ tài liệu hoặc thông tin cần bổ sung. Người dùng có thể cung cấp thêm để rà soát lại.
+- Khi thiếu V1 hoặc phần nguồn cần thiết sau truy xuất, hệ thống chỉ rõ văn bản, phiên bản và điều khoản cần bổ sung, rồi cho người dùng chọn “Bổ sung tài liệu” hoặc “Hiện tại không có tài liệu”.
+- Nếu chưa thể bổ sung, hệ thống tiếp tục phân tích chỉ dẫn trong S và các nguồn hợp lệ sẵn có. Nhận định được gắn căn cứ và giới hạn tương ứng; nội dung trước sửa đổi chưa xác định được ghi rõ. Các đích khác vẫn giữ kết quả.
+- Tài liệu trong lĩnh vực dân sự nhưng chưa có trong kho được xử lý như thiếu nguồn. Kiểm tra phạm vi hỗ trợ có căn cứ riêng; khi chưa chắc chắn, hệ thống yêu cầu làm rõ. Với S nhiều lĩnh vực, hệ thống ghi lý do bỏ qua từng đích ngoài phạm vi và tiếp tục phần dân sự đủ căn cứ.
 
 ### 5.2. Đơn vị đối chiếu
 
@@ -120,7 +124,7 @@ Có quan hệ với V1 không đồng nghĩa B chịu tác động; nhận đị
 
 ### 5.4. Phạm vi bao phủ
 
-Hệ thống rà soát các văn bản S trực tiếp sửa và tìm tác động gián tiếp trong phạm vi kho dân sự. Với văn bản hoặc phiên bản đích ngoài kho, báo cáo nêu yêu cầu sửa đổi đã nhận diện và phần chưa phân tích được. Kết quả tác động gián tiếp phụ thuộc vào dữ liệu và căn cứ truy xuất được.
+Hệ thống rà soát các văn bản S trực tiếp sửa và tìm tác động gián tiếp trên kho dân sự cùng nguồn bổ sung được kiểm tra hợp lệ. Với văn bản hoặc phiên bản đích ngoài kho, báo cáo nêu yêu cầu sửa đổi đã nhận diện và phần chưa phân tích được. Kết quả tác động gián tiếp phụ thuộc vào dữ liệu và căn cứ truy xuất được.
 
 Phần mở đầu, chữ ký và phụ lục có thể cung cấp ngữ cảnh hoặc bằng chứng khi đọc được. Báo cáo nêu rõ phần liên quan chưa xử lý được.
 
@@ -163,9 +167,17 @@ Phần mở đầu, chữ ký và phụ lục có thể cung cấp ngữ cảnh 
 1. Hệ thống đánh dấu kết quả cần kiểm tra và ghi lý do.
 2. Người dùng xem nội dung hai bên và vị trí nguồn.
 3. Hệ thống chỉ rõ tài liệu và Điều/Khoản/bảng còn thiếu khi xác định được.
-4. Người dùng có thể tải tài liệu bổ sung để phân tích lại. Nếu không bổ sung, kết quả đã xác định vẫn được hiển thị cùng giới hạn phân tích.
+4. Người dùng có thể bổ sung V1 hoặc nguồn còn thiếu. Hệ thống kiểm tra định dạng, phạm vi, định danh, phiên bản và quan hệ V1–S. Nếu V1 không khớp, hệ thống nêu dấu hiệu và yêu cầu thay file. Nếu người dùng chọn “Hiện tại không có tài liệu”, tiếp tục với S và nguồn sẵn có, hiển thị phần chưa xác định.
+5. Bổ sung hoặc thay file tạo lượt phân tích mới trong cùng trải nghiệm trên UI, giữ báo cáo trước trong khi chờ. Lượt lỗi vẫn cho phép xem báo cáo trước.
+6. Sau khi có báo cáo, người dùng có thể mở bằng chứng nhiều lần. “Kết thúc phiên” xóa trạng thái, báo cáo và lựa chọn đang giữ trên UI.
 
 **Kết quả mong đợi:** Người dùng biết nhận định nào cần kiểm chứng, lý do và tài liệu có thể bổ sung.
+
+### 6.4. Bao phủ nhiều đích và điều kiện hoàn tất
+
+Hệ thống liệt kê các văn bản mà chỉ dẫn trong S xác định là đích sửa đổi, kèm phiên bản đã chọn hoặc ứng viên cần làm rõ. Báo cáo đếm riêng văn bản đích, yêu cầu sửa đổi và điều khoản đã có/thiếu nguồn. Ví dụ có 8 điều khoản đích nhưng mới có nguồn cho 3 điều khoản thì hiển thị danh sách 5 điều khoản còn thiếu. Bổ sung được phần nào thì phân tích lại phần đó cùng các nguồn cần thiết. Trường hợp nhiều phiên bản của cùng văn bản phải được giải quyết bằng căn cứ lựa chọn.
+
+Hoàn tất Use Case xét theo kết quả đúng phạm vi, bằng chứng xem được và giới hạn được hiển thị. Người dùng có thể chọn dừng thay vì bổ sung nguồn; kết thúc tương tác theo yêu cầu của họ và giữ rõ phạm vi kết quả đã cung cấp. Nhận xét của người dùng là chức năng mở rộng. Trạng thái chạy và chất lượng đúng/sai được kiểm tra riêng khi nghiệm thu.
 
 ## 7. Yêu cầu nghiệp vụ
 
@@ -267,11 +279,13 @@ Một báo cáo có ích cần trả lời được các câu hỏi sau:
 8. Thông tin hiệu lực/chuyển tiếp nào liên quan và cần bổ sung tài liệu nào?
 9. Văn bản nào khác có thể chịu tác động, điều khoản nào của B liên quan đến thay đổi nào trong V1 và bằng chứng là gì?
 
-Kết quả cần hiển thị nội dung cũ/mới cạnh nhau hoặc theo cách đối chiếu rõ ràng; phần chữ thay đổi phải dễ nhận biết. Không chỉ dùng màu sắc để truyền đạt loại thay đổi, mức độ hoặc cảnh báo.
+Kết quả cần hiển thị nội dung cũ/mới cạnh nhau hoặc theo cách đối chiếu rõ ràng; phần chữ thay đổi phải dễ nhận biết. Người làm UI chọn tô nền, chữ đậm hoặc đánh dấu kèm nhãn để thể hiện phần liên quan và hỗ trợ nhận biết ngoài màu sắc. Mỗi nhận định hiển thị đường căn cứ có thể kiểm chứng: căn cứ chọn V1 → điều khoản trước/sau → nhận định thay đổi → căn cứ liên hệ B khi có → kết luận và giới hạn. Với dữ liệu thiếu, hiển thị mắt xích chưa xác định.
 
 Tóm tắt báo cáo phải nhất quán với kết quả chi tiết. Không dùng tổng số Điều thay đổi thay thế cho tổng số thay đổi nội dung quy định mà không ghi rõ đơn vị đếm.
 
 Phiên bản đầu không bắt buộc xuất báo cáo thành PDF/DOCX, quản lý tài khoản, lưu lịch sử hoặc cung cấp chức năng cộng tác.
+
+Người dùng có thể yêu cầu thử lại sau lỗi dịch vụ. Hệ thống dùng lại dữ liệu trung gian còn hợp lệ nếu còn lưu, hoặc tạo lượt phân tích mới với nguồn cần thiết nếu đã cleanup. Hủy chủ động trước khi có kết quả theo E6 tiếp tục là đề xuất; đưa vào bản đầu cần đặc tả hành vi dừng bước tiếp theo, tác vụ còn chạy và cleanup.
 
 ## 10. Tiêu chí thành công và nghiệm thu
 

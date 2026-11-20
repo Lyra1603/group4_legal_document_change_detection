@@ -2,7 +2,7 @@
 
 **Dự án:** Legal Document Change Detection — POCS, Nhóm 4
 
-**Phiên bản:** 1.5.0 — đồng bộ nghiệp vụ ngày 20/11/2026
+**Phiên bản:** 1.6.0 — đồng bộ nghiệp vụ ngày 20/11/2026
 
 **Căn cứ:** [BRD](brd.md), [SRS](srs.md), [ghi chú buổi học 17/11](https://docs.google.com/document/d/1MzAXePwcTFb18FKzVs5J4jh8rc9Qz1CwCf1u7wW2Mrw/edit), quyết định Đức Anh xác nhận ngày 20/11 trong [Decision](decision.md).
 
@@ -56,6 +56,8 @@ flowchart TD
     DIRECT --> REPORT["Kiểm tra và tổng hợp báo cáo cấp S"]
     IMPACT --> REPORT
     RESOLVE -->|"Yêu cầu chưa giải quyết và lý do"| REPORT
+    RESOLVE -->|"Người dùng chưa có V1"| LIMITED["Phân tích S và nguồn sẵn có, ghi căn cứ và giới hạn"]
+    LIMITED --> REPORT
     REPORT --> VIEW["API và UI: kết quả, nguồn, phạm vi và lỗi"]
 ```
 
@@ -95,9 +97,9 @@ Các fixture 9 điểm nối hiện có chỉ mô tả lõi một V1; không ph�
 
 ### 4.1. Một lượt phân tích
 
-1. Ghi nhận S, nguồn bổ sung và snapshot kho được dùng. Kiểm tra định dạng, đọc và parse từng nguồn.
+1. Ghi nhận S, nguồn bổ sung và snapshot kho được dùng. Kiểm tra định dạng, đọc, parse và phạm vi dân sự có căn cứ. Đích ngoài phạm vi được ghi riêng; tiếp tục phần dân sự đủ căn cứ. Thiếu trong kho được chuyển nhánh bổ sung nguồn.
 2. Trích yêu cầu từ S độc lập với việc đã tìm thấy V1. Giữ nguồn và dấu hiệu văn bản/Điều/Khoản/Điểm cho từng yêu cầu.
-3. Tra cứu chính xác số hiệu và metadata trước; dùng retrieval tìm ứng viên khi cần. Đối chiếu nguồn, phiên bản, vị trí và căn cứ thời điểm. Giữ yêu cầu chưa giải quyết; không chọn đích dựa riêng vào điểm tương đồng.
+3. Tra cứu chính xác số hiệu và metadata trước; dùng retrieval tìm ứng viên khi cần. Đối chiếu nguồn, phiên bản, vị trí và căn cứ thời điểm. Khi thiếu V1, yêu cầu bổ sung theo SRS UI-01. Người dùng chưa có tài liệu thì phân tích chỉ dẫn S và nguồn hợp lệ sẵn có, giữ kết luận có căn cứ cùng giới hạn và yêu cầu chưa giải quyết. Phân biệt nhiều văn bản đích với nhiều phiên bản ứng viên của một văn bản.
 4. Với từng đích có đủ căn cứ, tạo binding nguồn cục bộ rồi dùng Linker dựng trước/sau. Chưa rõ nội dung thì không tạo chuỗi giả để chạy Text Diff.
 5. Chạy Text Diff và chuẩn bị ngữ cảnh theo mục 4.1.1; Semantic/Scorer giữ bằng chứng và trạng thái cần kiểm tra.
 6. Từ phần V1 thực sự thay đổi, tìm B có thể phụ thuộc vào nó. Lấy nguyên văn B và kiểm chứng tác động theo mục 4.1.2.
@@ -131,7 +133,11 @@ Một nhận định giữ đích, amendment_id/change_id khi có, nguồn V1 v�
 
 ### 4.2. Bổ sung tài liệu và nhận xét
 
-Thiếu nguồn thì chỉ rõ văn bản/phiên bản/quy định cần bổ sung. Người dùng có thể gửi lại S cùng nguồn bổ sung để phân tích lại. Không tự đưa tài liệu tải lên vào kho dùng chung. Nhận xét và lịch sử người dùng thuộc phạm vi mở rộng ở SRS §9.
+Thiếu nguồn thì chỉ rõ văn bản/phiên bản/quy định cần bổ sung. UI cho bổ sung hoặc chọn “Hiện tại không có tài liệu”. Với lựa chọn thứ hai, backend tiếp tục dùng S và nguồn sẵn có để tạo kết luận có căn cứ và đánh dấu phần trước/sau hoặc tác động chưa xác định. Giữ kết quả đích khác. V1 bổ sung được kiểm tra quan hệ với S; nếu sai, trả dấu hiệu và yêu cầu thay file theo SRS UI-02.
+
+Bổ sung nguồn tạo lượt phân tích mới trong cùng trải nghiệm UI. UI giữ báo cáo trước trong lúc chờ và khi lượt mới lỗi. Đếm riêng văn bản đích, yêu cầu và điều khoản đủ/thiếu nguồn. Nguồn người dùng được quản lý theo lượt, chỉ nhập vào kho chung qua quy trình quản lý kho. Nhận xét và lịch sử thuộc phạm vi mở rộng ở SRS §9.
+
+Giao diện trình bày chuỗi căn cứ chọn V1 → trước/sau → nhận định → liên hệ B khi có → kết luận và giới hạn, chỉ rõ mắt xích thiếu nguồn. Một nguồn có thể vừa cung cấp ngữ cảnh vừa là đối tượng kiểm tra tác động. UI hiển thị đúng vai trò ứng với từng nhận định.
 
 ### 4.3. Vị trí lưu và vòng đời
 
@@ -141,7 +147,7 @@ Thiếu nguồn thì chỉ rõ văn bản/phiên bản/quy định cần bổ su
 | Chỉ mục LightRAG của kho | Gắn với snapshot/cấu hình lập chỉ mục; chỉ sẵn sàng khi mapping và trạng thái nhập được kiểm tra; không xóa khi kết thúc một comparison |
 | S, nguồn bổ sung và index tạm | Theo analysis_id; cách ly lượt chạy, dọn đúng tài nguyên tạm sau xử lý kể cả lỗi; không xóa kho chung |
 | Nguồn cục bộ từng đích | comparison_id thuộc analysis_id, ánh xạ về phiên bản thật; không trộn ID v1/s giữa các báo cáo |
-| Báo cáo và bằng chứng đã trả | UI giữ trong phiên; phải còn đủ quote/định danh để kiểm chứng sau cleanup. Mở rộng API đọc nguồn sau lượt cần chốt riêng |
+| Báo cáo và bằng chứng đã trả | UI giữ quote, định danh và chuỗi căn cứ trong phiên để mở nhiều lần sau cleanup. “Kết thúc phiên” xóa báo cáo, trạng thái và lựa chọn trên UI. Mở rộng API đọc nguồn sau lượt cần chốt riêng |
 | Gold/nhãn và log | Gold giữ ngoài retrieval; log không chứa toàn văn hoặc khóa, thời hạn lưu cần chốt |
 
 Giữ document identity, version identity và snapshot riêng. Trong mỗi ComparisonReport cục bộ, tiếp tục dùng v1/BASE, s/AMENDMENT và ref_*/REFERENCE theo validator. Lớp cấp S ánh xạ (target_id, document_id cục bộ) về phiên bản nguồn thật; không dùng filename hoặc số Điều làm khóa toàn kho.
@@ -161,6 +167,10 @@ Giữ ComparisonReport/AmendmentResult, tám nhóm field_group và quy tắc nul
 Lỗi retrieval không đồng nghĩa thiếu tài liệu hoặc không có thay đổi. Danh sách rỗng chỉ có nghĩa sau bước đã chạy trong phạm vi công bố. Báo cáo cấp S dùng SUCCESS khi hoàn thành các bước bắt buộc trong phạm vi công bố, PARTIAL khi có kết quả hữu ích nhưng còn phần chưa xử lý/cần kiểm tra, FAILED khi không có kết quả hữu ích; giữ yêu cầu và lý do kể cả FAILED. Mapping HTTP mới và định nghĩa kết quả hữu ích cấp S phải cụ thể hóa cùng fixture. Không thay nghĩa trạng thái của validator cục bộ bằng mô tả tổng quát này.
 
 Request đồng bộ tiếp tục là phương án dự kiến; phải đo trên nhiều đích và tác động gián tiếp trước nghiệm thu. Chưa chốt chuyển sang job/queue/polling hoặc đa agent chỉ vì mở rộng phạm vi.
+
+Thử lại theo E4 được người dùng yêu cầu chủ động. Điều phối kiểm tra dữ liệu trung gian còn lưu, nguồn/phiên bản và cấu hình cần thiết trước khi tiếp tục bước lỗi. Nếu dữ liệu đã cleanup hoặc không còn hợp lệ, tạo lượt mới với S và các nguồn cần thiết. Thông báo phần chạy lại, giữ báo cáo cũ và kiểm soát tác vụ còn chạy để tránh gửi trùng. Cơ chế lưu/tái dùng dữ liệu cần được đặc tả trước triển khai. E6 hủy trước kết quả tiếp tục là đề xuất theo SRS §4.2.
+
+Trạng thái SUCCESS ghi nhận hoàn thành xử lý trong phạm vi công bố; độ đúng của kết luận được đánh giá riêng trong nghiệm thu. Hoàn tất Use Case yêu cầu kết quả có bằng chứng xem được và thể hiện giới hạn. Nhận xét của người dùng là chức năng mở rộng.
 
 ## 6. Chủ trì và lựa chọn còn mở
 

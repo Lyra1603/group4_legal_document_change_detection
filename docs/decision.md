@@ -10,7 +10,7 @@ Tài liệu ghi các quyết định đã chốt và phạm vi áp dụng của 
 
 Căn cứ [ghi chú buổi học 17/11](https://docs.google.com/document/d/1MzAXePwcTFb18FKzVs5J4jh8rc9Qz1CwCf1u7wW2Mrw/edit), BRD/SRS của Dũng tại PR #9 (`e745237`) và xác nhận của Đức Anh. Các mốc 12–13/11 bên trên là lịch sử. Các quyết định dưới đây mở rộng nghiệp vụ; không xác nhận code đã hiện thực. Code căn cứ sau PR #7 là main `95e1d79`.
 
-1. Đầu vào mục tiêu là một S, bối cảnh và nguồn bổ sung tùy chọn. Chỉ phân tích trong kho dân sự nhóm chọn; chưa tự tìm Internet. Ngoài kho hoặc thiếu nguồn thì giữ yêu cầu và báo giới hạn/yêu cầu bổ sung.
+1. Đầu vào mục tiêu là một S, bối cảnh và nguồn bổ sung tùy chọn. Phân tích trên kho dân sự nhóm chọn và nguồn người dùng bổ sung được kiểm tra hợp lệ; chưa tự tìm Internet. Ngoài kho hoặc thiếu nguồn thì giữ yêu cầu và báo giới hạn/yêu cầu bổ sung.
 2. Một S có thể sửa nhiều văn bản. Phân tích từng đích rồi tổng hợp; một đích chưa xử lý không làm mất kết quả hữu ích của đích khác.
 3. Chọn phiên bản V1 theo định danh, nguồn và căn cứ thời điểm/phạm vi áp dụng. Không tự chọn bản mới nhất; thiếu căn cứ hoặc nhiều ứng viên thì giữ ứng viên/lý do cần kiểm tra.
 4. Tác động gián tiếp phải chỉ ra điều khoản B sử dụng phần nào của V1, phần sửa đổi ảnh hưởng cách hiểu/áp dụng B thế nào và bằng chứng. Có liên quan chưa phải có tác động; không tự kết luận B bị sửa hoặc hết hiệu lực.
@@ -18,6 +18,26 @@ Căn cứ [ghi chú buổi học 17/11](https://docs.google.com/document/d/1MzAX
 6. Kho nguồn/chỉ mục kho được giữ qua các lượt; S/nguồn bổ sung/index tạm cách ly theo lượt và dọn riêng. Không xóa kho dùng chung khi cleanup một comparison. Client hiện tại chưa đáp ứng vòng đời kho bền vững.
 
 Phân công LK-01 giữ nguyên; owner/task và hợp đồng chi tiết của chức năng mới cần thống nhất với bên giao/nhận. Chưa chọn thêm database, model, đa agent, API polling hoặc ngưỡng nghiệm thu. Cách biểu diễn đầy đủ báo cáo cấp S và validator cần triển khai theo SRS §1.8; không thêm trường vào schema cũ trong đợt này.
+
+## Đồng bộ ý kiến Dũng và Đức Anh về Use Case ngày 20/11/2026
+
+Căn cứ bảng 16 mục giữa hai mốc ngày trong [tài liệu trao đổi](https://docs.google.com/document/d/1_yboGOxhh74KGzSSFjDURpfuHcxplfGGYvCvFgutswA/edit?tab=t.0). Với ô có một người viết, áp dụng ý kiến đó. Ý Dũng tại mục 7 chưa hoàn chỉnh nên áp dụng phần Đức Anh viết. Bảng dưới cập nhật yêu cầu mục tiêu; hiện trạng code tiếp tục theo common-baseline.md.
+
+| Mục nguồn | Quyết định áp dụng |
+| --- | --- |
+| 1 | Giữ nhóm ưu tiên/bổ sung theo BRD. Những người trực tiếp dùng hệ thống là actor chính tương ứng với vai trò tương tác. |
+| 2, 5 | Thiếu V1 thì yêu cầu bổ sung. V1 sai thì nêu dấu hiệu, yêu cầu thay file và kiểm tra lại. Khi người dùng chọn “Hiện tại không có tài liệu”, tiếp tục phân tích từ S và nguồn hợp lệ sẵn có, giữ kết luận có căn cứ và giới hạn, đồng thời giữ kết quả đích khác. |
+| 3, 4 | Phân biệt thiếu nguồn dân sự trong kho với ngoài phạm vi hỗ trợ. Phạm vi cần có căn cứ; chưa chắc chắn thì yêu cầu làm rõ. S nhiều lĩnh vực được xử lý theo từng đích, tiếp tục phần dân sự đủ căn cứ. |
+| 6 | Liệt kê văn bản đích và báo mức đủ/thiếu nguồn theo văn bản, yêu cầu và điều khoản. Nhiều phiên bản ứng viên của cùng văn bản cần căn cứ lựa chọn riêng. |
+| 7 | Tài liệu ngữ cảnh và B có hai vai trò, một nguồn có thể mang cả hai. Tác động cần chỉ rõ quy định B sử dụng phần nào của V1, ảnh hưởng và bằng chứng. |
+| 8, 9 | UI chọn tô nền/chữ đậm/đánh dấu kèm nhãn, hỗ trợ nhận biết ngoài màu sắc. Hiển thị chuỗi căn cứ chọn V1, trước/sau, nhận định, liên hệ B khi có, kết luận và giới hạn. |
+| 10, 11 | Bổ sung tạo lượt phân tích mới trong cùng trải nghiệm UI. Cleanup tài nguyên backend vẫn cho phép xem báo cáo/bằng chứng nhiều lần. “Kết thúc phiên” xóa trạng thái, báo cáo và lựa chọn trên UI. |
+| 12, 13 | Nhận xét là mở rộng. Hoàn tất xét theo đầu ra đúng phạm vi, bằng chứng và giới hạn. Nghiệm thu chất lượng đúng/sai độc lập với trạng thái chạy SUCCESS/PARTIAL/FAILED. |
+| 14 | Bổ sung E4 cho thử lại chủ động. Dùng dữ liệu trung gian hợp lệ còn lưu để tiếp tục; nếu đã cleanup hoặc không còn hợp lệ thì chạy lượt mới. Cần đặc tả điểm tiếp tục, tác vụ còn chạy và kiểm soát gửi trùng. |
+| 15 | E6 giữ ở mức đề xuất như DOCX và ý Đức Anh. Nếu đưa vào bản đầu, chốt hành vi dừng, trạng thái tác vụ còn chạy và cleanup trước khi nghiệm thu. |
+| 16 | Mỗi luồng/nhánh đã chốt có đầu vào và kết quả kỳ vọng trong kế hoạch kiểm thử. Nhánh chưa được chốt giữ trạng thái đề xuất. Khi cả hai chưa có ý kiến về một hành vi, ưu tiên nội dung DOCX, gồm cả trạng thái đề xuất ghi trong đó. |
+
+SRS §4.1–4.2 cụ thể hóa tương tác; kế hoạch kiểm thử ánh xạ về M1–M11, A1–A3 và E1–E6. Kết quả từ S khi thiếu V1 cần hợp đồng cấp S hỗ trợ nguồn và giới hạn; contract cục bộ tiếp tục được kiểm tra theo validator hiện có.
 
 ## Quyết định dùng schema Đức Anh làm hợp đồng chung
 
