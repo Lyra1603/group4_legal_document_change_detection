@@ -167,7 +167,7 @@ API giữ doc_v1/doc_s/reference_files; Pipeline cấp comparison_id, đọc/par
 
 #### 4.1.1. Luồng mục tiêu sau Document Processing khi tích hợp LightRAG
 
-Đây là thiết kế cần triển khai tiếp: bridge hiện chưa dùng TextDiffResult tạo query và demo tắt retrieval. Không diễn giải sơ đồ mục tiêu thành bằng chứng dịch vụ đã tích hợp; cách chạy hiện tại ở [nền chung](common-baseline.md).
+Bridge hiện đã chuẩn bị index song song Text Diff rồi dùng TextDiffResult tạo query trước Semantic; các điểm nối này được kiểm thử bằng HTTP mô phỏng. Demo vẫn tắt retrieval. Chuẩn bị index song song cả Linker tại Pipeline và kiểm chứng dịch vụ thật còn cần triển khai; không diễn giải sơ đồ mục tiêu thành bằng chứng dịch vụ đã tích hợp. Cách chạy hiện tại ở [nền chung](common-baseline.md).
 
 Phần này bắt đầu từ đầu ra của Adapter. Chuẩn bị Context và chỉ mục chạy song song với nhánh Linker → Text Diff. Kết quả Text Diff tham gia tạo truy vấn sau khi cả hai nhánh sẵn sàng. Nguồn truy xuất được kiểm chứng trước khi Semantic nhận dữ liệu.
 

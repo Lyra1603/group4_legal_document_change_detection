@@ -119,7 +119,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 
 ### 3.4. context/
 
-File hỗ trợ trên nhánh: `semantic_bridge.py` ghép Context/Text Diff trước Semantic; cần điều chỉnh điểm ghép query mới. Chuẩn bị index nhận nguồn adapter; query nhận chỉ dẫn/trước-sau/TextDiffResult. Giữ owner/schema chung.
+File hỗ trợ trên nhánh: `semantic_bridge.py` chạy chuẩn bị index song song Text Diff, chờ cả hai rồi ghép query trước Semantic. Chuẩn bị index nhận nguồn adapter; query nhận chỉ dẫn/trước-sau/TextDiffResult. Demo vẫn tắt retrieval; chưa kiểm chứng dịch vụ thật. Giữ owner/schema chung.
 
 **Owner:** Đức Anh phụ trách context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG. LK-13 chốt sau các quyết định còn lại.
 
@@ -131,6 +131,8 @@ File hỗ trợ trên nhánh: `semantic_bridge.py` ghép Context/Text Diff trư�
 | source_registry.py | Đức Anh: ánh xạ chunk/kết quả truy xuất về đúng document_id và nguyên văn nguồn. |
 | lightrag_client.py | Dũng + Đức Anh: gọi LightRAG Server qua HTTP: nhập, theo dõi sẵn sàng, truy vấn, xử lý lỗi và dọn dữ liệu. |
 | context_builder.py | Đức Anh: lập truy vấn, chọn/kiểm tra căn cứ, cung cấp ngữ cảnh và nhu cầu tham chiếu thiếu/chưa rõ. |
+
+Điểm gọi nội bộ: `prepare_index(item, registry, client)` chỉ chuẩn bị chỉ mục; `build_context(item, registry, client, text_diff=diff)` truy vấn và kiểm tra nguồn. `run_semantic_stage` nhận `context_prepare(item)` và `context_work(item, diff)`; runner giữ quyền quản lý client/cleanup. Khi bật retrieval, thiếu hoặc sai diff phải trả cảnh báo, không truy vấn bằng dữ liệu chưa kiểm chứng. Không đổi hợp đồng dict bàn giao giữa các module.
 
 **Đầu vào:** Tài liệu/cây/nguồn và yêu cầu sửa đổi đã chuẩn hóa.
 

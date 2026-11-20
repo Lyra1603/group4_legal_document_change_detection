@@ -29,6 +29,7 @@ class ContractServer:
         self.records = []
         self.calls = []
         self.deleted = []
+        self.queries = []
 
     def __call__(self, request):
         path = request.url.path
@@ -51,6 +52,7 @@ class ContractServer:
             return httpx.Response(200, json={"track_id": "track-demo", "documents": self.records,
                                            "total_count": len(self.records), "status_summary": {}})
         if path == "/query/data":
+            self.queries.append(body['query'])
             if self.behavior == "timeout":
                 raise httpx.ReadTimeout("contract double timeout", request=request)
             chunks = [{"file_path": r["file_path"], "content": r["content"],

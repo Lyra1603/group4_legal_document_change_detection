@@ -11,7 +11,10 @@ import httpx
 
 from backend.app.config import LightRAGConfig
 from backend.app.context.chunk_builder import build_chunks, documents_from_parsed
-from backend.app.context.context_builder import build_context, prepare_context
+from backend.app.context.context_builder import (
+    build_context, build_retrieval_query, prepare_context, prepare_index,
+)
+from backend.app.change_analysis.text_diff import compute_text_diff
 from backend.app.context.lightrag_client import LightRAGClient, RetrievalError
 from backend.app.context.semantic_bridge import run_semantic_stage
 from backend.app.context.source_registry import SourceRegistry
@@ -26,6 +29,7 @@ class ContextTests(unittest.TestCase):
         self.documents, self.versions, self.item, self.fixture = sample()
         self.chunks = build_chunks("c1", self.documents, self.versions)
         self.registry = SourceRegistry(self.chunks, self.documents)
+        self.diff = compute_text_diff(self.item)
 
     def client(self, behavior="normal", *, workspace="demo", url="http://localhost:9621", comparison="c1", deadline=None):
         server = ContractServer(workspace, behavior)
@@ -38,7 +42,7 @@ class ContextTests(unittest.TestCase):
     def test_context_contract_and_source_trace(self):
         client, server = self.client()
         client.index(self.chunks)
-        result = build_context(self.item, self.registry, client)
+        result = build_context(self.item, self.registry, client, text_diff=self.diff)
         self.assertFalse(result.issues)
         validate_sources(result.amendment, self.registry.documents)
         validate_amendment(result.amendment, self.registry.documents, self.fixture["clauses"])
@@ -89,7 +93,7 @@ class ContextTests(unittest.TestCase):
             with self.subTest(behavior=behavior):
                 client, _ = self.client(behavior, url=f"http://localhost:{9630+i}")
                 client.index(self.chunks)
-                result = build_context(self.item, self.registry, client)
+                result = build_context(self.item, self.registry, client, text_diff=self.diff)
                 self.assertTrue(result.issues)
                 self.assertEqual(result.amendment["context"], self.item["context"])
                 self.assertTrue(result.amendment["needs_review"])
@@ -170,26 +174,36 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(result.amendment, self.item)
         self.assertIsNot(result.amendment, self.item)
 
-    def test_parallel_context_text_then_semantic(self):
-        client, _ = self.client()
+    def test_parallel_index_text_then_query_then_semantic(self):
+        client, server = self.client()
         barrier = Barrier(2, timeout=2)
         completed = set()
-        def context_work(item):
+        def context_prepare(item):
             barrier.wait()
-            client.index(self.chunks)
-            result = build_context(item, self.registry, client)
-            completed.add("context")
+            result = prepare_index(item, self.registry, client)
+            self.assertFalse(server.queries)
+            completed.add("index")
             return result
         def text_diff(item):
             barrier.wait()
             completed.add("text")
-            return deepcopy(self.fixture["report"]["results"][0]["text_diff"])
+            return deepcopy(self.diff)
+        def context_work(item, text):
+            self.assertEqual(completed, {"index", "text"})
+            result = build_context(item, self.registry, client, text_diff=text)
+            query = json.loads(server.queries[0])
+            self.assertEqual(query['text_diff'], self.diff)
+            self.assertEqual(query['instruction_source'], self.item['instruction'])
+            completed.add('query')
+            return result
         def semantic_diff(item, text):
-            self.assertEqual(completed, {"context", "text"})
+            self.assertEqual(completed, {"index", "text", "query"})
+            self.assertEqual(text, self.diff)
             self.assertGreater(len(item["context"]["evidence"]), len(self.item["context"]["evidence"]))
             return deepcopy(self.fixture["report"]["results"][0]["semantic_diff"])
         try:
-            run_semantic_stage(self.item, context_work=context_work, text_diff=text_diff, semantic_diff=semantic_diff)
+            run_semantic_stage(self.item, context_prepare=context_prepare,
+                               context_work=context_work, text_diff=text_diff, semantic_diff=semantic_diff)
         finally:
             client.cleanup()
 
@@ -197,6 +211,110 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_chunks("c", self.documents, self.versions, max_chars=2)
         self.assertNotIn("secret-value", repr(LightRAGConfig("http://localhost", "w", api_key="secret-value")))
+
+    def test_query_diff_handles_unicode_insert_delete_and_no_change(self):
+        for before, after in [('Điều 2', 'Điều 2 mới'), ('Điều 2 mới', 'Điều 2'),
+                              ('30 ngày', '15 ngày'), ('không đổi', 'không đổi')]:
+            with self.subTest(before=before, after=after):
+                item = deepcopy(self.item)
+                item.update(before_text=before, after_text=after)
+                diff = compute_text_diff(item)
+                query = json.loads(build_retrieval_query(item, diff))
+                self.assertEqual(query['text_diff'], diff)
+                self.assertEqual(query['before_text'], before)
+                self.assertEqual(query['after_text'], after)
+
+    def test_invalid_or_missing_diff_never_queries(self):
+        client, server = self.client()
+        client.index(self.chunks)
+        wrong_id = deepcopy(self.diff)
+        wrong_id['amendment_id'] = 'another'
+        wrong_offset = deepcopy(self.diff)
+        wrong_offset['changes'][0]['old_start'] = -1
+        wrong_quote = deepcopy(self.diff)
+        wrong_quote['changes'][0]['new_text'] = 'fabricated'
+        wrong_type = deepcopy(self.diff)
+        wrong_type['changes'][0]['type'] = 'INSERT'
+        incomplete = deepcopy(self.diff)
+        incomplete['changes'] = []
+        for diff in [None, wrong_id, wrong_offset, wrong_quote, wrong_type, incomplete]:
+            with self.subTest(diff=diff):
+                result = build_context(self.item, self.registry, client, text_diff=diff)
+                self.assertTrue(result.issues)
+                self.assertEqual(result.amendment['context'], self.item['context'])
+                self.assertTrue(result.amendment['needs_review'])
+        self.assertFalse(server.queries)
+        client.cleanup()
+
+    def test_query_limit_preserves_context(self):
+        client, server = self.client()
+        client.index(self.chunks)
+        item = deepcopy(self.item)
+        item['target_locator'] = 'x' * 8001
+        result = build_context(item, self.registry, client, text_diff=self.diff)
+        self.assertEqual(result.issues[0]['code'], 'QUERY_INVALID')
+        self.assertEqual(result.amendment['context'], item['context'])
+        self.assertFalse(server.queries)
+        client.cleanup()
+
+    def test_sequential_wrapper_uses_diff_and_does_not_mutate_inputs(self):
+        client, server = self.client()
+        item, diff = deepcopy(self.item), deepcopy(self.diff)
+        result = prepare_context(item, self.registry, client, text_diff=diff)
+        self.assertFalse(result.issues)
+        self.assertEqual(len(server.queries), 1)
+        self.assertEqual(item, self.item)
+        self.assertEqual(diff, self.diff)
+        client.cleanup()
+
+    def test_bridge_index_failure_skips_query_and_propagates_review(self):
+        client, server = self.client()
+        server.workspace = 'wrong'
+        def forbidden_query(item, text):
+            self.fail('Query must not run after index failure')
+        def semantic(item, text):
+            self.assertTrue(item['needs_review'])
+            self.assertEqual(item['context'], self.item['context'])
+            return deepcopy(self.fixture['report']['results'][0]['semantic_diff'])
+        context, text, result = run_semantic_stage(
+            self.item,
+            context_prepare=lambda item: prepare_index(item, self.registry, client),
+            context_work=forbidden_query, text_diff=compute_text_diff, semantic_diff=semantic)
+        self.assertEqual(context.issues[0]['code'], 'SERVER_SCOPE_UNVERIFIED')
+        self.assertTrue(result['needs_review'])
+        self.assertIn('SERVER_SCOPE_UNVERIFIED', result['review_reason'])
+        self.assertEqual(text, self.diff)
+        self.assertFalse(server.queries)
+        client.cleanup()
+
+    def test_bridge_invalid_diff_stops_before_query_and_semantic(self):
+        def forbidden(*args):
+            self.fail('Invalid diff must not reach query or Semantic')
+        wrong = deepcopy(self.diff)
+        wrong['amendment_id'] = 'another'
+        for diff in [None, wrong]:
+            with self.subTest(diff=diff), self.assertRaises(ValueError):
+                run_semantic_stage(
+                    self.item,
+                    context_prepare=lambda item: prepare_index(item, self.registry, None),
+                    context_work=forbidden, text_diff=lambda item: diff, semantic_diff=forbidden)
+
+    def test_bridge_retrieval_failure_reaches_semantic_as_review(self):
+        client, server = self.client('empty')
+        def semantic(item, text):
+            self.assertEqual(item['context'], self.item['context'])
+            self.assertTrue(item['needs_review'])
+            self.assertEqual(text, self.diff)
+            return deepcopy(self.fixture['report']['results'][0]['semantic_diff'])
+        context, _, result = run_semantic_stage(
+            self.item,
+            context_prepare=lambda item: prepare_index(item, self.registry, client),
+            context_work=lambda item, text: build_context(item, self.registry, client, text_diff=text),
+            text_diff=compute_text_diff, semantic_diff=semantic)
+        self.assertEqual(context.issues[0]['code'], 'RETRIEVAL_EMPTY_UNCONFIRMED')
+        self.assertTrue(result['needs_review'])
+        self.assertEqual(len(server.queries), 1)
+        client.cleanup()
 
     def test_real_docx_parser_blocks_to_registry(self):
         from docx import Document
