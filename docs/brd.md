@@ -5,6 +5,8 @@
 **Phiên bản tài liệu:** 1.2.0
 **Phạm vi phiên bản đầu:** Người dùng nộp một văn bản sửa đổi (S). Hệ thống truy xuất văn bản bị sửa và phân tích thay đổi trực tiếp, tác động gián tiếp trong kho văn bản quy phạm pháp luật tiếng Việt thuộc lĩnh vực dân sự.
 
+**Trạng thái ngày 20/11/2026:** phạm vi chỉ S/kho dân sự là mục tiêu phát triển. Demo trên main sau PR #7 vẫn nhận V1 + S, chưa có truy xuất đích hoặc tác động gián tiếp thật. Tài liệu không xác nhận các chức năng này đã hoàn thành.
+
 ## 1. Mục đích tài liệu
 
 BRD mô tả mục tiêu sản phẩm. Nền DOCX chuẩn bị merge hỗ trợ dạng sửa hẹp theo [common-baseline.md](common-baseline.md); thêm/bãi bỏ, nhiều đích, LightRAG/model thật và đánh giá chất lượng tiếp tục sau merge. Không coi demo đã hoàn thành toàn bộ BRD.
@@ -94,7 +96,7 @@ Việc liệt kê vai trò không có nghĩa dự án đã tuyển được ngư
 - Người dùng nộp một văn bản sửa đổi (S). Có thể kèm bối cảnh hoặc vấn đề cần quan tâm.
 - DOCX là định dạng chính. Hỗ trợ PDF có lớp văn bản đọc được.
 - Hệ thống tự tìm một hoặc nhiều văn bản bị sửa, phiên bản làm căn cứ trước sửa đổi (V1) cho từng thay đổi và tài liệu liên quan trong kho đã chuẩn bị. S cung cấp chỉ dẫn sửa đổi, còn V1 cung cấp nội dung trước sửa đổi.
-- Kho gồm văn bản quy phạm pháp luật tiếng Việt thuộc lĩnh vực dân sự do nhóm chuẩn bị. Danh mục văn bản, nguồn và các phiên bản được lập chỉ mục cần được chốt trong kế hoạch dữ liệu. Báo cáo nêu phần vượt phạm vi kho hoặc thiếu phiên bản.
+- Kho gồm văn bản quy phạm pháp luật tiếng Việt thuộc lĩnh vực dân sự do nhóm chuẩn bị. Danh mục văn bản, nguồn và các phiên bản được lập chỉ mục cần được chốt trong kế hoạch dữ liệu. Báo cáo nêu phần vượt phạm vi kho hoặc thiếu phiên bản; phiên bản đầu chưa tự tìm thêm trên Internet. Chọn V1 phải có căn cứ về phiên bản và thời điểm; khi mơ hồ giữ ứng viên, không tự chọn bản mới nhất.
 - Khi thiếu căn cứ sau khi truy xuất, hệ thống chỉ rõ tài liệu hoặc thông tin cần bổ sung. Người dùng có thể cung cấp thêm để rà soát lại.
 
 ### 5.2. Đơn vị đối chiếu
@@ -113,6 +115,8 @@ Hệ thống dựng nội dung sau sửa đổi ở cấp quy định bị tác 
 - Danh sách quy định trong các văn bản khác có thể chịu tác động, thay đổi trực tiếp liên quan, giải thích tác động có thể xảy ra và căn cứ cho mối liên hệ.
 - Trích dẫn nguồn, phân biệt nguyên văn với nội dung được dựng hoặc suy ra. Thể hiện thông tin hiệu lực, chuyển tiếp và phạm vi áp dụng khi có căn cứ.
 - Phạm vi đã rà soát, phiên bản hoặc tài liệu còn thiếu, nhận định cần kiểm chứng và lỗi xử lý.
+
+Có quan hệ với V1 không đồng nghĩa B chịu tác động; nhận định phải giải thích đúng phần quy định B phụ thuộc vào phần V1 bị sửa. Không tự kết luận B bị sửa hoặc hết hiệu lực. Một đích chưa xử lý được không làm mất kết quả hữu ích của các đích khác.
 
 ### 5.4. Phạm vi bao phủ
 

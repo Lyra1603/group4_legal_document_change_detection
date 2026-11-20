@@ -19,10 +19,12 @@
 
 Người dùng nộp một văn bản sửa đổi S, có thể kèm bối cảnh. Hệ thống tìm các văn bản bị sửa và phiên bản trước sửa đổi V1 trong kho VBQPPL dân sự tiếng Việt do nhóm chuẩn bị. DOCX và PDF có lớp chữ là định dạng hỗ trợ. Hệ thống dựng nội dung sau sửa đổi ở cấp quy định, phân tích thay đổi trực tiếp và tìm tác động có thể có lên quy định trong các văn bản khác.
 
-Luồng xử lý:
+**Phân biệt mục tiêu và code:** luồng chỉ S và báo cáo cấp S dưới đây là đặc tả cần triển khai. Nền sau PR #7 (`95e1d79`) vẫn nhận V1 + S qua `/api/compare`, demo tắt LightRAG/model; schema mục 1.1–1.7 không thay đổi trong đợt tài liệu này. Xem [nền chung](common-baseline.md).
+
+Luồng xử lý mục tiêu:
 S + bối cảnh tùy chọn → Reader/Parser → Trích yêu cầu từ S → Agent truy xuất văn bản, phiên bản và quy định đích trong kho dân sự → Dựng nội dung trước/sau và chuẩn bị ngữ cảnh → Text Diff → Semantic Diff → Classifier & Scorer → Tìm và kiểm chứng tác động gián tiếp → Báo cáo cấp S. LightRAG hỗ trợ truy xuất. LLM và bộ quy tắc dân sự hỗ trợ diễn giải và chấm mức độ.
 
-Reader và Parser xử lý từng nguồn. Hệ thống tách các yêu cầu độc lập từ S, giữ vị trí chỉ dẫn và định vị từng đích đến Điều/Khoản/Điểm hoặc cụm từ. Mỗi đích đã xác định được đưa vào luồng đối chiếu theo phiên bản tương ứng.
+Reader và Parser xử lý từng nguồn. Hệ thống tách các yêu cầu độc lập từ S, giữ vị trí chỉ dẫn và định vị từng đích đến Điều/Khoản/Điểm hoặc cụm từ. Phạm vi đầu là kho dân sự nhóm chuẩn bị; ngoài kho báo giới hạn/yêu cầu bổ sung, chưa tự tìm Internet. Chọn phiên bản theo nguồn và căn cứ thời điểm, không tự chọn bản mới nhất; nhiều ứng viên hoặc thiếu căn cứ thì giữ lý do cần rà soát. Mỗi đích đã xác định được đưa vào luồng đối chiếu theo phiên bản tương ứng.
 
 Ngữ cảnh gồm thông tin tổng quát của V1 về phạm vi, đối tượng và mục đích điều chỉnh, cùng định nghĩa, điều kiện, ngoại lệ và nội dung dẫn chiếu liên quan. Không bắt buộc phân tích mọi đoạn không thay đổi. Thiếu tài liệu phải chỉ rõ căn cứ cần bổ sung và giữ các kết quả đã xác định.
 
@@ -382,7 +384,7 @@ Bảng mô tả dữ liệu tối thiểu cần triển khai. Tên trường dù
 
 Mỗi nhận định gián tiếp có ID riêng, ID đích, `amendment_id` và `change_id` khi có thay đổi nghĩa tương ứng, định danh văn bản/phiên bản B, vị trí quy định B, giải thích quan hệ và tác động có thể xảy ra, trích dẫn về quy định V1 bị sửa và quy định B, cùng nguồn trung gian nếu dùng. Khi thiếu căn cứ, giữ dữ kiện đã kiểm tra, đánh dấu cần rà soát và chỉ rõ phần còn thiếu. Nhận định có đủ căn cứ vẫn được diễn đạt theo phạm vi tác động có thể xác định từ nguồn.
 
-Nếu một chỉ dẫn áp dụng cho nhiều đích, giữ một mã chỉ dẫn cấp S và liên kết đến từng kết quả cục bộ tương ứng. Dùng tổ hợp ID đích và ID cục bộ để định danh một kết quả đối chiếu. Mọi liên kết cấp S phải phân giải được theo ID đích và ID cục bộ. Kiểm tra trích dẫn với phiên bản nguồn tương ứng. Hệ thống giữ kết quả hữu ích khi một đích hoặc bước tác động gián tiếp chưa hoàn tất. Danh sách rỗng chỉ thể hiện kết quả sau khi bước liên quan đã chạy, với phạm vi rà soát được ghi rõ. `SUCCESS` áp dụng khi các bước bắt buộc hoàn thành trong phạm vi công bố, `PARTIAL` khi còn phần chưa xử lý nhưng có kết quả hữu ích, và `FAILED` khi không thể cung cấp kết quả hữu ích.
+Nếu một chỉ dẫn áp dụng cho nhiều đích, giữ một mã chỉ dẫn cấp S và liên kết đến từng kết quả cục bộ tương ứng. Dùng tổ hợp ID đích và ID cục bộ để định danh một kết quả đối chiếu. Mọi liên kết cấp S phải phân giải được theo ID đích và ID cục bộ. Kiểm tra trích dẫn với phiên bản nguồn tương ứng. Hệ thống giữ kết quả hữu ích khi một đích hoặc bước tác động gián tiếp chưa hoàn tất. Các trạng thái cụ thể của ứng viên B, kiểu dữ liệu đầy đủ, mapping ID và validator cấp S cần review trước khi code; không dùng mảng rỗng thay cho bước chưa chạy hoặc lỗi. Danh sách rỗng chỉ thể hiện kết quả sau khi bước liên quan đã chạy, với phạm vi rà soát được ghi rõ. `SUCCESS` áp dụng khi các bước bắt buộc hoàn thành trong phạm vi công bố, `PARTIAL` khi còn phần chưa xử lý nhưng có kết quả hữu ích, và `FAILED` khi không thể cung cấp kết quả hữu ích.
 
 ## 2. Functional Requirements
 
@@ -448,7 +450,7 @@ Thọ và bên nhận chốt cấu trúc JSON fixture, định danh, đơn vị 
 | Yêu cầu | Một Điều có thể có nhiều yêu cầu; phân biệt số Điều trong S với vị trí đích; không coi nội dung không được nhắc đến là bãi bỏ |
 | Chưa rõ | Giữ chỉ dẫn nguồn, cảnh báo; không tự áp sửa đổi khi thiếu căn cứ |
 
-Bước chuẩn bị ngữ cảnh lấy định nghĩa, ngoại lệ và quy định dẫn chiếu từ phiên bản V1, kho dân sự hoặc nguồn bổ sung. Gắn hiệu lực/chuyển tiếp từ S qua EffectInfo. LightRAG hỗ trợ tìm ứng viên nguồn. Pipeline kiểm tra lại định danh, phiên bản, vị trí và nguyên văn trước khi dùng ứng viên làm căn cứ. Dữ liệu bổ sung theo lượt được quản lý riêng với kho dùng chung.
+Bước chuẩn bị ngữ cảnh lấy định nghĩa, ngoại lệ và quy định dẫn chiếu từ phiên bản V1, kho dân sự hoặc nguồn bổ sung. Gắn hiệu lực/chuyển tiếp từ S qua EffectInfo. LightRAG hỗ trợ tìm ứng viên nguồn ở ba mục đích: xác định đích/phiên bản trước Linker, bổ sung ngữ cảnh trước Semantic, và tìm B sau phân tích trực tiếp. Query ngữ cảnh của PR #7 cần TextDiffResult; hai mục đích còn lại không dùng chung điều kiện này. Tra số hiệu/metadata chính xác trước khi dùng retrieval mở rộng. Pipeline kiểm tra lại định danh, phiên bản, vị trí và nguyên văn trước khi dùng ứng viên làm căn cứ. Dữ liệu bổ sung theo lượt được quản lý riêng với kho dùng chung.
 
 ### 3.4 Module Text Diff — tìm những đoạn chữ thay đổi: Sau khi xác định nội dung trước/sau cục bộ, Text Diff chỉ ra chữ nào được thêm, xóa hoặc thay thế.
 
@@ -546,7 +548,7 @@ Kho do nhóm chuẩn bị, có danh mục phiên bản có thể truy vết. M�
 
 ### 3.9 Phân tích tác động gián tiếp
 
-Agent truy xuất các quy định có khả năng phụ thuộc vào quy định V1 bị sửa. Với từng ứng viên B, lấy nguyên văn quy định liên quan và đối chiếu cách B sử dụng quy định V1 với nội dung trước/sau. Quan hệ dẫn chiếu hoặc độ tương đồng dùng để tìm ứng viên. Căn cứ báo tác động phải giải thích phần thay đổi liên quan đến điều kiện, nghĩa vụ, thời hạn hoặc nội dung áp dụng trong B. Nếu quan hệ có thật nhưng phần thay đổi không ảnh hưởng đến B, loại ứng viên khỏi danh sách tác động. Nếu chưa đủ căn cứ để phân định, ghi nhận nội dung cần rà soát. Phương pháp tìm quan hệ không có dẫn chiếu trực tiếp và ngưỡng đánh giá cần được xác nhận qua thử nghiệm.
+Agent truy xuất các quy định có khả năng phụ thuộc vào quy định V1 bị sửa. Với từng ứng viên B, lấy nguyên văn quy định liên quan và đối chiếu cách B sử dụng quy định V1 với nội dung trước/sau. Quan hệ dẫn chiếu hoặc độ tương đồng dùng để tìm ứng viên, không đủ để xác nhận tác động. Phân biệt quan hệ có căn cứ trực tiếp và quan hệ suy ra; không tự kết luận B bị sửa hoặc hết hiệu lực. Căn cứ báo tác động phải giải thích phần thay đổi liên quan đến điều kiện, nghĩa vụ, thời hạn hoặc nội dung áp dụng trong B. Nếu quan hệ có thật nhưng phần thay đổi không ảnh hưởng đến B, loại ứng viên khỏi danh sách tác động. Nếu chưa đủ căn cứ để phân định, ghi nhận nội dung cần rà soát. Phương pháp tìm quan hệ không có dẫn chiếu trực tiếp và ngưỡng đánh giá cần được xác nhận qua thử nghiệm.
 
 ## 4. Yêu cầu tải tài liệu và xem kết quả
 
@@ -631,14 +633,14 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 | Cấu hình | Giới hạn dung lượng file và thời gian xử lý phải cấu hình được; giá trị cụ thể cần nhóm thống nhất trước nghiệm thu |
 | Tính toàn vẹn | Không âm thầm cắt bỏ nội dung; nếu không xử lý hết tài liệu phải thông báo rõ |
 | Truy vết | Dùng analysis_id cho lượt xử lý và comparison_id cho kết quả từng đích. Giữ phiên bản kho, các bước và lỗi. |
-| Quản lý file | Tách kho dân sự do nhóm chuẩn bị với tài liệu tạm theo lượt. Dữ liệu bổ sung theo lượt được dọn sau xử lý. |
+| Quản lý file | Tách kho dân sự do nhóm chuẩn bị với tài liệu tạm theo lượt. Dữ liệu bổ sung và index tạm theo lượt được dọn đúng phạm vi sau xử lý; không xóa kho/index dùng chung. Không tự đưa tài liệu người dùng vào kho chung. Client thử nghiệm hiện cách ly một server cho một comparison, chưa thực thi vòng đời kho bền vững. |
 | Bảo mật | Không ghi toàn bộ nội dung tài liệu vào log. Nếu dùng API bên ngoài, phải thống nhất việc gửi dữ liệu và quản lý khóa API |
 | Đo hiệu năng | Ghi nhận thời gian xử lý và kích thước tài liệu; chỉ chốt mục tiêu tốc độ sau khi đo trên bộ tài liệu mẫu và môi trường xác định |
 
 - Reader phải trích xuất toàn bộ nội dung có thể đọc được, giữ bảng và vị trí nguồn. Tài liệu PDF được đọc trực tiếp hoặc chuyển đổi trong Reader phải giữ khả năng truy nguồn; lựa chọn công cụ không làm thay đổi hợp đồng đầu ra.
 - Không so sánh toàn diện phần mở đầu, chữ ký hoặc phụ lục; nội dung đọc được ở các phần này có thể dùng làm ngữ cảnh hoặc bằng chứng, bao gồm bảng được dẫn chiếu.
 - Không xử lý hết yêu cầu trong S hoặc phần nguồn cần thiết phải báo PARTIAL/FAILED, không báo hoàn tất toàn bộ.
-- Request đồng bộ hiện tại nhận S bắt buộc, bối cảnh và tài liệu bổ sung tùy chọn. Đo thời gian truy xuất nhiều đích và tác động gián tiếp để xác nhận giới hạn vận hành trước nghiệm thu.
+- API mục tiêu dự kiến dùng request đồng bộ, nhận S bắt buộc, bối cảnh và tài liệu bổ sung tùy chọn. API đang chạy vẫn nhận V1 + S; chưa có endpoint chỉ S. Đo thời gian truy xuất nhiều đích và tác động gián tiếp để xác nhận giới hạn vận hành trước nghiệm thu.
 - Khi bổ sung tài liệu, giao diện gửi lại các file đầu vào kèm tài liệu mới trong một request đồng bộ để phân tích lại; không yêu cầu lưu trạng thái xử lý trên server.
 - Không sử dụng job nền hoặc API polling trong bản đầu.
 - Giao diện hiển thị đang xử lý, ngăn gửi lặp và không tự gửi lại khi timeout.

@@ -1,6 +1,8 @@
 # Group 4 — Legal Document Change Detection
 
-Dự án POCS phân tích văn bản gốc V1, văn bản sửa đổi S và tài liệu tham chiếu, hỗ trợ sinh viên Luật đối chiếu thay đổi chữ/nghĩa, bằng chứng và mức tác động.
+Dự án POCS hướng tới nhận một văn bản sửa đổi S, tự tìm văn bản/phiên bản đích trong kho pháp luật dân sự nhóm chuẩn bị, phân tích thay đổi trực tiếp và tác động gián tiếp có bằng chứng.
+
+**Code đang chạy khác với mục tiêu:** demo vẫn nhận V1 + S + tham chiếu, chưa bật LightRAG/model, chưa có truy xuất đích hoặc báo cáo cấp S. [Architecture](docs/architecture.md) mô tả mục tiêu; [nền chung](docs/common-baseline.md) ghi khả năng đã có sau PR #7.
 
 Schema Đức Anh đã merge vào main qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2). ComparisonReport giữ comparison_id, base_document, amendment_document, reference_documents, status, results, warnings, errors; mỗi result là AmendmentResult. Dùng tám field_group, category và significance theo validator, không chuyển sang báo cáo phẳng.
 
