@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-11-22T11:20:01.425121+00:00",
+  "base_commit": "0b386c264fa8839977d4f4a678b3f2d701aacb55",
+  "code_sha256": {
+    "backend/app/change_analysis/text_diff.py": "d1c308c1adc484d138e774fe73bee87644a23091ddcbebce7ed65fa4b3afdc2f",
+    "backend/app/change_analysis/semantic_diff.py": "70047168fd566353bc8f63a846bedf46540d1fae589dee4d5629bd1416ad51da",
+    "backend/app/change_analysis/scorer.py": "0887c7056b87beb9ab8a43695f8549fa3750b65fbd1fd251ce29f1c98fcde85a",
+    "test/handoff_suite/run_ngocanh_week10.py": "096dc3a2061243aeb131f949f48d09172a3b383a39618bedf1a3de09a7d4ea9b",
+    "test/handoff_suite/test_ngocanh_week10.py": "da669f27e7915bebc2e6f141c5752a03d5045d3443f602195ffb6695a7e5a8b8"
+  },
+  "input_sha256": {
+    "data/ngocanh-week10/input/ban_giao_ca_dung.json": "977bf32b357ae99eeba574f6a3c5a5867a4451a745bbbdab5ca90bf670445cdc",
+    "data/ngocanh-week10/input/ban_giao_kho_nguon.json": "bacebe0399e8d186831e6e5d4ff0c820ef462e655241ea56bdf1b14756ac847d",
+    "data/raw/case_02/22_2019_TT-NHNN_v1.docx": "fa8cda22bf5babe3681be68e342944c6a7406576a62777535bd822f84371b594",
+    "data/raw/case_02/08_2020_TT-NHNN.docx": "0f9a379a16e409430cfb2a4b45d3984d8d045ecf9fc38242a60fe5b952606417"
+  },
+  "mode": "REAL_SUPPLIED_JSON_AND_DOCX_TESTCLIENT_NO_MODEL_NO_LIGHTRAG",
+  "source_store_matches_repo_docx": true,
+  "runs": [
+    {
+      "case": "case_01",
+      "http_status": 200,
+      "status": "PARTIAL",
+      "items": 2,
+      "text_diff_items": 1
+    },
+    {
+      "case": "case_02",
+      "http_status": 200,
+      "status": "PARTIAL",
+      "items": 1,
+      "text_diff_items": 1
+    },
+    {
+      "case": "case_03",
+      "http_status": 200,
+      "status": "PARTIAL",
+      "items": 13,
+      "text_diff_items": 13
+    }
+  ],
+  "confirmations": {
+    "Tho": "PENDING_HUMAN_REVIEW",
+    "Duc_Anh": "PENDING_QUERY_CONSUMER_RERUN",
+    "Dung": "SCORER_EXECUTED_LOCALLY_HUMAN_REVIEW_PENDING"
+  },
+  "limits": "No independent legal labels, no semantic accuracy benchmark, no live browser or real retrieval verification."
+}

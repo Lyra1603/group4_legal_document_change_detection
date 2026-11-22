@@ -49,8 +49,10 @@ def detect_semantic_changes(item, text_diff, *, context_complete=False):
     for effect in item['effect_info']:
         if effect['needs_review'] or effect['review_reason']:
             reasons.append(effect['review_reason'] or 'Hiệu lực/chuyển tiếp cần kiểm tra.')
+    diff_valid = False
     try:
         validate_text_diff(item, text_diff)
+        diff_valid = text_diff is not None
     except (ValueError, KeyError, TypeError):
         reasons.append('Text Diff thiếu hoặc không khớp ID, nội dung và offset của mục sửa đổi.')
     if not context_complete:
@@ -60,7 +62,8 @@ def detect_semantic_changes(item, text_diff, *, context_complete=False):
     if not before or not after or old_quote is None or new_quote is None:
         reasons.append('Chưa có nguyên văn hai phía đủ căn cứ cho baseline.')
     aspects, meaningful = [], None
-    details = 'Đã tính thay đổi chữ; chưa đủ căn cứ kết luận tác động ngữ nghĩa.'
+    details = ('Đã kiểm tra Text Diff; chưa đủ căn cứ kết luận tác động ngữ nghĩa.' if diff_valid
+               else 'Chưa có Text Diff hợp lệ cho cặp nội dung trước/sau.')
     if not reasons:
         old, new = (unicodedata.normalize('NFC', t).strip() for t in (before, after))
         if old == new:

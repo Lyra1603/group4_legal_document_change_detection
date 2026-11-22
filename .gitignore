@@ -13,3 +13,4 @@ backend/.env.lightrag
 .codex-tmp/ngocanh-py312/
 .codex-tmp/ngocanh-venv/
 .codex-tmp/read_inputs.py
+.codex-tmp/ngocanh-verified-run/

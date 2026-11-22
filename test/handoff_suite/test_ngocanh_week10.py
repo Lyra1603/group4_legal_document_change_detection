@@ -110,6 +110,14 @@ class SemanticHandoffTests(unittest.TestCase):
         self.assertIs(change['is_meaningful_change'], True)
         self.assertEqual(change['aspects'][0]['field_group'], 'TIME_QUANTITY')
         self.assertEqual((change['aspects'][0]['old_value'], change['aspects'][0]['new_value']), ('30 ngày', '15 ngày'))
+        score, = score_changes(result)
+        validate_payload(ScoringResult, score)
+        self.assertEqual(score['change_id'], change['change_id'])
+        self.assertEqual(score['category'], 'TIME_QUANTITY')
+        self.assertIsNone(score['significance'])
+        self.assertIsNone(score['is_critical'])
+        self.assertTrue(score['needs_review'])
+        self.assertIn('rubric', score['review_reason'])
 
     def test_context_flag_does_not_override_upstream_review(self):
         self.assert_unknown(self.analyze(real_handoff()['items'][0], complete=True))
@@ -144,7 +152,9 @@ class SemanticHandoffTests(unittest.TestCase):
         item = synthetic_item()
         for diff in (None, {'amendment_id': 'other', 'changes': []},
                      {'amendment_id': item['amendment_id'], 'changes': []}):
-            self.assert_unknown(self.analyze(item, complete=True, diff=diff))
+            result = self.analyze(item, complete=True, diff=diff)
+            self.assert_unknown(result)
+            self.assertIn('Chưa có Text Diff hợp lệ', result['changes'][0]['diff_details'])
 
     def test_equal_and_equivalent_wording(self):
         for before, after, equal in [('Giữ nguyên.', 'Giữ nguyên.', True),
