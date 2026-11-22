@@ -6,9 +6,42 @@ Tài liệu ghi các quyết định đã chốt và phạm vi áp dụng của 
 
 **Cập nhật phân công ngày 13/11/2026:** Đức Anh duyệt thay đổi từ `bachdung/docs` tại `ad4c272c7f5426bbc9c5891112c8e6cfe4f6f4b0`. Semantic Diff/Scorer chuyển sang Dũng + Đức Anh + Ngọc Anh; Tuấn Anh phụ trách UI/lỗi trả về. Giữ nguyên các quyết định schema, null/PARTIAL, HTTP và phạm vi demo đã chốt. Người làm chính và reviewer từng phần trong nhóm ba người còn cần xác nhận.
 
+## Phạm vi cập nhật ngày 20/11/2026
+
+Căn cứ [ghi chú buổi học 17/11](https://docs.google.com/document/d/1MzAXePwcTFb18FKzVs5J4jh8rc9Qz1CwCf1u7wW2Mrw/edit), BRD/SRS của Dũng tại PR #9 (`e745237`) và xác nhận của Đức Anh. Các mốc 12–13/11 bên trên là lịch sử. Các quyết định dưới đây mở rộng nghiệp vụ; không xác nhận code đã hiện thực. Code căn cứ sau PR #7 là main `95e1d79`.
+
+1. Đầu vào mục tiêu là một S, bối cảnh và nguồn bổ sung tùy chọn. Phân tích trên kho dân sự nhóm chọn và nguồn người dùng bổ sung được kiểm tra hợp lệ; chưa tự tìm Internet. Ngoài kho hoặc thiếu nguồn thì giữ yêu cầu và báo giới hạn/yêu cầu bổ sung.
+2. Một S có thể sửa nhiều văn bản. Phân tích từng đích rồi tổng hợp; một đích chưa xử lý không làm mất kết quả hữu ích của đích khác.
+3. Chọn phiên bản V1 theo định danh, nguồn và căn cứ thời điểm/phạm vi áp dụng. Không tự chọn bản mới nhất; thiếu căn cứ hoặc nhiều ứng viên thì giữ ứng viên/lý do cần kiểm tra.
+4. Tác động gián tiếp phải chỉ ra điều khoản B sử dụng phần nào của V1, phần sửa đổi ảnh hưởng cách hiểu/áp dụng B thế nào và bằng chứng. Có liên quan chưa phải có tác động; không tự kết luận B bị sửa hoặc hết hiệu lực.
+5. Ba mục đích retrieval: tìm đích/phiên bản từ S, tìm ngữ cảnh trước Semantic, tìm B để kiểm chứng tác động. Tra cứu định danh chính xác trước, retrieval bổ sung ứng viên; kiểm tra nguồn trước suy luận và kiểm tra đầu ra trước báo cáo.
+6. Kho nguồn/chỉ mục kho được giữ qua các lượt; S/nguồn bổ sung/index tạm cách ly theo lượt và dọn riêng. Không xóa kho dùng chung khi cleanup một comparison. Client hiện tại chưa đáp ứng vòng đời kho bền vững.
+
+Phân công LK-01 giữ nguyên; owner/task và hợp đồng chi tiết của chức năng mới cần thống nhất với bên giao/nhận. Chưa chọn thêm database, model, đa agent, API polling hoặc ngưỡng nghiệm thu. Cách biểu diễn đầy đủ báo cáo cấp S và validator cần triển khai theo SRS §1.8; không thêm trường vào schema cũ trong đợt này.
+
+## Đồng bộ ý kiến Dũng và Đức Anh về Use Case ngày 20/11/2026
+
+Căn cứ bảng 16 mục giữa hai mốc ngày trong [tài liệu trao đổi](https://docs.google.com/document/d/1_yboGOxhh74KGzSSFjDURpfuHcxplfGGYvCvFgutswA/edit?tab=t.0). Với ô có một người viết, áp dụng ý kiến đó. Ý Dũng tại mục 7 chưa hoàn chỉnh nên áp dụng phần Đức Anh viết. Bảng dưới cập nhật yêu cầu mục tiêu; hiện trạng code tiếp tục theo common-baseline.md.
+
+| Mục nguồn | Quyết định áp dụng |
+| --- | --- |
+| 1 | Giữ nhóm ưu tiên/bổ sung theo BRD. Những người trực tiếp dùng hệ thống là actor chính tương ứng với vai trò tương tác. |
+| 2, 5 | Thiếu V1 thì yêu cầu bổ sung. V1 sai thì nêu dấu hiệu, yêu cầu thay file và kiểm tra lại. Khi người dùng chọn “Hiện tại không có tài liệu”, tiếp tục phân tích từ S và nguồn hợp lệ sẵn có, giữ kết luận có căn cứ và giới hạn, đồng thời giữ kết quả đích khác. |
+| 3, 4 | Phân biệt thiếu nguồn dân sự trong kho với ngoài phạm vi hỗ trợ. Phạm vi cần có căn cứ; chưa chắc chắn thì yêu cầu làm rõ. S nhiều lĩnh vực được xử lý theo từng đích, tiếp tục phần dân sự đủ căn cứ. |
+| 6 | Liệt kê văn bản đích và báo mức đủ/thiếu nguồn theo văn bản, yêu cầu và điều khoản. Nhiều phiên bản ứng viên của cùng văn bản cần căn cứ lựa chọn riêng. |
+| 7 | Tài liệu ngữ cảnh và B có hai vai trò, một nguồn có thể mang cả hai. Tác động cần chỉ rõ quy định B sử dụng phần nào của V1, ảnh hưởng và bằng chứng. |
+| 8, 9 | UI chọn tô nền/chữ đậm/đánh dấu kèm nhãn, hỗ trợ nhận biết ngoài màu sắc. Hiển thị chuỗi căn cứ chọn V1, trước/sau, nhận định, liên hệ B khi có, kết luận và giới hạn. |
+| 10, 11 | Bổ sung tạo lượt phân tích mới trong cùng trải nghiệm UI. Cleanup tài nguyên backend vẫn cho phép xem báo cáo/bằng chứng nhiều lần. “Kết thúc phiên” xóa trạng thái, báo cáo và lựa chọn trên UI. |
+| 12, 13 | Nhận xét là mở rộng. Hoàn tất xét theo đầu ra đúng phạm vi, bằng chứng và giới hạn. Nghiệm thu chất lượng đúng/sai độc lập với trạng thái chạy SUCCESS/PARTIAL/FAILED. |
+| 14 | Bổ sung E4 cho thử lại chủ động. Dùng dữ liệu trung gian hợp lệ còn lưu để tiếp tục; nếu đã cleanup hoặc không còn hợp lệ thì chạy lượt mới. Cần đặc tả điểm tiếp tục, tác vụ còn chạy và kiểm soát gửi trùng. |
+| 15 | E6 giữ ở mức đề xuất như DOCX và ý Đức Anh. Nếu đưa vào bản đầu, chốt hành vi dừng, trạng thái tác vụ còn chạy và cleanup trước khi nghiệm thu. |
+| 16 | Mỗi luồng/nhánh đã chốt có đầu vào và kết quả kỳ vọng trong kế hoạch kiểm thử. Nhánh chưa được chốt giữ trạng thái đề xuất. Khi cả hai chưa có ý kiến về một hành vi, ưu tiên nội dung DOCX, gồm cả trạng thái đề xuất ghi trong đó. |
+
+SRS §4.1–4.2 cụ thể hóa tương tác; kế hoạch kiểm thử ánh xạ về M1–M11, A1–A3 và E1–E6. Kết quả từ S khi thiếu V1 cần hợp đồng cấp S hỗ trợ nguồn và giới hạn; contract cục bộ tiếp tục được kiểm tra theo validator hiện có.
+
 ## Quyết định dùng schema Đức Anh làm hợp đồng chung
 
-Dùng [contracts.py](../backend/app/schemas/contracts.py) và validator đã merge vào main qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2). Giữ cấu trúc mã nguồn theo main và phân công theo chức năng. Nhóm dùng fixture để phát triển bán song song và kiểm tra lại bằng đầu ra thật tại điểm nối. Phép đánh giá ghép dự đoán với nhãn theo matching 1–1 trước, 1–n bổ sung khi hoàn thành baseline. Quan hệ một chỉ dẫn với nhiều đích được giữ theo LK-05.
+Ở cấp báo cáo từng đích, dùng [contracts.py](../backend/app/schemas/contracts.py) và validator đã merge vào main qua [PR #2](https://github.com/Lyra1603/group4_legal_document_change_detection/pull/2). Giữ cấu trúc mã nguồn theo main và phân công theo chức năng. Nhóm dùng fixture để phát triển bán song song và kiểm tra lại bằng đầu ra thật tại điểm nối. Phép đánh giá ghép dự đoán với nhãn theo matching 1–1 trước, 1–n bổ sung khi hoàn thành baseline. Quan hệ một chỉ dẫn với nhiều đích được giữ theo LK-05.
 
 ## A. Quyết định của owner về cách triển khai
 
@@ -18,7 +51,7 @@ Dùng bộ chuyển PDF và Parser DOCX hiện có làm nền phiên 1. Adapter 
 
 ### CN-03 — Chunking, query và chọn ngữ cảnh
 
-Chuẩn bị nguồn và chỉ mục song song với Linker/Text Diff. Ghép truy vấn khi hai nhánh sẵn sàng theo LK-06.
+Trong lõi từng đích, chuẩn bị nguồn/index tạm song song với Linker/Text Diff và ghép query ngữ cảnh khi đủ dữ liệu theo LK-06. Truy xuất đích từ S và tìm B là hai bước khác, không phụ thuộc TextDiffResult. Kho dùng chung được lập chỉ mục trước lượt chạy; không nhập lại toàn kho cho mỗi item.
 
 ### CN-04 — Cấu hình LightRAG và tài nguyên
 
@@ -69,7 +102,7 @@ Adapter ánh xạ đầu ra native của Parser sang `ExtractedDocument`, `Sourc
 
 ### LK-04 — Định danh, nguồn và offset
 
-Dùng `v1`/BASE, `s`/AMENDMENT và ID riêng cho từng REFERENCE. `EvidenceRef` chứa `document_id`, `source_refs`, `quote`. Giữ `block:N` khi trỏ đúng khối và quote khớp nguồn. Text Diff dùng offset ký tự Python theo khoảng nửa mở trên đúng chuỗi trước/sau.
+Trong mỗi ComparisonReport cục bộ dùng `v1`/BASE, `s`/AMENDMENT và ID riêng cho từng REFERENCE. Cấp S cần ánh xạ (target_id, ID nguồn cục bộ) về định danh văn bản/phiên bản thật và snapshot kho; filename/số Điều không phải khóa toàn kho. `EvidenceRef` chứa `document_id`, `source_refs`, `quote`. Giữ `block:N` khi trỏ đúng khối và quote khớp nguồn. Text Diff dùng offset ký tự Python theo khoảng nửa mở trên đúng chuỗi trước/sau.
 
 ### LK-05 — Chỉ dẫn sửa đổi và nội dung trước/sau
 
@@ -83,9 +116,9 @@ Chỉ dùng `QUOTED` khi toàn bộ đoạn sau là nguyên văn từ S. Dùng `
 
 ### LK-06 — Context song song Text Diff, ghép query trước Semantic Diff
 
-Chuẩn bị Context và chỉ mục song song với Linker → Text Diff. Khi hai nhánh có đủ dữ liệu, ghép chỉ dẫn, trước/sau và vùng chữ đổi để truy xuất, kiểm tra nguồn và cung cấp `AnalysisContext` cho Semantic Diff. [Architecture §4.1](architecture.md#41-một-lượt-phân-tích) giữ sơ đồ chi tiết.
+Đoạn này áp dụng query ngữ cảnh của lõi từng đích, sau khi đã tìm đúng V1. Chuẩn bị Context và chỉ mục tạm song song với Linker → Text Diff; kiểm tra readiness của chỉ mục kho đã có, không nhập lại toàn kho. Khi hai nhánh có đủ dữ liệu, ghép chỉ dẫn, trước/sau và vùng chữ đổi để truy xuất, kiểm tra nguồn và cung cấp `AnalysisContext` cho Semantic Diff. [Architecture §4.1](architecture.md#41-một-lượt-phân-tích) giữ sơ đồ chi tiết.
 
-Đây là luồng mục tiêu được giữ nguyên. Bridge hiện chạy Context song song Text Diff nhưng query chưa nhận `TextDiffResult`; việc tách index/query và ghép vùng đổi là task sau merge của Đức Anh + Dũng, phối hợp Ngọc Anh. Demo hiện tắt retrieval, không báo đã hoàn thành LK-06/LK-13.
+Bridge hiện tách `context_prepare(item)` để chuẩn bị chỉ mục song song Text Diff, rồi gọi `context_work(item, text_diff)` để truy vấn sau khi cả hai hoàn tất. Query nhận chỉ dẫn, trước/sau và vùng chữ đổi; kiểm tra ID, offset và nội dung diff tại điểm nối nội bộ, không đổi schema/validator chung. Nếu index lỗi, bỏ qua query và giữ cảnh báo cho Semantic. Việc chuẩn bị chỉ mục từ Adapter song song cả Linker vẫn thuộc tích hợp Pipeline tiếp theo; demo hiện tắt retrieval. Kiểm thử HTTP mô phỏng không xác nhận hoàn thành LK-13 hoặc dịch vụ thật.
 
 ### LK-07 — Text Diff → Semantic Diff
 
@@ -107,7 +140,9 @@ Ca fixture chung `deadline_reduction` (30 → 15 ngày) dùng mức độ `null`
 
 ### LK-11 — Báo cáo Pipeline → API/frontend
 
-API trả `ComparisonReport` gồm kết quả theo `AmendmentResult`. Đầu vào hiện dùng `doc_v1`, `doc_s` và `reference_files` nếu có. Frontend hiện đoạn trích và vị trí từ bằng chứng trong báo cáo của lượt đang mở. Xem [Architecture §4.3](architecture.md#43-vị-trí-lưu-và-vòng-đời) về vòng đời nguồn.
+API đang chạy trả `ComparisonReport` gồm kết quả theo `AmendmentResult`. Đầu vào hiện dùng `doc_v1`, `doc_s` và `reference_files` nếu có. Frontend hiện đoạn trích và vị trí từ bằng chứng trong báo cáo của lượt đang mở. Xem [Architecture §4.3](architecture.md#43-vị-trí-lưu-và-vòng-đời) về vòng đời nguồn.
+
+API mục tiêu nhận S và trả báo cáo cấp S theo SRS §1.8, bao các ComparisonReport cục bộ, yêu cầu chưa giải quyết, tác động gián tiếp và phạm vi. Endpoint/payload/schema/validator/fixture cấp S chưa được triển khai; phải review trước khi đổi bên giao/nhận. API cũ không tự trở thành API chỉ S khi tài liệu được merge.
 
 Điểm chạy nền chung là `backend.demo:app` (HTML/CSS/JavaScript, DOCX). `backend.main:app` vẫn chưa gắn runner. Không yêu cầu nối lại main hoặc chuyển sang React trước merge nền; hướng frontend chính thức giữ theo SRS, việc mở rộng thực hiện sau.
 
@@ -124,5 +159,7 @@ HTTP và trạng thái report tách biệt: xử lý hợp lệ, hoàn tất nh�
 ### LK-13 — LightRAG HTTP và vòng đời dữ liệu
 
 LightRAG Server riêng, backend gọi qua HTTP. Dũng và Đức Anh phụ trách tích hợp. Phạm vi chính là retrieval và kiểm chứng nguồn. Phiên 1 dùng fixture/mock để kiểm tra điểm nối, kết quả chạy làm căn cứ chốt release, endpoint, payload, cách ly và vòng đời chỉ mục.
+
+Kho dân sự và index kho được giữ qua nhiều analysis. Chỉ dọn nguồn/index tạm thuộc lượt đang xử lý; lỗi retrieval/rỗng không chứng minh thiếu văn bản hoặc không có tác động. Client hiện tại dành server/storage riêng cho một comparison, chưa hỗ trợ kho bền vững dùng chung; phải thiết kế binding/vòng đời mới và kiểm chứng trước khi bật kho thật. Xem Architecture §4.3.
 
 Client thử nghiệm đã pin upstream tại `28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c`; đó là mốc đã dùng để đọc API và viết adapter, chưa là nghiệm thu dịch vụ thật hoặc lựa chọn triển khai cuối. Giữ [báo cáo thử nghiệm](lightrag-integration-report.md) và [bằng chứng demo](local-web-demo.md) với mốc/lệnh/giới hạn; không mô tả mock là retrieval thành công. Bộ fixture chung duy nhất ở `data/module_handoff_fixtures/`, lấy 9 điểm nối của Dũng, sửa nhãn/trạng thái theo LK-10/12 và thêm ca lỗi. [Provenance](../data/module_handoff_fixtures/provenance.json) ghi nguồn và các khác biệt.

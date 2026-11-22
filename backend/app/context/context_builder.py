@@ -3,7 +3,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 import json
 
-from ..schemas.contracts import AnalysisContext, AmendmentItem
+from ..schemas.contracts import AnalysisContext, AmendmentItem, TextDiffResult
 from ..schemas.report_validation import validate_payload, validate_sources
 from .lightrag_client import LightRAGClient, RetrievalError
 from .source_registry import SourceRegistry
@@ -27,12 +27,12 @@ def _failure(item, code, retrieved=None):
     return ContextBuild(result, [issue], retrieved)
 
 
-def prepare_context(item: AmendmentItem, registry: SourceRegistry,
-                    client: LightRAGClient | None) -> ContextBuild:
-    """Index once per session, then retrieve; preserve index error codes.
+def prepare_index(item: AmendmentItem, registry: SourceRegistry,
+                  client: LightRAGClient | None) -> ContextBuild:
+    """Prepare the index without querying; safe to run alongside Text Diff.
 
-    Intended as context_work inside the parallel join. The runner still owns
-    cleanup and must append CLEANUP_PENDING as a ProcessingIssue if returned.
+    The client deduplicates index submissions within a comparison. The runner
+    owns cleanup and must report CLEANUP_PENDING if cleanup returns it.
     """
     validate_payload(AmendmentItem, item)
     validate_sources(item, registry.documents)
@@ -41,26 +41,87 @@ def prepare_context(item: AmendmentItem, registry: SourceRegistry,
             client.index(list(registry.chunks.values()))
         except RetrievalError as exc:
             return _failure(item, exc.code)
-    return build_context(item, registry, client)
+    return ContextBuild(deepcopy(item), [], None)
+
+
+def prepare_context(item: AmendmentItem, registry: SourceRegistry,
+                    client: LightRAGClient | None, *,
+                    text_diff: TextDiffResult | None = None) -> ContextBuild:
+    """Sequential convenience wrapper; the parallel bridge uses prepare_index."""
+    prepared = prepare_index(item, registry, client)
+    if prepared.issues:
+        return prepared
+    return build_context(prepared.amendment, registry, client, text_diff=text_diff)
+
+
+def validate_query_diff(item: AmendmentItem, text_diff: TextDiffResult) -> None:
+    """Check the local handoff against the exact before/after strings.
+
+    This does not change the shared schema/validator. In particular, a diff
+    from another amendment or another pair of strings must not drive retrieval.
+    """
+    validate_payload(TextDiffResult, text_diff)
+    if text_diff['amendment_id'] != item['amendment_id']:
+        raise ValueError('Text Diff amendment ID mismatch')
+    before, after = item['before_text'], item['after_text']
+    if not isinstance(before, str) or not isinstance(after, str):
+        raise ValueError('Query requires known before/after text')
+    old_cursor = new_cursor = 0
+    for change in text_diff['changes']:
+        old_start, old_end = change['old_start'], change['old_end']
+        new_start, new_end = change['new_start'], change['new_end']
+        if not (old_cursor <= old_start <= old_end <= len(before)
+                and new_cursor <= new_start <= new_end <= len(after)):
+            raise ValueError('Text Diff offsets are invalid or unordered')
+        if (before[old_start:old_end] != change['old_text']
+                or after[new_start:new_end] != change['new_text']
+                or before[old_cursor:old_start] != after[new_cursor:new_start]):
+            raise ValueError('Text Diff does not match before/after text')
+        old, new = change['old_text'], change['new_text']
+        valid_type = {'INSERT': not old and bool(new),
+                      'DELETE': bool(old) and not new,
+                      'REPLACE': bool(old) and bool(new) and old != new}
+        if not valid_type[change['type']]:
+            raise ValueError('Text Diff operation does not match its text')
+        old_cursor, new_cursor = old_end, new_end
+    if before[old_cursor:] != after[new_cursor:]:
+        raise ValueError('Text Diff does not cover all changed text')
+
+
+def build_retrieval_query(item: AmendmentItem, text_diff: TextDiffResult) -> str:
+    """Serialize source data, including changed spans; never invent legal intent."""
+    validate_query_diff(item, text_diff)
+    return json.dumps({
+        'task': 'Find related source clauses, not legal conclusions',
+        'amendment_id': item['amendment_id'],
+        'instruction': item['instruction']['quote'],
+        'instruction_source': item['instruction'],
+        'target_document': item['target_document'],
+        'target_locator': item['target_locator'],
+        'before_text': item['before_text'],
+        'after_text': item['after_text'],
+        'text_diff': text_diff,
+    }, ensure_ascii=False)
 
 
 def build_context(item: AmendmentItem, registry: SourceRegistry,
-                  client: LightRAGClient | None) -> ContextBuild:
+                  client: LightRAGClient | None, *,
+                  text_diff: TextDiffResult | None = None) -> ContextBuild:
     validate_payload(AmendmentItem, item)
     validate_sources(item, registry.documents)
     result = deepcopy(item)
     if client is None:
         return ContextBuild(result, [], None)
+    if text_diff is None:
+        return _failure(item, 'TEXT_DIFF_UNAVAILABLE')
+    try:
+        query = build_retrieval_query(item, text_diff)
+    except ValueError:
+        return _failure(item, 'TEXT_DIFF_INVALID')
     retrieved = None
     try:
         # Treat documents as untrusted data. The query supplies no execution/tool
         # instructions, and the adapter ignores generated descriptions/answers.
-        query = json.dumps({"task": "Find related source clauses, not legal conclusions",
-                            "instruction": item["instruction"]["quote"],
-                            "target_document": item["target_document"],
-                            "target_locator": item["target_locator"],
-                            "before_text": item["before_text"],
-                            "after_text": item["after_text"]}, ensure_ascii=False)
         retrieved = client.query(query)
         evidence = [registry.evidence(chunk) for chunk in retrieved["chunks"]]
         if not evidence:

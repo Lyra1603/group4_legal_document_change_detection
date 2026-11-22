@@ -1,7 +1,7 @@
 # Kế hoạch kiểm thử và đánh giá
 
 **Dự án:** Legal Document Change Detection — POCS, Nhóm 4
-**Phiên bản:** 0.1 — Khung chuẩn bị song song với quyết định và đặc tả module
+**Phiên bản:** 0.2 — Bổ sung ca Use Case theo ý kiến Dũng–Đức Anh ngày 20/11/2026
 **Ngày tạo:** 08/11/2026
 **Trạng thái:** Khung kế hoạch đang hoàn thiện; Đức Anh điều phối. Hiện xác định cách đánh giá; tạm lấy Change F1 ≥ 90% và Critical Change Recall ≥ 95%. Đây là các ngưỡng dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md, chưa phải ngưỡng nghiệm thu chính thức; hợp đồng schema chung đã chốt, adapter/fixture nghiệp vụ và chi tiết phép đo còn chờ hoàn thiện.
 
@@ -9,11 +9,25 @@
 
 Tài liệu quy định cách chuẩn bị và thực hiện kiểm thử module, kiểm tra điểm nối, kiểm tra toàn luồng và đánh giá chất lượng phương pháp. Viết khung từ sớm để yêu cầu kiểm chứng được xem xét khi owner đề xuất cách triển khai, không chờ toàn bộ module.md hoàn thành.
 
-Đầu vào nghiệp vụ là V1, văn bản sửa đổi S và tài liệu tham chiếu khi cần. S chứa chỉ dẫn sửa đổi, không mặc định là bản V2 đầy đủ. Kế hoạch bao gồm cả xử lý thành công, thiếu căn cứ, chưa xác định và thất bại.
+Đầu vào mục tiêu là S cùng kho dân sự cố định và nguồn bổ sung nếu có. V1 + S + tham chiếu vẫn là đầu vào của lõi/demo hiện có để kiểm thử hồi quy. S chứa chỉ dẫn sửa đổi, không mặc định là bản V2 đầy đủ. Kế hoạch bao gồm cả xử lý thành công, thiếu căn cứ, chưa xác định và thất bại.
 
 Đây là kế hoạch của POCS. Việc lấy ý kiến người dùng của HCI được quản lý theo dự án HCI; không mặc định biến thành yêu cầu đánh giá riêng của POCS.
 
 Không triển khai lại một module Evaluator độc lập. Có thể dùng test hoặc script để tính số đo; mỗi phép đo phải có dữ liệu, quy tắc và kết quả kiểm chứng được.
+
+### Cập nhật kiểm chứng cho nghiệp vụ chỉ S — 20/11/2026
+
+Giữ các ca V1–S phía dưới làm kiểm thử lõi/hồi quy. Nghiệm thu mới cần cố định snapshot kho dân sự, nguồn/phiên bản và gold được review độc lập; không nhập đáp án hoặc kết quả mong đợi vào index.
+
+| Lớp đánh giá | Ca cần có và bằng chứng |
+| --- | --- |
+| Truy xuất đích/phiên bản | Chỉ S, nhiều đích, đúng số hiệu nhưng sai phiên bản, nhiều ứng viên, thiếu bản/ngoài kho. Đối chiếu gold đích/phiên bản/điều khoản và lý do cần kiểm tra |
+| Thay đổi trực tiếp | Trước/sau cùng đơn vị, nghĩa/mức độ/nguồn; đo cả khi V1 do hệ thống tìm. Lỗi tìm sai V1 làm mất thay đổi phải tính vào lỗi đầu cuối |
+| Tác động gián tiếp | Có B chịu tác động dù S/V1 không nêu B; B liên quan nhưng không chịu tác động; quan hệ suy ra chưa đủ căn cứ. Review đúng điều khoản B, liên kết về thay đổi gốc, giải thích và trích dẫn |
+| Coverage và lỗi | Phân biệt đã rà soát không thấy với chưa chạy, retrieval rỗng/lỗi hoặc kho thiếu. Một đích lỗi vẫn giữ kết quả đích khác |
+| Nguồn và vòng đời | Hai lượt cùng dùng kho, nguồn tải lên không lẫn, cleanup chỉ dọn tạm và không xóa kho/index chung; quote về đúng phiên bản |
+
+Báo riêng chất lượng truy xuất, thay đổi trực tiếp, tác động gián tiếp và đầu cuối; TP/FP/FN và quy tắc matching gián tiếp cần chốt trên gold trước khi tính. Đo độ trễ, độ ổn định, chi phí và truy vết trên cùng dữ liệu khi bật/tắt retrieval. Không tự đặt ngưỡng nghiệm thu mới. Kiểm thử HTTP mô phỏng và dịch vụ thật phải ghi tách biệt. Bộ mẫu cụ thể, phương pháp gán nhãn tác động, giới hạn quan hệ và ngưỡng vẫn còn mở.
 
 ## 2. Quan hệ với các tài liệu khác
 
@@ -92,7 +106,7 @@ Mỗi module chọn các ca liên quan; không bắt buộc mọi test gọi mô
 
 ### Bộ ca bàn giao phiên 1
 
-**Nền merge và kế hoạch mở rộng:** bộ chung hiện có 9 file deadline_reduction, 2 ca chặn query và 6 ca lỗi (17 JSON ca), cùng provenance. Ca chung giữ mức độ null và PARTIAL; expected Semantic là giả định kỹ thuật, chưa là nhãn review hoặc output demo. Các ca bên dưới là kế hoạch sau merge, không đòi 45 JSON trước khi dùng nền DOCX. case_06/07/08 ở nhánh Dũng 6dbda8d, chưa nhập local đợt này; cần lấy nguồn và kiểm chứng PDF trước khi dùng. Test nguồn/contract, module thật và dịch vụ thật được báo riêng theo [nền chung](common-baseline.md).
+**Nền merge và kế hoạch mở rộng:** bộ chung hiện có 9 file deadline_reduction, 2 ca chặn query và 6 ca lỗi (17 JSON ca), cùng provenance. Ca chung giữ mức độ null và PARTIAL; expected Semantic là giả định kỹ thuật, chưa là nhãn review hoặc output demo. Các ca bên dưới là kế hoạch sau merge, không đòi 45 JSON trước khi dùng nền DOCX. Các case PDF đã vào main sau PR #5; chưa là kho dân sự đã duyệt hoặc bằng chứng PDF xuyên luồng. Test nguồn/contract, module thật và dịch vụ thật được báo riêng theo [nền chung](common-baseline.md).
 
 Một mã ca xuất hiện ở cả 9 thư mục trong [bộ fixture](../data/module_handoff_fixtures/README.md). Mỗi file ghi input và output mong đợi hoặc điều kiện bỏ qua kèm lý do. Danh sách tên ca phải trùng nhau giữa 9 thư mục. Khi đủ bộ dự kiến sẽ có 5 ca × 9 điểm nối = 45 JSON.
 
@@ -105,6 +119,30 @@ Một mã ca xuất hiện ở cả 9 thư mục trong [bộ fixture](../data/mo
 | Thiếu đích | Biến thể ca sửa cục bộ | Giữ chỉ dẫn, lý do cần kiểm tra và mục báo cáo. Bỏ qua bước thiếu điều kiện | Chuẩn bị sau khi hoàn thiện docs |
 
 Tách ba kết quả khi báo cáo: fixture qua contract, tích hợp với đầu ra thật, và đánh giá chất lượng trên dữ liệu có nhãn. Điều phối đánh giá do Đức Anh phụ trách. Sau phiên 1, dùng báo cáo từng module để bổ sung ca lỗi và tiêu chí chấm còn mở.
+
+### Ca nghiệm thu theo Use Case sau đối chiếu ngày 20/11/2026
+
+Căn cứ quyết định trong Decision và SRS UI-01–UI-10. Mỗi ca ghi snapshot kho, đầu vào, thao tác người dùng, kết quả quan sát được, nguồn kỳ vọng, trạng thái dự kiến và chất lượng đúng/sai được review độc lập. Các dòng dưới là ca cần triển khai; chưa xác nhận code đã đạt. Mã M/A/E dẫn về khung Use Case, với các nhánh được cập nhật theo ý kiến Dũng–Đức Anh. Những yêu cầu E1/E2/E3/E5 đã có ở docs được kiểm thử trong phạm vi hành vi tương ứng; các chi tiết đề xuất còn lại giữ trạng thái đề xuất.
+
+| Ca | Nhánh và mục ý kiến | Đầu vào/thao tác | Kết quả mong đợi |
+| --- | --- | --- | --- |
+| UC-M01 | M1–M6; mục 1, 7 | Người dùng thuộc nhóm ưu tiên hoặc bổ sung nộp S, kho đủ V1 và nguồn ngữ cảnh/B | Quyền tương tác tương ứng; tìm đúng phiên bản, dựng trước/sau; nguồn có thể có cả hai vai trò; tác động B có quy định và căn cứ kiểm chứng. |
+| UC-M02 | M7–M9; mục 8, 9 | Mở nhiều kết luận và bằng chứng, có ca tác động B và ca thiếu V1 | Phần liên quan được đánh dấu kèm nhãn; xem được chuỗi căn cứ và mắt xích thiếu. Cách tô nền/chữ đậm do UI chọn. |
+| UC-M03 | M9–M11; mục 11, 12 | Xem lại báo cáo sau cleanup, rồi chọn “Kết thúc phiên”; có/không góp ý | Xem được bằng chứng đã trả trước khi kết thúc; kết thúc xóa trạng thái/lựa chọn/báo cáo trên UI. Góp ý không quyết định hoàn tất. |
+| UC-A01 | A1; mục 2 | S có đích dân sự chưa có V1 trong kho; bổ sung V1 đúng | Yêu cầu bổ sung rõ văn bản/phiên bản/điều khoản; kiểm tra nguồn, tạo lượt mới trong cùng UI và phân tích trên V1 bổ sung. |
+| UC-A02 | A1; mục 2 | Cùng ca trên, chọn “Hiện tại không có tài liệu” | Phân tích từ S và nguồn sẵn có, trả nhận định có căn cứ và giới hạn; trước/sau chưa xác định được ghi rõ; giữ kết quả đích khác. |
+| UC-A03 | A2; mục 5 | Gửi V1 không khớp, sau đó thay V1 đúng hoặc chọn chưa có tài liệu | Nêu dấu hiệu không khớp, yêu cầu thay file; kiểm tra lại khi gửi đúng; lựa chọn chưa có tài liệu xử lý như UC-A02. |
+| UC-A04 | A3; mục 3, 4 | So sánh ba ca: dân sự chưa có trong kho, thực sự ngoài phạm vi, phạm vi chưa chắc chắn | Ca thứ nhất cho bổ sung; ca thứ hai báo lý do ngoài phạm vi; ca thứ ba yêu cầu làm rõ. Retrieval rỗng/lỗi không được coi là căn cứ xác định ngoài dân sự. |
+| UC-A05 | M3–M5/A3; mục 4, 6 | S nhiều đích, có đích dân sự và ngoài phạm vi; 8 điều khoản đích mới có nguồn cho 3 | Tiếp tục các đích dân sự đủ căn cứ; nêu 5 điều khoản thiếu và đếm riêng văn bản/yêu cầu/điều khoản. Thử các mức bổ sung 0–5 điều khoản, đối chiếu coverage và nhận định tương ứng. |
+| UC-E01 | E1; kiểm tra đầu vào hiện có | S hoặc V1 bổ sung hỏng, sai định dạng hoặc không đọc được | Báo đúng file và hướng thay file; chỉ xử lý phần có nguồn hợp lệ. Chi tiết khôi phục tương tác bổ sung cần fixture. |
+| UC-E02 | E2; mục 6 | Một văn bản đích có nhiều phiên bản ứng viên, thiếu căn cứ lựa chọn | Giữ ứng viên và yêu cầu làm rõ; chưa gán bừa phiên bản; giữ kết quả các đích khác. |
+| UC-E03 | E3; mục 7, 10 | Thiếu nguồn ngữ cảnh hoặc B; sau đó bổ sung; giả lập lượt mới lỗi | Nêu phần thiếu, phân biệt vai trò nguồn; bổ sung tạo lượt mới trong cùng UI; báo cáo trước vẫn xem được khi lượt mới lỗi. |
+| UC-E04 | E4; mục 14 | Lỗi dịch vụ ở bước xử lý; người dùng thử lại. Chạy hai ca còn dữ liệu hợp lệ và đã cleanup | Thông báo bước lỗi; tiếp tục từ dữ liệu hợp lệ còn lưu hoặc tạo lượt mới khi cần, ghi rõ phần chạy lại. Tránh gửi trùng hoặc hai tác vụ cùng tạo kết quả cuối. |
+| UC-E05 | E5; xem bằng chứng | Giả lập bằng chứng chưa mở được; thử mở lại | Báo phần chưa truy cập được, giữ nguồn thật; khi khôi phục thì cho xem lại. Ghi chưa đạt điều kiện xem bằng chứng nếu lỗi còn tồn tại. |
+| UC-E06 | E6; mục 15 | Đề xuất hủy trước khi có kết quả | Giữ là đề xuất. Nếu nhóm đưa vào bản đầu, bổ sung kỳ vọng dừng bước tiếp theo, trạng thái backend còn chạy và cleanup trước khi dùng làm ca nghiệm thu. |
+| UC-Q01 | Điều kiện thành công/thất bại; mục 12, 13 | Báo cáo chạy SUCCESS nhưng có kết luận sai hoặc trích dẫn sai trong bộ gold | Ghi lỗi chất lượng trong nghiệm thu, đối chiếu trạng thái chạy riêng. Báo cáo thiếu phần có thể là PARTIAL theo SRS; chỉ số chất lượng vẫn tính sai/bỏ sót. |
+
+Mục 16 của bảng trao đổi được đáp ứng bằng ánh xạ ca trên và việc bổ sung input/output cụ thể khi triển khai. Khi cả hai chưa có ý kiến, dùng khung DOCX làm tham chiếu cùng trạng thái đã chốt/đề xuất của nó. Mỗi fixture cần chỉ rõ kỳ vọng nào đã chốt; reviewer cập nhật ca nếu nhóm thay đổi quyết định.
 
 ## 7. Mẫu hoàn thiện từng ca kiểm tra
 
