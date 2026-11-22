@@ -1,6 +1,6 @@
 # Yêu cầu bàn giao từ Thọ và đầu ra phân tích của Ngọc Anh
 
-> Cập nhật 16/11/2026: đây là tài liệu đề xuất ngày 07/11. Đã nhận bộ JSON thật trong `dau_ra.zip`, đối chiếu kho nguồn với DOCX case_02 và sinh đầu ra bằng module backend. Xem [báo cáo tuần 10](ngocanh-week10-work-report.md) để biết kết quả và các xác nhận còn chờ. Theo phân công tuần 10, Ngọc Anh làm chính Text Diff/Semantic; Dũng làm Scorer. Mức tác động chưa được duyệt giữ null theo LK-10.
+> Đây là tài liệu đề xuất ngày 07/11/2026. Xem [báo cáo bàn giao hiện tại](ngocanh-civil-review.md) để biết kết quả, phạm vi và các xác nhận còn chờ.
 
 Ngày cập nhật: 07/11/2026.
 
@@ -211,7 +211,7 @@ review_reason   Các lý do cần kiểm tra tổng hợp
 
 Chưa hoàn tất: phân tích tổng quát tám nhóm, nhiều SemanticChange độc lập, tự chấm MEDIUM/CRITICAL, phương pháp ngữ nghĩa thứ hai và tích hợp trên dữ liệu thật. Adapter không tự đọc file, tìm đích hoặc xác minh hiệu lực.
 
-Bộ kiểm thử hiện tại dùng dữ liệu synthetic để kiểm tra hành vi phần mềm; chưa chứng minh chất lượng pháp lý và chưa đủ để công bố F1/Critical Recall. Xem thêm [tài liệu bàn giao hiện trạng](ngocanh-handover.md).
+Bộ kiểm thử mô tả ở đây dùng dữ liệu synthetic để kiểm tra hành vi phần mềm. Xem [báo cáo bàn giao hiện tại](ngocanh-civil-review.md) để biết kết quả chạy trên dữ liệu thật.
 
 ## 7. Checklist nhận và bàn giao
 

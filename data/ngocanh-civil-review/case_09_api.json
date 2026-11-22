@@ -1,0 +1,1063 @@
+{
+  "case_id": "case_09",
+  "source_revision": "33aeeec1c3681d8247d382689ac3f139d2727824",
+  "input_sha256": {
+    "29_2023_QH15_v1.pdf": "a4399dc8e26063d753ecdf96e5833cfb573ad9265c3e74ab86e3e6f51ce00063",
+    "43_2024_QH15_amendment.pdf": "859d1f08a3a9fd5555ffc4396226cb2c86a4c48c6f577331cdd476071d2e00f4"
+  },
+  "http_status": 200,
+  "report": {
+    "comparison_id": "159e8381-cc74-4811-a7c9-40e773394d76",
+    "base_document": {
+      "document_id": "v1",
+      "role": "BASE",
+      "filename": "29_2023_QH15_v1.pdf"
+    },
+    "amendment_document": {
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "filename": "43_2024_QH15_amendment.pdf"
+    },
+    "reference_documents": [],
+    "status": "FAILED",
+    "results": [
+      {
+        "amendment": {
+          "amendment_id": "s:amendment_1",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:15"
+            ],
+            "quote": "1. Sửa đổi, bổ sung khoản 2 Điều 251 như sau: "
+          },
+          "target_document": "31/2024/qh15",
+          "target_locator": "Sửa đổi, bổ sung khoản 2 Điều 251 như sau:",
+          "target_unit_ids": [],
+          "applicability": "UNRESOLVED",
+          "before_text": null,
+          "after_text": null,
+          "after_basis": "UNRESOLVED",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:15"
+              ],
+              "quote": "1. Sửa đổi, bổ sung khoản 2 Điều 251 như sau: "
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "",
+            "evidence": [],
+            "references": []
+          },
+          "needs_review": true,
+          "review_reason": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau."
+        },
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null
+      },
+      {
+        "amendment": {
+          "amendment_id": "s:amendment_2",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:17"
+            ],
+            "quote": "2. Sửa đổi, bổ sung khoản 1 Điều 252 như sau: "
+          },
+          "target_document": "31/2024/qh15",
+          "target_locator": "Sửa đổi, bổ sung khoản 1 Điều 252 như sau:",
+          "target_unit_ids": [],
+          "applicability": "UNRESOLVED",
+          "before_text": null,
+          "after_text": null,
+          "after_basis": "UNRESOLVED",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:17"
+              ],
+              "quote": "2. Sửa đổi, bổ sung khoản 1 Điều 252 như sau: "
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "",
+            "evidence": [],
+            "references": []
+          },
+          "needs_review": true,
+          "review_reason": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau."
+        },
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null
+      },
+      {
+        "amendment": {
+          "amendment_id": "s:amendment_3",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:19"
+            ],
+            "quote": "3. Sửa đổi, bổ sung khoản 10 Điều 255 như sau: "
+          },
+          "target_document": "31/2024/qh15",
+          "target_locator": "Sửa đổi, bổ sung khoản 10 Điều 255 như sau:",
+          "target_unit_ids": [],
+          "applicability": "UNRESOLVED",
+          "before_text": null,
+          "after_text": null,
+          "after_basis": "UNRESOLVED",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:19"
+              ],
+              "quote": "3. Sửa đổi, bổ sung khoản 10 Điều 255 như sau: "
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "",
+            "evidence": [],
+            "references": []
+          },
+          "needs_review": true,
+          "review_reason": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau."
+        },
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null
+      },
+      {
+        "amendment": {
+          "amendment_id": "s:amendment_4",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:27"
+            ],
+            "quote": "\t\t4. Sửa đổi, bổ sung khổ đầu khoản 4 Điều 260 như sau: \n\t“4. Phương án sử dụng đất, phương án xử lý, phương án sắp xếp lại, xử lý nhà, đất đã được cấp có thẩm quyền phê duyệt theo quy định tại Nghị quyết số 132/2020/QH14 của Quốc hội thí điểm một số chính sách để tháo gỡ vướng mắc, tồn đọng trong quản lý, sử dụng đất quốc phòng, an ninh kết hợp với hoạt động lao động sản xuất, xây dựng kinh tế trước ngày 01 tháng 01 năm 2025 thì thực hiện theo phương án đã phê duyệt.”. "
+          },
+          "target_document": "132/2020/qh14",
+          "target_locator": "Sửa đổi, bổ sung khổ đầu khoản 4 Điều 260 như sau: \n\t“4. Phương án sử dụng đất, phương án xử lý, phương án sắp xếp lại, xử lý nhà, đất đã được cấp có thẩm quyền phê duyệt theo quy định tại Nghị quyết số 132/2020/QH14 của Quốc hội thí điểm một số chính sách để tháo gỡ vướng mắc, tồn đọng trong quản lý, sử dụng đất quốc phòng, an ninh kết hợp với hoạt động lao động sản xuất, xây dựng kinh tế trước ngày 01 tháng 01 năm 2025 thì thực hiện theo phương án đã phê duyệt.”.",
+          "target_unit_ids": [],
+          "applicability": "UNRESOLVED",
+          "before_text": null,
+          "after_text": null,
+          "after_basis": "UNRESOLVED",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:27"
+              ],
+              "quote": "\t\t4. Sửa đổi, bổ sung khổ đầu khoản 4 Điều 260 như sau: \n\t“4. Phương án sử dụng đất, phương án xử lý, phương án sắp xếp lại, xử lý nhà, đất đã được cấp có thẩm quyền phê duyệt theo quy định tại Nghị quyết số 132/2020/QH14 của Quốc hội thí điểm một số chính sách để tháo gỡ vướng mắc, tồn đọng trong quản lý, sử dụng đất quốc phòng, an ninh kết hợp với hoạt động lao động sản xuất, xây dựng kinh tế trước ngày 01 tháng 01 năm 2025 thì thực hiện theo phương án đã phê duyệt.”. "
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "",
+            "evidence": [],
+            "references": []
+          },
+          "needs_review": true,
+          "review_reason": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau."
+        },
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null
+      },
+      {
+        "amendment": {
+          "amendment_id": "s:amendment_5",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:28"
+            ],
+            "quote": "Điều 2. Sửa đổi, bổ sung khoản 1 Điều 197 của Luật Nhà ở số 27/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 197 như sau: \n“1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”. "
+          },
+          "target_document": "27/2023/qh15",
+          "target_locator": "Sửa đổi, bổ sung khoản 1 Điều 197 của Luật Nhà ở số 27/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 197 như sau: \n“1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”.",
+          "target_unit_ids": [],
+          "applicability": "UNRESOLVED",
+          "before_text": null,
+          "after_text": null,
+          "after_basis": "UNRESOLVED",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:28"
+              ],
+              "quote": "Điều 2. Sửa đổi, bổ sung khoản 1 Điều 197 của Luật Nhà ở số 27/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 197 như sau: \n“1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”. "
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "",
+            "evidence": [],
+            "references": []
+          },
+          "needs_review": true,
+          "review_reason": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau."
+        },
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null
+      },
+      {
+        "amendment": {
+          "amendment_id": "s:amendment_6",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:29"
+            ],
+            "quote": "\t\tĐiều 3. Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 \n\tSửa đổi, bổ sung khoản 1 Điều 82 như sau: \n\t“1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”. "
+          },
+          "target_document": "29/2023/qh15",
+          "target_locator": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 \n\tSửa đổi, bổ sung khoản 1 Điều 82 như sau: \n\t“1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”.",
+          "target_unit_ids": [],
+          "applicability": "UNRESOLVED",
+          "before_text": null,
+          "after_text": null,
+          "after_basis": "UNRESOLVED",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:29"
+              ],
+              "quote": "\t\tĐiều 3. Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 \n\tSửa đổi, bổ sung khoản 1 Điều 82 như sau: \n\t“1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”. "
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "",
+            "evidence": [],
+            "references": []
+          },
+          "needs_review": true,
+          "review_reason": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau."
+        },
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null
+      },
+      {
+        "amendment": {
+          "amendment_id": "s:amendment_7",
+          "operation": "AMEND",
+          "instruction": {
+            "document_id": "s",
+            "source_refs": [
+              "block:30"
+            ],
+            "quote": "\t\tĐiều 4. Sửa đổi, bổ sung khoản 2 Điều 209 của Luật Các tổ chức tín dụng số 32/2024/QH15 \n\tSửa đổi, bổ sung khoản 2 Điều 209 như sau: \n\t“2. Khoản 3 Điều 200 và khoản 15 Điều 210 của Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”. "
+          },
+          "target_document": "32/2024/qh15",
+          "target_locator": "Sửa đổi, bổ sung khoản 2 Điều 209 của Luật Các tổ chức tín dụng số 32/2024/QH15 \n\tSửa đổi, bổ sung khoản 2 Điều 209 như sau: \n\t“2. Khoản 3 Điều 200 và khoản 15 Điều 210 của Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”.",
+          "target_unit_ids": [],
+          "applicability": "UNRESOLVED",
+          "before_text": null,
+          "after_text": null,
+          "after_basis": "UNRESOLVED",
+          "evidence": [
+            {
+              "document_id": "s",
+              "source_refs": [
+                "block:30"
+              ],
+              "quote": "\t\tĐiều 4. Sửa đổi, bổ sung khoản 2 Điều 209 của Luật Các tổ chức tín dụng số 32/2024/QH15 \n\tSửa đổi, bổ sung khoản 2 Điều 209 như sau: \n\t“2. Khoản 3 Điều 200 và khoản 15 Điều 210 của Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.”. "
+            }
+          ],
+          "effect_info": [],
+          "context": {
+            "general_context": "",
+            "evidence": [],
+            "references": []
+          },
+          "needs_review": true,
+          "review_reason": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau."
+        },
+        "text_diff": null,
+        "semantic_diff": null,
+        "scoring": null
+      }
+    ],
+    "warnings": [
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "v1: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "document_processing",
+        "code": "PDF_SOURCE_MAPPING_UNVERIFIED",
+        "message": "v1: nguon hien theo DOCX chuyen doi; chua xac minh anh xa ve trang PDF goc.",
+        "amendment_id": null
+      },
+      {
+        "stage": "parser",
+        "code": "TABLE_NOT_PARSED",
+        "message": "s: Giữ khối nguồn; chưa phân tách cấu trúc bên trong bảng/khối đặc biệt.",
+        "amendment_id": null
+      },
+      {
+        "stage": "document_processing",
+        "code": "PDF_SOURCE_MAPPING_UNVERIFIED",
+        "message": "s: nguon hien theo DOCX chuyen doi; chua xac minh anh xa ve trang PDF goc.",
+        "amendment_id": null
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_DOCUMENT_UNRESOLVED",
+        "message": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.",
+        "amendment_id": "s:amendment_1"
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_DOCUMENT_UNRESOLVED",
+        "message": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.",
+        "amendment_id": "s:amendment_2"
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_DOCUMENT_UNRESOLVED",
+        "message": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.",
+        "amendment_id": "s:amendment_3"
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_DOCUMENT_UNRESOLVED",
+        "message": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.",
+        "amendment_id": "s:amendment_4"
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_DOCUMENT_UNRESOLVED",
+        "message": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.",
+        "amendment_id": "s:amendment_5"
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_DOCUMENT_UNRESOLVED",
+        "message": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.",
+        "amendment_id": "s:amendment_6"
+      },
+      {
+        "stage": "linker",
+        "code": "TARGET_DOCUMENT_UNRESOLVED",
+        "message": "Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.",
+        "amendment_id": "s:amendment_7"
+      },
+      {
+        "stage": "context",
+        "code": "LIGHTRAG_DISABLED",
+        "message": "LightRAG chưa bật vì chưa chốt dịch vụ/model; đang dùng nguồn cục bộ, không giả lập retrieval.",
+        "amendment_id": null
+      },
+      {
+        "stage": "semantic",
+        "code": "LOCAL_BASELINE_ONLY",
+        "message": "Demo quy tắc cục bộ; model chưa chọn, không tự xác nhận ngữ cảnh hoặc mức tác động.",
+        "amendment_id": null
+      },
+      {
+        "stage": "analysis",
+        "code": "NO_USABLE_ANALYSIS",
+        "message": "Đã xử lý đầu vào nhưng chưa tạo được mục phân tích dùng được; xem chỉ dẫn và lý do đi kèm. Không kết luận không có thay đổi.",
+        "amendment_id": null
+      }
+    ],
+    "errors": []
+  },
+  "s_only_http_status": 422,
+  "s_only_response": {
+    "detail": [
+      {
+        "type": "missing",
+        "loc": [
+          "body",
+          "doc_v1"
+        ],
+        "msg": "Field required",
+        "input": null
+      }
+    ]
+  },
+  "analysis_handoff": {
+    "mode": "MANUAL_LOCATORS_REAL_PDF_MODULE_EXECUTION",
+    "complete_source_pair": {
+      "amendment": {
+        "amendment_id": "case_09:manual:article82_clause1",
+        "operation": "AMEND",
+        "instruction": {
+          "document_id": "s",
+          "source_refs": [
+            "page:2"
+          ],
+          "quote": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 82 như sau:"
+        },
+        "target_document": "v1",
+        "target_locator": "Điều 82 / khoản 1",
+        "target_unit_ids": [
+          "v1:82:1"
+        ],
+        "applicability": "APPLIES",
+        "before_text": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025.",
+        "after_text": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.",
+        "after_basis": "QUOTED",
+        "evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "page:2"
+            ],
+            "quote": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 82 như sau:"
+          },
+          {
+            "document_id": "v1",
+            "source_refs": [
+              "page:67"
+            ],
+            "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025."
+          },
+          {
+            "document_id": "s",
+            "source_refs": [
+              "page:2"
+            ],
+            "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024."
+          }
+        ],
+        "context": {
+          "general_context": "",
+          "evidence": [],
+          "references": []
+        },
+        "effect_info": [],
+        "needs_review": true,
+        "review_reason": "Chờ đối chiếu ngữ cảnh và quy định chuyển tiếp."
+      },
+      "text_diff": {
+        "amendment_id": "case_09:manual:article82_clause1",
+        "changes": [
+          {
+            "type": "REPLACE",
+            "old_text": "01",
+            "new_text": "8",
+            "old_start": 50,
+            "old_end": 52,
+            "new_start": 50,
+            "new_end": 51
+          },
+          {
+            "type": "REPLACE",
+            "old_text": "5",
+            "new_text": "4",
+            "old_start": 60,
+            "old_end": 61,
+            "new_start": 59,
+            "new_end": 60
+          }
+        ]
+      },
+      "semantic_diff": {
+        "amendment_id": "case_09:manual:article82_clause1",
+        "changes": [
+          {
+            "change_id": "case_09:manual:article82_clause1:change_1",
+            "is_meaningful_change": true,
+            "diff_details": "Khoản được sửa đổi ghi ngày hiệu lực của văn bản đích từ ngày 01 tháng 01 năm 2025 thành ngày 01 tháng 8 năm 2024.",
+            "aspects": [
+              {
+                "aspect_id": "case_09:manual:article82_clause1:aspect_1",
+                "field_group": "SCOPE_EFFECT_TRANSITION",
+                "old_value": "ngày 01 tháng 01 năm 2025",
+                "new_value": "ngày 01 tháng 8 năm 2024",
+                "interpretation": "Khoản được sửa đổi ghi ngày hiệu lực của văn bản đích từ ngày 01 tháng 01 năm 2025 thành ngày 01 tháng 8 năm 2024.",
+                "evidence": [
+                  {
+                    "document_id": "s",
+                    "source_refs": [
+                      "page:2"
+                    ],
+                    "quote": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 82 như sau:"
+                  },
+                  {
+                    "document_id": "v1",
+                    "source_refs": [
+                      "page:67"
+                    ],
+                    "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025."
+                  },
+                  {
+                    "document_id": "s",
+                    "source_refs": [
+                      "page:2"
+                    ],
+                    "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024."
+                  }
+                ],
+                "old_quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025.",
+                "new_quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.",
+                "needs_review": false,
+                "review_reason": ""
+              }
+            ],
+            "evidence": [
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "page:2"
+                ],
+                "quote": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 82 như sau:"
+              },
+              {
+                "document_id": "v1",
+                "source_refs": [
+                  "page:67"
+                ],
+                "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025."
+              },
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "page:2"
+                ],
+                "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024."
+              }
+            ],
+            "old_quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 01 năm 2025.",
+            "new_quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.",
+            "needs_review": true,
+            "review_reason": "Chờ đối chiếu ngữ cảnh và quy định chuyển tiếp. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn."
+          }
+        ],
+        "needs_review": true,
+        "review_reason": "Chờ đối chiếu ngữ cảnh và quy định chuyển tiếp. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn."
+      },
+      "scoring": [
+        {
+          "change_id": "case_09:manual:article82_clause1:change_1",
+          "category": "SCOPE_EFFECT_TRANSITION",
+          "significance": null,
+          "is_critical": null,
+          "reason": "Nhóm chính SCOPE_EFFECT_TRANSITION lấy từ khía cạnh đã xác định. Chưa đủ căn cứ chấm mức tác động theo rubric.",
+          "needs_review": true,
+          "review_reason": "Chờ đối chiếu ngữ cảnh và quy định chuyển tiếp. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Nhóm chính SCOPE_EFFECT_TRANSITION lấy từ khía cạnh đã xác định. Chưa đủ căn cứ chấm mức tác động theo rubric."
+        }
+      ]
+    },
+    "simulated_missing_v1": {
+      "amendment": {
+        "amendment_id": "case_09:manual:article82_clause1",
+        "operation": "AMEND",
+        "instruction": {
+          "document_id": "s",
+          "source_refs": [
+            "page:2"
+          ],
+          "quote": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 82 như sau:"
+        },
+        "target_document": "",
+        "target_locator": "Điều 82 / khoản 1",
+        "target_unit_ids": [],
+        "applicability": "UNRESOLVED",
+        "before_text": null,
+        "after_text": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.",
+        "after_basis": "QUOTED",
+        "evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "page:2"
+            ],
+            "quote": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 82 như sau:"
+          },
+          {
+            "document_id": "s",
+            "source_refs": [
+              "page:2"
+            ],
+            "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024."
+          }
+        ],
+        "context": {
+          "general_context": "",
+          "evidence": [],
+          "references": []
+        },
+        "effect_info": [],
+        "needs_review": true,
+        "review_reason": "Thiếu V1 để xác minh đích và nội dung trước."
+      },
+      "text_diff": null,
+      "semantic_diff": {
+        "amendment_id": "case_09:manual:article82_clause1",
+        "changes": [
+          {
+            "change_id": "case_09:manual:article82_clause1:change_1",
+            "is_meaningful_change": null,
+            "diff_details": "Chưa có Text Diff hợp lệ cho cặp nội dung trước/sau.",
+            "aspects": [],
+            "evidence": [
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "page:2"
+                ],
+                "quote": "Sửa đổi, bổ sung khoản 1 Điều 82 của Luật Kinh doanh bất động sản số 29/2023/QH15 Sửa đổi, bổ sung khoản 1 Điều 82 như sau:"
+              },
+              {
+                "document_id": "s",
+                "source_refs": [
+                  "page:2"
+                ],
+                "quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024."
+              }
+            ],
+            "old_quote": null,
+            "new_quote": "1. Luật này có hiệu lực thi hành từ ngày 01 tháng 8 năm 2024.",
+            "needs_review": true,
+            "review_reason": "Thiếu V1 để xác minh đích và nội dung trước. Chưa xác định chắc văn bản hoặc vị trí đích. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa có nguyên văn hai phía đủ căn cứ cho baseline. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+          }
+        ],
+        "needs_review": true,
+        "review_reason": "Thiếu V1 để xác minh đích và nội dung trước. Chưa xác định chắc văn bản hoặc vị trí đích. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa có nguyên văn hai phía đủ căn cứ cho baseline. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa."
+      },
+      "scoring": [
+        {
+          "change_id": "case_09:manual:article82_clause1:change_1",
+          "category": null,
+          "significance": null,
+          "is_critical": null,
+          "reason": "Chưa đủ căn cứ chấm mức tác động theo rubric.",
+          "needs_review": true,
+          "review_reason": "Thiếu V1 để xác minh đích và nội dung trước. Chưa xác định chắc văn bản hoặc vị trí đích. Chưa xác nhận đủ ngữ cảnh, dẫn chiếu và hiệu lực; model chưa được lựa chọn. Chưa có nguyên văn hai phía đủ căn cứ cho baseline. Chưa xác định thay đổi nghĩa bằng quy tắc đã hỗ trợ; không coi là không đổi nghĩa. Chưa đủ căn cứ chấm mức tác động theo rubric."
+        }
+      ]
+    }
+  }
+}

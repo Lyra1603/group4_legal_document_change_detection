@@ -6,11 +6,29 @@ Unconfirmed context, DERIVED or unsupported text keep null semantics + review.
 import re
 import unicodedata
 from copy import deepcopy
+from datetime import date
 
 from .text_diff import validate_text_diff
 
 
 _DEADLINE = re.compile(r'trong thời hạn (?P<value>[1-9]\d*) ngày')
+_EFFECTIVE_DATE = re.compile(
+    r'(?P<prefix>\d+\. Luật này có hiệu lực thi hành từ )'
+    r'(?P<value>ngày (?P<day>[0-9]{1,2}) tháng (?P<month>[0-9]{1,2}) năm (?P<year>[0-9]{4}))\.'
+)
+
+
+def _effective_date_values(before, after):
+    old, new = (_EFFECTIVE_DATE.fullmatch(' '.join(text.split())) for text in (before, after))
+    if not old or not new or old['prefix'] != new['prefix']:
+        return None
+    try:
+        dates = [date(int(match['year']), int(match['month']), int(match['day'])) for match in (old, new)]
+    except ValueError:
+        return None
+    if dates[0] == dates[1]:
+        return None
+    return old['value'], new['value']
 
 
 def deadline_values(old, new):
@@ -64,7 +82,19 @@ def detect_semantic_changes(item, text_diff, *, context_complete=False):
     aspects, meaningful = [], None
     details = ('Đã kiểm tra Text Diff; chưa đủ căn cứ kết luận tác động ngữ nghĩa.' if diff_valid
                else 'Chưa có Text Diff hợp lệ cho cặp nội dung trước/sau.')
-    if not reasons:
+    # A verified pair can establish the stated date change even when broader context needs review.
+    effective_dates = None
+    if (diff_valid and old_quote and new_quote and item['operation'] == 'AMEND'
+            and item['applicability'] == 'APPLIES' and item['target_unit_ids']):
+        effective_dates = _effective_date_values(old_quote, new_quote)
+    if effective_dates:
+        meaningful = True
+        details = f'Khoản được sửa đổi ghi ngày hiệu lực của văn bản đích từ {effective_dates[0]} thành {effective_dates[1]}.'
+        aspects = [{'aspect_id': item['amendment_id'] + ':aspect_1', 'field_group': 'SCOPE_EFFECT_TRANSITION',
+                    'old_value': effective_dates[0], 'new_value': effective_dates[1], 'interpretation': details,
+                    'evidence': refs, 'old_quote': old_quote, 'new_quote': new_quote,
+                    'needs_review': False, 'review_reason': ''}]
+    elif not reasons:
         old, new = (unicodedata.normalize('NFC', t).strip() for t in (before, after))
         if old == new:
             return {'amendment_id': item['amendment_id'], 'changes': [], 'needs_review': False, 'review_reason': ''}

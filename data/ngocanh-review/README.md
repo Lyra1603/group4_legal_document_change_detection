@@ -1,7 +1,7 @@
 # Bằng chứng xử lý nhận xét ngày 17/11/2026
 
 Đây là lần chạy bổ sung sau `462d70e`, giữ nguyên input và output lịch sử trong
-`data/ngocanh-week10/`. Báo cáo và phạm vi PR: [ngocanh-review-followup.md](../../docs/ngocanh-review-followup.md).
+`data/ngocanh-week10/`. Xem [báo cáo bàn giao hiện tại](../../docs/ngocanh-civil-review.md).
 
 - `output/fresh_case_02.json`: AmendmentResult mới từ Parser/Adapter của Thọ,
   Text Diff/Semantic/Scorer dùng chung và payload query do code Context tạo.

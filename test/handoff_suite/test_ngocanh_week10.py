@@ -122,6 +122,26 @@ class SemanticHandoffTests(unittest.TestCase):
     def test_context_flag_does_not_override_upstream_review(self):
         self.assert_unknown(self.analyze(real_handoff()['items'][0], complete=True))
 
+    def test_stated_effective_date_with_and_without_source(self):
+        item = synthetic_item()
+        item['before_text'] = '1. Luật này có hiệu lực thi hành từ ngày 10 tháng 2 năm 2030.'
+        item['after_text'] = '1. Luật này có hiệu lực thi hành từ ngày 1 tháng 2 năm 2030.'
+        item['evidence'][0]['quote'] = item['before_text']
+        item['evidence'][1]['quote'] = item['after_text']
+        result = self.analyze(item)
+        change, = result['changes']
+        aspect, = change['aspects']
+        self.assertIs(change['is_meaningful_change'], True)
+        self.assertTrue(change['needs_review'])
+        self.assertEqual(aspect['field_group'], 'SCOPE_EFFECT_TRANSITION')
+        self.assertEqual(aspect['new_quote'], item['after_text'])
+        score, = score_changes(result)
+        self.assertEqual(score['category'], 'SCOPE_EFFECT_TRANSITION')
+        self.assertEqual(score['change_id'], change['change_id'])
+        self.assertIsNone(score['significance'])
+        item['evidence'].pop(0)
+        self.assert_unknown(self.analyze(item))
+
     def test_missing_context_alone_blocks_supported_rule(self):
         item = synthetic_item()
         self.assertFalse(item['needs_review'])

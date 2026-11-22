@@ -8,7 +8,7 @@ Mục tiêu POCS: từ một S, tự tìm đích/phiên bản trong kho dân s�
 - [Hướng dẫn gán nhãn](data-annotation-guide.md), [Tích hợp và kiểm tra schema](schema-integration.md)
 - [Nền chung đang chạy và việc còn thiếu](common-baseline.md), [Cách mở web demo](local-web-demo.md)
 - [Fixture bàn giao](../data/module_handoff_fixtures/README.md), [Báo cáo schema lịch sử](schema-verification-report.md)
-- [Bàn giao Ngọc Anh từ tuần 6](ngocanh-handover.md): module, adapter, kiểm thử và giới hạn.
+- [Bàn giao Ngọc Anh](ngocanh-civil-review.md) · Text Diff, Semantic Diff, Scorer và kết quả ca dân sự.
 
 Tài liệu lấy nền từ nhánh Dũng `bachdung/docs` tại `6dbda8d`, bổ sung theo quyết định Đức Anh ngày 12/11/2026. Thiết kế mục tiêu bên dưới không đồng nghĩa mọi chức năng đã có code. Nền hiện tại chạy bằng `backend.demo:app` theo README gốc, dùng DOCX và chưa bật LightRAG/model; không dùng `backend.main:app` để kỳ vọng có kết quả phân tích. Bảng đối chiếu implementation và kết quả kiểm thử tập trung tại [common-baseline.md](common-baseline.md).
 
