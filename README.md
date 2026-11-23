@@ -50,3 +50,7 @@ requirements.txt ghim Pydantic 2.13.4 và typing_extensions 4.16.0. Lần xác n
 `backend.demo:app` đã gắn runner thực thi DOCX → Parser → Adapter → Linker hẹp → Text Diff/Context → Semantic/Scorer giới hạn → validation → báo cáo và giao diện. Route dùng chung vẫn là POST `/api/compare`, nhận `doc_v1`, `doc_s`, `reference_files`. `backend.main:app` giữ API nền chưa gắn runner và trả HTTP 501 / ANALYSIS_NOT_CONFIGURED sau đầu vào hợp lệ. Client LightRAG HTTP đã có mã và kiểm thử mô phỏng; chưa kiểm chứng dịch vụ thật, chưa bật trong demo. `requirements.txt` chỉ đủ schema; chạy demo cần `requirements-demo.txt`. Cách chạy trên là điểm khởi động chung hiện tại, không tự đổi module main.
 
 Phân công: Dũng dữ liệu/docs và Pipeline/API; Thọ xử lý tài liệu; Ngọc Anh Text Diff; Dũng + Đức Anh + Ngọc Anh phụ trách Semantic Diff và Scorer; Tuấn Anh phụ trách UI và xử lý lỗi trả về; Đức Anh schema/context và điều phối đánh giá; Dũng + Đức Anh AI Adapter và gọi/tích hợp LightRAG.
+
+### Demo máy chủ chung
+
+Nhóm dùng một URL, không nhập khóa LightRAG trên trình duyệt. Xem [hướng dẫn chạy web chung](docs/shared-web-demo.md). Chế độ này nối Context thật khi dịch vụ sẵn sàng; Semantic vẫn là baseline và API đối chiếu vẫn nhận V1 + S.

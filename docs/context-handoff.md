@@ -2,7 +2,9 @@
 
 ## Phạm vi
 
-Bản làm việc `ducanh/context-integration`, nền main `161e601` sau PR #11. Chưa commit/push trong đợt triển khai này. Không nhập code Explorer chưa commit từ nhánh riêng và không thay API/schema/validator cũ. Tài liệu này hướng dẫn điểm nối Context, không phải bảng giao việc.
+**Cập nhật web chung:** xem [shared-web-demo.md](shared-web-demo.md). CLI bên dưới vẫn dành cho một lượt kiểm chứng độc lập; web chung có lifecycle riêng cho corpus metadata và từng comparison. Không dùng CLI cleanup để dọn kho chung.
+
+Bản làm việc `ducanh/context-integration`, nền main `161e601` sau PR #11. Phần CLI đã push ở d103c46; phần web chung và cập nhật main được mô tả tại [shared-web-demo.md](shared-web-demo.md). Không nhập code Explorer chưa commit từ nhánh riêng và không thay API/schema/validator cũ. Tài liệu này hướng dẫn điểm nối Context, không phải bảng giao việc.
 
 Đã có bộ nhận dữ liệu ca nguồn, runner Context và CLI chạy một LightRAG Server thật qua HTTP trong container riêng. Tái sử dụng client, registry, chunk builder và điểm ghép query từ PR #7. Không làm thay Parser, tìm V1, dựng trước/sau, Semantic hoặc Scorer. CLI chỉ chạy sau khi đã có AmendmentItem và V1 được giải quyết; không phải endpoint chỉ S.
 

@@ -41,7 +41,7 @@ function renderFiles() {
       const row = node('li'); row.append(node('span', file.name, 'file-name'), node('span',size(file.size),'file-size'));
       const remove = node('button', '×', 'remove'); remove.type = 'button';
       remove.setAttribute('aria-label',`Bỏ file ${file.name}`); remove.disabled = state.busy;
-      remove.addEventListener('click', () => {state[role].splice(index,1); clearReport(); renderFiles();});
+      remove.addEventListener('click', () => {state[role].splice(index,1); renderFiles();});
       row.append(remove); list.append(row);
     });
   }
@@ -69,7 +69,7 @@ function choose(role, files) {
   if (role === 'references') {
     for (const file of incoming) if (!next.references.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)) next.references.push(file);
   }
-  try {validateFiles(next); state[role] = next[role]; clearReport(); message(); renderFiles();}
+  try {validateFiles(next); state[role] = next[role]; message(state.report ? 'Đầu vào đã đổi; báo cáo bên dưới thuộc lượt trước.' : ''); renderFiles();}
   catch (error) {message(error.message, true);}
 }
 for (const [id, role] of [['v1-file','v1'],['s-file','s'],['reference-files','references']]) {
@@ -250,7 +250,7 @@ $('#compare-form').addEventListener('submit', async event => {
   event.preventDefault(); if (state.busy) return;
   try {validateFiles(state); if (!state.v1.length || !state.s.length) throw new Error('Cần chọn đủ V1 và S.');}
   catch(error) {message(error.message,true); return;}
-  clearReport(); message(); setBusy(true);
+  message(state.report ? 'Đang xử lý lượt mới; báo cáo bên dưới thuộc lượt trước cho đến khi nhận được báo cáo mới.' : ''); setBusy(true);
   const data = new FormData(); data.append('doc_v1',state.v1[0]); data.append('doc_s',state.s[0]);
   for (const file of state.references) data.append('reference_files',file);
   const controller = new AbortController();
@@ -263,7 +263,10 @@ $('#compare-form').addEventListener('submit', async event => {
     catch (parseError) {
       throw new Error(`Lỗi máy chủ (HTTP ${response.status}): Máy chủ trả về dữ liệu không hợp lệ, không phải JSON.`);
     }
-    if (report && Array.isArray(report.results) && report.comparison_id) renderReport(report);
+    if (report && Array.isArray(report.results) && report.comparison_id) {
+      renderReport(report);
+      window.dispatchEvent(new CustomEvent('pocs:report', {detail:{comparison_id:report.comparison_id}}));
+    }
     else {
       const detail = report?.detail;
       const category = response.status >= 400 && response.status < 500 ? 'Lỗi đầu vào'
@@ -292,7 +295,7 @@ $('#load-sample').addEventListener('click',async()=>{
       return new File([await response.blob()],sample[role],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
     }));
     const next = {v1:[files[0]],s:[files[1]],references:[]}; validateFiles(next);
-    Object.assign(state,next); clearReport(); renderFiles();
+    Object.assign(state,next); renderFiles();
     message('Đã nạp V1 và S từ data/raw. Đây là tài liệu trong repo; chưa xác minh hiệu lực hiện tại.');
   } catch(error) {message(error.message,true);} finally {setBusy(false);}
 });
