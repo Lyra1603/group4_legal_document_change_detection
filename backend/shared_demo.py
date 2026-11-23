@@ -1,5 +1,6 @@
 """Team demo: one backend owns credentials; browsers never call LightRAG directly."""
 import argparse
+import json
 from contextlib import asynccontextmanager
 import logging
 import os
@@ -14,6 +15,7 @@ from . import demo
 from .app.context.owned_server import read_provider_env
 from .app.context.shared_service import SharedContextService
 from .app.context.lightrag_client import RetrievalError
+from .app.context.provider_settings import check_groq_jina
 
 ROOT = Path(__file__).resolve().parents[1]
 MESSAGES = {
@@ -108,15 +110,29 @@ def main():
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=8000)
     parser.add_argument('--provider-env-file', type=Path, required=True)
+    parser.add_argument('--check-providers', action='store_true',
+                        help='Run two small Groq/Jina requests without starting the web server')
     args = parser.parse_args()
+    try:
+        settings = read_provider_env(args.provider_env_file)
+    except (ValueError, OSError):
+        parser.error('Cannot read provider configuration')
+    if args.check_providers:
+        try:
+            result = check_groq_jina(settings)
+        except RetrievalError as exc:
+            print(json.dumps({'status': exc.code}))
+            return 1
+        print(json.dumps(result))
+        return int(any(probe['status'] != 'OK' for probe in result.values()))
     if os.name == 'nt' and not shutil.which('docker'):
         location = Path(os.getenv('LOCALAPPDATA', '')) / 'Programs/DockerDesktop/resources/bin'
         if (location / 'docker.exe').exists():
             os.environ['PATH'] = str(location) + os.pathsep + os.environ.get('PATH', '')
     import uvicorn
-    uvicorn.run(create_app(settings=read_provider_env(args.provider_env_file)),
+    uvicorn.run(create_app(settings=settings),
                 host=args.host, port=args.port, workers=1)
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

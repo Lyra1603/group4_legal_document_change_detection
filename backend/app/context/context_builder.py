@@ -133,7 +133,8 @@ def build_context(item: AmendmentItem, registry: SourceRegistry,
         additions = []
         for raw, ref in zip(retrieved["chunks"], evidence):
             source = registry.chunks[raw["file_path"]]
-            additions.append(f"[{source.document_id} / {source.role} / version={source.version} / {source.source_ref}] {ref['quote']}")
+            locators = ', '.join(ref['source_refs'])
+            additions.append(f"[{source.document_id} / {source.role} / version={source.version} / {locators}] {ref['quote']}")
         additions = "\n".join(additions)
         context["general_context"] = "\n".join(filter(None, [context["general_context"], additions]))
         validate_payload(AnalysisContext, context)

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 import time
 from threading import Lock
@@ -28,6 +29,20 @@ class RetrievalError(RuntimeError):
     def __init__(self, code: str):
         self.code = code
         super().__init__(code)
+
+
+def _index_failure_code(docs):
+    # Return only known codes. Provider messages can contain input or secrets.
+    errors = [str(doc.get('error_msg') or '') for doc in docs if doc.get('status') == 'failed']
+    rules = (
+        ('INDEX_PROVIDER_RATE_LIMITED', r'\b(?:429|RateLimitError|RESOURCE_EXHAUSTED|RATE_TOKEN_LIMIT_EXCEEDED|RATE_REQUEST_LIMIT_EXCEEDED)\b'),
+        ('INDEX_PROVIDER_ACCESS_DENIED', r'\b(?:401|402|403|AUTHZ_INSUFFICIENT_BALANCE|AUTH_INVALID_API_KEY)\b'),
+        ('INDEX_PROVIDER_UNAVAILABLE', r'\b(?:502|503|504|SERVICE_UNAVAILABLE)\b'),
+    )
+    for code, pattern in rules:
+        if any(re.search(pattern, message, re.IGNORECASE) for message in errors):
+            return code
+    return 'INDEX_FAILED'
 
 
 class LightRAGClient:
@@ -175,7 +190,7 @@ class LightRAGClient:
         while True:
             docs = self._track()
             if any(d.get("status") == "failed" for d in docs):
-                raise RetrievalError("INDEX_FAILED")
+                raise RetrievalError(_index_failure_code(docs))
             if len(docs) == len(chunks) and all(d.get("status") == "processed" for d in docs):
                 self.ready = True
                 self._save("READY")

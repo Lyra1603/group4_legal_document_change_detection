@@ -84,7 +84,16 @@ if(config.mode==='SHARED_CONTEXT'){
   function render(data){
     status.textContent=`Kho: ${data.state} · nguồn: ${data.source_kind} · toàn văn: chưa nạp`;
     error.textContent=operationError || (data.issues||[]).join(' · ');
-    if(data.state==='FAILED') error.textContent+=' — Index chưa thành công. Quản trị kiểm tra Gemini/quota/billing; không coi là không có tài liệu.';
+    if (data.state === 'FAILED' && !operationError) {
+      const hints = {
+        INDEX_PROVIDER_RATE_LIMITED: 'Dịch vụ AI đã chạm hạn mức. Quản trị kiểm tra quota trước khi thử lại.',
+        INDEX_PROVIDER_ACCESS_DENIED: 'Dịch vụ AI từ chối truy cập. Quản trị kiểm tra key, quyền model và số dư.',
+        INDEX_PROVIDER_UNAVAILABLE: 'Dịch vụ AI tạm thời không phản hồi. Quản trị kiểm tra lại sau.',
+        REAL_SERVICE_CONFIGURATION_REQUIRED: 'Máy chủ thiếu cấu hình model hoặc embedding.',
+      };
+      const hint = (data.issues || []).map(code => hints[code]).find(Boolean);
+      error.textContent += ' — ' + (hint || 'Chưa lập được chỉ mục. Quản trị kiểm tra cấu hình dịch vụ AI.');
+    }
     start.disabled=!config.provider_configured||data.state!=='IDLE';submit.disabled=data.state!=='READY';
     if(!config.provider_configured)error.textContent='Máy chủ chưa cấu hình đủ provider. Thành viên không cần nhập key trên UI.';
     sourceBox.replaceChildren();

@@ -11,7 +11,7 @@ from .change_analysis.text_diff import compute_text_diff
 from .change_analysis.semantic_diff import detect_semantic_changes
 from .change_analysis.scorer import score_changes
 from .context.context_builder import build_context, prepare_index
-from .context.chunk_builder import build_chunks
+from .context.chunk_builder import build_chunks, pack_adjacent_chunks
 from .context.source_registry import SourceRegistry
 from .context.semantic_bridge import run_semantic_stage
 from .schemas.report_validation import validate_amendment, validate_report, validate_sources
@@ -44,7 +44,7 @@ def classify_demo_results(results):
     return 'SUCCESS'
 
 
-def run_demo_analysis(parsed, comparison_id, deadline, *, context_client=None, context_sink=None):
+def run_demo_analysis(parsed, comparison_id, deadline, *, context_client=None, context_sink=None, pack_context_blocks=False):
     boundary = adapt_documents(parsed)
     check_deadline(deadline)
     items, warnings = link_amendments(boundary)
@@ -65,6 +65,8 @@ def run_demo_analysis(parsed, comparison_id, deadline, *, context_client=None, c
             for evidence in [item['instruction'], *item['evidence']]:
                 selected.update((evidence['document_id'], ref) for ref in evidence['source_refs'])
         chunks = [c for c in chunks if (c.document_id, c.source_ref) in selected or c.role == 'REFERENCE']
+        if pack_context_blocks:
+            chunks = pack_adjacent_chunks(chunks, context_client.config.max_chunk_chars)
         warnings.append(issue('context', 'RETRIEVAL_SCOPE_LIMITED',
             'LightRAG chỉ index các block bằng chứng chỉ dẫn/đích và tài liệu tham chiếu đã nộp; chưa phải toàn bộ kho pháp luật.'))
     registry = SourceRegistry(chunks, list(boundary.documents.values()))

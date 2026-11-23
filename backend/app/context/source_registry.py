@@ -20,7 +20,7 @@ class SourceRegistry:
             document = self.documents.get(c.document_id)
             if document is None or document["role"] != c.role:
                 raise ValueError("Registry role/document mismatch")
-            validate_sources({"document_id": c.document_id, "source_refs": [c.source_ref],
+            validate_sources({"document_id": c.document_id, "source_refs": list(c.source_refs),
                               "quote": c.text}, self.documents)
 
     def evidence(self, retrieved: dict) -> dict:
@@ -37,7 +37,7 @@ class SourceRegistry:
         if not quote or quote not in chunk.text:
             raise ValueError("Retrieval quote is not literal source text")
         evidence = {"document_id": chunk.document_id,
-                    "source_refs": [chunk.source_ref], "quote": quote}
+                    "source_refs": list(chunk.source_refs), "quote": quote}
         validate_sources(evidence, self.documents)
         return evidence
 
@@ -59,7 +59,7 @@ class SourceRegistry:
             nodes[doc] = {"id": doc, "type": "DocumentVersion", "document_id": c.document_id,
                           "comparison_id": c.comparison_id, "role": c.role, "version": c.version}
             nodes[unit] = {"id": unit, "type": "SourceBlock", "document_id": c.document_id,
-                           "source_refs": [c.source_ref], "quote": c.text}
+                           "source_refs": list(c.source_refs), "quote": c.text}
             edges.append({"source": doc, "target": unit, "type": "HAS_SOURCE_BLOCK",
                           "basis": "PROJECT_SOURCE", "inferred": False})
         return {"kind": "PROJECT_SOURCE_GRAPH_NOT_LIGHTRAG_KG",

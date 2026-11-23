@@ -12,13 +12,14 @@ import time
 
 from ..config import LightRAGConfig
 from .lightrag_client import LightRAGClient, RetrievalError
+from .provider_settings import groq_demo_options, provider_environment
 
 IMAGE = 'pocs-lightrag:28ff1b05'
 LABEL = 'pocs.context.session'
 
 
 def read_provider_env(path=None):
-    values = {}
+    values = dict(os.environ)
     if path is not None:
         for line in Path(path).read_text(encoding='utf-8-sig').splitlines():
             line=line.strip()
@@ -32,7 +33,6 @@ def read_provider_env(path=None):
             if len(value)>=2 and value[0]==value[-1] and value[0] in {'"',"'"}:
                 value=value[1:-1]
             values[key]=value
-    values.update(os.environ)
     return values
 
 
@@ -69,25 +69,14 @@ class OwnedLightRAG:
 
     def start(self):
         settings=self.settings
-        provider=settings.get('LEGAL_AI_PROVIDER','gemini')
-        if provider not in {'gemini','openai'}:
-            raise ValueError('Set LEGAL_AI_PROVIDER to gemini or openai')
-        prefix=provider.upper()
-        key=settings.get(prefix+'_API_KEY','')
-        model=settings.get(prefix+'_MODEL','')
-        embedding=settings.get(prefix+'_EMBEDDING_MODEL','')
-        dim=settings.get(prefix+'_EMBEDDING_DIM','')
-        if not key or not model or not embedding or not dim.isdigit() or int(dim)<=0:
-            raise RetrievalError('REAL_SERVICE_CONFIGURATION_REQUIRED')
+        provider = settings.get('LEGAL_AI_PROVIDER', 'gemini')
+        provider_env = provider_environment(settings)
+        mixed = provider == 'groq-jina'
         server_key=secrets.token_urlsafe(32)
         workspace='context_'+self.session_id
         self.image_id=docker(['image','inspect',IMAGE,'--format','{{.Id}}'])
-        host='https://generativelanguage.googleapis.com' if provider=='gemini' else 'https://api.openai.com/v1'
         env={'HOST':'0.0.0.0','PORT':'9621','WORKSPACE':workspace,
-             'LIGHTRAG_API_KEY':server_key,'LLM_BINDING':provider,'LLM_BINDING_HOST':host,
-             'LLM_MODEL':model,'LLM_BINDING_API_KEY':key,
-             'EMBEDDING_BINDING':provider,'EMBEDDING_BINDING_HOST':host,
-             'EMBEDDING_MODEL':embedding,'EMBEDDING_DIM':dim,'EMBEDDING_BINDING_API_KEY':key,
+             'LIGHTRAG_API_KEY':server_key, **provider_env,
              'WORKING_DIR':'/app/data/rag_storage','INPUT_DIR':'/app/data/inputs',
              'PROMPT_DIR':'/app/data/prompts','LOG_DIR':'/app/data/logs',
              'SUMMARY_LANGUAGE':'Vietnamese','MAX_ASYNC_LLM':'1','EXTRACT_MAX_ASYNC_LLM':'1',
@@ -96,9 +85,16 @@ class OwnedLightRAG:
              'LLM_TIMEOUT':'180','EMBEDDING_TIMEOUT':'180',
              'LIGHTRAG_KV_STORAGE':'JsonKVStorage','LIGHTRAG_DOC_STATUS_STORAGE':'JsonDocStatusStorage',
              'LIGHTRAG_GRAPH_STORAGE':'NetworkXStorage','LIGHTRAG_VECTOR_STORAGE':'NanoVectorDBStorage'}
+        if mixed:
+            env.update(groq_demo_options(env['LLM_MODEL']))
         if any('\n' in str(v) or '\r' in str(v) for v in env.values()):
             raise ValueError('Multiline environment value rejected')
-        self.profile={'provider':provider,'model':model,'embedding_model':embedding,'embedding_dim':int(dim)}
+        self.profile = {
+            'provider': provider, 'model': env['LLM_MODEL'],
+            'embedding_provider': 'jina' if mixed else provider,
+            'embedding_model': env['EMBEDDING_MODEL'],
+            'embedding_dim': int(env['EMBEDDING_DIM']),
+        }
         env_file=self.directory/'.env'
         storage=self.directory/'data'
         storage.mkdir()
@@ -117,7 +113,8 @@ class OwnedLightRAG:
         if not re.fullmatch(r'127\.0\.0\.1:\d+',address):
             raise RetrievalError('SERVER_PORT_UNVERIFIED')
         config=LightRAGConfig('http://'+address,workspace,api_key=server_key,
-                              timeout=180,top_k=8,max_tokens=6000,max_chunks=30,max_chunk_chars=5000)
+                              timeout=180, top_k=8, max_tokens=3000 if mixed else 6000,
+                              max_chunks=12 if mixed else 30, max_chunk_chars=2500 if mixed else 5000)
         self.client=LightRAGClient(config,self.comparison_id,self.directory/'leases',deadline=self.deadline)
         startup=min(self.deadline,time.monotonic()+90)
         while time.monotonic()<startup:

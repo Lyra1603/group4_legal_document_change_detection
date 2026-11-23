@@ -14,6 +14,7 @@ import uuid
 from ..demo_runner import run_demo_analysis
 from ..pipeline import issue
 from .owned_server import OwnedLightRAG
+from .provider_settings import provider_environment
 from .lightrag_client import RetrievalError
 from .case_runner import audit_extracted_graph
 from .metadata_corpus import load_metadata
@@ -23,7 +24,7 @@ def graph_view(graph, registry):
     audit = audit_extracted_graph(graph, registry)
     def sources(properties):
         return [dict(document_id=registry.chunks[p].document_id,
-                     source_refs=[registry.chunks[p].source_ref],
+                     source_refs=list(registry.chunks[p].source_refs),
                      quote=registry.chunks[p].text)
                 for p in properties.get('file_path', '').split('<SEP>') if p in registry.chunks]
     nodes = [dict(id=n['id'], description=str(n['properties'].get('description', '')),
@@ -58,12 +59,11 @@ class SharedContextService:
 
     @property
     def configured(self):
-        provider = self.settings.get('LEGAL_AI_PROVIDER', 'gemini')
-        if provider not in ('gemini', 'openai'):
+        try:
+            provider_environment(self.settings)
+        except RetrievalError:
             return False
-        prefix = provider.upper()
-        return all(self.settings.get(prefix + suffix) for suffix in
-                   ('_API_KEY', '_MODEL', '_EMBEDDING_MODEL', '_EMBEDDING_DIM'))
+        return True
 
     def _server(self, session, budget):
         if not self.configured:
@@ -172,7 +172,8 @@ class SharedContextService:
                     except (RetrievalError, ValueError):
                         artifact['issues'].append('GRAPH_UNAVAILABLE_OR_UNVERIFIED')
             outcome = run_demo_analysis(parsed, comparison_id, deadline,
-                context_client=client, context_sink=capture)
+                context_client=client, context_sink=capture,
+                pack_context_blocks=self.settings.get('LEGAL_AI_PROVIDER') == 'groq-jina')
             artifact['state'] = 'READY' if artifact['items'] and all(x['verified'] for x in artifact['items']) and not artifact['issues'] else 'PARTIAL'
             for code in artifact['issues']:
                 outcome.warnings.append(issue('context', code, 'LightRAG chưa xác minh được; xem trạng thái Context.'))
