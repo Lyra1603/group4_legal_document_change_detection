@@ -18,6 +18,7 @@ Schema Đức Anh đã merge vào main qua [PR #2](https://github.com/Lyra1603/g
 - [Fixture bàn giao tại 9 điểm nối](data/module_handoff_fixtures/README.md)
 - [Web demo và bằng chứng chạy DOCX](docs/local-web-demo.md)
 - [Thử nghiệm LightRAG qua HTTP](docs/lightrag-integration-report.md)
+- [Context handoff: chạy LightRAG thật riêng, nguồn và giới hạn](docs/context-handoff.md)
 - [Báo cáo kiểm thử schema lịch sử](docs/schema-verification-report.md)
 
 ## Chạy nền DOCX hiện tại

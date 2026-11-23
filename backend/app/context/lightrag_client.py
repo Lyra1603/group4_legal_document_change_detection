@@ -70,13 +70,17 @@ class LightRAGClient:
 
     def _request(self, method: str, path: str, *, deadline=None, **kwargs):
         end = self.deadline if deadline is None else deadline
-        for attempt in range(2 if method == "GET" else 1):
+        # Query is read-only at the application boundary. Never replay ingestion
+        # or deletion after an uncertain acknowledgement.
+        retryable = method == "GET" or (method == "POST" and path == "/query/data")
+        for attempt in range(2 if retryable else 1):
             remaining = end - time.monotonic()
             if remaining <= 0:
                 raise RetrievalError("RETRIEVAL_TIMEOUT")
             try:
                 with self.http.stream(method, path, timeout=min(self.config.timeout, remaining), **kwargs) as r:
-                    if r.status_code in {502, 503, 504} and method == "GET" and attempt == 0:
+                    if r.status_code in {500, 502, 503, 504} and retryable and attempt == 0:
+                        time.sleep(min(1.0, max(0.0, end - time.monotonic())))
                         continue
                     if r.status_code >= 300:
                         raise RetrievalError("RETRIEVAL_HTTP_ERROR")
@@ -91,8 +95,12 @@ class LightRAGClient:
                 if not isinstance(result, dict):
                     raise RetrievalError("RETRIEVAL_PROTOCOL_ERROR")
                 return result
+            except httpx.TimeoutException:
+                if retryable and attempt == 0:
+                    continue
+                raise RetrievalError("RETRIEVAL_TIMEOUT") from None
             except httpx.RequestError:
-                if method == "GET" and attempt == 0:
+                if retryable and attempt == 0:
                     continue
                 raise RetrievalError("RETRIEVAL_UNAVAILABLE") from None
             except (json.JSONDecodeError, UnicodeDecodeError):

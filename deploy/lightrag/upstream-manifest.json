@@ -38,7 +38,13 @@
     "backend/app/context/source_registry.py",
     "backend/app/context/lightrag_client.py",
     "backend/app/context/context_builder.py",
-    "backend/app/context/semantic_bridge.py"
+    "backend/app/context/semantic_bridge.py",
+    "backend/context_cli.py",
+    "backend/app/context/case_handoff.py",
+    "backend/app/context/case_runner.py",
+    "backend/app/context/owned_server.py"
   ],
-  "limitations": "Upstream source pinned; upstream base-image tags and external model behavior are not transitively immutable. Container has not been built or run in this environment."
+  "limitations": "Upstream source pinned; base-image tags and external model behavior are not transitively immutable. Real Context retrieval verified on explicitly synthetic input on 2026-11-22. No reviewed dataset case or shared persistent corpus is claimed; KG may merge unit labels across documents.",
+  "context_handoff_note": "Fresh labelled Docker instance per run; native upstream providers; no copied upstream Python.",
+  "verification_evidence": "data/demo-results/context-handoff-synthetic-live.json"
 }
