@@ -7,7 +7,10 @@ Không sửa ký tự ngoài khoảng trắng, số liệu hoặc dẫn chiếu.
 Chỉ xuất DOCX và report JSON; tệp trung gian tự xóa khi kết thúc.
 
 Cài: python -m pip install pdf2docx python-docx "pymupdf>=1.24.2"
-Chạy: python pdf_to_docx.py input.pdf converted.docx
+Chạy: python pdf_to_docx.py input.pdf [output.docx]
+Mặc định tự đọc số ký hiệu, lưu cạnh nguồn; dấu / đổi thành _.
+Thiếu số: thêm --document-number 84/2026/TT-BXD theo metadata đã đối chiếu.
+Chọn thư mục đích: --output-dir folder. Không đoán số từ phần viện dẫn.
 Thử DOCX sẵn có: python pdf_to_docx.py converted.docx cleaned.docx --from-docx
 Với S/tài liệu khác: thêm --kind other (không tách Điều/Khoản/Điểm).
 Mặc định loại số trang theo bbox trên bản PDF tạm; --keep-page-numbers để giữ.
@@ -28,6 +31,11 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 from docx.text.paragraph import Paragraph
+
+if __package__:
+    from .document_number import identify_document_number, resolve_docx_output
+else:
+    from document_number import identify_document_number, resolve_docx_output
 
 ARTICLE = r"Điều\s*\d+[a-zđĐ]?\s*\."
 CLAUSE = r"\d{1,3}\.(?!\d)"
@@ -684,15 +692,27 @@ def normalize_docx(source, destination, kind="base", pdf_evidence=None):
     return report
 
 
-def convert_pdf_to_docx(input_path, output_path, from_docx=False, kind="base", remove_page_numbers=True):
-    source, output = Path(input_path), Path(output_path)
-    log = output.with_suffix('.report.json')
+def convert_pdf_to_docx(input_path, output_path=None, from_docx=False, kind="base", remove_page_numbers=True,
+                        document_number=None, output_dir=None):
+    source = Path(input_path)
     if not source.is_file():
         raise FileNotFoundError(f'Không tìm thấy {source}')
     if source.suffix.lower() != ('.docx' if from_docx else '.pdf'):
         raise ValueError('Sai định dạng đầu vào; dùng --from-docx nếu chỉ thử định dạng DOCX.')
-    if output.suffix.lower() != '.docx':
-        raise ValueError('Đầu ra phải là .docx')
+    if from_docx:
+        header_document = Document(source)
+        header_text = '\n'.join(paragraph.text for paragraph in all_paragraphs(header_document))
+        source_title = header_document.core_properties.title or ''
+    else:
+        import fitz
+        with fitz.open(source) as pdf:
+            if pdf.needs_pass or not len(pdf):
+                raise ValueError('PDF có mật khẩu hoặc không có trang.')
+            header_text = '\n'.join(pdf[index].get_text(sort=True) for index in range(min(2, len(pdf))))
+            source_title = (pdf.metadata or {}).get('title') or ''
+    number, number_evidence = identify_document_number(header_text, title=source_title, provided=document_number)
+    output = resolve_docx_output(source, output_path, number, output_dir)
+    log = output.with_suffix('.report.json')
     for target in (output, log):
         if target.exists():
             raise FileExistsError(f'Đã tồn tại {target}; hãy chọn tên đầu ra mới.')
@@ -717,6 +737,11 @@ def convert_pdf_to_docx(input_path, output_path, from_docx=False, kind="base", r
             finally:
                 converter.close()
         report = normalize_docx(intermediate, result, kind, pdf_evidence=evidence)
+        report['document_number'] = number
+        report['document_number_evidence'] = number_evidence
+        report['automatic_output_name'] = output_path is None
+        if not number:
+            report['warnings'].append('Không xác định được số ký hiệu; chỉ dùng tên đầu ra thủ công đã cung cấp.')
         report['pdf_margin_removals'] = margin_removals
         report['change_location_note'] = ('paragraph là chỉ số 0-based trong DOCX trung gian; '
                                           'output_paragraph_0based là chỉ số đầu ra. '
@@ -746,9 +771,15 @@ def convert_pdf_to_docx(input_path, output_path, from_docx=False, kind="base", r
 
 
 if __name__ == '__main__':
+    import sys
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='backslashreplace')
     parser = argparse.ArgumentParser(description='PDF chữ -> DOCX và report JSON; không cần DOCX đối chiếu')
     parser.add_argument('input_file')
-    parser.add_argument('output_docx')
+    parser.add_argument('output_docx', nargs='?', help='Không truyền: tự đặt <số_ký_hiệu>.docx cạnh nguồn.')
+    parser.add_argument('--document-number', help='Số ký hiệu từ metadata đã đối chiếu khi PDF thiếu trường này.')
+    parser.add_argument('--output-dir', help='Thư mục đích khi dùng tên tự động.')
     parser.add_argument('--from-docx', action='store_true', help='Chỉ thử định dạng DOCX; không sửa theo PDF')
     parser.add_argument('--kind', choices=['base', 'other'], default='base',
                         help='base: V1, tách nhãn/nối đoạn; other: S/tham chiếu, giữ cấu trúc, sửa khoảng trắng theo PDF')
@@ -757,7 +788,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     try:
         output, log = convert_pdf_to_docx(args.input_file, args.output_docx, args.from_docx,
-                                         args.kind, not args.keep_page_numbers)
+                                         args.kind, not args.keep_page_numbers,
+                                         document_number=args.document_number, output_dir=args.output_dir)
         print(f'DOCX: {output}\nBáo cáo: {log}')
         print('Đã tạo 2 tệp. Hãy kiểm tra các mục needs_review trong báo cáo.')
     except Exception as error:
