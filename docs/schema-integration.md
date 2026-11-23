@@ -1,5 +1,11 @@
 # Hợp đồng schema chung và hướng dẫn tích hợp
 
+## Phạm vi hợp đồng sau cập nhật nghiệp vụ ngày 20/11/2026
+
+Hướng dẫn dưới áp dụng hợp đồng cục bộ cho từng V1, không phải báo cáo cấp S. Code căn cứ main `95e1d79` sau PR #7; không sửa schema/validator trong đợt tài liệu này. SRS §1.8 đặc tả lớp bao cần triển khai cho nhiều đích, kho/phiên bản, yêu cầu chưa giải quyết và tác động gián tiếp. Phải bổ sung kiểu dữ liệu, validator và fixture trước khi đổi API/UI.
+
+ID v1/s/ref_* chỉ có nghĩa trong từng ComparisonReport. Cấp S cần mapping (target_id, document_id cục bộ) về văn bản/phiên bản thật và kiểm tra nguồn/liên kết xuyên đích. validate_report của một V1 không kiểm chứng được mapping hoặc tác động gián tiếp. API hiện vẫn nhận doc_v1/doc_s/reference_files. Các mục lịch sử phía dưới giữ căn cứ nhập schema, không chứng minh đã có API chỉ S.
+
 ## Trạng thái nền chung ngày 12/11/2026
 
 Tài liệu lấy bản Dũng `6dbda8d`, đối chiếu code LightRAG `c192f43`; [common-baseline.md](common-baseline.md) ghi trạng thái và task còn thiếu. Schema giữ nguyên. Dùng `backend.demo:app` để chạy nền DOCX: runner đã nối Adapter/Linker/Text Diff/Context/Semantic/Scorer giới hạn, validate nguồn và report. `backend.main:app` riêng vẫn chưa cấu hình runner. Các mô tả PR #2 dưới đây là lịch sử nhập schema, không phải mọi module hiện tại còn trống.

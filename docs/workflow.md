@@ -4,6 +4,10 @@
 **Phiên bản:** Bản đầu tiên
 **Trạng thái:** Bản dự thảo để nhóm đọc và thống nhất áp dụng
 
+## Cập nhật phạm vi ngày 20/11/2026
+
+Architecture/BRD/SRS mới định hướng chỉ S trong kho dân sự. Nền code sau PR #7 vẫn là demo V1–S; chín fixture lịch sử chỉ kiểm lõi từng đích. Các ví dụ V1–S và mốc nhánh tháng 11 bên dưới đọc theo phạm vi đó, không coi là đầy đủ điểm nối hệ thống mới. Giữ quy trình bán song song, review bên giao/nhận và main qua PR; thay đổi contract cấp S phải kèm schema/validator/fixture và kế hoạch chuyển tiếp trước khi tích hợp code. Không tự thay bảng phân công hoặc lịch sử báo cáo trong đợt tài liệu.
+
 ## 1. Mục đích và phạm vi
 
 Tài liệu quy định cách thành viên phối hợp từ lúc chốt lựa chọn đến khi code được kiểm tra và tích hợp. Quy trình chung: **chốt → code song song → tự kiểm tra → kiểm thử lẫn nhau → sửa lỗi → tích hợp**.
@@ -127,6 +131,8 @@ Mẫu: `type(scope): mô tả ngắn`, ví dụ `fix(text-diff): correct replace
 
 PR ghi tối thiểu: task/phạm vi, file/chức năng đổi, contract/version sử dụng, dữ liệu và lệnh kiểm tra, kết quả, phần chưa xong và bên bị ảnh hưởng.
 
+Khi rà PR, Dũng, Đức Anh hoặc reviewer được phân công ghi SHA thực sự đã kiểm tra và dẫn ca chạy hoặc kết quả liên quan. Khi owner đẩy commit sửa, reviewer xem phần diff kể từ SHA đã kiểm tra và chạy lại các ca bị ảnh hưởng trước khi xác nhận SHA mới.
+
 - Người nhận đầu ra review cách module cung cấp dữ liệu; owner phần liên quan review thay đổi trong phạm vi của mình. Nếu cùng một người làm hai chức năng nối nhau, nhờ một thành viên khác review phần tích hợp; không tự gọi đó là kiểm thử chéo độc lập.
 - Dũng phụ trách tích hợp và merge vào nhánh chung, hoặc chỉ định người thực hiện cụ thể. Người làm không tự merge trước khi reviewer cần thiết xác nhận.
 - Chỉ merge khi các kiểm tra phù hợp đã đạt, không còn lỗi chặn và contract/schema/mẫu khớp nhau. Thay đổi cần nhiều PR phải ghi thứ tự tích hợp.
@@ -184,9 +190,14 @@ Kết quả mong đợi và căn cứ:
 Bước/lệnh tái hiện:
 Bên chịu trách nhiệm sửa:
 Trạng thái và kết quả chạy lại:
+Mức ảnh hưởng (chặn bàn giao của phần liên quan / có thể chuyển phiên):
+Điểm nối khác bị ảnh hưởng (nếu có):
+Reviewer, SHA bản sửa và bằng chứng xác nhận:
 ```
 
 Phân biệt: A trả sai contract → A sửa; A đúng nhưng B dùng sai → B sửa; contract mâu thuẫn/thiếu quy tắc → hai bên thống nhất lại decision, rồi cập nhật mẫu và code. Nếu bất đồng chưa giải quyết, đưa ví dụ cho Dũng điều phối và mời người phù hợp review; không âm thầm sửa expected output để test đạt.
+
+Ghi lỗi trên PR đang review nếu việc sửa thuộc phạm vi PR. Dùng issue nếu lỗi cần theo dõi qua nhiều PR hoặc nhiều phiên. Owner báo lại tại cùng chỗ với SHA mới, phần đã sửa và kết quả chạy lại. Reviewer xác nhận trên đúng bản sửa. Khi chuyển việc sang phiên sau, dẫn lại PR hoặc issue gốc.
 
 ## 5. Checklist xác nhận hoàn thành
 
@@ -209,6 +220,13 @@ Phân biệt: A trả sai contract → A sửa; A đúng nhưng B dùng sai → 
 Phân biệt **đã code**, **đã tự kiểm tra**, **đã kiểm thử chéo**, **đã merge** và **đã chạy toàn luồng**. Chỉ báo trạng thái đã có bằng chứng; merge một điểm nối không tự xác nhận toàn bộ hệ thống đã hoàn thành.
 
 ## 6. Chốt kết quả theo phiên code
+
+Dũng và Đức Anh dùng trình tự sau để tổng hợp tình trạng tích hợp. Các thành viên tiếp tục báo kết quả trong PR hoặc issue đang làm.
+
+1. **Đầu phiên:** Đức Anh xác nhận phạm vi trên một SHA của nhánh chung. Dũng đối chiếu điểm nối, ca chung và đầu ra kỳ vọng.
+2. **Trong phiên:** Dũng rà nghiệp vụ và điểm nối tích hợp. Đức Anh rà schema và các phụ thuộc liên quan. Reviewer từng module xác nhận phần được giao theo mục 3.5. Ghi kết quả theo SHA và chuyển việc cần sửa cho owner theo mục 4.4.
+3. **Sau khi owner cập nhật:** Reviewer kiểm tra bản sửa và cập nhật kết quả trên cùng PR hoặc issue. Ghi rõ ca nào đã chạy thật, ca nào còn dùng mock và phần nào chưa xác nhận.
+4. **Cuối phiên:** Dũng đối chiếu các điểm nối đã tích hợp. Đức Anh tổng hợp SHA của nhánh chung, PR đã merge, ca đã chạy, lỗi còn mở và việc đã thống nhất cho phiên sau. Cập nhật [mốc kiểm chứng](common-baseline.md#mốc-cập-nhật-nền-chung) và [kế hoạch phiên](implementation-plan.md#việc-chuyển-sang-phiên-sau).
 
 - Trước phiên, Đức Anh xác nhận phạm vi và người phụ trách. Mỗi task có owner, reviewer, điểm nối, fixture và điều kiện đạt. Các quy tắc dùng chung tra tại [Decision](decision.md).
 - Cuối phiên, owner gửi commit, lệnh và kết quả chạy, ca lỗi tái hiện được, phần đang dùng mock, giới hạn và đề xuất thay đổi. Đức Anh điều phối tổng hợp. Dũng đối chiếu nghiệp vụ và các điểm nối Pipeline/API.

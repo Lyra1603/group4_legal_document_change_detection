@@ -10,7 +10,7 @@ from .document_processing.amendment_linker import link_amendments
 from .change_analysis.text_diff import compute_text_diff
 from .change_analysis.semantic_diff import detect_semantic_changes
 from .change_analysis.scorer import score_changes
-from .context.context_builder import build_context
+from .context.context_builder import build_context, prepare_index
 from .context.chunk_builder import build_chunks
 from .context.source_registry import SourceRegistry
 from .context.semantic_bridge import run_semantic_stage
@@ -73,7 +73,8 @@ def run_demo_analysis(parsed, comparison_id, deadline):
             results.append({'amendment': item, 'text_diff': None, 'semantic_diff': None, 'scoring': None})
             continue
         context, text, semantic = run_semantic_stage(item,
-            context_work=lambda value: build_context(value, registry, None),
+            context_prepare=lambda value: prepare_index(value, registry, None),
+            context_work=lambda value, diff: build_context(value, registry, None, text_diff=diff),
             text_diff=compute_text_diff, semantic_diff=detect_semantic_changes)
         validate_amendment(context.amendment, boundary.documents, boundary.clauses)
         score = score_changes(semantic)

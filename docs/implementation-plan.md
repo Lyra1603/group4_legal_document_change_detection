@@ -2,6 +2,16 @@
 
 Phạm vi nghiệp vụ lấy từ [BRD](brd.md), yêu cầu và dữ liệu từ [SRS](srs.md), cấu trúc và luồng chạy từ [Architecture](architecture.md). Xem [Decision](decision.md) để tra các quyết định đã chốt và [Workflow](workflow.md) để thực hiện quy trình làm việc.
 
+## Phạm vi kế hoạch sau cập nhật nghiệp vụ ngày 20/11/2026
+
+Ba phiên phía dưới là kế hoạch lõi V1–S trước thay đổi nghiệp vụ, không phải toàn bộ công việc để nghiệm thu hệ thống chỉ S. PR #7 đã hoàn thành điểm ghép query từ Text Diff ở bridge; các câu coi đó là việc tương lai đọc theo mốc lịch sử. Giữ kế hoạch và phân công này làm tham khảo, không tự gán thêm task/deadline bằng đợt cập nhật tài liệu.
+
+Luồng mục tiêu và phụ thuộc mới ở Architecture/Module: chuẩn bị kho dân sự và mapping nguồn → trích yêu cầu từ S, xác định đích/phiên bản → tái sử dụng lõi từng đích → kiểm chứng tác động gián tiếp → báo cáo cấp S. Các bên có thể phát triển song song bằng fixture đã review, không bắt chờ toàn module. Phải chốt contract của các điểm nối mới trước khi triển khai phần phụ thuộc. Owner, phạm vi phiên và thời hạn mới cần nhóm xác nhận từ tiến độ thật.
+
+### Phạm vi bổ sung sau khi đối chiếu Use Case
+
+Các yêu cầu mục tiêu ở SRS UI-01–UI-10 được triển khai cùng các điểm nối cấp S: bổ sung/thay V1, phân tích từ S khi thiếu V1, kiểm tra phạm vi theo từng đích, coverage nhiều đích, chuỗi căn cứ, lượt bổ sung mới trong cùng UI, kết thúc phiên và thử lại E4. Nhóm cần hoàn thiện hợp đồng và fixture trước phần phụ thuộc, dùng các ca UC-M/UC-A/UC-E trong kế hoạch kiểm thử làm tiêu chí. E6 tiếp tục là đề xuất. Các dòng phân công và ba phiên lõi phía dưới được đọc theo mốc lịch sử.
+
 ## 1. Phiên 1 — Hoàn thiện luồng cơ sở V1–S
 
 **Điểm bắt đầu đã có:** [nền DOCX](common-baseline.md) chạy bằng `backend.demo:app`; không triển khai lại từ khung hoặc chờ AI để merge nền. Bảng dưới là đích hoàn thiện của phiên. Trước merge chỉ yêu cầu phạm vi DOCX hiện tại, lỗi chặn đã sửa và fixture/tài liệu thống nhất; ADD/REPEAL/nhiều đích, query từ Text Diff và dịch vụ thật tiếp tục sau merge. Nếu thử mock, giữ riêng trong test và ghi rõ, không đưa đáp án fixture vào demo thật.
@@ -20,6 +30,10 @@ Mục tiêu là chạy được một lượt so sánh từ V1, S và tài liệ
 | Dũng + Đức Anh và các owner | `data/module_handoff_fixtures/` và ca kiểm thử theo [kế hoạch đánh giá](test_evaluation_plan.md) | Dũng chuẩn bị ca và nhãn tham chiếu. Hai bên của từng điểm nối đối chiếu kỳ vọng. Đức Anh điều phối tổng hợp kết quả. |
 
 **Đầu ra khi kết thúc phiên:** Một ca chạy xuyên luồng có báo cáo qua validator và hiển thị được bằng chứng. Ghi rõ bước nào dùng đầu ra thật hoặc mô phỏng. Mỗi owner nộp kết quả chạy, lỗi có thể tái hiện và phần hợp đồng cần làm rõ. Đức Anh điều phối chốt nội dung phiên tiếp theo từ kết quả đó.
+
+### Việc chuyển sang phiên sau
+
+Khi chốt một phiên theo [Workflow §6](workflow.md#6-chốt-kết-quả-theo-phiên-code), Dũng và Đức Anh đưa các việc đã thống nhất vào phạm vi phiên tiếp theo. Mỗi việc ghi **đầu ra còn thiếu hoặc lỗi cần xử lý | owner | phụ thuộc hoặc điều kiện bắt đầu | điều kiện hoàn thành | link PR/issue**. Dùng PR hoặc issue gốc để theo dõi cách tái hiện và bản sửa.
 
 ## 2. Phiên 2 — Tích hợp các đầu ra thật
 

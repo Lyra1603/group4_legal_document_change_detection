@@ -15,6 +15,7 @@ from backend.app.context.chunk_builder import build_chunks
 from backend.app.context.context_builder import build_context
 from backend.app.context.lightrag_client import LightRAGClient, RetrievalError, UPSTREAM_COMMIT
 from backend.app.context.source_registry import SourceRegistry
+from backend.app.change_analysis.text_diff import compute_text_diff
 from test.context_suite.support import ContractServer, sample
 
 
@@ -49,6 +50,7 @@ def run_demo(*, real=False, ledger_dir=Path("runtime/lightrag/leases")):
     chunks = build_chunks(comparison_id, documents, versions,
                           max_chunks=config.max_chunks, max_chars=config.max_chunk_chars)
     registry = SourceRegistry(chunks, documents)
+    text_diff = compute_text_diff(item)
     started = time.perf_counter()
     disabled = build_context(item, registry, None)
     off_ms = (time.perf_counter() - started) * 1000
@@ -61,7 +63,7 @@ def run_demo(*, real=False, ledger_dir=Path("runtime/lightrag/leases")):
         index_ms = (time.perf_counter() - started) * 1000
         for _ in range(3):
             t = time.perf_counter()
-            results.append(build_context(item, registry, client))
+            results.append(build_context(item, registry, client, text_diff=text_diff))
             samples_ms.append((time.perf_counter() - t) * 1000)
         if real:
             graph = client.graph()  # raw extracted graph; not evidence automatically
@@ -79,7 +81,8 @@ def run_demo(*, real=False, ledger_dir=Path("runtime/lightrag/leases")):
                 "source_recall": len(found & gold) / len(gold), "source_count": len(found)}
     return {"mode": "REAL_LIGHTRAG_HTTP" if real else "CONTRACT_DOUBLE_NOT_LIGHTRAG",
             "generated_at": datetime.now(timezone.utc).isoformat(), "upstream_commit": UPSTREAM_COMMIT,
-            "input": {"comparison_id": comparison_id, "documents": documents, "versions": versions, "amendment": item},
+            "input": {"comparison_id": comparison_id, "documents": documents, "versions": versions,
+                      "amendment": item, "text_diff": text_diff},
             "registry": registry.manifest(), "project_source_graph": registry.source_graph(),
             "upstream_extracted_graph": graph,
             "disabled": {"context": disabled.amendment["context"], "metrics": metrics(coverage(disabled.amendment)), "latency_ms": off_ms},

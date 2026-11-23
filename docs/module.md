@@ -6,7 +6,7 @@
 
 ## 1. Mục đích và quy định chung
 
-**Nền đã chạy và công việc tiếp theo:** xem [common-baseline.md](common-baseline.md). Lấy tài liệu Dũng `6dbda8d` làm thiết kế; code `c192f43` đã có Adapter, Linker hẹp, Text Diff, Context và demo runner. Owner tiếp tục review/mở rộng code đó, không thay bằng file khung. Demo chung chạy `backend.demo:app`, LightRAG/model tắt; ADD/REPEAL/nhiều đích và query từ diff là công việc sau merge. Fixture là kỳ vọng kỹ thuật, không chứng minh module hiện đã tạo được mọi output mẫu.
+**Nền đã chạy và công việc tiếp theo:** xem [common-baseline.md](common-baseline.md). Lấy tài liệu Dũng `6dbda8d` làm thiết kế; code `c192f43` đã có Adapter, Linker hẹp, Text Diff, Context và demo runner. Owner tiếp tục review/mở rộng code đó, không thay bằng file khung. Demo chung chạy `backend.demo:app`, LightRAG/model tắt; ADD/REPEAL/nhiều đích còn cần hoàn thiện. PR #7 đã ghép query từ diff ở bridge; demo vẫn tắt retrieval. Fixture là kỳ vọng kỹ thuật, không chứng minh module hiện đã tạo được mọi output mẫu.
 
 Owner từng module tự xử lý và báo lỗi thuộc phần mình; chuyển bằng chứng có nguồn cùng lỗi/cảnh báo và phạm vi bị ảnh hưởng cho module nhận đầu ra theo contract chung. Bên nhận kiểm tra dữ liệu, không bỏ cảnh báo hoặc biến thiếu căn cứ thành không có thay đổi. Pipeline tổng hợp trạng thái báo cáo, không thay owner xử lý lỗi nội bộ.
 
@@ -22,6 +22,23 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 - Không tạo file trống ghi đè implementation đã có. Danh sách file bắt buộc không phải danh sách duy nhất được phép tồn tại.
 - LightRAG Server riêng qua HTTP là phương án đã chốt; API/release/cấu hình cụ thể vẫn cần xác nhận.
 - Không triển khai Evaluator độc lập. Giữ folder/file cũ để không tự đổi cấu trúc; kiểm thử do owner từng phần và hai owner tại điểm nối đảm nhiệm, cần có cả kiểm tra toàn luồng.
+
+## Phạm vi mục tiêu sau buổi học 17/11
+
+Cập nhật ngày 20/11, căn cứ main `95e1d79` sau PR #7 và BRD/SRS kế thừa từ PR #9. Các mục 3–4 mô tả lõi phân tích từng V1 hiện có; không phải hợp đồng đầy đủ của hệ thống chỉ S. API/UI đang chạy và schema không thay đổi trong đợt tài liệu này. Quyết định nghiệp vụ ở [Decision](decision.md), luồng đầy đủ ở [Architecture](architecture.md).
+
+| Chức năng cần bổ sung | Đầu vào | Đầu ra tối thiểu cần đặc tả | Phối hợp theo chức năng hiện có |
+| --- | --- | --- | --- |
+| Chuẩn bị kho dân sự | Văn bản/nguồn nhóm chọn | Văn bản, phiên bản, snapshot, cấu trúc/nguyên văn và mapping chunk → nguồn; trạng thái index | Dữ liệu/Pipeline, xử lý tài liệu, schema và Context/LightRAG |
+| Trích yêu cầu độc lập với V1 | S đã đọc/parse | ID chỉ dẫn, thao tác, dấu hiệu đích và bằng chứng S; giữ yêu cầu chưa trích đủ | Xử lý tài liệu/Linker → điều phối và bên xác định đích |
+| Xác định đích và phiên bản | Yêu cầu S + danh mục/kho | Đích/phiên bản/điều khoản và căn cứ lựa chọn; hoặc ứng viên/lý do chưa giải quyết | Retrieval/Context + dữ liệu/nghiệp vụ → Linker/Pipeline |
+| Binding nguồn cho từng đích | Đích/phiên bản đã xác minh + S/nguồn bổ sung | documents/clauses/units cục bộ dùng v1/s/ref_*; mapping về phiên bản thật | Adapter + schema → Linker và runner |
+| Kiểm chứng tác động gián tiếp | Thay đổi trực tiếp + nguồn kho | Quy định B, liên kết (target_id, amendment_id/change_id), quan hệ/giải thích, bằng chứng V1/B và thiếu căn cứ | Semantic/nghiệp vụ + retrieval → Pipeline/schema/UI |
+| Tổng hợp cấp S | Báo cáo từng đích + chỉ dẫn chưa giải quyết + tác động | SRS §1.8: analysis_id, snapshot/coverage, targets, unresolved_amendments, indirect_impacts, trạng thái/lỗi | Pipeline/API + schema → UI; kiểm tra ID và nguồn xuyên đích |
+
+Bảng này là phạm vi điểm nối cần triển khai, không tự phân công task/owner mới hoặc quy định tên file chưa có. Giữ LK-01; người làm chính và reviewer từng task chốt theo Workflow. Kiểu dữ liệu đầy đủ, null/lỗi và fixture của các điểm nối mới phải được bên giao/nhận review trước code. Không dùng các JSON 9 điểm nối cũ làm bằng chứng đã đáp ứng hệ thống mới.
+
+Tra cứu định danh/phiên bản chính xác trước khi tìm ứng viên ngữ nghĩa. Retrieval trả ứng viên; bước dùng kết quả kiểm tra nguồn và phiên bản, không dùng điểm similarity làm tác động pháp lý. Client hiện tại dành server/storage riêng cho một comparison; cần hiện thực riêng vòng đời kho bền vững và nguồn tạm, không bỏ kiểm tra cách ly hoặc dùng cleanup cũ trên kho chung.
 
 ## 2. Tổng quan module và phân công
 
@@ -56,9 +73,9 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 | --- | --- |
 | compare.py | File khung mục tiêu để tách router; hiện route POST /api/compare vẫn ở backend/main.py. Trách nhiệm dự kiến: nhận file/tham số, gọi Pipeline, ánh xạ lỗi HTTP. |
 
-**Đầu vào:** File V1, S, tài liệu tham chiếu và tham số upload theo hợp đồng đã chốt.
+**Đầu vào đang chạy:** File V1, S và tham chiếu. **Đầu vào mục tiêu:** S bắt buộc, bối cảnh/nguồn bổ sung tùy chọn; hợp đồng HTTP cần review trước khi triển khai.
 
-**Đầu ra:** ComparisonReport với base_document/amendment_document/reference_documents/results theo schema chung; nguồn cần đọc và lỗi có cấu trúc. Mã HTTP tách khỏi trạng thái nghiệp vụ; không thêm dữ liệu nhận xét vào báo cáo AI.
+**Đầu ra đang chạy:** ComparisonReport với base_document/amendment_document/reference_documents/results theo schema chung. **Mục tiêu:** báo cáo cấp S theo SRS §1.8 bao kết quả từng đích, tác động gián tiếp và phần chưa giải quyết; nguồn cần đọc và lỗi có cấu trúc. Mã HTTP tách khỏi trạng thái nghiệp vụ; không thêm dữ liệu nhận xét vào báo cáo AI.
 
 **Bên kết nối:** Pipeline, schemas, frontend.
 
@@ -88,7 +105,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 
 **File hỗ trợ:** được thêm trong module theo quy định mục 1; tên/cấu trúc nội bộ chỉ cố định khi owner đề xuất và các bên liên quan thống nhất.
 
-**Điều kiện bàn giao:** Schema và fixture nhất quán với decision; validator phát hiện ca sai liên quan. contracts.py, validation.py, report_validation.py giữ nguyên code căn cứ; fixture và test độc lập ở test/schema_suite. Pipeline chưa được nối validation; kho nguồn/Clause và thứ tự gọi theo [SRS mục 1.7](srs.md).
+**Điều kiện bàn giao:** Schema và fixture nhất quán với decision; validator phát hiện ca sai liên quan. contracts.py, validation.py, report_validation.py giữ nguyên code căn cứ; fixture và test độc lập ở test/schema_suite. Pipeline nền chưa đủ validation lồng nhau; demo runner đã gọi kiểm tra nguồn/amendment/report; kho nguồn/Clause và thứ tự gọi theo [SRS mục 1.7](srs.md).
 
 **Quyết định liên quan:** LK-02 đến LK-12. Tra cứu trong [decision.md](decision.md).
 
@@ -119,7 +136,7 @@ Tài liệu ghi nhiệm vụ, người chịu trách nhiệm, file chính, đi�
 
 ### 3.4. context/
 
-File hỗ trợ trên nhánh: `semantic_bridge.py` ghép Context/Text Diff trước Semantic; cần điều chỉnh điểm ghép query mới. Chuẩn bị index nhận nguồn adapter; query nhận chỉ dẫn/trước-sau/TextDiffResult. Giữ owner/schema chung.
+File hỗ trợ trên nhánh: `semantic_bridge.py` chạy chuẩn bị index song song Text Diff, chờ cả hai rồi ghép query trước Semantic. Chuẩn bị index nhận nguồn adapter; query nhận chỉ dẫn/trước-sau/TextDiffResult. Demo vẫn tắt retrieval; chưa kiểm chứng dịch vụ thật. Giữ owner/schema chung.
 
 **Owner:** Đức Anh phụ trách context; Dũng + Đức Anh phụ trách gọi/tích hợp LightRAG. LK-13 chốt sau các quyết định còn lại.
 
@@ -131,6 +148,8 @@ File hỗ trợ trên nhánh: `semantic_bridge.py` ghép Context/Text Diff trư�
 | source_registry.py | Đức Anh: ánh xạ chunk/kết quả truy xuất về đúng document_id và nguyên văn nguồn. |
 | lightrag_client.py | Dũng + Đức Anh: gọi LightRAG Server qua HTTP: nhập, theo dõi sẵn sàng, truy vấn, xử lý lỗi và dọn dữ liệu. |
 | context_builder.py | Đức Anh: lập truy vấn, chọn/kiểm tra căn cứ, cung cấp ngữ cảnh và nhu cầu tham chiếu thiếu/chưa rõ. |
+
+Điểm gọi nội bộ: `prepare_index(item, registry, client)` chỉ chuẩn bị chỉ mục; `build_context(item, registry, client, text_diff=diff)` truy vấn và kiểm tra nguồn. `run_semantic_stage` nhận `context_prepare(item)` và `context_work(item, diff)`; runner giữ quyền quản lý client/cleanup. Trong điểm gọi query ngữ cảnh này, thiếu hoặc sai diff phải trả cảnh báo, không truy vấn bằng dữ liệu chưa kiểm chứng. Query tìm đích hoặc B cần contract riêng, không áp điều kiện có diff của helper này. Không đổi hợp đồng dict bàn giao giữa các module.
 
 **Đầu vào:** Tài liệu/cây/nguồn và yêu cầu sửa đổi đã chuẩn hóa.
 
@@ -193,6 +212,8 @@ File hỗ trợ trên nhánh: `semantic_bridge.py` ghép Context/Text Diff trư�
 
 ## 4. Đầu vào–đầu ra và các điểm nối
 
+Bảng chín điểm nối dưới áp dụng lõi từng V1 và fixture lịch sử. Điểm nối mục tiêu cấp S ở bảng đầu tài liệu; chưa có schema/fixture thực thi cho các bước mới.
+
 Phiên 1 giữ toàn văn cùng một đơn vị đối chiếu ở cả hai trạng thái. Với sửa nội dung của Điểm, Khoản hoặc Điều hiện có, đơn vị đối chiếu là toàn văn đơn vị đó. Khi thêm hoặc bãi bỏ cả một đơn vị, dùng đơn vị chứa nhỏ nhất còn tồn tại ở hai phía, ví dụ toàn Điều khi thêm hoặc bãi bỏ một Khoản. Vị trí đích vẫn ghi chính xác Điểm, Khoản hoặc Điều mà S chỉ ra. Nếu chỉ dẫn có nhiều đích, giữ đủ đích và căn cứ cho từng đích. Xem [LK-05](decision.md#lk-05--chỉ-dẫn-sửa-đổi-và-nội-dung-trướcsau) để tra quyết định và điểm còn mở.
 
 | Điểm nối | Bên giao → bên nhận | Đầu vào | Đầu ra | Điều kiện | Fixture và quyết định |
@@ -209,7 +230,19 @@ Phiên 1 giữ toàn văn cùng một đơn vị đối chiếu ở cả hai tr�
 
 Các fixture mô tả hợp đồng tại từng điểm nối. Trạng thái chỉ mục, câu query và dữ liệu hiển thị trong fixture dùng để mô phỏng, theo [README của bộ fixture](../data/module_handoff_fixtures/README.md). Tên hàm và chi tiết tích hợp còn mở được chốt khi có kết quả chạy.
 
-Binding code hiện tại: `adapt_documents(parsed) -> BoundaryData(documents, clauses, units)`; `link_amendments(boundary) -> (items, issues)`; `compute_text_diff(item)`; `detect_semantic_changes(item, text_diff)`; `score_changes(semantic)` (chưa nhận item riêng như wrapper fixture); runner `(parsed, comparison_id, deadline) -> AnalysisOutcome`. Fixture đóng gói input không quy định chữ ký hàm. Khi nối dùng adapter tại bên gọi, không sửa contract TypedDict hoặc buộc mọi module đổi hàm theo tên khóa JSON. Bridge Context/Text Diff hiện tại chưa thực hiện điểm ghép query mục tiêu.
+Binding code hiện tại: `adapt_documents(parsed) -> BoundaryData(documents, clauses, units)`; `link_amendments(boundary) -> (items, issues)`; `compute_text_diff(item)`; `detect_semantic_changes(item, text_diff)`; `score_changes(semantic)` (chưa nhận item riêng như wrapper fixture); runner `(parsed, comparison_id, deadline) -> AnalysisOutcome`. Fixture đóng gói input không quy định chữ ký hàm. Khi nối dùng adapter tại bên gọi, không sửa contract TypedDict hoặc buộc mọi module đổi hàm theo tên khóa JSON. PR #7 đã thực hiện điểm ghép query sau Text Diff và chuẩn bị index bằng kiểm thử HTTP mô phỏng; demo vẫn tắt retrieval. Đây là lõi từng đích, không phải query tìm V1 từ S hoặc tìm tác động lên B.
+
+### Bổ sung điểm nối từ quyết định Use Case ngày 20/11/2026
+
+| Điểm nối | Dữ liệu và hành vi cần bàn giao |
+| --- | --- |
+| Tiếp nhận/giải quyết đích → UI | Phạm vi có căn cứ, ứng viên phiên bản, dấu hiệu V1 không khớp và danh sách nguồn còn thiếu. UI cho thay file hoặc chọn “Hiện tại không có tài liệu”. |
+| Phân tích thiếu V1 → Tổng hợp cấp S | Chỉ dẫn S, nguồn hợp lệ đã dùng, nhận định có căn cứ, phần trước/sau hoặc tác động chưa xác định. Liên kết về yêu cầu chưa giải quyết; giữ kết quả đích khác. Kiểu dữ liệu và validator cấp S cần review. |
+| Tổng hợp → UI | Đếm riêng văn bản, yêu cầu và điều khoản đủ/thiếu nguồn; chuỗi căn cứ của từng nhận định và các vai trò ngữ cảnh/đối tượng tác động. Người làm UI chọn cách làm nổi bật có nhãn. |
+| Bổ sung/thử lại → Điều phối | Lượt bổ sung là lượt phân tích mới. E4 kiểm tra dữ liệu hợp lệ còn lưu trước khi tiếp tục, hoặc chạy mới nếu đã cleanup. Giữ báo cáo trước khi lượt mới lỗi và tránh gửi lặp. |
+| UI → Kết thúc phiên | Xóa báo cáo, trạng thái và lựa chọn giữ trên UI. Trước thao tác đó, vẫn xem bằng chứng đã trả dù backend dọn tài nguyên tạm. |
+
+Thành công chức năng không phụ thuộc vào nhận xét. Độ đúng của đầu ra vẫn phải kiểm tra trong nghiệm thu. E6 hủy khi đang xử lý tiếp tục là đề xuất theo SRS §4.2. Các yêu cầu này cần fixture mới và đầu ra thật để kiểm tra điểm nối.
 
 ## 5. Phối hợp triển khai bán song song
 
@@ -234,5 +267,7 @@ Phân biệt ba trạng thái: đủ đặc tả, đã hiện thực và đã t�
 | Người gọi/tích hợp LightRAG | Đã chốt Dũng + Đức Anh | Chi tiết kỹ thuật còn chờ CN-04/LK-13; LK-13 chốt sau các quyết định còn lại |
 | Hợp đồng dữ liệu và báo cáo | Đã chốt dùng schema Đức Anh | LK-08 đến LK-11 đã ghi nhận; adapter/wiring, thuật toán, rubric và API chi tiết còn chờ |
 | Phương pháp nội bộ từng owner | Chờ owner điền lựa chọn | Các quyết định CN liên quan |
+
+Khi chốt phiên, Dũng và Đức Anh có thể ghi thêm trạng thái của đầu ra hoặc điểm nối có thay đổi. Dùng các mốc xác nhận trong [Workflow §5](workflow.md#5-checklist-xác-nhận-hoàn-thành) và ghi theo mẫu: **đầu ra hoặc điểm nối | trạng thái | PR/SHA | ca và kết quả kiểm tra | việc còn lại và owner**. Với kiểm thử mô phỏng, ghi rõ phần còn cần chạy với đầu ra thật. Dẫn về PR hoặc issue để tra chi tiết.
 
 Khi thêm/xóa một quyết định, rà lại các mã phụ thuộc tại đây. Nếu quyết định đã chốt bị thay thế, không tiếp tục dùng đặc tả cũ cho các module nhận dữ liệu.
