@@ -55,6 +55,7 @@ class OwnedLightRAG:
         if not 30 <= budget <= 1800:
             raise ValueError('Session budget must be 30..1800 seconds')
         self.session_id=session_id
+        self.comparison_id=session_id
         self.directory=Path(directory).resolve()/session_id
         # A new instance must never attach to an existing directory/ledger.
         self.directory.mkdir(parents=True,exist_ok=False)
@@ -117,7 +118,7 @@ class OwnedLightRAG:
             raise RetrievalError('SERVER_PORT_UNVERIFIED')
         config=LightRAGConfig('http://'+address,workspace,api_key=server_key,
                               timeout=180,top_k=8,max_tokens=6000,max_chunks=30,max_chunk_chars=5000)
-        self.client=LightRAGClient(config,self.session_id,self.directory/'leases',deadline=self.deadline)
+        self.client=LightRAGClient(config,self.comparison_id,self.directory/'leases',deadline=self.deadline)
         startup=min(self.deadline,time.monotonic()+90)
         while time.monotonic()<startup:
             try:
