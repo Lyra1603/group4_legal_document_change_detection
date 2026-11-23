@@ -47,6 +47,11 @@ Nguồn tham khảo nội bộ được ghi trong docstring từng module; đây
 
 Frontend hiện là prototype HTML/CSS/JavaScript cùng origin, không cần Node để chạy. Không chọn thay công nghệ frontend cuối cùng cho nhóm. Nội dung file hiển thị bằng text node; không đưa nguyên văn vào innerHTML. Không có tài khoản, database lịch sử hoặc lưu nhận xét.
 
+Giao diện phân biệt lỗi đầu vào theo mã HTTP, lỗi kết nối và lỗi máy chủ. Trong
+báo cáo, `PARTIAL`/`FAILED` vẫn giữ các mục và cảnh báo; “Chưa biết: thiếu căn
+cứ”, “Chưa xử lý được” và “Không đổi nghĩa” là ba trạng thái khác nhau, không
+được hiểu lẫn thành không có thay đổi.
+
 ## Bằng chứng chạy thật
 
 Đã gửi file DOCX qua HTTP tới server local đang chạy, sau đó validate ComparisonReport. Đầu vào giữ nguyên, không lấy file V2 làm S.
@@ -83,6 +88,7 @@ python -m unittest discover -s test/context_suite -v
 - Schema nền: 51 test, 49 đạt và 2 expected failures đã biết.
 - Context/LightRAG: 26 test, 24 đạt và 2 real-service tests skipped. Không tuyên bố LightRAG thật đã chạy.
 - Trình duyệt Edge: đã thử nạp mẫu, chọn file qua file chooser, thêm nhiều tham chiếu, bỏ file, gửi HTTP, xem kết quả và cảnh báo sai định dạng. Không có lỗi console trong lần kiểm tra. Chưa kiểm chứng riêng trên thiết bị di động hoặc trình duyệt khác.
+- Kiểm tra lại sau commit `6062dd3` ngày 14/11/2026: nạp `case_02`, gửi API thật và hiển thị đúng `PARTIAL`, cảnh báo có `stage/code`, diff trước/sau, trạng thái “Chưa biết: thiếu căn cứ”, mức tác động chưa xác định và 3 bằng chứng nguồn.
 - Nút xuất JSON có implementation Blob/download; thao tác bắt sự kiện download của công cụ kiểm thử bị timeout, chưa xác nhận độc lập file tải xuống trên trình duyệt. Các báo cáo HTTP đã được lưu và validate bằng script ở trên.
 
 ## Việc còn để hoàn thành demo có AI/retrieval
