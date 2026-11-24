@@ -1,0 +1,457 @@
+{
+  "rule_version": "round2-0.1.0",
+  "dataset": {
+    "name": "th1nhng0/vietnamese-legal-documents",
+    "config": "metadata",
+    "revision": "8977887f17be2defae4c5171d55562e1cde7d695"
+  },
+  "summary": {
+    "metadata_rows": 171556,
+    "round1_rows": 506,
+    "previous_candidate_rows": 506,
+    "added_this_run": 3587,
+    "added_beyond_round1": 3587,
+    "total_candidates": 4093,
+    "preserved_all_existing": true,
+    "groups": {
+      "related_candidate": 1656,
+      "round1_or_existing_review": 82,
+      "mixed_context_review": 1559,
+      "core_candidate": 772,
+      "scope_conflict_review": 24
+    },
+    "priorities": {
+      "medium": 1434,
+      "low": 1887,
+      "high": 772
+    },
+    "not_selected_is_not_legal_exclusion": true
+  },
+  "metadata_sha256": "fe15ceb8f6838cc7b672a674fe8d46902a7d5d8d75889c6eec4124f934c5a3d2",
+  "candidate_csv_columns_unchanged": [
+    "id",
+    "title",
+    "so_ky_hieu",
+    "ngay_ban_hanh",
+    "loai_van_ban",
+    "ngay_co_hieu_luc",
+    "ngay_het_hieu_luc",
+    "nguon_thu_thap",
+    "ngay_dang_cong_bao",
+    "nganh",
+    "linh_vuc",
+    "co_quan_ban_hanh",
+    "chuc_danh",
+    "nguoi_ky",
+    "pham_vi",
+    "thong_tin_ap_dung",
+    "tinh_trang_hieu_luc"
+  ],
+  "sources": {
+    "BLDS2015": {
+      "title": "Bộ luật Dân sự 91/2015/QH13",
+      "url": "https://rfd.gov.vn/content/vanban/Lists/VBPQ/Attachments/108/91_2015_QH13_Bo%20Luat%20Dan%20su.pdf",
+      "locators": "Điều 1, 3, 4, 8, 14, 17; Phần II; Điều 274, 292, 385, 584, 609",
+      "use": "Khung khái niệm và chủ đề; không quy định thuật toán lọc metadata."
+    },
+    "BLTTDS2015": {
+      "title": "Bộ luật Tố tụng dân sự 92/2015/QH13",
+      "url": "https://vanban.chinhphu.vn/?docid=183189&pageid=27160",
+      "locators": "Điều 1",
+      "use": "Tố tụng được giữ ở nhóm liên quan/hỗ trợ, không đồng nhất luật nội dung."
+    },
+    "SYSTEM_TEACHING": {
+      "title": "Giáo trình Pháp luật kèm Thông tư 08/2014/TT-BLĐTBXH",
+      "url": "https://congbao.chinhphu.vn/van-ban/thong-tu-so-08-2014-tt-bldtbxh-9844/41836.htm",
+      "locators": "Công báo 513+514 ngày 20/5/2014, trang in 41, mục 2.1.3",
+      "use": "Tài liệu giảng dạy về ngành luật; không phải bảng phân loại dataset bắt buộc."
+    },
+    "CYBER2025": {
+      "title": "Luật An ninh mạng năm 2025",
+      "url": "https://vbpl.moj.gov.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=187039",
+      "locators": "Điều 3 khoản 20",
+      "use": "Căn cứ phân biệt thuật ngữ mật mã dân sự với phạm vi luật dân sự."
+    }
+  },
+  "rule_hit_counts": {
+    "R2_08_IP": 361,
+    "R2_03_PROPERTY": 931,
+    "R2_04_CONTRACT": 129,
+    "R2_05_SECURITY": 620,
+    "R2_14_CONTEXT_COMBINATION": 229,
+    "R2_09_REAL_ESTATE": 371,
+    "R2_13_DAMAGE_PRIVACY": 505,
+    "R2_12_FAMILY": 181,
+    "R2_10_NOTARY": 612,
+    "R1_DAN_SU": 506,
+    "R2_11_PROTECTION": 377,
+    "R2_01_CIVIL_CODE": 30,
+    "R2_15_INDUSTRY_LABEL": 3,
+    "R2_07_INHERITANCE": 19,
+    "R2_06_TORT": 4
+  },
+  "new_admission_columns": {
+    "linh_vuc": 345,
+    "title": 3445,
+    "nganh": 194,
+    "co_quan_ban_hanh": 41
+  },
+  "column_policy": {
+    "id": {
+      "role": "identity",
+      "reason": "Chỉ nối/khử trùng trong cùng dataset và revision, không suy ra ngành luật.",
+      "observed_nonempty": 171556,
+      "observed_empty": 0,
+      "active_topic_data": false
+    },
+    "title": {
+      "role": "topic",
+      "reason": "Lượt 1 đã dùng từ dân sự; lượt 2 mở rộng theo các chủ đề có căn cứ.",
+      "observed_nonempty": 171546,
+      "observed_empty": 10,
+      "active_topic_data": true
+    },
+    "so_ky_hieu": {
+      "role": "identity",
+      "reason": "Chỉ định danh; không suy ra ngành luật từ mã cơ quan hoặc số hiệu.",
+      "observed_nonempty": 171545,
+      "observed_empty": 11,
+      "active_topic_data": false
+    },
+    "ngay_ban_hanh": {
+      "role": "temporal",
+      "reason": "Giữ để chọn phiên bản về sau; không dùng để xác định dân sự.",
+      "observed_nonempty": 171459,
+      "observed_empty": 97,
+      "active_topic_data": false
+    },
+    "loai_van_ban": {
+      "role": "support",
+      "reason": "Chỉ ưu tiên duyệt khi đã có chủ đề; không nhận chỉ vì là Luật/Nghị định.",
+      "observed_nonempty": 171556,
+      "observed_empty": 0,
+      "active_topic_data": false
+    },
+    "ngay_co_hieu_luc": {
+      "role": "temporal",
+      "reason": "Không quyết định chủ đề, không lọc bỏ theo hiệu lực.",
+      "observed_nonempty": 166627,
+      "observed_empty": 4929,
+      "active_topic_data": false
+    },
+    "ngay_het_hieu_luc": {
+      "role": "temporal",
+      "reason": "Không quyết định chủ đề; văn bản hết hiệu lực vẫn có thể là V1.",
+      "observed_nonempty": 80318,
+      "observed_empty": 91238,
+      "active_topic_data": false
+    },
+    "nguon_thu_thap": {
+      "role": "provenance",
+      "reason": "Nguồn để kiểm chứng, không phải đối tượng điều chỉnh.",
+      "observed_nonempty": 84612,
+      "observed_empty": 86944,
+      "active_topic_data": false
+    },
+    "ngay_dang_cong_bao": {
+      "role": "temporal",
+      "reason": "Thông tin công bố, không phải dấu hiệu dân sự.",
+      "observed_nonempty": 45308,
+      "observed_empty": 126248,
+      "active_topic_data": false
+    },
+    "nganh": {
+      "role": "topic_support",
+      "reason": "Nhãn quản lý; dùng chủ đề cụ thể hoặc kết hợp ngữ cảnh, không nhận riêng nhãn Tư pháp.",
+      "observed_nonempty": 107381,
+      "observed_empty": 64175,
+      "active_topic_data": true
+    },
+    "linh_vuc": {
+      "role": "topic",
+      "reason": "Lượt 1 đã dùng từ dân sự; lượt 2 đọc các chủ đề cụ thể, nhãn nguồn vẫn cần duyệt.",
+      "observed_nonempty": 166771,
+      "observed_empty": 4785,
+      "active_topic_data": true
+    },
+    "co_quan_ban_hanh": {
+      "role": "support",
+      "reason": "Chỉ kết hợp chủ đề; Bộ Tư pháp/Tòa án không tự làm văn bản thành dân sự.",
+      "observed_nonempty": 170806,
+      "observed_empty": 750,
+      "active_topic_data": false
+    },
+    "chuc_danh": {
+      "role": "not_domain",
+      "reason": "Chức vụ người ký không chứng minh đối tượng điều chỉnh.",
+      "observed_nonempty": 166120,
+      "observed_empty": 5436,
+      "active_topic_data": false
+    },
+    "nguoi_ky": {
+      "role": "not_domain",
+      "reason": "Tên người ký không chứng minh đối tượng điều chỉnh.",
+      "observed_nonempty": 169670,
+      "observed_empty": 1886,
+      "active_topic_data": false
+    },
+    "pham_vi": {
+      "role": "territorial",
+      "reason": "Trung ương/địa phương không phải ngành luật; không loại văn bản địa phương.",
+      "observed_nonempty": 171505,
+      "observed_empty": 51,
+      "active_topic_data": false
+    },
+    "thong_tin_ap_dung": {
+      "role": "topic_if_available",
+      "reason": "Có thể xét nội dung mô tả nếu có; thống kê độ đầy đủ, không tự bù dữ liệu trống.",
+      "observed_nonempty": 0,
+      "observed_empty": 171556,
+      "active_topic_data": false
+    },
+    "tinh_trang_hieu_luc": {
+      "role": "temporal",
+      "reason": "Giữ để tra lịch sử, không lọc bỏ văn bản đã hết hiệu lực.",
+      "observed_nonempty": 171556,
+      "observed_empty": 0,
+      "active_topic_data": false
+    }
+  },
+  "rules": [
+    {
+      "id": "R2_01_CIVIL_CODE",
+      "group": "core_candidate",
+      "terms": [
+        "bộ luật dân sự",
+        "quan hệ dân sự",
+        "quyền dân sự",
+        "nghĩa vụ dân sự"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 1, 3, 4",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_02_PERSON",
+      "group": "core_candidate",
+      "terms": [
+        "quyền nhân thân",
+        "năng lực hành vi dân sự",
+        "giám hộ",
+        "quyền đối với hình ảnh",
+        "bí mật đời tư"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 17; Chương III",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_03_PROPERTY",
+      "group": "core_candidate",
+      "terms": [
+        "quyền sở hữu",
+        "quyền khác đối với tài sản",
+        "quyền hưởng dụng",
+        "quyền bề mặt",
+        "bất động sản liền kề",
+        "chiếm hữu tài sản"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Phần II",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_04_CONTRACT",
+      "group": "core_candidate",
+      "terms": [
+        "giao dịch dân sự",
+        "hợp đồng dân sự",
+        "giao kết hợp đồng",
+        "thực hiện hợp đồng",
+        "hợp đồng vay",
+        "hợp đồng mượn",
+        "hợp đồng thuê tài sản",
+        "hợp đồng mua bán",
+        "hợp đồng tặng cho",
+        "hợp đồng ủy quyền",
+        "chuyển giao quyền yêu cầu",
+        "nghĩa vụ hoàn trả",
+        "thực hiện công việc không có ủy quyền"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 8, 274, 385; Phần III",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_05_SECURITY",
+      "group": "core_candidate",
+      "terms": [
+        "giao dịch bảo đảm",
+        "biện pháp bảo đảm thực hiện nghĩa vụ",
+        "đăng ký biện pháp bảo đảm",
+        "thế chấp",
+        "cầm cố",
+        "bảo lưu quyền sở hữu",
+        "cầm giữ tài sản",
+        "đặt cọc",
+        "ký cược",
+        "ký quỹ",
+        "bảo lãnh",
+        "tín chấp"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 292; cần phân biệt điều tiết ngành với quan hệ dân sự",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_06_TORT",
+      "group": "core_candidate",
+      "terms": [
+        "bồi thường thiệt hại ngoài hợp đồng",
+        "bồi thường ngoài hợp đồng"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 584; Chương XX",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_07_INHERITANCE",
+      "group": "core_candidate",
+      "terms": [
+        "thừa kế",
+        "di chúc",
+        "khai nhận di sản",
+        "phân chia di sản"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 609; Phần IV",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_08_IP",
+      "group": "related_candidate",
+      "terms": [
+        "sở hữu trí tuệ",
+        "quyền tác giả",
+        "quyền liên quan",
+        "sở hữu công nghiệp",
+        "chuyển giao công nghệ"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 4, Điều 8 khoản 4; chỉ nhận diện khả năng liên quan",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_09_REAL_ESTATE",
+      "group": "related_candidate",
+      "terms": [
+        "chuyển nhượng quyền sử dụng đất",
+        "tặng cho quyền sử dụng đất",
+        "thế chấp quyền sử dụng đất",
+        "hợp đồng về nhà ở",
+        "hợp đồng mua bán nhà",
+        "hợp đồng thuê nhà",
+        "luật nhà ở",
+        "luật đất đai",
+        "luật kinh doanh bất động sản"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 4; Chương XVI, chỉ giữ khả năng có phần điều chỉnh giao dịch",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_10_NOTARY",
+      "group": "related_candidate",
+      "terms": [
+        "công chứng",
+        "chứng thực hợp đồng",
+        "chứng thực giao dịch",
+        "chứng thực chữ ký và chứng thực hợp đồng"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 4; Điều 119 về hình thức giao dịch",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_11_PROTECTION",
+      "group": "related_candidate",
+      "terms": [
+        "tố tụng dân sự",
+        "thi hành án dân sự",
+        "trọng tài thương mại",
+        "hòa giải thương mại",
+        "thừa phát lại"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 14; hỗ trợ bảo vệ/thực hiện quyền, không đồng nhất ngành luật",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_12_FAMILY",
+      "group": "related_candidate",
+      "terms": [
+        "hôn nhân và gia đình",
+        "nuôi con nuôi",
+        "tài sản chung của vợ chồng",
+        "tài sản của vợ chồng"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 4; chỉ đánh dấu lĩnh vực giao thoa để duyệt, không tự mở phạm vi",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_13_DAMAGE_PRIVACY",
+      "group": "related_candidate",
+      "terms": [
+        "bồi thường thiệt hại",
+        "trách nhiệm bồi thường",
+        "bảo vệ dữ liệu cá nhân",
+        "quyền riêng tư",
+        "bảo vệ quyền lợi người tiêu dùng"
+      ],
+      "basis": "BLDS2015",
+      "locator": "Điều 4, 13, 38, 584, 608; ngữ cảnh có thể thuộc lĩnh vực khác",
+      "interpretation": "Dấu hiệu để lấy ứng viên, không xác nhận ngành luật."
+    },
+    {
+      "id": "R2_14_CONTEXT_COMBINATION",
+      "condition": "title có chủ đề yếu VÀ nganh/cơ quan có ngữ cảnh tư pháp",
+      "basis": "BLDS2015 Điều 1, 4; chính sách ứng viên cần duyệt"
+    },
+    {
+      "id": "R2_15_INDUSTRY_LABEL",
+      "condition": "nganh có toàn giá trị dân sự hoặc dân sự - kinh tế",
+      "basis": "Nhãn nguồn hỗ trợ; không phải kết luận pháp lý"
+    }
+  ],
+  "review_flags_policy": {
+    "term_collision": {
+      "pattern": "(?<!\\w)(?:hàng\\ không\\ dân\\ sự|phòng\\ thủ\\ dân\\ sự|mật\\ mã\\ dân\\ sự)(?!\\w)",
+      "effect": "Chỉ chuyển nhóm chờ duyệt/giảm ưu tiên; không xóa ứng viên.",
+      "basis": "BLDS2015 Điều 1, 4; dấu hiệu ngữ cảnh do dự án đề xuất, không kết luận ngành luật."
+    },
+    "personnel_or_organization": {
+      "pattern": "(?<!\\w)(?:chức\\ năng,\\ nhiệm\\ vụ|chức\\ năng\\ nhiệm\\ vụ|cơ\\ cấu\\ tổ\\ chức|khen\\ thưởng|tuyển\\ dụng|tiền\\ lương|công\\ chức|viên\\ chức|bổ\\ nhiệm|biên\\ chế|thi\\ đua)(?!\\w)",
+      "effect": "Chỉ chuyển nhóm chờ duyệt/giảm ưu tiên; không xóa ứng viên.",
+      "basis": "BLDS2015 Điều 1, 4; dấu hiệu ngữ cảnh do dự án đề xuất, không kết luận ngành luật."
+    },
+    "public_management": {
+      "pattern": "(?<!\\w)(?:cấp\\ giấy\\ chứng\\ nhận\\ quyền\\ sử\\ dụng\\ đất|xử\\ phạt\\ vi\\ phạm\\ hành\\ chính|xử\\ lý\\ vi\\ phạm\\ hành\\ chính|bồi\\ thường\\ của\\ nhà\\ nước|quyền\\ sở\\ hữu\\ toàn\\ dân|bồi\\ thường\\ nhà\\ nước|ngân\\ sách\\ nhà\\ nước|tài\\ sản\\ nhà\\ nước|quản\\ lý\\ nhà\\ nước|đo\\ đạc\\ địa\\ chính|lệ\\ phí\\ đăng\\ ký|tài\\ sản\\ công|thu\\ hồi\\ đất|tái\\ định\\ cư|phí\\ đăng\\ ký|chế\\ độ\\ thu)(?!\\w)",
+      "effect": "Chỉ chuyển nhóm chờ duyệt/giảm ưu tiên; không xóa ứng viên.",
+      "basis": "BLDS2015 Điều 1, 4; dấu hiệu ngữ cảnh do dự án đề xuất, không kết luận ngành luật."
+    },
+    "specialized_regulation": {
+      "pattern": "(?<!\\w)(?:người\\ lao\\ động\\ đi\\ làm\\ việc\\ ở\\ nước\\ ngoài|ký\\ quỹ\\ bảo\\ vệ\\ môi\\ trường|bảo\\ lãnh\\ của\\ chính\\ phủ|phục\\ hồi\\ môi\\ trường|bảo\\ lãnh\\ chính\\ phủ)(?!\\w)",
+      "effect": "Chỉ chuyển nhóm chờ duyệt/giảm ưu tiên; không xóa ứng viên.",
+      "basis": "BLDS2015 Điều 1, 4; dấu hiệu ngữ cảnh do dự án đề xuất, không kết luận ngành luật."
+    }
+  },
+  "limitations": [
+    "Chỉ sàng lọc metadata, chưa đọc toàn văn hoặc xác nhận ngành luật.",
+    "Không dùng số hiệu/ngày/hiệu lực/tên người ký để quyết định ngành luật.",
+    "Giữ toàn bộ ứng viên cũ kể cả nghi nhiễu; chưa nạp kho hoặc tải toàn văn.",
+    "Ngành trong dataset là nhãn quản lý; thiếu dữ liệu không phải bằng chứng loại.",
+    "Liên quan/hỗ trợ hoặc giao thoa không đồng nghĩa nằm trong phạm vi dân sự đã duyệt.",
+    "Không công bố precision/recall khi chưa có nhãn kiểm chứng độc lập."
+  ]
+}
