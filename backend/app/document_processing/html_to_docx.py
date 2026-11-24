@@ -331,7 +331,7 @@ class _Converter:
 
 
 def convert_html_to_docx(input_path, output_path=None, encoding=None, source_url=None,
-                         document_number=None, output_dir=None):
+                         document_number=None, output_dir=None, write_report=True):
     source = Path(input_path)
     if not source.is_file():
         raise FileNotFoundError(f'Không tìm thấy {source}')
@@ -433,10 +433,13 @@ def convert_html_to_docx(input_path, output_path=None, encoding=None, source_url
             'intermediate_files_retained': False,
         }
         staged_report = temporary / 'report.json'
-        staged_report.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+        outputs = [(converted, output)]
+        if write_report:
+            staged_report.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+            outputs.append((staged_report, log))
         created = []
         try:
-            for staged, target in ((converted, output), (staged_report, log)):
+            for staged, target in outputs:
                 with target.open('xb') as destination:
                     created.append(target)
                     with staged.open('rb') as handle:
@@ -445,7 +448,7 @@ def convert_html_to_docx(input_path, output_path=None, encoding=None, source_url
             for target in created:
                 target.unlink(missing_ok=True)
             raise
-    return output.resolve(), log.resolve()
+    return output.resolve(), log.resolve() if write_report else None
 
 
 if __name__ == '__main__':

@@ -10,7 +10,8 @@ import unicodedata
 
 _SYMBOL = r'[A-ZĐ][A-ZĐ0-9]*(?:\s*-\s*[A-ZĐ0-9]+)*'
 _NUMBER = rf'\d{{1,6}}\s*/\s*(?:\d{{4}}\s*/\s*)?{_SYMBOL}(?:\s*/\s*{_SYMBOL})*'
-_EXACT = re.compile(rf'{_NUMBER}', re.IGNORECASE)
+_LEGACY_NUMBER = rf'\d{{1,6}}\s*-\s*{_SYMBOL}'
+_EXACT = re.compile(rf'(?:{_NUMBER}|{_LEGACY_NUMBER})', re.IGNORECASE)
 _LABEL = re.compile(rf'(?:^|\n)\s*(?:Số\s*[:：]|Số\s+(?:ký\s*hiệu|hiệu)\s*[:：]?|Ký\s*hiệu\s*[:：]?)\s*({_NUMBER})(?![\w/])', re.IGNORECASE)
 _TITLE = re.compile(rf'^\s*(?:Bộ\s+luật|Luật|Nghị\s+định|Thông\s+tư(?:\s+liên\s+tịch)?|Nghị\s+quyết|Quyết\s+định|Văn\s+bản\s+hợp\s+nhất|Pháp\s+lệnh|Lệnh)\s+(?:số\s*[:：]?\s*)?({_NUMBER})(?![\w/])', re.IGNORECASE)
 
