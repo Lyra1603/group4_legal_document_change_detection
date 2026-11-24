@@ -8,9 +8,10 @@ import re
 import unicodedata
 
 from ..schemas.report_validation import validate_amendment
+from .document_number import normalize_document_number
 
 NUMBER = re.compile(r'(?:^|[\n\t])\s*Số\s*:?\s*(\d+/\d{4}/[^\s;,]+)', re.I)
-DOC_CODE = re.compile(r'\b\d+/\d{4}/[\wĐđ-]+', re.I)
+DOC_CODE = re.compile(r'\b\d{1,6}\s*/\s*\d{4}\s*/\s*[A-ZĐ][A-ZĐ0-9]*(?:\s*[-–—‑−]\s*[A-ZĐ0-9]+)*', re.I)
 LOCATOR = re.compile(r'\bĐiều\s+(\d+[a-zđ]?)\b', re.I)
 CLAUSE = re.compile(r'\bkhoản\s+(\d+[a-zđ]?)\b', re.I)
 POINT = re.compile(r'\bđiểm\s+([a-zđ])\b', re.I)
@@ -38,25 +39,41 @@ def _document_hint(text):
     """Read only the target part of a phrase command, not its quoted payload."""
     phrase = PHRASE.search(text)
     target = phrase['locator'] if phrase else text
-    codes = list(dict.fromkeys(_normalize_identity(code) for code in DOC_CODE.findall(target)))
+    codes = list(dict.fromkeys(normalize_document_number(code) for code in DOC_CODE.findall(target)))
     names = list(dict.fromkeys(_normalize_identity(m.group()) for m in DOCUMENT_NAME.finditer(target)))
     return codes, names, bool(DOCUMENT_REFERENCE.search(target))
 
 
-def _target_document(text, scope, base_header):
-    """Require positive identity evidence before touching V1.
-
-    For unresolved/other documents the string retains an unverified source label,
-    not an invented document_id. Consumers must check applicability first.
-    """
+def target_hint(text, scope):
     codes, names, explicit = _document_hint(text)
     if not (codes or names or explicit):
         codes, names, _ = _document_hint(scope)
-    hint = ', '.join(codes or names)
+    return codes, names
+
+
+def base_document_numbers(blocks):
+    header_blocks = []
+    for block in blocks:
+        if re.match(r'^\s*Điều\s+\d+[a-zđ]?\s*[.:]', block['text'], re.I):
+            break
+        header_blocks.append(block['text'])
+    header = '\n'.join(header_blocks)
+    numbers = []
+    for match in NUMBER.finditer(header):
+        try:
+            numbers.append(normalize_document_number(match.group(1)))
+        except ValueError:
+            continue
+    return header, list(dict.fromkeys(numbers))
+
+
+def _target_document(text, scope, base_header, base_numbers):
+    """Require positive identity evidence before touching V1."""
+    codes, names = target_hint(text, scope)
+    hint = ', '.join(code.casefold() for code in codes) if codes else ', '.join(names)
     reason = ('TARGET_DOCUMENT_UNRESOLVED',
               'Chưa đủ căn cứ xác minh văn bản đích là V1; giữ chỉ dẫn, không áp dụng theo số Điều trùng nhau.')
     if len(codes) == 1:
-        base_numbers = list(dict.fromkeys(_normalize_identity(m.group(1)) for m in NUMBER.finditer(base_header)))
         if len(base_numbers) == 1:
             if codes[0] == base_numbers[0]:
                 return 'APPLIES', 'v1', None
@@ -105,16 +122,8 @@ def _quoted(blocks, index):
     return None
 
 
-def link_amendments(boundary):
-    documents, units = boundary.documents, boundary.units
-    blocks = documents['s']['blocks']
-    header_blocks = []
-    for block in documents['v1']['blocks']:
-        if re.match(r'^\s*Điều\s+\d+[a-zđ]?\s*[.:]', block['text'], re.I):
-            break
-        header_blocks.append(block['text'])
-    base_header = '\n'.join(header_blocks)
-    items, warnings = [], []
+def iter_directives(blocks):
+    """Yield the same source-bound directives for lookup and pairwise linking."""
     scope = ''
     consumed = -1
     for index, block in enumerate(blocks):
@@ -130,6 +139,20 @@ def link_amendments(boundary):
             continue
         if re.search(r'một số điều', text, re.I) and not LOCATOR.search(text):
             continue
+        quote = None if PHRASE.search(text) else _quoted(blocks, index)
+        if quote:
+            consumed = quote[2]
+        yield block, text, scope, quote
+
+
+def link_amendments(boundary, *, verified_base_number=None):
+    documents, units = boundary.documents, boundary.units
+    base_header, base_numbers = base_document_numbers(documents['v1']['blocks'])
+    if not base_numbers and verified_base_number:
+        base_numbers = [verified_base_number]
+    items, warnings = [], []
+    for block, text, scope, quote in iter_directives(documents['s']['blocks']):
+        raw = block['text']
         aid = f"s:amendment_{len(items)+1}"
         instruction = {'document_id': 's', 'source_refs': [block['source_ref']], 'quote': raw}
         item = {'amendment_id': aid, 'operation': 'UNRESOLVED', 'instruction': instruction,
@@ -138,12 +161,9 @@ def link_amendments(boundary):
                 'after_basis': 'UNRESOLVED', 'evidence': [instruction], 'effect_info': [],
                 'context': {'general_context': '', 'evidence': [], 'references': []},
                 'needs_review': True, 'review_reason': 'Chưa xác minh đầy đủ ngữ cảnh và hiệu lực pháp lý.'}
-        quote = None if PHRASE.search(text) else _quoted(blocks, index)
-        if quote:
-            consumed = quote[2]
         locators = LOCATOR.findall(text)
         clauses, points = CLAUSE.findall(text), POINT.findall(text)
-        applicability, document, reason = _target_document(text, scope, base_header)
+        applicability, document, reason = _target_document(text, scope, base_header, base_numbers)
         item['target_document'] = document
         item['operation'], supported_operation = _operation(text)
         if applicability != 'APPLIES':
