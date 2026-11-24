@@ -1,0 +1,46 @@
+{
+  "input": "C:\\Users\\DELL\\OneDrive - vnu.edu.vn\\Desktop\\đang học\\problems of computer science\\project pocs\\bachdung-docs-commit\\data\\test_html_to_docx\\case_03\\input.html",
+  "output": "C:\\Users\\DELL\\OneDrive - vnu.edu.vn\\Desktop\\đang học\\problems of computer science\\project pocs\\bachdung-docs-commit\\data\\test_html_to_docx\\case_03\\converted.docx",
+  "source_url": "https://huggingface.co/datasets/th1nhng0/vietnamese-legal-documents/resolve/8977887f17be2defae4c5171d55562e1cde7d695/data/content.parquet",
+  "input_sha256": "2c5cb0f80e57e03b6198a16f519ca52ba55d1e7c9c6b2adc38dcfe45b178b824",
+  "output_sha256": "e6bd7eaa21929c7f5d0eedf7823ea229767e52d248c6e872ac40ad08aed39e6c",
+  "encoding": "utf-8",
+  "status": "needs_review",
+  "whitespace_policy": "Collapse HTML source indentation outside pre/pre-wrap; preserve explicit br; trim paragraph edge spaces.",
+  "integrity_non_whitespace_exact_match": true,
+  "non_whitespace_length_before": 14561,
+  "non_whitespace_length_after": 14561,
+  "paragraph_count": 102,
+  "table_count": 0,
+  "merged_cell_count": 0,
+  "generated_list_labels": [],
+  "links": [],
+  "warnings": [
+    {
+      "code": "CSS_NOT_RENDERED",
+      "message": "Không thực thi CSS ngoài/class hoặc ẩn/hiện theo trình duyệt; giữ chữ trong body, cần kiểm tra bố cục/khối ẩn."
+    }
+  ],
+  "requires_visual_review": true,
+  "limitations": [
+    "Không chứng nhận toàn văn nguồn đủ/chính xác hoặc đúng phiên bản pháp lý.",
+    "Không khôi phục bố cục bản in; không tải ảnh/CSS, không OCR.",
+    "Nhãn danh sách HTML được tạo thành chữ và ghi riêng; cần duyệt trước khi dùng làm nhãn pháp lý.",
+    "So sánh bỏ qua khoảng trắng; không chứng minh ngắt đoạn hoặc khoảng cách từ đúng."
+  ],
+  "intermediate_files_retained": false,
+  "dataset": {
+    "name": "th1nhng0/vietnamese-legal-documents",
+    "config": "content",
+    "split": "data",
+    "field": "content_html",
+    "revision": "8977887f17be2defae4c5171d55562e1cde7d695",
+    "record_id": "119155",
+    "downloaded_date": "2026-11-23"
+  },
+  "visual_check": {
+    "tool": "Microsoft Word read-only PDF export and Poppler PNG",
+    "pages": 9,
+    "result": "Layout reviewed; final user review pending. CSS columns are not reconstructed."
+  }
+}
