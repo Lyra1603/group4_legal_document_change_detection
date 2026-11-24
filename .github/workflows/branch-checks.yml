@@ -58,6 +58,10 @@ jobs:
           raise SystemExit(0 if result.wasSuccessful() else 1)
           PY
 
+      - name: Check metadata screening and candidate downloads
+        if: ${{ hashFiles('test/data_suite/test_*.py') != '' }}
+        run: python -m unittest discover -s test/data_suite -v
+
       - name: Check schema
         run: python -m unittest discover -s test/schema_suite -v
 
