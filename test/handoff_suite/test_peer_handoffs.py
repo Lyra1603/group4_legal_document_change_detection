@@ -21,8 +21,8 @@ from backend.app.context.lightrag_client import LightRAGClient
 from backend.app.config import LightRAGConfig
 from backend.app.schemas.contracts import AmendmentResult, SemanticDiffResult, ScoringResult
 from backend.app.schemas.report_validation import validate_payload, validate_sources, validate_amendment
-from .peer_versions import ROOT, peers
 from test.context_suite.support import ContractServer
+from test.handoff_suite.peer_versions import ROOT, peers
 
 
 def fresh_case(parser, adapter, case):
