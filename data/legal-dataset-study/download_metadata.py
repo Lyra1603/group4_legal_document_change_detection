@@ -30,17 +30,12 @@ df["linh_vuc"].fillna("(trống)").value_counts().to_csv(
     encoding="utf-8-sig",
 )
 
-# Tập ứng viên ban đầu để khảo sát thêm.
-civil_candidates = df[
-    df["linh_vuc"].fillna("").str.contains("dân sự", case=False)
-    | df["title"].fillna("").str.contains("dân sự", case=False)
-]
+# Lượt 1 được giữ trong bộ quy tắc; lượt 2 bổ sung vào danh sách đã có.
+# Không ghi lại riêng tập 506 dòng trước khi chạy, tránh làm mất kết quả lượt 2.
+from civil_metadata_rules import expand_candidates
 
-civil_candidates.to_csv(
-    output / "ung_vien_dan_su.csv",
-    index=False,
-    encoding="utf-8-sig",
-)
-
-print("Số ứng viên theo tên/lĩnh vực:", len(civil_candidates))
+result = expand_candidates(output / "metadata.csv", output / "ung_vien_dan_su.csv")
+print("Số ứng viên lượt 1:", result["summary"]["round1_rows"])
+print("Số ứng viên sau lượt 2:", result["summary"]["total_candidates"])
+print("Số dòng bổ sung trong lần chạy:", result["summary"]["added_this_run"])
 print("Đã lưu vào:", output.resolve())

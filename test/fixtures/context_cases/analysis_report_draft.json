@@ -1,0 +1,182 @@
+{
+  "proposal_version": "DRAFT-2026-11-22",
+  "fixture_kind": "SYNTHETIC_NOT_RUNTIME",
+  "approval_required_from": [
+    "Pipeline/API owner",
+    "schema owner",
+    "frontend owner"
+  ],
+  "report": {
+    "analysis_id": "synthetic-analysis",
+    "corpus_snapshot_id": "synthetic-snapshot-v1",
+    "amendment_document": {
+      "source_identity": "synthetic:s",
+      "version_id": "fixture-v1"
+    },
+    "coverage": {
+      "source_kind": "SYNTHETIC",
+      "direct_analysis": "PARTIAL",
+      "indirect_analysis": "NOT_RUN"
+    },
+    "targets": [
+      {
+        "target_id": "target-a",
+        "source_identity": "synthetic:v1",
+        "version_id": "fixture-v1",
+        "selection_evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+          }
+        ],
+        "source_bindings": {
+          "v1": {
+            "source_identity": "synthetic:v1",
+            "version_id": "fixture-v1",
+            "content_sha256": "673ee19cdade67ee14ab2dda9ca1f8e598236ee084f21db06599f225f94b7689",
+            "source_url": null,
+            "unit_paths": {
+              "block:1": "Điều 1"
+            }
+          },
+          "s": {
+            "source_identity": "synthetic:s",
+            "version_id": "fixture-v1",
+            "content_sha256": "31ec53ba15540d07dc5131c18f1bb0f5d91f2c38a16cace21356db5d0278d071",
+            "source_url": null,
+            "unit_paths": {
+              "block:1": "Điều 1"
+            }
+          },
+          "ref_1": {
+            "source_identity": "synthetic:ref_1",
+            "version_id": "fixture-v1",
+            "content_sha256": "04605ebbb1b5e57b2c440acf593a8ad8beb07465accea2d98b38b55fb2a1943a",
+            "source_url": null,
+            "unit_paths": {
+              "block:1": "Điều 2"
+            }
+          }
+        },
+        "report": {
+          "comparison_id": "synthetic-target-a",
+          "base_document": {
+            "document_id": "v1",
+            "role": "BASE",
+            "filename": "synthetic.docx"
+          },
+          "amendment_document": {
+            "document_id": "s",
+            "role": "AMENDMENT",
+            "filename": "synthetic.docx"
+          },
+          "reference_documents": [
+            {
+              "document_id": "ref_1",
+              "role": "REFERENCE",
+              "filename": "synthetic.docx"
+            }
+          ],
+          "status": "PARTIAL",
+          "results": [
+            {
+              "amendment": {
+                "amendment_id": "s:a1",
+                "operation": "AMEND",
+                "instruction": {
+                  "document_id": "s",
+                  "source_refs": [
+                    "block:1"
+                  ],
+                  "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+                },
+                "target_document": "v1",
+                "target_locator": "Điều 1",
+                "target_unit_ids": [
+                  "v1:n1"
+                ],
+                "applicability": "APPLIES",
+                "before_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày.",
+                "after_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 15 ngày.",
+                "after_basis": "DERIVED",
+                "evidence": [
+                  {
+                    "document_id": "v1",
+                    "source_refs": [
+                      "block:1"
+                    ],
+                    "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+                  },
+                  {
+                    "document_id": "s",
+                    "source_refs": [
+                      "block:1"
+                    ],
+                    "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+                  }
+                ],
+                "effect_info": [],
+                "context": {
+                  "general_context": "Ca dân sự GIẢ ĐỊNH để kiểm thử điểm nối; không phải văn bản pháp luật thật.",
+                  "evidence": [],
+                  "references": [
+                    {
+                      "reference_id": "ref_1:requirement_1",
+                      "document_label": "reference.docx",
+                      "target_locator": "block:1",
+                      "purpose": "Định nghĩa dùng trong ví dụ",
+                      "status": "UNRESOLVED",
+                      "evidence": [],
+                      "reason": "Chưa truy xuất trong ca giả định"
+                    }
+                  ]
+                },
+                "needs_review": true,
+                "review_reason": "Chưa có thông tin hiệu lực trong ví dụ"
+              },
+              "text_diff": {
+                "amendment_id": "s:a1",
+                "changes": [
+                  {
+                    "type": "REPLACE",
+                    "old_text": "30",
+                    "new_text": "15",
+                    "old_start": 60,
+                    "old_end": 62,
+                    "new_start": 60,
+                    "new_end": 62
+                  }
+                ]
+              },
+              "semantic_diff": null,
+              "scoring": null
+            }
+          ],
+          "warnings": [
+            {
+              "stage": "semantic",
+              "code": "NOT_RUN",
+              "message": "Synthetic draft; semantics/scoring not executed.",
+              "amendment_id": "s:a1"
+            }
+          ],
+          "errors": []
+        }
+      }
+    ],
+    "unresolved_amendments": [],
+    "indirect_impacts": [],
+    "status": "PARTIAL",
+    "warnings": [],
+    "errors": []
+  },
+  "open_decisions": [
+    "Full target/unresolved/impact types and per-stage states.",
+    "Source binding and evidence namespace for findings without V1.",
+    "Meaning of useful results and status aggregation across targets.",
+    "API multipart/endpoint and validation before exposing this envelope."
+  ]
+}

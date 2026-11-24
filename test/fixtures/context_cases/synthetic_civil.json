@@ -1,0 +1,128 @@
+{
+  "format": "pocs-context-case-v1",
+  "case_id": "CIV-SYNTHETIC-001",
+  "snapshot_id": "synthetic-snapshot-v1",
+  "source_kind": "SYNTHETIC",
+  "documents": [
+    {
+      "document_id": "v1",
+      "role": "BASE",
+      "filename": "synthetic.docx",
+      "file_type": "DOCX",
+      "blocks": [
+        {
+          "source_ref": "block:1",
+          "text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+        }
+      ]
+    },
+    {
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "filename": "synthetic.docx",
+      "file_type": "DOCX",
+      "blocks": [
+        {
+          "source_ref": "block:1",
+          "text": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+        }
+      ]
+    },
+    {
+      "document_id": "ref_1",
+      "role": "REFERENCE",
+      "filename": "synthetic.docx",
+      "file_type": "DOCX",
+      "blocks": [
+        {
+          "source_ref": "block:1",
+          "text": "Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định."
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "v1": {
+      "source_identity": "synthetic:v1",
+      "version_id": "fixture-v1",
+      "content_sha256": "673ee19cdade67ee14ab2dda9ca1f8e598236ee084f21db06599f225f94b7689",
+      "source_url": null,
+      "unit_paths": {
+        "block:1": "Điều 1"
+      }
+    },
+    "s": {
+      "source_identity": "synthetic:s",
+      "version_id": "fixture-v1",
+      "content_sha256": "31ec53ba15540d07dc5131c18f1bb0f5d91f2c38a16cace21356db5d0278d071",
+      "source_url": null,
+      "unit_paths": {
+        "block:1": "Điều 1"
+      }
+    },
+    "ref_1": {
+      "source_identity": "synthetic:ref_1",
+      "version_id": "fixture-v1",
+      "content_sha256": "04605ebbb1b5e57b2c440acf593a8ad8beb07465accea2d98b38b55fb2a1943a",
+      "source_url": null,
+      "unit_paths": {
+        "block:1": "Điều 2"
+      }
+    }
+  },
+  "amendment": {
+    "amendment_id": "s:a1",
+    "operation": "AMEND",
+    "instruction": {
+      "document_id": "s",
+      "source_refs": [
+        "block:1"
+      ],
+      "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+    },
+    "target_document": "v1",
+    "target_locator": "Điều 1",
+    "target_unit_ids": [
+      "v1:n1"
+    ],
+    "applicability": "APPLIES",
+    "before_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày.",
+    "after_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 15 ngày.",
+    "after_basis": "DERIVED",
+    "evidence": [
+      {
+        "document_id": "v1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+      },
+      {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+      }
+    ],
+    "effect_info": [],
+    "context": {
+      "general_context": "Ca dân sự GIẢ ĐỊNH để kiểm thử điểm nối; không phải văn bản pháp luật thật.",
+      "evidence": [],
+      "references": [
+        {
+          "reference_id": "ref_1:requirement_1",
+          "document_label": "reference.docx",
+          "target_locator": "block:1",
+          "purpose": "Định nghĩa dùng trong ví dụ",
+          "status": "UNRESOLVED",
+          "evidence": [],
+          "reason": "Chưa truy xuất trong ca giả định"
+        }
+      ]
+    },
+    "needs_review": true,
+    "review_reason": "Chưa có thông tin hiệu lực trong ví dụ"
+  },
+  "candidate_query": "Tìm quy định của văn bản B giả định phụ thuộc vào thời hạn thông báo tại Điều 1 của Văn bản A giả định. Chỉ lấy nguyên văn nguồn."
+}

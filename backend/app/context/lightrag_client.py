@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 import time
 from threading import Lock
@@ -23,11 +24,28 @@ UPSTREAM_COMMIT = "28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c"
 UPSTREAM_VERSION = "1.5.7"
 
 
+MAX_QUERY_CHARS = 8000
+
+
 class RetrievalError(RuntimeError):
     """Safe code only; response bodies/credentials must not enter logs/errors."""
     def __init__(self, code: str):
         self.code = code
         super().__init__(code)
+
+
+def _index_failure_code(docs):
+    # Return only known codes. Provider messages can contain input or secrets.
+    errors = [str(doc.get('error_msg') or '') for doc in docs if doc.get('status') == 'failed']
+    rules = (
+        ('INDEX_PROVIDER_RATE_LIMITED', r'\b(?:429|RateLimitError|RESOURCE_EXHAUSTED|RATE_TOKEN_LIMIT_EXCEEDED|RATE_REQUEST_LIMIT_EXCEEDED)\b'),
+        ('INDEX_PROVIDER_ACCESS_DENIED', r'\b(?:401|402|403|AUTHZ_INSUFFICIENT_BALANCE|AUTH_INVALID_API_KEY)\b'),
+        ('INDEX_PROVIDER_UNAVAILABLE', r'\b(?:502|503|504|SERVICE_UNAVAILABLE)\b'),
+    )
+    for code, pattern in rules:
+        if any(re.search(pattern, message, re.IGNORECASE) for message in errors):
+            return code
+    return 'INDEX_FAILED'
 
 
 class LightRAGClient:
@@ -70,13 +88,17 @@ class LightRAGClient:
 
     def _request(self, method: str, path: str, *, deadline=None, **kwargs):
         end = self.deadline if deadline is None else deadline
-        for attempt in range(2 if method == "GET" else 1):
+        # Query is read-only at the application boundary. Never replay ingestion
+        # or deletion after an uncertain acknowledgement.
+        retryable = method == "GET" or (method == "POST" and path == "/query/data")
+        for attempt in range(2 if retryable else 1):
             remaining = end - time.monotonic()
             if remaining <= 0:
                 raise RetrievalError("RETRIEVAL_TIMEOUT")
             try:
                 with self.http.stream(method, path, timeout=min(self.config.timeout, remaining), **kwargs) as r:
-                    if r.status_code in {502, 503, 504} and method == "GET" and attempt == 0:
+                    if r.status_code in {500, 502, 503, 504} and retryable and attempt == 0:
+                        time.sleep(min(1.0, max(0.0, end - time.monotonic())))
                         continue
                     if r.status_code >= 300:
                         raise RetrievalError("RETRIEVAL_HTTP_ERROR")
@@ -91,8 +113,12 @@ class LightRAGClient:
                 if not isinstance(result, dict):
                     raise RetrievalError("RETRIEVAL_PROTOCOL_ERROR")
                 return result
+            except httpx.TimeoutException:
+                if retryable and attempt == 0:
+                    continue
+                raise RetrievalError("RETRIEVAL_TIMEOUT") from None
             except httpx.RequestError:
-                if method == "GET" and attempt == 0:
+                if retryable and attempt == 0:
                     continue
                 raise RetrievalError("RETRIEVAL_UNAVAILABLE") from None
             except (json.JSONDecodeError, UnicodeDecodeError):
@@ -167,7 +193,7 @@ class LightRAGClient:
         while True:
             docs = self._track()
             if any(d.get("status") == "failed" for d in docs):
-                raise RetrievalError("INDEX_FAILED")
+                raise RetrievalError(_index_failure_code(docs))
             if len(docs) == len(chunks) and all(d.get("status") == "processed" for d in docs):
                 self.ready = True
                 self._save("READY")
@@ -183,7 +209,7 @@ class LightRAGClient:
     def query(self, query: str):
         if not self.ready:
             raise RetrievalError("INDEX_NOT_READY")
-        if not query.strip() or len(query) > 8000:
+        if not query.strip() or len(query) > MAX_QUERY_CHARS:
             raise RetrievalError("QUERY_INVALID")
         result = self._request("POST", "/query/data", json={
             "query": query, "mode": self.config.mode, "top_k": self.config.top_k,
