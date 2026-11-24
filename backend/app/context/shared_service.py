@@ -12,6 +12,7 @@ import time
 import uuid
 
 from ..demo_runner import run_demo_analysis
+from ..document_processing.target_lookup import base_identity, load_catalog
 from ..pipeline import issue
 from .owned_server import OwnedLightRAG
 from .provider_settings import provider_environment
@@ -22,26 +23,44 @@ from .metadata_corpus import load_metadata
 
 def graph_view(graph, registry):
     audit = audit_extracted_graph(graph, registry)
+
     def sources(properties):
-        return [dict(document_id=registry.chunks[p].document_id,
-                     source_refs=list(registry.chunks[p].source_refs),
-                     quote=registry.chunks[p].text)
-                for p in properties.get('file_path', '').split('<SEP>') if p in registry.chunks]
-    nodes = [dict(id=n['id'], description=str(n['properties'].get('description', '')),
-                  sources=sources(n['properties'])) for n in graph['nodes']]
-    ids = {n['id'] for n in nodes}
-    edges = []
+        paths = properties.get('file_path')
+        if not isinstance(paths, str):
+            return []
+        paths = paths.split('<SEP>')
+        if any(path not in registry.chunks for path in paths):
+            return []
+        return [dict(document_id=registry.chunks[path].document_id,
+                     source_refs=list(registry.chunks[path].source_refs),
+                     quote=registry.chunks[path].text) for path in dict.fromkeys(paths)]
+
+    nodes = []
+    for node in graph['nodes']:
+        refs = sources(node['properties'])
+        if refs:
+            nodes.append(dict(id=node['id'], description=str(node['properties'].get('description', '')), sources=refs))
+    ids = {node['id'] for node in nodes}
+    graph_ids = {node['id'] for node in graph['nodes']}
     if not isinstance(graph.get('edges'), list):
         raise ValueError('Malformed graph edges')
+    edges, omitted_edges = [], []
     for edge in graph['edges']:
         if not isinstance(edge, dict) or not isinstance(edge.get('properties'), dict):
             raise ValueError('Malformed graph edge')
-        if edge.get('source') not in ids or edge.get('target') not in ids:
+        endpoints = (edge.get('source'), edge.get('target'))
+        if any(not isinstance(endpoint, str) or endpoint not in graph_ids for endpoint in endpoints):
             raise ValueError('Graph edge endpoint missing')
         refs = sources(edge['properties'])
-        edges.append(dict(source=edge['source'], target=edge['target'],
-            description=str(edge['properties'].get('description', '')),
-            sources=refs, legal_relation_verified=False))
+        if not refs or any(endpoint not in ids for endpoint in endpoints):
+            omitted_edges.append(dict(source=endpoints[0], target=endpoints[1],
+                                      reason='MISSING_SOURCE' if not refs else 'ENDPOINT_WITHOUT_SOURCE'))
+            continue
+        edges.append(dict(source=endpoints[0], target=endpoints[1],
+                          description=str(edge['properties'].get('description', '')),
+                          sources=refs, legal_relation_verified=False))
+    audit['omitted_nodes_without_source'] = len(graph['nodes']) - len(nodes)
+    audit['omitted_edges'] = omitted_edges
     return dict(kind='OBSERVED_LIGHTRAG_KG_NOT_LEGAL_VERDICT', nodes=nodes, edges=edges, audit=audit)
 
 
@@ -171,9 +190,11 @@ class SharedContextService:
                         artifact['graph'] = graph_view(client.graph(), registry)
                     except (RetrievalError, ValueError):
                         artifact['issues'].append('GRAPH_UNAVAILABLE_OR_UNVERIFIED')
+            base = next(document for document in parsed if document.document.role == 'BASE')
             outcome = run_demo_analysis(parsed, comparison_id, deadline,
                 context_client=client, context_sink=capture,
-                pack_context_blocks=self.settings.get('LEGAL_AI_PROVIDER') == 'groq-jina')
+                pack_context_blocks=self.settings.get('LEGAL_AI_PROVIDER') == 'groq-jina',
+                verified_base_number=base_identity(base, load_catalog(self.root)))
             artifact['state'] = 'READY' if artifact['items'] and all(x['verified'] for x in artifact['items']) and not artifact['issues'] else 'PARTIAL'
             for code in artifact['issues']:
                 outcome.warnings.append(issue('context', code, 'LightRAG chưa xác minh được; xem trạng thái Context.'))

@@ -5,7 +5,7 @@ import json
 
 from ..schemas.contracts import AnalysisContext, AmendmentItem, TextDiffResult
 from ..schemas.report_validation import validate_payload, validate_sources
-from .lightrag_client import LightRAGClient, RetrievalError
+from .lightrag_client import MAX_QUERY_CHARS, LightRAGClient, RetrievalError
 from .source_registry import SourceRegistry
 
 
@@ -91,7 +91,7 @@ def validate_query_diff(item: AmendmentItem, text_diff: TextDiffResult) -> None:
 def build_retrieval_query(item: AmendmentItem, text_diff: TextDiffResult) -> str:
     """Serialize source data, including changed spans; never invent legal intent."""
     validate_query_diff(item, text_diff)
-    return json.dumps({
+    payload = {
         'task': 'Find related source clauses, not legal conclusions',
         'amendment_id': item['amendment_id'],
         'instruction': item['instruction']['quote'],
@@ -101,7 +101,43 @@ def build_retrieval_query(item: AmendmentItem, text_diff: TextDiffResult) -> str
         'before_text': item['before_text'],
         'after_text': item['after_text'],
         'text_diff': text_diff,
-    }, ensure_ascii=False)
+    }
+    query = json.dumps(payload, ensure_ascii=False)
+    if len(query) <= MAX_QUERY_CHARS:
+        return query
+
+    # Keep exact offsets and nearby words. The complete validated diff still goes
+    # to Semantic; only the search request is shortened.
+    def excerpt(text, start, end):
+        start = max(0, start - 100)
+        return text[start:min(end + 100, start + 320)]
+
+    compact = {
+        'task': payload['task'],
+        'amendment_id': item['amendment_id'][:120],
+        'instruction': item['instruction']['quote'][:450],
+        'target_document': (item['target_document'] or '')[:160],
+        'target_locator': (item['target_locator'] or '')[:160],
+        'changes': [],
+        'omitted_change_count': len(text_diff['changes']),
+    }
+    if not text_diff['changes']:
+        compact['unchanged_excerpt'] = item['before_text'][:300]
+    query = json.dumps(compact, ensure_ascii=False)
+    for change in text_diff['changes']:
+        span = {key: change[key] for key in ('type', 'old_start', 'old_end', 'new_start', 'new_end')}
+        span['before_excerpt'] = excerpt(item['before_text'], change['old_start'], change['old_end'])
+        span['after_excerpt'] = excerpt(item['after_text'], change['new_start'], change['new_end'])
+        # A slice from the start of the edit still identifies a large replacement.
+        span['removed_excerpt'] = change['old_text'][:100]
+        span['added_excerpt'] = change['new_text'][:100]
+        compact['changes'].append(span)
+        compact['omitted_change_count'] -= 1
+        candidate = json.dumps(compact, ensure_ascii=False)
+        if len(candidate) > MAX_QUERY_CHARS:
+            break
+        query = candidate
+    return query
 
 
 def build_context(item: AmendmentItem, registry: SourceRegistry,

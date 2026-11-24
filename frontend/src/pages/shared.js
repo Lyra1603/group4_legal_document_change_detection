@@ -68,7 +68,7 @@ function drawGraph(parent, graph) {
 const config=await request('/api/demo/config');
 if(config.mode==='SHARED_CONTEXT'){
   document.querySelector('.version').textContent='Demo máy chủ chung';
-  const scope=document.querySelector('.scope');scope.replaceChildren(make('strong','LightRAG do máy chủ quản lý'),make('span','Không nhập API key trên trình duyệt. Đối chiếu vẫn cần V1 + S; truy xuất chưa tự xác nhận hiệu lực. Semantic/Scorer hiện là baseline quy tắc cục bộ.'));
+  const scope=document.querySelector('.scope');scope.replaceChildren(make('strong','LightRAG do máy chủ quản lý'),make('span','Không nhập API key trên trình duyệt. Có thể nộp S trước để tìm V1; truy xuất chưa tự xác nhận hiệu lực. Semantic/Scorer hiện là baseline quy tắc cục bộ.'));
   const panel=make('section',undefined,'workspace shared-context');
   panel.append(make('h2','Kho metadata thật & Knowledge Graph'),make('p','Hai bản ghi Bộ luật Dân sự 2005 và 2015 từ th1nhng0; chưa nạp toàn văn, chưa xác minh tình trạng hiệu lực hiện tại. Graph không chứng minh quan hệ sửa đổi.'),make('p','Toàn nhóm dùng chung kho demo này. Nút index chỉ nạp bộ metadata đã chọn trên máy chủ.'));
   const status=make('p','Đang đọc trạng thái…'),error=make('p','','message error');error.setAttribute('role','alert');
@@ -79,7 +79,9 @@ if(config.mode==='SHARED_CONTEXT'){
   input.value='Bộ luật Dân sự số 91/2015/QH13 do cơ quan nào ban hành, ngày có hiệu lực ghi trong metadata là gì?';
   const submit=make('button','Truy xuất thật','primary');submit.type='submit';
   form.append(label,input,submit);panel.append(status,error,start,refresh,sourceBox,form,results,graphBox);
-  document.querySelector('.intro').after(panel);
+  const metadata = make('details',undefined,'workspace shared-context');
+  metadata.append(make('summary','Thử truy xuất LightRAG trên kho metadata mẫu'),panel);
+  document.querySelector('footer').before(metadata);
   let polling=null,alive=true,operationError='';
   function render(data){
     status.textContent=`Kho: ${data.state} · nguồn: ${data.source_kind} · toàn văn: chưa nạp`;
@@ -116,14 +118,22 @@ if(config.mode==='SHARED_CONTEXT'){
   window.addEventListener('pagehide',()=>{alive=false;if(polling)clearInterval(polling);});
   const contextPanel=make('section',undefined,'workspace shared-context');contextPanel.hidden=true;
   document.querySelector('#results').after(contextPanel);
+  let activeComparison = null;
+  window.addEventListener('pocs:clear-report',()=>{
+    activeComparison = null;
+    contextPanel.hidden = true;
+  });
   window.addEventListener('pocs:report',async event=>{
+    const comparison = event.detail.comparison_id;
+    activeComparison = comparison;
     contextPanel.hidden=false;contextPanel.replaceChildren(make('h2','LightRAG của lượt đối chiếu'));
-    try{const data=await request('/api/demo/contexts/'+encodeURIComponent(event.detail.comparison_id));
+    try{const data=await request('/api/demo/contexts/'+encodeURIComponent(comparison));
+      if (activeComparison !== comparison) return;
       contextPanel.append(make('p',`Trạng thái: ${data.state} · phạm vi: các block được dẫn làm bằng chứng và tài liệu tham chiếu đã nộp.`));
       if(data.issues.length)contextPanel.append(make('p',data.issues.join(' · '),'message error'));
       for(const item of data.items){contextPanel.append(make('h3',item.amendment_id),make('p',item.verified?'Truy xuất đã kiểm tra nguồn':'Truy xuất chưa được xác minh'),make('pre',item.general_context));evidenceList(contextPanel,item.evidence);}
       const graph=make('div');contextPanel.append(graph);drawGraph(graph,data.graph);
-    }catch(e){contextPanel.append(make('p',e.message,'message error'));}
+    }catch(e){if (activeComparison === comparison) contextPanel.append(make('p',e.message,'message error'));}
   });
   await load();
 }

@@ -5,7 +5,8 @@
 Một máy chủ chạy web/API. Thành viên mở cùng URL; không cần clone repo, Docker hoặc nhập khóa LightRAG hoặc khóa API nhà cung cấp để dùng demo. Backend tự sinh khóa server riêng và không trả khóa cho trình duyệt. LightRAG chỉ được publish trên loopback của máy chủ, không mở Web UI quản trị trực tiếp ra LAN.
 
 Web chung có hai phần:
-- Đối chiếu DOCX V1 + S và tài liệu tham chiếu tùy chọn. Reader/Parser → Adapter/Linker → Text Diff song song chuẩn bị index → truy xuất context → Semantic/Scorer baseline → báo cáo hiện có. Chưa có Semantic LLM hoặc tìm V1 tự động từ S; không tuyên bố hoàn thành hai chức năng đó.
+- Nộp văn bản sửa đổi S để tìm từng văn bản gốc theo số hiệu trong chỉ dẫn. Hệ thống tự dùng V1 cho đúng cặp mẫu `case_02` đã kiểm chứng. Với các bản trong danh mục nguồn chưa xác minh phiên bản, người dùng chọn ứng viên. Nếu thiếu V1, web yêu cầu bổ sung theo từng đích. Các tài liệu tham chiếu là tùy chọn.
+- Từng đích có V1 được đối chiếu qua Reader/Parser → Adapter/Linker → Text Diff song song chuẩn bị chỉ mục → truy xuất Context → Semantic/Scorer quy tắc → báo cáo. Đích thiếu nguồn vẫn hiện chỉ dẫn và lý do. Trường hợp chưa đủ căn cứ phân tách một chỉ dẫn có nhiều số hiệu được giữ để kiểm tra.
 - Index/query và xem graph LightRAG thực tế trên hai bản ghi metadata Bộ luật Dân sự 2005/2015, ID `18128`, `95942`, dataset `th1nhng0/vietnamese-legal-documents`, revision `8977887f17be2defae4c5171d55562e1cde7d695`. Đây là metadata có sẵn trong main, không phải toàn văn/đáp án và chưa được xác minh tình trạng hiệu lực hiện tại. Quan hệ graph do model trích xuất chưa phải căn cứ pháp lý.
 
 Không thay schema/validator hoặc payload ComparisonReport. API phụ trợ chỉ dành cho demo, không phải hợp đồng báo cáo cấp S đã chốt.
@@ -49,10 +50,10 @@ Web/API khởi động trước; LightRAG instance được tạo khi nạp kho 
 1. Mở web, không có hộp nhập API key.
 2. Bấm **Index metadata thật** một lần. Trạng thái đi từ IDLE → INDEXING → READY hoặc FAILED. Trang tự cập nhật, có thể dùng nút cập nhật thủ công. READY chỉ sau khi upstream xác nhận các bản ghi processed và graph hợp lệ.
 3. Khi READY, nhập câu hỏi và bấm **Truy xuất thật**. Xem quote nguyên văn cùng document_id/source_refs, ID dataset/revision và graph. Mở node/cạnh để đọc nguồn. Graph rỗng được hiển thị là rỗng; không dựng graph giả để thay thế.
-4. Phần đối chiếu dùng file DOCX thật hoặc bộ mẫu trong data/raw. Khi xong, báo cáo giữ nguyên và có phần **LightRAG của lượt đối chiếu**: trạng thái, context, bằng chứng và graph. Index chỉ gồm toàn bộ block được trích làm bằng chứng chỉ dẫn/đích và các block tham chiếu đã nộp. Có cảnh báo RETRIEVAL_SCOPE_LIMITED; đây chưa phải kho toàn văn hoặc chứng nhận đủ context.
+4. Chọn S hoặc nạp S của mẫu Ngân hàng, rồi bấm **Tìm văn bản gốc**. Với các đích khác, chọn bản ứng viên hoặc bổ sung file V1 đúng số hiệu. Nếu đã có cả hai file, dùng **Tôi có sẵn V1**. Khi xong, báo cáo giữ nguyên và có phần **LightRAG của lượt đối chiếu**: trạng thái, context, bằng chứng và graph. Index chỉ gồm toàn bộ block được trích làm bằng chứng chỉ dẫn/đích và các block tham chiếu đã nộp. Có cảnh báo RETRIEVAL_SCOPE_LIMITED; đây chưa phải kho toàn văn hoặc chứng nhận đủ context.
 5. Khi provider lỗi/thiếu cấu hình, Text Diff vẫn được giữ nếu xử lý nguồn thành công; báo cáo PARTIAL và mã lỗi cụ thể. Không tự chuyển lỗi retrieval thành “không thay đổi”. Semantic/Scorer vẫn giữ null/review khi thiếu căn cứ.
 
-PDF phụ thuộc bộ chuyển đổi; DOCX là đường chạy đã kiểm thử. Chỉ nộp S chưa được API này hỗ trợ; giao diện không giả vờ đã tự tìm V1.
+PDF phụ thuộc bộ chuyển đổi; DOCX là đường chạy đã kiểm thử. Bước tìm V1 đối chiếu số hiệu chính xác với các bản BASE có file và checksum hợp lệ trong danh mục. Tìm số hiệu không gọi Groq/Jina. Hệ thống chưa tìm ngoài kho, chưa suy ra lịch sử hiệu lực và chưa tự chọn bản mới nhất.
 
 ## Vòng đời và đồng thời
 
@@ -71,7 +72,10 @@ PDF phụ thuộc bộ chuyển đổi; DOCX là đường chạy đã kiểm th
 | GET /api/demo/corpus | Trạng thái, nguồn và graph đã quan sát |
 | POST /api/demo/corpus/query | Câu hỏi dài 1–8000 ký tự, chỉ query sau READY |
 | GET /api/demo/contexts/{comparison_id} | Context/graph phụ trợ của lượt so sánh đã trả về |
-| POST /api/compare | Payload và ComparisonReport hiện có, không đổi |
+| POST /api/demo/targets | Nhận S, trả nhóm đích, ứng viên và chỉ dẫn còn thiếu căn cứ |
+| GET /api/demo/targets/candidates/{candidate_id} | Tải bản trong danh mục đã kiểm checksum |
+| POST /api/demo/targets/verify-v1 | Kiểm tra số hiệu của V1 được chọn trước khi đối chiếu |
+| POST /api/compare | Payload và ComparisonReport cho một V1–S hiện có, không đổi |
 
 ## Kiểm chứng và giới hạn nghiệm thu
 
@@ -93,3 +97,9 @@ Kết quả chạy thật qua API web ngày 24/11/2026 với Groq Qwen 3.8 27B v
 - Báo cáo nghiệp vụ vẫn PARTIAL vì Semantic/Scorer đang ở chế độ quy tắc cục bộ. Hai ca trên kiểm chứng đường nối LightRAG, chưa đo độ bao phủ hoặc chất lượng pháp lý trên toàn kho.
 
 Trước khi gộp đoạn, cả Qwen và GPT-OSS 20B qua Groq Free đều gặp lỗi 429 trên ca DOCX này. Nhóm cần giữ cấu hình trong hạn mức thực tế của tài khoản và theo dõi mã INDEX_PROVIDER_RATE_LIMITED khi thử ca lớn hơn.
+
+### Kiểm thử luồng nộp S
+
+- case_02 tự nạp bản V1 đã ghim theo checksum và chạy đối chiếu.
+- case_10 nhận diện hai đích. 05/2011/TT-BTP có bản ứng viên cần xác nhận. 22/2010/TT-BTP yêu cầu bổ sung V1. Kết quả cho đích có nguồn được giữ khi đích kia còn thiếu.
+- Với khoản dài, câu truy xuất dùng các đoạn sát vị trí thay đổi. Bước Semantic vẫn nhận Text Diff đầy đủ. Đồ thị ẩn nút/cạnh thiếu nguồn và ghi số lượng hoặc lý do trong phần kiểm tra nguồn.

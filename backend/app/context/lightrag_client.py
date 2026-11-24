@@ -24,6 +24,9 @@ UPSTREAM_COMMIT = "28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c"
 UPSTREAM_VERSION = "1.5.7"
 
 
+MAX_QUERY_CHARS = 8000
+
+
 class RetrievalError(RuntimeError):
     """Safe code only; response bodies/credentials must not enter logs/errors."""
     def __init__(self, code: str):
@@ -206,7 +209,7 @@ class LightRAGClient:
     def query(self, query: str):
         if not self.ready:
             raise RetrievalError("INDEX_NOT_READY")
-        if not query.strip() or len(query) > 8000:
+        if not query.strip() or len(query) > MAX_QUERY_CHARS:
             raise RetrievalError("QUERY_INVALID")
         result = self._request("POST", "/query/data", json={
             "query": query, "mode": self.config.mode, "top_k": self.config.top_k,

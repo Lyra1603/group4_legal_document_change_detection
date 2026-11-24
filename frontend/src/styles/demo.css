@@ -3,3 +3,8 @@
 
 /* Shared Context demo: source text remains selectable and fully visible. */
 .shared-context{margin:24px 0}.shared-context button{margin:8px 10px 12px 0}.shared-context textarea{display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0}.shared-context pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:340px;overflow:auto;padding:12px;background:#f2f6fa}.shared-context details{margin:10px 0}.shared-context summary{cursor:pointer}.shared-context svg{width:100%;max-height:480px;background:#f7fafc}.shared-context svg text{font:12px system-ui;fill:#16354a}
+
+.shared-context .message.error:empty{display:none}
+.upload-grid:has([data-role="v1"][hidden]){grid-template-columns:1fr}
+#target-lookup{margin-top:24px}
+#target-lookup .secondary,#target-lookup input{margin:6px 8px 6px 0}

@@ -6,15 +6,22 @@ import logging
 import os
 from pathlib import Path
 import shutil
+from tempfile import TemporaryDirectory
+from time import monotonic
+from typing import Annotated
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
 from . import demo
+from .main import DEADLINE_SECONDS, _save_upload
+from .app.pipeline import PipelineInputError, parse_documents
+from .app.document_processing.document_number import normalize_document_number
+from .app.document_processing.target_lookup import base_identity, discover_targets, load_catalog
 from .app.context.owned_server import read_provider_env
 from .app.context.shared_service import SharedContextService
-from .app.context.lightrag_client import RetrievalError
+from .app.context.lightrag_client import MAX_QUERY_CHARS, RetrievalError
 from .app.context.provider_settings import check_groq_jina
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,7 +37,24 @@ MESSAGES = {
 
 
 class QueryInput(BaseModel):
-    query: str = Field(min_length=1, max_length=8000)
+    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
+
+
+def _inspect_upload(upload, document_id, role, inspect):
+    deadline = monotonic() + DEADLINE_SECONDS
+    try:
+        with TemporaryDirectory(prefix='pocs_target_lookup_') as tmp:
+            path = Path(tmp)
+            item = _save_upload(upload, path, 0, document_id, role, [0], deadline)
+            parsed, = parse_documents([item], path, deadline)
+            return inspect(parsed)
+    except PipelineInputError as exc:
+        raise HTTPException(422, detail=dict(code=exc.code, message=str(exc))) from None
+    except TimeoutError:
+        raise HTTPException(504, detail=dict(code='PROCESSING_TIMEOUT',
+                            message='Hết thời gian đọc văn bản.')) from None
+    finally:
+        upload.file.close()
 
 
 def create_app(*, settings=None, runtime=None, service=None):
@@ -66,11 +90,39 @@ def create_app(*, settings=None, runtime=None, service=None):
     def config():
         return {**demo.demo_config(), 'mode': 'SHARED_CONTEXT', 'lightrag_enabled': True,
                 'provider_configured': service.configured, 'model_selected': False,
-                'semantic_mode': 'LOCAL_BASELINE', 'server_key_required_in_browser': False}
+                'semantic_mode': 'LOCAL_BASELINE', 'server_key_required_in_browser': False,
+                'target_lookup_enabled': True}
 
     def failure(exc):
         return HTTPException(409 if exc.code in ('DEMO_BUSY', 'CORPUS_RESTART_REQUIRED') else 503,
             detail=dict(code=exc.code, message=MESSAGES.get(exc.code, 'Truy xuất chưa thành công; không kết luận không có thay đổi.')))
+
+    @app.post('/api/demo/targets')
+    def targets(doc_s: Annotated[UploadFile, File()]):
+        return _inspect_upload(doc_s, 's', 'AMENDMENT',
+                               lambda parsed: discover_targets(parsed, load_catalog(ROOT)))
+
+    @app.get('/api/demo/targets/candidates/{candidate_id}')
+    def candidate_file(candidate_id: str):
+        for entry in load_catalog(ROOT):
+            if entry.id == candidate_id:
+                return FileResponse(entry.path, filename=entry.path.name)
+        raise HTTPException(404, detail=dict(code='V1_CANDIDATE_UNAVAILABLE',
+                            message='Phiên bản đã chọn không còn trong kho đã kiểm tra.'))
+
+    @app.post('/api/demo/targets/verify-v1')
+    def verify_v1(doc_v1: Annotated[UploadFile, File()], document_number: Annotated[str, Form()]):
+        try:
+            expected = normalize_document_number(document_number)
+        except ValueError:
+            raise HTTPException(422, detail=dict(code='INVALID_TARGET_NUMBER',
+                                message='Số hiệu đích không hợp lệ.')) from None
+        actual = _inspect_upload(doc_v1, 'v1', 'BASE', lambda parsed: base_identity(parsed, load_catalog(ROOT)))
+        if actual != expected:
+            message = (f'File có số hiệu {actual}, đích yêu cầu {expected}.' if actual
+                       else f'Chưa xác minh được số hiệu của file. Hãy bổ sung bản có số hiệu {expected}.')
+            raise HTTPException(422, detail=dict(code='V1_IDENTITY_MISMATCH', message=message))
+        return dict(document_number=actual)
 
     @app.get('/api/demo/corpus')
     def corpus():

@@ -44,10 +44,11 @@ def classify_demo_results(results):
     return 'SUCCESS'
 
 
-def run_demo_analysis(parsed, comparison_id, deadline, *, context_client=None, context_sink=None, pack_context_blocks=False):
+def run_demo_analysis(parsed, comparison_id, deadline, *, context_client=None, context_sink=None, pack_context_blocks=False,
+                      verified_base_number=None):
     boundary = adapt_documents(parsed)
     check_deadline(deadline)
-    items, warnings = link_amendments(boundary)
+    items, warnings = link_amendments(boundary, verified_base_number=verified_base_number)
     if context_client is None:
         warnings.append(issue('context', 'LIGHTRAG_DISABLED', 'LightRAG chưa bật; đang dùng nguồn cục bộ, không giả lập retrieval.'))
     warnings.append(issue('semantic', 'LOCAL_BASELINE_ONLY', 'Demo quy tắc cục bộ; model chưa chọn, không tự xác nhận ngữ cảnh hoặc mức tác động.'))
