@@ -19,6 +19,7 @@ Schema Đức Anh đã merge vào main qua [PR #2](https://github.com/Lyra1603/g
 - [Web demo và bằng chứng chạy DOCX](docs/local-web-demo.md)
 - [Thử nghiệm LightRAG qua HTTP](docs/lightrag-integration-report.md)
 - [Context handoff: chạy LightRAG thật riêng, nguồn và giới hạn](docs/context-handoff.md)
+- [Demo Docker: đồ thị văn bản và truy xuất LightRAG trên kho DOCX của nhóm](docs/document-graph-pilot.md)
 - [Báo cáo kiểm thử schema lịch sử](docs/schema-verification-report.md)
 
 ## Chạy nền DOCX hiện tại
