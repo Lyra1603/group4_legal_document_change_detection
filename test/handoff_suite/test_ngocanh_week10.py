@@ -50,6 +50,22 @@ class TextDiffHandoffTests(unittest.TestCase):
                 item = dict(amendment_id='edge', before_text=before, after_text=after)
                 validate_text_diff(item, compute_text_diff(item))
 
+    def test_multiple_unchanged_and_empty_cases_keep_input_and_repeat_exactly(self):
+        cases = [('', ''), ('Giữ nguyên 😀\r\n', 'Giữ nguyên 😀\r\n'),
+                 ('a\u0301  một\tgiữ\r\nxóa\ncuối', 'á\t một\tgiữ\nTHÊM\ncuối!')]
+        for before, after in cases:
+            with self.subTest(before=before, after=after):
+                item = dict(amendment_id='unchanged-or-multi', before_text=before, after_text=after)
+                original = deepcopy(item)
+                result = compute_text_diff(item)
+                self.assertEqual(compute_text_diff(item), result)
+                validate_text_diff(item, result)
+                self.assertEqual(item, original)
+                if before == after:
+                    self.assertEqual(result['changes'], [])
+                else:
+                    self.assertGreater(len(result['changes']), 1)
+
     def test_missing_is_distinct_from_empty(self):
         for before, after in [(None, 'a'), ('a', None), (None, None)]:
             item = dict(amendment_id='missing', before_text=before, after_text=after)
@@ -67,7 +83,8 @@ class TextDiffHandoffTests(unittest.TestCase):
         item = synthetic_item()
         result = compute_text_diff(item)
         variants = [None, {**result, 'amendment_id': 'other'}, {**result, 'changes': []}]
-        for key, value in [('old_start', -1), ('new_start', True), ('old_text', 'wrong'), ('type', 'INSERT')]:
+        for key, value in [('old_start', -1), ('old_end', len(item['before_text']) + 1),
+                           ('new_start', True), ('new_end', 1.0), ('old_text', 'wrong'), ('type', 'INSERT')]:
             broken = deepcopy(result)
             broken['changes'][0][key] = value
             variants.append(broken)

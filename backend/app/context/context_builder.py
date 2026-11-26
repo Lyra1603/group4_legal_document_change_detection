@@ -3,6 +3,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 import json
 
+from ..change_analysis.text_diff import validate_text_diff
 from ..schemas.contracts import AnalysisContext, AmendmentItem, TextDiffResult
 from ..schemas.report_validation import validate_payload, validate_sources
 from .lightrag_client import MAX_QUERY_CHARS, LightRAGClient, RetrievalError
@@ -61,31 +62,9 @@ def validate_query_diff(item: AmendmentItem, text_diff: TextDiffResult) -> None:
     from another amendment or another pair of strings must not drive retrieval.
     """
     validate_payload(TextDiffResult, text_diff)
-    if text_diff['amendment_id'] != item['amendment_id']:
-        raise ValueError('Text Diff amendment ID mismatch')
-    before, after = item['before_text'], item['after_text']
-    if not isinstance(before, str) or not isinstance(after, str):
+    if not isinstance(item['before_text'], str) or not isinstance(item['after_text'], str):
         raise ValueError('Query requires known before/after text')
-    old_cursor = new_cursor = 0
-    for change in text_diff['changes']:
-        old_start, old_end = change['old_start'], change['old_end']
-        new_start, new_end = change['new_start'], change['new_end']
-        if not (old_cursor <= old_start <= old_end <= len(before)
-                and new_cursor <= new_start <= new_end <= len(after)):
-            raise ValueError('Text Diff offsets are invalid or unordered')
-        if (before[old_start:old_end] != change['old_text']
-                or after[new_start:new_end] != change['new_text']
-                or before[old_cursor:old_start] != after[new_cursor:new_start]):
-            raise ValueError('Text Diff does not match before/after text')
-        old, new = change['old_text'], change['new_text']
-        valid_type = {'INSERT': not old and bool(new),
-                      'DELETE': bool(old) and not new,
-                      'REPLACE': bool(old) and bool(new) and old != new}
-        if not valid_type[change['type']]:
-            raise ValueError('Text Diff operation does not match its text')
-        old_cursor, new_cursor = old_end, new_end
-    if before[old_cursor:] != after[new_cursor:]:
-        raise ValueError('Text Diff does not cover all changed text')
+    validate_text_diff(item, text_diff)
 
 
 def build_retrieval_query(item: AmendmentItem, text_diff: TextDiffResult) -> str:
@@ -114,7 +93,7 @@ def build_retrieval_query(item: AmendmentItem, text_diff: TextDiffResult) -> str
 
     compact = {
         'task': payload['task'],
-        'amendment_id': item['amendment_id'][:120],
+        'amendment_id': item['amendment_id'],
         'instruction': item['instruction']['quote'][:450],
         'target_document': (item['target_document'] or '')[:160],
         'target_locator': (item['target_locator'] or '')[:160],
@@ -124,6 +103,8 @@ def build_retrieval_query(item: AmendmentItem, text_diff: TextDiffResult) -> str
     if not text_diff['changes']:
         compact['unchanged_excerpt'] = item['before_text'][:300]
     query = json.dumps(compact, ensure_ascii=False)
+    if len(query) > MAX_QUERY_CHARS:
+        raise RetrievalError('QUERY_INVALID')
     for change in text_diff['changes']:
         span = {key: change[key] for key in ('type', 'old_start', 'old_end', 'new_start', 'new_end')}
         span['before_excerpt'] = excerpt(item['before_text'], change['old_start'], change['old_end'])
@@ -152,6 +133,8 @@ def build_context(item: AmendmentItem, registry: SourceRegistry,
         return _failure(item, 'TEXT_DIFF_UNAVAILABLE')
     try:
         query = build_retrieval_query(item, text_diff)
+    except RetrievalError as exc:
+        return _failure(item, exc.code)
     except ValueError:
         return _failure(item, 'TEXT_DIFF_INVALID')
     retrieved = None

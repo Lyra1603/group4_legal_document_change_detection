@@ -5,8 +5,10 @@ than maintaining a second set of Pydantic contracts.
 """
 from difflib import SequenceMatcher
 
+from ..schemas.contracts import AmendmentItem, TextDiffResult
 
-def validate_text_diff(item, result):
+
+def validate_text_diff(item: AmendmentItem, result: TextDiffResult | None) -> None:
     """Check code-point offsets and reconstruct both unchanged gaps and after.
 
     Offsets are half-open slices of the original strings, never normalized text.
@@ -41,10 +43,12 @@ def validate_text_diff(item, result):
         raise ValueError('Text Diff does not reconstruct after_text')
 
 
-def compute_text_diff(item):
+def compute_text_diff(item: AmendmentItem) -> TextDiffResult | None:
     before, after = item['before_text'], item['after_text']
     if before is None or after is None:
         return None
+    if before == after:
+        return {'amendment_id': item['amendment_id'], 'changes': []}
     changes = []
     for tag, i, j, a, b in SequenceMatcher(None, before, after, autojunk=False).get_opcodes():
         if tag != 'equal':

@@ -342,6 +342,14 @@ class ContractTests(unittest.TestCase):
         self.rejects()
 
 
+class TextDiffReportContractTests(unittest.TestCase):
+    def test_report_rejects_missing_text_change(self):
+        c = load_case()
+        c['report']['results'][0]['text_diff']['changes'] = []
+        with self.assertRaises(ValueError):
+            validate_case(c)
+
+
 class KnownBaselineGaps(unittest.TestCase):
     """Expected failures record proposed checks, not changes to the chosen code."""
     @unittest.expectedFailure
@@ -355,12 +363,6 @@ class KnownBaselineGaps(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_case(c)
 
-    @unittest.expectedFailure
-    def test_complete_text_reconstruction_not_enforced(self):
-        c = load_case()
-        c['report']['results'][0]['text_diff']['changes'] = []
-        with self.assertRaises(ValueError):
-            validate_case(c)
 
 
 if __name__ == '__main__':
