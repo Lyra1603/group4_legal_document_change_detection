@@ -15,7 +15,7 @@ from backend.app.context.context_builder import (
     build_context, build_retrieval_query, prepare_context, prepare_index,
 )
 from backend.app.change_analysis.text_diff import compute_text_diff
-from backend.app.context.lightrag_client import LightRAGClient, RetrievalError
+from backend.app.context.lightrag_client import MAX_QUERY_CHARS, LightRAGClient, RetrievalError
 from backend.app.context.semantic_bridge import run_semantic_stage
 from backend.app.context.source_registry import SourceRegistry
 from backend.app.schemas.report_validation import validate_amendment, validate_sources
@@ -246,15 +246,17 @@ class ContextTests(unittest.TestCase):
         self.assertFalse(server.queries)
         client.cleanup()
 
-    def test_query_limit_preserves_context(self):
+    def test_long_locator_still_queries_and_preserves_context(self):
         client, server = self.client()
         client.index(self.chunks)
         item = deepcopy(self.item)
         item['target_locator'] = 'x' * 8001
         result = build_context(item, self.registry, client, text_diff=self.diff)
-        self.assertEqual(result.issues[0]['code'], 'QUERY_INVALID')
-        self.assertEqual(result.amendment['context'], item['context'])
-        self.assertFalse(server.queries)
+        self.assertFalse(result.issues)
+        self.assertEqual(len(server.queries), 1)
+        self.assertLessEqual(len(server.queries[0]), MAX_QUERY_CHARS)
+        self.assertEqual(result.amendment['target_locator'], item['target_locator'])
+        validate_sources(result.amendment, self.registry.documents)
         client.cleanup()
 
     def test_sequential_wrapper_uses_diff_and_does_not_mutate_inputs(self):

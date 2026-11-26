@@ -1,0 +1,699 @@
+{
+  "case_id": "CIV-SYNTHETIC-001",
+  "source_kind": "SYNTHETIC",
+  "snapshot_id": "synthetic-snapshot-v1",
+  "upstream_commit": "28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c",
+  "comparison_id": "9af8007244134d1e9480d338b438d894",
+  "text_diff": {
+    "amendment_id": "s:a1",
+    "changes": [
+      {
+        "type": "REPLACE",
+        "old_text": "30",
+        "new_text": "15",
+        "old_start": 60,
+        "old_end": 62,
+        "new_start": 60,
+        "new_end": 62
+      }
+    ]
+  },
+  "disabled": {
+    "amendment": {
+      "amendment_id": "s:a1",
+      "operation": "AMEND",
+      "instruction": {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+      },
+      "target_document": "v1",
+      "target_locator": "Điều 1",
+      "target_unit_ids": [
+        "v1:n1"
+      ],
+      "applicability": "APPLIES",
+      "before_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày.",
+      "after_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 15 ngày.",
+      "after_basis": "DERIVED",
+      "evidence": [
+        {
+          "document_id": "v1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+        },
+        {
+          "document_id": "s",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+        }
+      ],
+      "effect_info": [],
+      "context": {
+        "general_context": "Ca dân sự GIẢ ĐỊNH để kiểm thử điểm nối; không phải văn bản pháp luật thật.",
+        "evidence": [],
+        "references": [
+          {
+            "reference_id": "ref_1:requirement_1",
+            "document_label": "reference.docx",
+            "target_locator": "block:1",
+            "purpose": "Định nghĩa dùng trong ví dụ",
+            "status": "UNRESOLVED",
+            "evidence": [],
+            "reason": "Chưa truy xuất trong ca giả định"
+          }
+        ]
+      },
+      "needs_review": true,
+      "review_reason": "Chưa có thông tin hiệu lực trong ví dụ"
+    },
+    "latency_ms": 3.231700000469573
+  },
+  "enabled": {
+    "amendment": {
+      "amendment_id": "s:a1",
+      "operation": "AMEND",
+      "instruction": {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+      },
+      "target_document": "v1",
+      "target_locator": "Điều 1",
+      "target_unit_ids": [
+        "v1:n1"
+      ],
+      "applicability": "APPLIES",
+      "before_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày.",
+      "after_text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 15 ngày.",
+      "after_basis": "DERIVED",
+      "evidence": [
+        {
+          "document_id": "v1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+        },
+        {
+          "document_id": "s",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+        }
+      ],
+      "effect_info": [],
+      "context": {
+        "general_context": "Ca dân sự GIẢ ĐỊNH để kiểm thử điểm nối; không phải văn bản pháp luật thật.\n[s / AMENDMENT / version=fixture-v1 / block:1] Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”.\n[v1 / BASE / version=fixture-v1 / block:1] Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày.\n[ref_1 / REFERENCE / version=fixture-v1 / block:1] Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định.",
+        "evidence": [
+          {
+            "document_id": "s",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+          },
+          {
+            "document_id": "v1",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+          },
+          {
+            "document_id": "ref_1",
+            "source_refs": [
+              "block:1"
+            ],
+            "quote": "Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định."
+          }
+        ],
+        "references": [
+          {
+            "reference_id": "ref_1:requirement_1",
+            "document_label": "reference.docx",
+            "target_locator": "block:1",
+            "purpose": "Định nghĩa dùng trong ví dụ",
+            "status": "UNRESOLVED",
+            "evidence": [],
+            "reason": "Chưa truy xuất trong ca giả định"
+          }
+        ]
+      },
+      "needs_review": true,
+      "review_reason": "Chưa có thông tin hiệu lực trong ví dụ"
+    },
+    "issues": [],
+    "index_ms": 11677.85800001002,
+    "query_latency_ms": [
+      2023.3300000109011
+    ],
+    "raw_retrieval": {
+      "entities": [
+        {
+          "entity_name": "Điều 1",
+          "entity_type": "concept",
+          "description": "Điều khoản quy định việc sửa đổi nội dung thời hạn trong văn bản.<SEP>Quy định pháp lý về thời hạn thông báo được đề cập trong Văn bản A giả định.",
+          "source_id": "doc-0c398b004f19d8bef0a0b62ebbe59eeb-chunk-000<SEP>doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt<SEP>pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679
+        },
+        {
+          "entity_name": "Văn bản A",
+          "entity_type": "content",
+          "description": "Văn bản được đề cập trong nội dung sửa đổi, bổ sung giả định.",
+          "source_id": "doc-0c398b004f19d8bef0a0b62ebbe59eeb-chunk-000",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+          "created_at": 1795338675
+        },
+        {
+          "entity_name": "Bên Nhận Tài Sản",
+          "entity_type": "organization",
+          "description": "Bên nhận tài sản có nghĩa vụ thông báo việc bàn giao trong thời hạn 30 ngày.",
+          "source_id": "doc-42983cdfa3bd99883140ad54112a64f4-chunk-000",
+          "file_path": "pocs_9e97e9575ba62952478c9ba45075ad6d46da0c551df697d36c409cfacdf8a8aa.txt",
+          "created_at": 1795338672
+        },
+        {
+          "entity_name": "Văn bản A giả định",
+          "entity_type": "content",
+          "description": "Tài liệu văn bản giả định chứa các quy định liên quan đến việc giao tài sản và thông báo.",
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679
+        },
+        {
+          "entity_name": "Điều 2",
+          "entity_type": "concept",
+          "description": "Quy định pháp lý về việc bên giao tài sản thực hiện xác nhận sau khi hết thời hạn thông báo.",
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679
+        }
+      ],
+      "relationships": [
+        {
+          "src_id": "Điều 1",
+          "tgt_id": "Điều 2",
+          "description": "Điều 2 đề cập đến thời hạn thông báo được quy định tại Điều 1 của Văn bản A giả định.",
+          "keywords": "liên quan,tham chiếu",
+          "weight": 1.0,
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679
+        },
+        {
+          "src_id": "Văn bản A",
+          "tgt_id": "Điều 1",
+          "description": "Điều 1 tiến hành sửa đổi nội dung của Văn bản A bằng cách thay thế thời hạn.",
+          "keywords": "sửa đổi,điều chỉnh",
+          "weight": 1.0,
+          "source_id": "doc-0c398b004f19d8bef0a0b62ebbe59eeb-chunk-000",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+          "created_at": 1795338675
+        },
+        {
+          "src_id": "Văn bản A giả định",
+          "tgt_id": "Điều 2",
+          "description": "Điều 2 là một điều khoản tham chiếu đến Văn bản A giả định.",
+          "keywords": "căn cứ,thuộc",
+          "weight": 1.0,
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679
+        }
+      ],
+      "chunks": [
+        {
+          "reference_id": "1",
+          "content": "POCS_SOURCE {\"comparison\": \"9af8007244134d1e9480d338b438d894\", \"document_id\": \"s\", \"role\": \"AMENDMENT\", \"version\": \"fixture-v1\", \"source_ref\": \"block:1\"}\nĐiều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”.",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+          "chunk_id": "doc-0c398b004f19d8bef0a0b62ebbe59eeb-chunk-000"
+        },
+        {
+          "reference_id": "2",
+          "content": "POCS_SOURCE {\"comparison\": \"9af8007244134d1e9480d338b438d894\", \"document_id\": \"v1\", \"role\": \"BASE\", \"version\": \"fixture-v1\", \"source_ref\": \"block:1\"}\nĐiều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày.",
+          "file_path": "pocs_9e97e9575ba62952478c9ba45075ad6d46da0c551df697d36c409cfacdf8a8aa.txt",
+          "chunk_id": "doc-42983cdfa3bd99883140ad54112a64f4-chunk-000"
+        },
+        {
+          "reference_id": "3",
+          "content": "POCS_SOURCE {\"comparison\": \"9af8007244134d1e9480d338b438d894\", \"document_id\": \"ref_1\", \"role\": \"REFERENCE\", \"version\": \"fixture-v1\", \"source_ref\": \"block:1\"}\nĐiều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định.",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "chunk_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000"
+        }
+      ],
+      "references": [
+        {
+          "reference_id": "1",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt"
+        },
+        {
+          "reference_id": "2",
+          "file_path": "pocs_9e97e9575ba62952478c9ba45075ad6d46da0c551df697d36c409cfacdf8a8aa.txt"
+        },
+        {
+          "reference_id": "3",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt"
+        }
+      ]
+    },
+    "source_trace": [
+      {
+        "evidence": {
+          "document_id": "s",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+        },
+        "source_identity": "synthetic:s",
+        "version_id": "fixture-v1",
+        "content_sha256": "31ec53ba15540d07dc5131c18f1bb0f5d91f2c38a16cace21356db5d0278d071",
+        "dataset": null,
+        "dataset_id": null,
+        "revision": null,
+        "source_url": null,
+        "unit_paths": [
+          "Điều 1"
+        ]
+      },
+      {
+        "evidence": {
+          "document_id": "v1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+        },
+        "source_identity": "synthetic:v1",
+        "version_id": "fixture-v1",
+        "content_sha256": "673ee19cdade67ee14ab2dda9ca1f8e598236ee084f21db06599f225f94b7689",
+        "dataset": null,
+        "dataset_id": null,
+        "revision": null,
+        "source_url": null,
+        "unit_paths": [
+          "Điều 1"
+        ]
+      },
+      {
+        "evidence": {
+          "document_id": "ref_1",
+          "source_refs": [
+            "block:1"
+          ],
+          "quote": "Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định."
+        },
+        "source_identity": "synthetic:ref_1",
+        "version_id": "fixture-v1",
+        "content_sha256": "04605ebbb1b5e57b2c440acf593a8ad8beb07465accea2d98b38b55fb2a1943a",
+        "dataset": null,
+        "dataset_id": null,
+        "revision": null,
+        "source_url": null,
+        "unit_paths": [
+          "Điều 2"
+        ]
+      }
+    ],
+    "repeat_consistent": true
+  },
+  "candidate_retrieval": {
+    "status": "CANDIDATES_ONLY",
+    "evidence": [
+      {
+        "document_id": "ref_1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định."
+      },
+      {
+        "document_id": "v1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+      },
+      {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+      }
+    ],
+    "issues": [],
+    "legal_impact_confirmed": false
+  },
+  "candidate_source_trace": [
+    {
+      "evidence": {
+        "document_id": "ref_1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định."
+      },
+      "source_identity": "synthetic:ref_1",
+      "version_id": "fixture-v1",
+      "content_sha256": "04605ebbb1b5e57b2c440acf593a8ad8beb07465accea2d98b38b55fb2a1943a",
+      "dataset": null,
+      "dataset_id": null,
+      "revision": null,
+      "source_url": null,
+      "unit_paths": [
+        "Điều 2"
+      ]
+    },
+    {
+      "evidence": {
+        "document_id": "v1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+      },
+      "source_identity": "synthetic:v1",
+      "version_id": "fixture-v1",
+      "content_sha256": "673ee19cdade67ee14ab2dda9ca1f8e598236ee084f21db06599f225f94b7689",
+      "dataset": null,
+      "dataset_id": null,
+      "revision": null,
+      "source_url": null,
+      "unit_paths": [
+        "Điều 1"
+      ]
+    },
+    {
+      "evidence": {
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+      },
+      "source_identity": "synthetic:s",
+      "version_id": "fixture-v1",
+      "content_sha256": "31ec53ba15540d07dc5131c18f1bb0f5d91f2c38a16cace21356db5d0278d071",
+      "dataset": null,
+      "dataset_id": null,
+      "revision": null,
+      "source_url": null,
+      "unit_paths": [
+        "Điều 1"
+      ]
+    }
+  ],
+  "registry": [
+    {
+      "comparison_id": "9af8007244134d1e9480d338b438d894",
+      "file_source": "pocs_9e97e9575ba62952478c9ba45075ad6d46da0c551df697d36c409cfacdf8a8aa.txt",
+      "document_id": "v1",
+      "role": "BASE",
+      "version": "fixture-v1",
+      "source_ref": "block:1",
+      "text": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày.",
+      "indexed_text": "POCS_SOURCE {\"comparison\": \"9af8007244134d1e9480d338b438d894\", \"document_id\": \"v1\", \"role\": \"BASE\", \"version\": \"fixture-v1\", \"source_ref\": \"block:1\"}\nĐiều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+    },
+    {
+      "comparison_id": "9af8007244134d1e9480d338b438d894",
+      "file_source": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+      "document_id": "s",
+      "role": "AMENDMENT",
+      "version": "fixture-v1",
+      "source_ref": "block:1",
+      "text": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”.",
+      "indexed_text": "POCS_SOURCE {\"comparison\": \"9af8007244134d1e9480d338b438d894\", \"document_id\": \"s\", \"role\": \"AMENDMENT\", \"version\": \"fixture-v1\", \"source_ref\": \"block:1\"}\nĐiều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+    },
+    {
+      "comparison_id": "9af8007244134d1e9480d338b438d894",
+      "file_source": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+      "document_id": "ref_1",
+      "role": "REFERENCE",
+      "version": "fixture-v1",
+      "source_ref": "block:1",
+      "text": "Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định.",
+      "indexed_text": "POCS_SOURCE {\"comparison\": \"9af8007244134d1e9480d338b438d894\", \"document_id\": \"ref_1\", \"role\": \"REFERENCE\", \"version\": \"fixture-v1\", \"source_ref\": \"block:1\"}\nĐiều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định."
+    }
+  ],
+  "project_source_graph": {
+    "kind": "PROJECT_SOURCE_GRAPH_NOT_LIGHTRAG_KG",
+    "nodes": [
+      {
+        "id": "document_09ad200b52d775d6b0d2c8201b5ce547981df43654e8d453842e0bb40e7e93fa",
+        "type": "DocumentVersion",
+        "document_id": "v1",
+        "comparison_id": "9af8007244134d1e9480d338b438d894",
+        "role": "BASE",
+        "version": "fixture-v1"
+      },
+      {
+        "id": "pocs_9e97e9575ba62952478c9ba45075ad6d46da0c551df697d36c409cfacdf8a8aa.txt",
+        "type": "SourceBlock",
+        "document_id": "v1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Bên nhận tài sản phải thông báo việc bàn giao trong 30 ngày."
+      },
+      {
+        "id": "document_30a589743727f4902785e95e6f888fb5f916997b77ae03cd333418361d9c1e4d",
+        "type": "DocumentVersion",
+        "document_id": "s",
+        "comparison_id": "9af8007244134d1e9480d338b438d894",
+        "role": "AMENDMENT",
+        "version": "fixture-v1"
+      },
+      {
+        "id": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+        "type": "SourceBlock",
+        "document_id": "s",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 1. Sửa Điều 1 của Văn bản A giả định: thay cụm từ “30 ngày” bằng cụm từ “15 ngày”."
+      },
+      {
+        "id": "document_a8f531bc1db35b78262f0763420c382230847073db92bc13b437cacd4e32b65c",
+        "type": "DocumentVersion",
+        "document_id": "ref_1",
+        "comparison_id": "9af8007244134d1e9480d338b438d894",
+        "role": "REFERENCE",
+        "version": "fixture-v1"
+      },
+      {
+        "id": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+        "type": "SourceBlock",
+        "document_id": "ref_1",
+        "source_refs": [
+          "block:1"
+        ],
+        "quote": "Điều 2. Bên giao tài sản thực hiện việc xác nhận sau khi hết thời hạn thông báo quy định tại Điều 1 của Văn bản A giả định."
+      }
+    ],
+    "edges": [
+      {
+        "source": "document_09ad200b52d775d6b0d2c8201b5ce547981df43654e8d453842e0bb40e7e93fa",
+        "target": "pocs_9e97e9575ba62952478c9ba45075ad6d46da0c551df697d36c409cfacdf8a8aa.txt",
+        "type": "HAS_SOURCE_BLOCK",
+        "basis": "PROJECT_SOURCE",
+        "inferred": false
+      },
+      {
+        "source": "document_30a589743727f4902785e95e6f888fb5f916997b77ae03cd333418361d9c1e4d",
+        "target": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+        "type": "HAS_SOURCE_BLOCK",
+        "basis": "PROJECT_SOURCE",
+        "inferred": false
+      },
+      {
+        "source": "document_a8f531bc1db35b78262f0763420c382230847073db92bc13b437cacd4e32b65c",
+        "target": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+        "type": "HAS_SOURCE_BLOCK",
+        "basis": "PROJECT_SOURCE",
+        "inferred": false
+      }
+    ]
+  },
+  "retrieval_completed": true,
+  "semantic_executed": false,
+  "legal_correctness_evaluated": false,
+  "limits": [
+    "Context-only test, not a complete product or a legal-impact verdict.",
+    "One source block per chunk; oversize blocks are rejected, not truncated.",
+    "B retrieval returns candidates only. No legal relation is inferred.",
+    "Source/review label describes input provenance, not independently proven legal truth."
+  ],
+  "upstream_extracted_graph": {
+    "nodes": [
+      {
+        "id": "Bên Nhận Tài Sản",
+        "labels": [
+          "Bên Nhận Tài Sản"
+        ],
+        "properties": {
+          "entity_id": "Bên Nhận Tài Sản",
+          "entity_type": "organization",
+          "description": "Bên nhận tài sản có nghĩa vụ thông báo việc bàn giao trong thời hạn 30 ngày.",
+          "source_id": "doc-42983cdfa3bd99883140ad54112a64f4-chunk-000",
+          "file_path": "pocs_9e97e9575ba62952478c9ba45075ad6d46da0c551df697d36c409cfacdf8a8aa.txt",
+          "created_at": 1795338672,
+          "truncate": ""
+        }
+      },
+      {
+        "id": "Văn bản A",
+        "labels": [
+          "Văn bản A"
+        ],
+        "properties": {
+          "entity_id": "Văn bản A",
+          "entity_type": "content",
+          "description": "Văn bản được đề cập trong nội dung sửa đổi, bổ sung giả định.",
+          "source_id": "doc-0c398b004f19d8bef0a0b62ebbe59eeb-chunk-000",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+          "created_at": 1795338675,
+          "truncate": ""
+        }
+      },
+      {
+        "id": "Điều 1",
+        "labels": [
+          "Điều 1"
+        ],
+        "properties": {
+          "entity_id": "Điều 1",
+          "entity_type": "concept",
+          "description": "Điều khoản quy định việc sửa đổi nội dung thời hạn trong văn bản.<SEP>Quy định pháp lý về thời hạn thông báo được đề cập trong Văn bản A giả định.",
+          "source_id": "doc-0c398b004f19d8bef0a0b62ebbe59eeb-chunk-000<SEP>doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt<SEP>pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679,
+          "truncate": ""
+        }
+      },
+      {
+        "id": "Điều 2",
+        "labels": [
+          "Điều 2"
+        ],
+        "properties": {
+          "entity_id": "Điều 2",
+          "entity_type": "concept",
+          "description": "Quy định pháp lý về việc bên giao tài sản thực hiện xác nhận sau khi hết thời hạn thông báo.",
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679,
+          "truncate": ""
+        }
+      },
+      {
+        "id": "Văn bản A giả định",
+        "labels": [
+          "Văn bản A giả định"
+        ],
+        "properties": {
+          "entity_id": "Văn bản A giả định",
+          "entity_type": "content",
+          "description": "Tài liệu văn bản giả định chứa các quy định liên quan đến việc giao tài sản và thông báo.",
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679,
+          "truncate": ""
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "Văn bản A-Điều 1",
+        "type": "DIRECTED",
+        "source": "Văn bản A",
+        "target": "Điều 1",
+        "properties": {
+          "weight": 1.0,
+          "description": "Điều 1 tiến hành sửa đổi nội dung của Văn bản A bằng cách thay thế thời hạn.",
+          "keywords": "sửa đổi,điều chỉnh",
+          "source_id": "doc-0c398b004f19d8bef0a0b62ebbe59eeb-chunk-000",
+          "file_path": "pocs_52866e7e3116dd8f3ffe099e870e956fd2fd9656f4f79d62c92f21bf66536241.txt",
+          "created_at": 1795338675,
+          "truncate": ""
+        }
+      },
+      {
+        "id": "Điều 1-Điều 2",
+        "type": "DIRECTED",
+        "source": "Điều 1",
+        "target": "Điều 2",
+        "properties": {
+          "weight": 1.0,
+          "description": "Điều 2 đề cập đến thời hạn thông báo được quy định tại Điều 1 của Văn bản A giả định.",
+          "keywords": "liên quan,tham chiếu",
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679,
+          "truncate": ""
+        }
+      },
+      {
+        "id": "Văn bản A giả định-Điều 2",
+        "type": "DIRECTED",
+        "source": "Văn bản A giả định",
+        "target": "Điều 2",
+        "properties": {
+          "weight": 1.0,
+          "description": "Điều 2 là một điều khoản tham chiếu đến Văn bản A giả định.",
+          "keywords": "căn cứ,thuộc",
+          "source_id": "doc-0a87cf1cbfda4fd0144bc128472c703d-chunk-000",
+          "file_path": "pocs_39960be346b905922ae1534e626b91628a48f7dd8415bf1c8d3d0c17841c2e87.txt",
+          "created_at": 1795338679,
+          "truncate": ""
+        }
+      }
+    ],
+    "is_truncated": false
+  },
+  "provider": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "embedding_model": "gemini-embedding-001",
+    "embedding_dim": 3072
+  },
+  "image_id": "sha256:d17b1170f6e7097c2c87532e1b206bc34dfe1002c476d48fa8de8f990262e630",
+  "mode": "REAL_LIGHTRAG_HTTP",
+  "generated_at": "2026-11-22T09:11:27.593775+00:00",
+  "failure": null,
+  "cleanup_issues": [],
+  "graph_source_audit": {
+    "kind": "OBSERVED_KG_METADATA_AUDIT_NOT_LEGAL_VALIDATION",
+    "unknown_sources": [],
+    "possible_cross_document_unit_merges": [
+      {
+        "node": "Điều 1",
+        "document_ids": [
+          "ref_1",
+          "s"
+        ]
+      }
+    ],
+    "duplicate_normalized_labels": [],
+    "canonical_identity_authority": "PROJECT_SOURCE_REGISTRY",
+    "legal_relations_verified": false,
+    "computed_from_saved_graph": true
+  },
+  "observed_first_attempt": {
+    "context_retrieval_completed": true,
+    "candidate_issue": "RETRIEVAL_HTTP_ERROR",
+    "cleanup_issues": [],
+    "saved_result": "runtime/lightrag/context-real-synthetic.json"
+  }
+}

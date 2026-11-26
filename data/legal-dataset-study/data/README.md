@@ -96,7 +96,7 @@ Xem quy tắc, kiểm tra dự kiến và cập nhật kết quả:
 
 | File kết quả | Cách sử dụng |
 | --- | --- |
-| `ung_vien_dan_su.csv` | Danh sách để lựa chọn văn bản cần tải; giữ nguyên 17 cột metadata |
+| `ung_vien_dan_su.csv` | Danh sách để lựa chọn văn bản cần tải; giữ nguyên 17 cột metadata, bổ sung cột trạng thái khi tải |
 | `ung_vien_dan_su_luot2_evidence.csv` | Nối với danh sách qua `id`; xem nhóm đề xuất, ưu tiên, mã quy tắc, cờ cần duyệt và giá trị metadata làm căn cứ |
 | `ung_vien_dan_su_luot2_report.json` | Xem số lượng, độ đầy đủ/vai trò các cột, phiên bản quy tắc và nguồn tham khảo |
 
@@ -138,6 +138,18 @@ Mặc định thư mục đích chỉ nhận DOCX theo số hiệu, ví dụ `10
 - Script không tự cập nhật `data/manifest.csv`, xác định vai trò S–V1, phân loại toàn văn hoặc nạp LightRAG. Khi đưa dữ liệu vào kho chính thức, cần ghi ánh xạ dataset/revision/ID với đường dẫn file và nguồn đối chiếu.
 
 Danh sách được xét theo thứ tự CSV, chưa sắp xếp theo `download_priority`. `--limit N` chỉ tính văn bản chưa có được thử tải; số DOCX thành công có thể ít hơn N vì lỗi tải/chuyển đổi. Bỏ `--limit` sẽ xét toàn bộ lựa chọn, bao gồm toàn bộ CSV khi dùng `--all-candidates`.
+
+### Theo dõi trạng thái trong CSV ứng viên
+
+Mỗi văn bản đã xử lý trong lần tải thật được cập nhật ngay vào CSV được chọn bởi `--candidates` (mặc định `data/ung_vien_dan_su.csv`):
+
+| Cột | Nội dung |
+| --- | --- |
+| `download_status` | `success`: đã tải/chuyển thành công hoặc file đã có khớp nguồn; `failed`: lỗi hoặc chưa xác minh được file trùng tên |
+| `download_result` | Trạng thái chi tiết và lý do, ví dụ `converted`, `empty_or_invalid_html`, `skipped_unverified` |
+| `download_path` | Đường dẫn tương đối từ gốc repo, dùng dấu `/`, ví dụ `data/legal-dataset-study/data/lightrag/91_2015_QH13.docx`. Ghép với gốc checkout hiện tại khi đọc; không tính từ CSV hay thư mục terminal. Với `failed`, file có thể không tồn tại |
+
+ID chưa xử lý giữ nguyên giá trị cũ hoặc để trống. `--dry-run` không thêm cột hay ghi trạng thái. Lần chạy sau ghi kết quả mới nhất của ID được xử lý; trạng thái không tự loại ID khỏi lần tải sau. Chạy lại bộ lọc metadata giữ các cột này; `metadata.csv` không bị sửa. Không chạy đồng thời nhiều tiến trình cập nhật cùng CSV. Khi dừng giữa chừng, các kết quả đã ghi được giữ lại; ID chưa có kết quả không bị gán `failed`.
 
 ### Tham số terminal
 
@@ -227,3 +239,5 @@ Chạy tại thư mục gốc repo bằng môi trường Python đang sử dụn
 | `empty_or_invalid_html` | Nguồn không có chữ đọc được; đối chiếu HTML/PDF chính thức thay vì tạo DOCX trắng |
 | Không nhận diện được số ký hiệu khi chuyển DOCX | Bộ tải lấy so_ky_hieu từ CSV. Xác minh metadata nếu thiếu hoặc mâu thuẫn; --document-number chỉ dùng khi gọi converter thủ công. |
 | Bộ lọc báo ứng viên không khớp metadata | Kiểm tra dataset, revision và giá trị gốc; không ghép hoặc ghi đè trước khi làm rõ |
+
+Đầu ra ngoài repo được ghi bằng đường dẫn tương đối có `../`; chỉ dữ liệu nằm trong repo mới đi cùng bản clone. Không chọn đích ở ổ đĩa khác nếu cần lưu đường dẫn tương đối.

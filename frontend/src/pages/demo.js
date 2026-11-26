@@ -1,6 +1,6 @@
 // Small same-origin demo UI. All document text is rendered as text nodes, never HTML.
 const $ = selector => document.querySelector(selector);
-const state = {v1: [], s: [], references: [], busy: false, config: null, report: null};
+const state = {v1: [], s: [], references: [], busy: false, config: null, report: null, lookup: null};
 const labels = {SUCCESS: 'Hoàn thành', PARTIAL: 'Cần kiểm tra thêm', FAILED: 'Xử lý thất bại'};
 const statusDetails = {
   SUCCESS: 'Các mục đã có thể hiển thị theo dữ liệu backend trả về.',
@@ -26,7 +26,10 @@ function message(text = '', error = false) {
 function setBusy(busy) {
   state.busy = busy;
   $('#compare-form').querySelectorAll('button,input,select').forEach(el => {el.disabled = busy;});
-  $('#submit-button').disabled = busy || !state.config || !state.v1.length || !state.s.length;
+  const lookupOnly = state.config?.target_lookup_enabled && !state.v1.length;
+  $('#submit-button').disabled = busy || !state.config || !state.s.length || (!lookupOnly && !state.v1.length);
+  $('#submit-button').textContent = lookupOnly ? 'Tìm văn bản gốc' : 'Bắt đầu đối chiếu';
+  document.querySelectorAll('#target-lookup [data-lookup-action]').forEach(el => {el.disabled = busy;});
   $('#processing').hidden = !busy;
   $('#compare-form').setAttribute('aria-busy', String(busy));
 }
@@ -41,7 +44,11 @@ function renderFiles() {
       const row = node('li'); row.append(node('span', file.name, 'file-name'), node('span',size(file.size),'file-size'));
       const remove = node('button', '×', 'remove'); remove.type = 'button';
       remove.setAttribute('aria-label',`Bỏ file ${file.name}`); remove.disabled = state.busy;
-      remove.addEventListener('click', () => {state[role].splice(index,1); clearReport(); renderFiles();});
+      remove.addEventListener('click', () => {
+        state[role].splice(index,1);
+        if (role !== 'references') resetLookup();
+        renderFiles();
+      });
       row.append(remove); list.append(row);
     });
   }
@@ -69,7 +76,13 @@ function choose(role, files) {
   if (role === 'references') {
     for (const file of incoming) if (!next.references.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)) next.references.push(file);
   }
-  try {validateFiles(next); state[role] = next[role]; clearReport(); message(); renderFiles();}
+  try {
+    validateFiles(next);
+    state[role] = next[role];
+    if (role !== 'references') resetLookup();
+    message(state.report ? 'Đầu vào đã đổi; báo cáo bên dưới thuộc lượt trước.' : '');
+    renderFiles();
+  }
   catch (error) {message(error.message, true);}
 }
 for (const [id, role] of [['v1-file','v1'],['s-file','s'],['reference-files','references']]) {
@@ -246,39 +259,168 @@ function renderReport(report) {
   $('#results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-$('#compare-form').addEventListener('submit', async event => {
-  event.preventDefault(); if (state.busy) return;
-  try {validateFiles(state); if (!state.v1.length || !state.s.length) throw new Error('Cần chọn đủ V1 và S.');}
-  catch(error) {message(error.message,true); return;}
-  clearReport(); message(); setBusy(true);
-  const data = new FormData(); data.append('doc_v1',state.v1[0]); data.append('doc_s',state.s[0]);
+function showReport(report) {
+  message();
+  renderReport(report);
+  window.dispatchEvent(new CustomEvent('pocs:report', {detail:{comparison_id:report.comparison_id}}));
+}
+
+async function requestJson(path, options) {
+  const response = await fetch(path, options);
+  let payload;
+  try {payload = JSON.parse(await response.text());}
+  catch {throw new Error(`Lỗi máy chủ (HTTP ${response.status}): phản hồi không phải JSON.`);}
+  if (response.ok || (payload?.comparison_id && Array.isArray(payload.results))) return payload;
+  const detail = payload?.detail;
+  const explanation = Array.isArray(detail) ? 'Thiếu hoặc sai file bắt buộc.'
+    : typeof detail === 'string' ? detail : [detail?.code, detail?.message].filter(Boolean).join(': ');
+  throw new Error(`HTTP ${response.status}: ${explanation || 'Máy chủ chưa trả được kết quả.'}`);
+}
+
+async function compareFiles(base, signal) {
+  validateFiles({...state,v1:[base]});
+  const data = new FormData();
+  data.append('doc_v1',base);
+  data.append('doc_s',state.s[0]);
   for (const file of state.references) data.append('reference_files',file);
+  const report = await requestJson('/api/compare',{method:'POST',body:data,signal});
+  if (!report?.comparison_id || !Array.isArray(report.results)) throw new Error('Máy chủ chưa trả báo cáo đối chiếu.');
+  return report;
+}
+
+async function runRequest(work) {
+  message(state.report ? 'Đang xử lý lượt mới. Báo cáo bên dưới thuộc lượt trước.' : '');
+  setBusy(true);
   const controller = new AbortController();
   const timer = setTimeout(()=>controller.abort(),(state.config.deadline_seconds+30)*1000);
-  try {
-    const response = await fetch('/api/compare',{method:'POST',body:data,signal:controller.signal});
-    const body = await response.text();
-    let report;
-    try {report = body ? JSON.parse(body) : null;}
-    catch (parseError) {
-      throw new Error(`Lỗi máy chủ (HTTP ${response.status}): Máy chủ trả về dữ liệu không hợp lệ, không phải JSON.`);
-    }
-    if (report && Array.isArray(report.results) && report.comparison_id) renderReport(report);
-    else {
-      const detail = report?.detail;
-      const category = response.status >= 400 && response.status < 500 ? 'Lỗi đầu vào'
-        : response.status >= 500 ? 'Lỗi máy chủ' : 'Phản hồi không hợp lệ';
-      const detailMessage = Array.isArray(detail) ? 'Thiếu hoặc sai file bắt buộc.'
-        : typeof detail === 'string' ? detail
-        : detail ? `${detail.code ? `${detail.code}: ` : ''}${detail.message || 'Máy chủ chưa trả được kết quả.'}`
-        : 'Máy chủ chưa trả được kết quả.';
-      throw new Error(`${category} (HTTP ${response.status}): ${detailMessage}`);
-    }
-  } catch(error) {
-    message(error.name === 'AbortError' ? 'Hết thời gian chờ phản hồi. Máy chủ có thể vẫn đang kết thúc xử lý; hãy kiểm tra lại trước khi gửi tiếp.'
-      : error.message === 'Failed to fetch' ? 'Lỗi kết nối: không kết nối được máy chủ. Kiểm tra dịch vụ rồi thử lại.'
-      : error.message,true);
+  try { await work(controller.signal); }
+  catch(error) {
+    message(error.name === 'AbortError' ? 'Hết thời gian chờ. Máy chủ có thể vẫn đang kết thúc xử lý.'
+      : error.message === 'Failed to fetch' ? 'Lỗi kết nối. Kiểm tra dịch vụ rồi thử lại.' : error.message,true);
   } finally {clearTimeout(timer); setBusy(false);}
+}
+
+function resetLookup() {
+  state.lookup = null;
+  const panel = $('#target-lookup');
+  if (panel) {panel.replaceChildren(); panel.hidden = true;}
+}
+
+function sourceInstructions(parent, instructions) {
+  const details = node('details');
+  details.append(node('summary',`Chỉ dẫn trong S (${instructions.length})`));
+  for (const source of instructions) {
+    details.append(node('p',source.source_refs.join(', '),'source'),node('blockquote',source.quote));
+  }
+  parent.append(details);
+}
+
+function selectTargetAction(text, action) {
+  const actionButton = node('button',text,'secondary');
+  actionButton.type = 'button';
+  actionButton.dataset.lookupAction = '';
+  actionButton.addEventListener('click',action);
+  return actionButton;
+}
+
+function renderTargets() {
+  const panel = $('#target-lookup');
+  panel.replaceChildren(node('h3','Văn bản đích tìm được từ S'));
+  panel.hidden = false;
+  for (const target of state.lookup.targets) {
+    const card = node('section',null,'result-card');
+    card.append(node('h4',target.document_number));
+    const status = target.report ? `Đã có báo cáo · ${labels[target.report.status] || target.report.status}`
+      : target.status === 'AUTO_MATCH' ? 'Đã tìm thấy bản gốc của ca demo đã kiểm chứng.'
+      : target.status === 'NEEDS_V1' ? 'Kho chưa có V1 cho đích này. Hãy bổ sung file nếu có.'
+      : 'Có bản ứng viên. Hãy xác nhận đúng phiên bản trước khi đối chiếu.';
+    card.append(node('p',status));
+    if (target.error) card.append(node('p',target.error,'report-issue error'));
+    sourceInstructions(card,target.instructions);
+    if (target.report) card.append(selectTargetAction('Xem báo cáo đích này',()=>showReport(target.report)));
+    for (const candidate of target.candidates) {
+      const row = node('div',null,'report-issue');
+      row.append(node('strong',candidate.filename),
+        node('p',[candidate.document_date,candidate.version_note,candidate.source].filter(Boolean).join(' · '),'source'),
+        selectTargetAction('Dùng phiên bản này',()=>runRequest(signal=>compareTarget(target,candidate,null,signal))));
+      card.append(row);
+    }
+    const upload = node('input');
+    upload.type = 'file';
+    upload.accept = '.docx,.pdf';
+    upload.dataset.lookupAction = '';
+    upload.setAttribute('aria-label',`Bổ sung V1 cho ${target.document_number}`);
+    upload.addEventListener('change',()=>{
+      const file = upload.files[0];
+      if (file) runRequest(signal=>compareTarget(target,null,file,signal));
+    });
+    const uploadLabel = node('label','Bổ sung V1 cho đích này ');
+    uploadLabel.append(upload);
+    card.append(uploadLabel);
+    panel.append(card);
+  }
+  if (state.lookup.unresolved.length) {
+    const group = node('section',null,'result-card');
+    group.append(node('h4','Chỉ dẫn chưa xác định được một đích duy nhất'),
+                 node('p','Hãy kiểm tra số hiệu trong các chỉ dẫn bên dưới. Có thể dùng chế độ cung cấp V1 thủ công để đối chiếu một đích.'));
+    sourceInstructions(group,state.lookup.unresolved.map(entry=>entry.instruction));
+    panel.append(group);
+  }
+  if (!state.lookup.targets.length && !state.lookup.unresolved.length) {
+    panel.append(node('p','Chưa nhận diện được chỉ dẫn thuộc mẫu hỗ trợ. Có thể bổ sung V1 thủ công để kiểm tra tiếp.'));
+  }
+  setBusy(state.busy);
+}
+
+async function compareTarget(target, candidate, file, signal) {
+  target.error = '';
+  try {
+    let base = file;
+    if (candidate) {
+      const response = await fetch(`/api/demo/targets/candidates/${encodeURIComponent(candidate.id)}`,{signal});
+      if (!response.ok) throw new Error('Không tải được V1 đã chọn từ kho.');
+      base = new File([await response.blob()],candidate.filename);
+    }
+    validateFiles({...state,v1:[base]});
+    const validation = new FormData();
+    validation.append('doc_v1',base);
+    validation.append('document_number',target.document_number);
+    await requestJson('/api/demo/targets/verify-v1',{method:'POST',body:validation,signal});
+    target.report = await compareFiles(base,signal);
+    showReport(target.report);
+  } catch(error) {
+    target.error = error.name === 'AbortError' ? 'Hết thời gian chờ ở đích này.' : error.message;
+  } finally {
+    renderTargets();
+  }
+}
+
+async function findTargets(signal) {
+  const data = new FormData();
+  data.append('doc_s',state.s[0]);
+  state.lookup = await requestJson('/api/demo/targets',{method:'POST',body:data,signal});
+  clearReport();
+  window.dispatchEvent(new Event('pocs:clear-report'));
+  message();
+  renderTargets();
+  for (const target of state.lookup.targets) {
+    if (target.status === 'AUTO_MATCH' && target.candidates.length === 1 && !signal.aborted) {
+      await compareTarget(target,target.candidates[0],null,signal);
+    }
+  }
+}
+
+$('#compare-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (state.busy) return;
+  try {
+    validateFiles(state);
+    if (!state.s.length || (!state.config.target_lookup_enabled && !state.v1.length)) {
+      throw new Error(state.config.target_lookup_enabled ? 'Cần chọn S.' : 'Cần chọn đủ V1 và S.');
+    }
+  } catch(error) {message(error.message,true); return;}
+  if (state.v1.length) runRequest(async signal=>showReport(await compareFiles(state.v1[0],signal)));
+  else runRequest(findTargets);
 });
 
 $('#load-sample').addEventListener('click',async()=>{
@@ -286,14 +428,19 @@ $('#load-sample').addEventListener('click',async()=>{
   if (!sample || state.busy) {message('Hãy chọn một bộ dữ liệu mẫu trước.'); return;}
   setBusy(true); message();
   try {
-    const files = await Promise.all(['v1','s'].map(async role=>{
+    const roles = state.config.target_lookup_enabled ? ['s'] : ['v1','s'];
+    const files = await Promise.all(roles.map(async role=>{
       const response = await fetch(`/api/demo/files/${encodeURIComponent(sample.id)}/${role}`);
       if (!response.ok) throw new Error('Không tải được bộ dữ liệu trong data/raw.');
       return new File([await response.blob()],sample[role],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
     }));
-    const next = {v1:[files[0]],s:[files[1]],references:[]}; validateFiles(next);
-    Object.assign(state,next); clearReport(); renderFiles();
-    message('Đã nạp V1 và S từ data/raw. Đây là tài liệu trong repo; chưa xác minh hiệu lực hiện tại.');
+    const next = state.config.target_lookup_enabled ? {v1:[],s:files,references:[]}
+      : {v1:[files[0]],s:[files[1]],references:[]};
+    validateFiles(next);
+    resetLookup();
+    Object.assign(state,next); renderFiles();
+    message(state.config.target_lookup_enabled ? 'Đã nạp S mẫu. Bấm Tìm văn bản gốc để tiếp tục.'
+      : 'Đã nạp V1 và S từ data/raw. Đây là tài liệu trong repo; chưa xác minh hiệu lực hiện tại.');
   } catch(error) {message(error.message,true);} finally {setBusy(false);}
 });
 $('#download-json').addEventListener('click',()=>{
@@ -308,6 +455,25 @@ try {
   const response = await fetch('/api/demo/config');
   if (!response.ok) throw new Error('Không lấy được cấu hình demo.');
   state.config = await response.json();
+  if (state.config.target_lookup_enabled) {
+    $('.intro p:last-child').textContent = 'Nộp S để tìm văn bản đích. Bạn có thể chọn bản ứng viên hoặc bổ sung V1 nếu kho thiếu.';
+    $('#upload-title').closest('.section-head').querySelector('.small-label').textContent = 'Bắt đầu bằng văn bản sửa đổi S';
+    const base = $('[data-role="v1"]');
+    const grid = $('.upload-grid');
+    grid.prepend($('[data-role="s"]'));
+    base.hidden = true;
+    const toggle = selectTargetAction('Tôi có sẵn V1',()=>{
+      base.hidden = !base.hidden;
+      toggle.textContent = base.hidden ? 'Tôi có sẵn V1' : 'Bỏ chọn V1 thủ công';
+      if (base.hidden) {state.v1 = []; resetLookup(); renderFiles();}
+    });
+    grid.after(toggle);
+    const panel = node('section');
+    panel.id = 'target-lookup';
+    panel.hidden = true;
+    $('#compare-form').after(panel);
+    $('#sample-select option').textContent = 'Chọn một văn bản sửa đổi mẫu…';
+  }
   for (const sample of state.config.samples) {
     const option = node('option',sample.label); option.value = sample.id; $('#sample-select').append(option);
   }

@@ -6,6 +6,7 @@ text. LightRAG may rechunk; registry validation handles literal substrings only.
 from dataclasses import dataclass
 import hashlib
 import json
+import re
 from typing import TYPE_CHECKING
 
 from ..schemas.contracts import ExtractedDocument
@@ -42,6 +43,52 @@ class SourceChunk:
     source_ref: str
     text: str
     indexed_text: str
+    additional_source_refs: tuple[str, ...] = ()
+
+    @property
+    def source_refs(self) -> tuple[str, ...]:
+        return (self.source_ref, *self.additional_source_refs)
+
+
+def pack_adjacent_chunks(chunks: list[SourceChunk], max_chars: int) -> list[SourceChunk]:
+    """Reduce extraction calls while preserving each block's literal text and provenance."""
+    def block_number(ref):
+        match = re.fullmatch(r'block:([1-9][0-9]*)', ref)
+        return int(match[1]) if match else None
+
+    def pack(group):
+        first = group[0]
+        if len(group) == 1:
+            return first
+        refs = tuple(c.source_ref for c in group)
+        text = '\n'.join(c.text for c in group)
+        metadata = {
+            'comparison': first.comparison_id, 'document_id': first.document_id,
+            'role': first.role, 'version': first.version, 'source_refs': refs,
+        }
+        header = json.dumps(metadata, ensure_ascii=False)
+        token = hashlib.sha256((header + '\n' + text).encode()).hexdigest()
+        return SourceChunk(first.comparison_id, f'pocs_{token}.txt', first.document_id,
+                           first.role, first.version, first.source_ref,
+                           text, f'POCS_SOURCE {header}\n{text}', refs[1:])
+
+    packed, group = [], []
+    size = 0
+    for chunk in chunks:
+        if group:
+            previous = group[-1]
+            number = block_number(previous.source_ref)
+            same_source = (previous.comparison_id, previous.document_id, previous.role, previous.version) == (
+                chunk.comparison_id, chunk.document_id, chunk.role, chunk.version)
+            if not (same_source and number is not None and block_number(chunk.source_ref) == number + 1
+                    and size + 1 + len(chunk.text) <= max_chars):
+                packed.append(pack(group))
+                group, size = [], 0
+        size += bool(group) + len(chunk.text)
+        group.append(chunk)
+    if group:
+        packed.append(pack(group))
+    return packed
 
 
 def build_chunks(comparison_id: str, documents: list[ExtractedDocument],
