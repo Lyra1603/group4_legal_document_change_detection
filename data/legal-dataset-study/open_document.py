@@ -294,6 +294,10 @@ class CandidateUpdateError(RuntimeError):
     """Stop instead of overwriting a concurrently edited candidate CSV."""
 
 
+def relative_download_path(target):
+    return Path(os.path.relpath(Path(target).resolve(), REPO_ROOT.resolve())).as_posix() if target else ''
+
+
 class CandidateProgress:
     def __init__(self, path):
         self.path = Path(path)
@@ -315,7 +319,8 @@ class CandidateProgress:
             row['download_status'] = 'success' if result['status'] in {
                 'downloaded', 'converted', 'skipped_existing'} else 'failed'
             row['download_result'] = result['status'] + ': ' + result.get('reason', '')
-            row['download_path'] = result.get('path', '')
+            # Resolve against the checkout root when reading this CSV on another machine.
+            row['download_path'] = relative_download_path(result.get('path', ''))
             text = io.StringIO(newline='')
             writer = csv.DictWriter(text, fieldnames=columns, lineterminator='\n')
             writer.writeheader()
@@ -355,6 +360,7 @@ def download_documents(ids=None, *, all_candidates=False, candidates_path=DEFAUL
     if unknown:
         raise ValueError('ID không có trong danh sách ứng viên; không tải: ' + ', '.join(unknown))
     output = Path(output_dir).resolve() if output_dir is not None else SCRIPT_DIR / 'data'
+    relative_download_path(output)  # Reject cross-drive targets before downloading/writing.
     files = _scan_target(output)
     registered = _manifest_records(manifest_path, manifest_root, output)
     progress = None if dry_run else CandidateProgress(candidates_path)

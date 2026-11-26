@@ -147,7 +147,7 @@ Mỗi văn bản đã xử lý trong lần tải thật được cập nhật ng
 | --- | --- |
 | `download_status` | `success`: đã tải/chuyển thành công hoặc file đã có khớp nguồn; `failed`: lỗi hoặc chưa xác minh được file trùng tên |
 | `download_result` | Trạng thái chi tiết và lý do, ví dụ `converted`, `empty_or_invalid_html`, `skipped_unverified` |
-| `download_path` | Đường dẫn kết quả hoặc đích dự kiến; với `failed`, file có thể không tồn tại |
+| `download_path` | Đường dẫn tương đối từ gốc repo, dùng dấu `/`, ví dụ `data/legal-dataset-study/data/lightrag/91_2015_QH13.docx`. Ghép với gốc checkout hiện tại khi đọc; không tính từ CSV hay thư mục terminal. Với `failed`, file có thể không tồn tại |
 
 ID chưa xử lý giữ nguyên giá trị cũ hoặc để trống. `--dry-run` không thêm cột hay ghi trạng thái. Lần chạy sau ghi kết quả mới nhất của ID được xử lý; trạng thái không tự loại ID khỏi lần tải sau. Chạy lại bộ lọc metadata giữ các cột này; `metadata.csv` không bị sửa. Không chạy đồng thời nhiều tiến trình cập nhật cùng CSV. Khi dừng giữa chừng, các kết quả đã ghi được giữ lại; ID chưa có kết quả không bị gán `failed`.
 
@@ -239,3 +239,5 @@ Chạy tại thư mục gốc repo bằng môi trường Python đang sử dụn
 | `empty_or_invalid_html` | Nguồn không có chữ đọc được; đối chiếu HTML/PDF chính thức thay vì tạo DOCX trắng |
 | Không nhận diện được số ký hiệu khi chuyển DOCX | Bộ tải lấy so_ky_hieu từ CSV. Xác minh metadata nếu thiếu hoặc mâu thuẫn; --document-number chỉ dùng khi gọi converter thủ công. |
 | Bộ lọc báo ứng viên không khớp metadata | Kiểm tra dataset, revision và giá trị gốc; không ghép hoặc ghi đè trước khi làm rõ |
+
+Đầu ra ngoài repo được ghi bằng đường dẫn tương đối có `../`; chỉ dữ liệu nằm trong repo mới đi cùng bản clone. Không chọn đích ở ổ đĩa khác nếu cần lưu đường dẫn tương đối.

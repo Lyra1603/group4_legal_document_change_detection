@@ -1,8 +1,10 @@
 import csv
 import importlib.util
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import tempfile
 import unittest
+from unittest.mock import patch
+import shutil
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -98,3 +100,41 @@ class DownloadStatusTests(unittest.TestCase):
         self.assertEqual(rows[0], before[0])
         self.assertEqual(rows[1]['download_status'], '')
         self.assertEqual(metadata.read_bytes(), metadata_before)
+
+
+    def test_download_paths_work_in_relocated_checkout(self):
+        source = self.root / 'source-repo'
+        folder = source / 'data/legal-dataset-study/data'
+        folder.mkdir(parents=True)
+        candidates = folder / 'ung_vien_dan_su.csv'
+        self.write(candidates, self.rows)
+        with patch.object(downloader, 'REPO_ROOT', source):
+            downloader.download_documents(['1', '2'], candidates_path=candidates,
+                output_dir=folder / 'lightrag', manifest_path=None, convert_docx=True,
+                stream_factory=lambda: iter([{'id': '1', 'content_html': '<body>Content</body>'}]))
+        clone = self.root / 'another-checkout'
+        shutil.copytree(source, clone)
+        with (clone / candidates.relative_to(source)).open(encoding='utf-8-sig', newline='') as handle:
+            rows = list(csv.DictReader(handle))
+        self.assertEqual(rows[0]['download_path'], 'data/legal-dataset-study/data/lightrag/1_2020_NĐ-CP.docx')
+        for row in rows:
+            self.assertFalse(Path(row['download_path']).is_absolute())
+            self.assertFalse(PureWindowsPath(row['download_path']).is_absolute())
+            self.assertNotIn('\\', row['download_path'])
+        shutil.rmtree(source)
+        self.assertTrue((clone / rows[0]['download_path']).is_file())
+        self.assertTrue((clone / rows[1]['download_path']).parent.is_dir())
+        self.assertEqual(rows[1]['download_status'], 'failed')
+
+    def test_committed_candidate_paths_are_portable(self):
+        path = ROOT / 'data/legal-dataset-study/data/ung_vien_dan_su.csv'
+        with path.open(encoding='utf-8-sig', newline='') as handle:
+            for row in csv.DictReader(handle):
+                value = row.get('download_path', '')
+                if not value:
+                    continue
+                self.assertFalse(Path(value).is_absolute(), row['id'])
+                self.assertFalse(PureWindowsPath(value).is_absolute(), row['id'])
+                self.assertNotIn('\\', value)
+                if row['download_status'] == 'success':
+                    self.assertTrue((ROOT / value).is_file(), row['id'])
