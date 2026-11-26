@@ -1,6 +1,8 @@
 """Real DOCX -> HTTP -> Parser/Linker -> diff -> validated report, no mock model."""
 from io import BytesIO
+import os
 import unittest
+from unittest.mock import patch
 from xml.sax.saxutils import escape
 import zipfile
 
@@ -68,6 +70,23 @@ class WebDemoTests(unittest.TestCase):
                     self.assertEqual(''.join(reconstructed),item['after_text'])
                     self.assertEqual(result['semantic_diff']['changes'][0]['is_meaningful_change'],None)
                     self.assertTrue(all(score['significance'] is None for score in result['scoring']))
+
+    def test_existing_unit_limit_preserves_amendment_and_skips_only_diff(self):
+        v1 = base_docx('Điều 2. Thời hạn', '1. ' + ''.join(chr(0xF0000 + i) for i in range(11982)) + ' trong 30 ngày.')
+        s = amendment_docx('Thay cụm từ “30 ngày” bằng “15 ngày” tại khoản 1 Điều 2.')
+        with patch.dict(os.environ, {'POCS_DEMO_MAX_UNIT_CHARS': '12000'}):
+            report = self.compare(v1, s).json()
+        validate_report(report)
+        result, = report['results']
+        self.assertEqual(max(len(result['amendment'][k]) for k in ('before_text', 'after_text')), 12000)
+        self.assertIsNotNone(result['text_diff'])
+        with patch.dict(os.environ, {'POCS_DEMO_MAX_UNIT_CHARS': '11999'}):
+            oversized = self.compare(v1, s).json()
+        validate_report(oversized)
+        rejected, = oversized['results']
+        self.assertEqual(rejected['amendment'], result['amendment'])
+        self.assertIsNone(rejected['text_diff'])
+        self.assertIn('DEMO_UNIT_TOO_LONG', {w['code'] for w in oversized['warnings']})
 
     def test_literal_phrase_derivation_is_not_source_quote(self):
         response = self.compare(base_docx('Điều 2. Thời hạn','Phải báo cáo trong 30 ngày.'),
