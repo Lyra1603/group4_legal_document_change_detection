@@ -1,4 +1,4 @@
-"""Reproduce cross-branch evidence without merging or modifying peer sources."""
+"""Reproduce handoff evidence from one integrated checkout."""
 import argparse
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -26,13 +26,13 @@ def sha(path):
 
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
-    cli.add_argument('--tho-ref', default='origin/tho/document_processing')
-    cli.add_argument('--context-ref', default='origin/ducanh/context-integration')
-    cli.add_argument('--output', type=Path, default=ROOT / 'data/ngocanh-review/output')
+    cli.add_argument('--tho-ref', help='Assert the integrated document processing matches this Git ref')
+    cli.add_argument('--context-ref', help='Assert the integrated Context and its dependencies match this Git ref')
+    cli.add_argument('--output', type=Path, required=True)
     args = cli.parse_args()
     loaded = peers(args.tho_ref, args.context_ref)
     parser, adapter, consumer, _, provenance = loaded
-    # Run the tests against exactly the same resolved commits as the evidence.
+    # Run the tests against exactly the same source files as the evidence.
     log = io.StringIO()
     with patch.object(checks, 'peers', return_value=loaded):
         suite = unittest.defaultTestLoader.loadTestsFromTestCase(checks.PeerHandoffTests)
@@ -54,9 +54,11 @@ def main():
             text = compute_text_diff(item)
             validate_text_diff(item, text)
             if text is not None:
-                query = json.loads(consumer.build_retrieval_query(item, text))
+                serialized = consumer.build_retrieval_query(item, text)
+                query = json.loads(serialized)
                 usable.append({'amendment_id': item['amendment_id'], 'target_locator': item['target_locator'],
-                               'changes': len(text['changes']), 'query_contains_exact_diff': query['text_diff'] == text})
+                               'changes': len(text['changes']), 'query_contains_exact_diff': query.get('text_diff') == text,
+                               'query_chars': len(serialized), 'omitted_changes': query.get('omitted_change_count', 0)})
         cases.append({'case': case, 'items': len(items), 'diff_items': usable, 'issues': issues})
         if case == 'case_02':
             item = next(i for i in items if i['before_text'] is not None and i['after_text'] is not None)
@@ -69,7 +71,7 @@ def main():
             assert item == original
             supplied = json.loads((ROOT / 'data/ngocanh-week10/input/ban_giao_ca_dung.json').read_text(encoding='utf-8'))['items'][0]
             old_store = json.loads((ROOT / 'data/ngocanh-week10/input/ban_giao_kho_nguon.json').read_text(encoding='utf-8'))
-            selected = {'kind': 'FRESH_DOCX_PEER_PARSER_ADAPTER_LOCAL_LINKER', 'result': result,
+            selected = {'kind': 'FRESH_DOCX_FROM_INTEGRATED_WORKTREE', 'result': result,
                         'query_payload': json.loads(consumer.build_retrieval_query(item, text)),
                         'comparison_with_original_handoff': {
                             'source_store_equal': old_store == boundary.documents,
@@ -97,15 +99,15 @@ def main():
         'peer_sources': provenance,
         'local_code_sha256': {p: sha(ROOT / p) for p in code},
         'input_sha256': {p.relative_to(ROOT).as_posix(): sha(p) for p in inputs},
-        'output_sha256': outputs, 'tests': {'run': tested.testsRun, 'failures': 0, 'errors': 0},
-        'mode': 'LOCAL_CROSS_BRANCH_WITH_HTTP_CONTRACT_DOUBLE_NO_REAL_LIGHTRAG',
+        'output_sha256': outputs, 'tests': {'run': tested.testsRun, 'failures': 0, 'errors': 0, 'skipped': len(tested.skipped)},
+        'mode': 'INTEGRATED_WORKTREE_WITH_HTTP_CONTRACT_DOUBLE_NO_REAL_LIGHTRAG',
         'confirmations': {'Tho': 'PEER_CODE_RERUN_LOCALLY_HUMAN_REVIEW_PENDING',
                           'Duc_Anh': 'PEER_QUERY_CONSUMER_RERUN_LOCALLY_HUMAN_REVIEW_PENDING',
                           'Dung': 'SHARED_SCORER_RERUN_LOCALLY_HUMAN_REVIEW_PENDING'},
         'limits': ['No human reviewer confirmation inferred from local execution.',
                    'No complete legal context asserted for real cases; semantics remain null/review.',
                    'Synthetic Unicode/negative tests and HTTP contract double are not real legal cases.',
-                   'Peer Git blobs are executed as selected; working tree runtime is not merged with PR #6/#7.']})
+                   'All integration modules and dependencies are imported from this checkout.']})
 
 
 if __name__ == '__main__':
