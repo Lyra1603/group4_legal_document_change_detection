@@ -8,13 +8,15 @@
 | **AmendmentItem** | Một yêu cầu sửa đổi, bổ sung hoặc bãi bỏ trong S, kèm vị trí nguồn và vị trí đích trong V1. |
 | **V1 / S / V2** | Văn bản ban đầu / văn bản sửa đổi / bản đầy đủ sau sửa đổi. V2 không phải đầu vào hoặc đầu ra bắt buộc. |
 | **Reference document** | Nguồn ngữ cảnh truy xuất từ kho dân sự hoặc do người dùng bổ sung khi cần. |
+| **Quan hệ văn bản** | Cạnh có hướng A → B khi A nhắc B, giữ nguồn nhắc và căn cứ phân giải đích; nhắc tên không tự đồng nghĩa sửa đổi. |
+| **Quan hệ ngữ nghĩa** | Quan hệ dựa trên nội dung/quy định có nguồn của A/B dù không nhắc tên nhau; khác với Semantic Diff trước–sau và chưa tự chứng minh tác động. |
 | **Meaningful change** | Thay đổi làm đổi nội dung quy định; sửa diễn đạt chỉ được coi là không đổi nghĩa khi giữ nguyên nội dung. |
 | **Critical change** | Thay đổi nghĩa đáp ứng tiêu chí CRITICAL trong bộ tiêu chí nhóm thống nhất; thêm/xóa Điều không tự động là critical |
 
 # SYSTEM REQUIREMENTS SPECIFICATION (SRS) & DATA CONTRACT
 
-**Phiên bản tài liệu:** 1.5.0
-**Căn cứ nghiệp vụ:** BRD 1.3.0
+**Phiên bản tài liệu:** 1.6.0
+**Căn cứ nghiệp vụ:** BRD 1.4.0
 **Related Document:** [Business Requirements Document (BRD)](brd.md)
 
 Người dùng nộp một văn bản sửa đổi S, có thể kèm bối cảnh. Hệ thống tìm các văn bản bị sửa và phiên bản trước sửa đổi V1 trong kho VBQPPL dân sự tiếng Việt do nhóm chuẩn bị. DOCX và PDF có lớp chữ là định dạng hỗ trợ. Hệ thống dựng nội dung sau sửa đổi ở cấp quy định, phân tích thay đổi trực tiếp và tìm tác động có thể có lên quy định trong các văn bản khác.
@@ -388,6 +390,26 @@ Mỗi nhận định gián tiếp có ID riêng, ID đích, `amendment_id` và `
 
 Nếu một chỉ dẫn áp dụng cho nhiều đích, giữ một mã chỉ dẫn cấp S và liên kết đến từng kết quả cục bộ tương ứng. Dùng tổ hợp ID đích và ID cục bộ để định danh một kết quả đối chiếu. Mọi liên kết cấp S phải phân giải được theo ID đích và ID cục bộ. Kiểm tra trích dẫn với phiên bản nguồn tương ứng. Hệ thống giữ kết quả hữu ích khi một đích hoặc bước tác động gián tiếp chưa hoàn tất. Các trạng thái cụ thể của ứng viên B, kiểu dữ liệu đầy đủ, mapping ID và validator cấp S cần review trước khi code; không dùng mảng rỗng thay cho bước chưa chạy hoặc lỗi. Danh sách rỗng chỉ thể hiện kết quả sau khi bước liên quan đã chạy, với phạm vi rà soát được ghi rõ. `SUCCESS` áp dụng khi các bước bắt buộc hoàn thành trong phạm vi công bố, `PARTIAL` khi còn phần chưa xử lý nhưng có kết quả hữu ích, và `FAILED` khi không thể cung cấp kết quả hữu ích.
 
+### 1.9 Đặc tả mục tiêu cho nút và hai loại quan hệ
+
+Bổ sung ngày 27/11/2026, cụ thể hóa [BRD §8.7](brd.md#87-hai-loại-quan-hệ-giữa-các-văn-bản). Đây là yêu cầu dữ liệu cần thiết kế contract/validator/fixture trước triển khai, không phải trường mới đã có trong `ComparisonReport`, `SemanticDiffResult` hoặc API hiện tại. Không đồng nhất quan hệ ngữ nghĩa giữa hai văn bản với Semantic Diff của một cặp trước–sau.
+
+| Đối tượng | Dữ liệu tối thiểu và quy tắc |
+| --- | --- |
+| Nút văn bản | Định danh toàn kho, định danh phiên bản và snapshot, số hiệu/tên khi biết, nguồn và vị trí file, hash khi có. Nút chưa phân giải giữ dấu hiệu gốc và lý do; không giả định đủ metadata/toàn văn. |
+| Thuộc tính ngữ nghĩa | Chủ thể, đối tượng, hoạt động, quyền/nghĩa vụ, điều kiện/ngoại lệ và phạm vi không gian/thời gian khi có căn cứ. Mỗi giá trị gắn quy định/Điều/Khoản/Điểm hoặc block nguồn, phiên bản và nguyên văn. Thiếu thì ghi chưa biết, không suy từ nhãn chủ đề. |
+| Cạnh dùng chung | ID, đầu nguồn/đích, loại quan hệ văn bản hay ngữ nghĩa, ý nghĩa quan hệ theo chiều, căn cứ/đoạn nguồn, phạm vi quy định liên quan, snapshot/phiên bản, cách tạo và trạng thái kiểm chứng cùng lý do. Cùng cặp nút được có nhiều cạnh và hai loại cạnh độc lập. |
+| Quan hệ văn bản | Chiều A → B là A nhắc B. Bằng chứng nhắc tên nằm ở A; định danh/phiên bản B cần căn cứ phân giải riêng. Nhãn sửa đổi/bổ sung/bãi bỏ chỉ được gán khi xác định được vai trò chỉ dẫn và đích; tham chiếu chưa rõ được giữ để rà soát. |
+| Quan hệ ngữ nghĩa | Giữ thuộc tính/quy định giao nhau và bằng chứng từ cả A/B, giải thích vì sao tạo liên hệ. Có thể đề xuất từ retrieval nhưng phải đối chiếu nguồn để xác minh. Quan hệ hai chiều cần căn cứ cho từng chiều, không suy nghịch đảo. |
+| Kết quả kiểm chứng tác động | Nối tới thay đổi trực tiếp, cạnh/căn cứ được dùng và quy định B. Phân biệt có tác động có căn cứ, không thấy tác động với phần đã xét, chưa đủ căn cứ và bước chưa chạy/lỗi; tên trường và enum cần review riêng. |
+| Trạng thái nút/cạnh | Tách độ đầy đủ nguồn, xác minh định danh/phiên bản và xác minh quan hệ. Độ sẵn sàng nguồn không chứng minh cạnh đúng hoặc kết luận tác động đúng; màu chỉ là biểu diễn của trạng thái đã chốt. |
+
+EvidenceRef tiếp tục đối chiếu đúng phiên bản, source_refs và quote nguyên văn. Cạnh ngữ nghĩa chưa đủ căn cứ chỉ là ứng viên cần kiểm tra. Thiếu toàn văn B không ngăn lưu cạnh tham chiếu từ A, nhưng không được dùng làm căn cứ giả cho thuộc tính hoặc nội dung B.
+
+Báo cáo cấp S ở §1.8 phải tham chiếu được các quan hệ đã dùng và các phần chưa giải quyết qua mapping định danh/phiên bản, không nhét các trường đồ thị vào contract cục bộ để bỏ qua validator. Lưu quan hệ theo snapshot/phiên bản; dữ liệu thay đổi thì các quan hệ liên quan cần kiểm tra lại, không tự áp dụng nhãn xác minh của bản cũ cho bản mới.
+
+**Điểm còn mở:** quy ước thống nhất chiều phụ thuộc/tác động của cạnh ngữ nghĩa; nhãn chi tiết, thuật toán/ngưỡng trích xuất; tiêu chí màu và chuyển màu. Phải chốt chiều và điểm nối dữ liệu trước khi triển khai phần phụ thuộc. Không bổ sung database, công nghệ graph, endpoint hoặc thay đổi trách nhiệm module trong đặc tả này.
+
 ## 2. Functional Requirements
 
 | Mã | Chức năng | Đầu vào → đầu ra | Tiêu chí nghiệm thu tối thiểu |
@@ -425,6 +447,14 @@ Kiểm thử và phép đo ngoài luồng người dùng:
 - Mẫu số bằng 0 trả null kèm lý do; không báo đạt mục tiêu.
 - Báo số mẫu kiểm thử và số kết quả cần kiểm tra cùng các chỉ số.
 - Kiểm tra riêng độ đúng của liên kết đích, trích hiệu lực và yêu cầu bổ sung tài liệu. Mẫu thiếu căn cứ được đánh giá theo khả năng nhận diện giới hạn; không ép gán tác động chưa có bằng chứng. Nhãn chuẩn phải phản ánh nguồn có trong phiên bản kho dùng cho ca kiểm thử và nguồn bổ sung nếu có.
+
+Bổ sung yêu cầu quan hệ:
+
+| Mã | Chức năng | Đầu vào → đầu ra | Tiêu chí nghiệm thu tối thiểu |
+| --- | --- | --- | --- |
+| FR-15 | Dựng quan hệ văn bản | Nội dung A + danh mục nguồn/phiên bản → tham chiếu A → B và căn cứ | Phân giải đúng đích hoặc giữ chưa giải quyết; nhắc tên không tự gán sửa đổi. Ca chỉ S phải tự tìm/kiểm tra V1, không dựa vào cặp đã chọn sẵn. |
+| FR-16 | Trích thuộc tính và quan hệ ngữ nghĩa | Nguồn A/B → thuộc tính có bằng chứng, ứng viên và quan hệ được kiểm chứng | Tìm được liên hệ khi không nhắc tên nhau; phân biệt cùng chủ đề với phụ thuộc có căn cứ, phạm vi giao nhau và không giao nhau; hướng cạnh phải có ý nghĩa rõ. |
+| FR-17 | Kiểm tra nguồn và trình bày trạng thái đồ thị | Nút/cạnh và registry → kết quả kiểm tra, phần hợp lệ và phần cần rà soát | Trạng thái nút/cạnh độc lập; nguồn không phân giải được không trở thành bằng chứng đã xác minh. Thành công truy xuất không xác nhận toàn bộ đồ thị. |
 
 ## 3. Yêu cầu theo module
 
@@ -548,9 +578,21 @@ Ví dụ: đáp án có 10 thay đổi trọng yếu, hệ thống tìm đúng 8
 
 Kho do nhóm chuẩn bị, có danh mục phiên bản có thể truy vết. Mỗi bản lưu định danh văn bản, định danh phiên bản, nguồn, thông tin hiệu lực khi có và chỉ mục Điều/Khoản/Điểm trỏ về đoạn gốc. Khi không đủ thông tin thời điểm hoặc có nhiều phiên bản khả dĩ, giữ ứng viên cùng lý do cần rà soát. Danh mục cụ thể và quy trình chuẩn bị dữ liệu thuộc kế hoạch dữ liệu.
 
+#### 3.8.1. Chuẩn bị hai loại quan hệ trong kho
+
+Thực hiện lượt quan hệ văn bản trước, mở rộng thuộc tính và quan hệ ngữ nghĩa theo §1.9 sau đó. Không cần chờ dựng xong mọi quan hệ ngữ nghĩa mới được tra tham chiếu đã đủ căn cứ. Reader/Parser cung cấp nguyên văn/vị trí; chuẩn bị kho giữ định danh/phiên bản và thuộc tính có nguồn; retrieval tìm ứng viên; bước dùng kết quả kiểm chứng nội dung trước khi xác nhận quan hệ. Giữ phân công theo [Module](module.md), không giao lại toàn bộ chức năng cho một module/người.
+
+Nhận diện ranh giới và vai trò trích dẫn/thay thế qua nhiều block, kể cả ngoặc kép lồng nhau. Chưa rõ thì ghi cần rà soát và giữ nguyên văn; không lấy hành động bên trong trích dẫn làm chỉ dẫn trực tiếp của S mà thiếu phân tích vai trò. Chỉ xác nhận S → V1 sau khi kiểm tra đích/phiên bản; pilot với hai DOCX chọn sẵn không đủ nghiệm thu luồng chỉ S.
+
 ### 3.9 Phân tích tác động gián tiếp
 
 Agent truy xuất các quy định có khả năng phụ thuộc vào quy định V1 bị sửa. Với từng ứng viên B, lấy nguyên văn quy định liên quan và đối chiếu cách B sử dụng quy định V1 với nội dung trước/sau. Quan hệ dẫn chiếu hoặc độ tương đồng dùng để tìm ứng viên, không đủ để xác nhận tác động. Phân biệt quan hệ có căn cứ trực tiếp và quan hệ suy ra; không tự kết luận B bị sửa hoặc hết hiệu lực. Căn cứ báo tác động phải giải thích phần thay đổi liên quan đến điều kiện, nghĩa vụ, thời hạn hoặc nội dung áp dụng trong B. Nếu quan hệ có thật nhưng phần thay đổi không ảnh hưởng đến B, loại ứng viên khỏi danh sách tác động. Nếu chưa đủ căn cứ để phân định, ghi nhận nội dung cần rà soát. Phương pháp tìm quan hệ không có dẫn chiếu trực tiếp và ngưỡng đánh giá cần được xác nhận qua thử nghiệm.
+
+#### 3.9.1. Dùng quan hệ để kiểm chứng tác động
+
+Từ quy định V1 thực sự thay đổi, tìm ứng viên qua cả hai loại quan hệ, lấy đúng nguồn A/B và kiểm tra phần thay đổi có giao với căn cứ tạo cạnh không. Mỗi kết quả giữ liên kết tới yêu cầu/thay đổi trực tiếp, quy định liên quan, cạnh và trích dẫn. Có quan hệ nhưng thay đổi không liên quan thì không báo thành tác động; thiếu căn cứ giữ ứng viên, phạm vi đã kiểm tra và phần còn thiếu. Không tự truyền tác động sang mọi hàng xóm hoặc đảo chiều cạnh ngữ nghĩa khi quy ước hướng chưa chốt.
+
+Khi có đồ thị hiển thị, trình bày nhãn và lý do trạng thái của từng nút/cạnh, hỗ trợ nhận biết ngoài màu sắc. Nút thiếu toàn văn vẫn có thể giữ cạnh tham chiếu đã có bằng chứng từ A. Chưa xác định tiêu chí màu xanh/vàng/đỏ trong lần cập nhật này; không nghiệm thu đúng/sai chỉ dựa màu.
 
 ## 4. Yêu cầu tải tài liệu và xem kết quả
 
@@ -652,6 +694,12 @@ Yêu cầu chung: thông báo lỗi phải dễ hiểu và có hướng xử lý
 Thiếu V1 được xử lý theo UI-01. V1 bổ sung sai đích được xử lý theo UI-02. Thiếu nguồn của một đích chỉ giới hạn phần phụ thuộc vào nguồn đó. Kết quả dựa trên S phải giữ căn cứ nguyên văn và phần chưa thể đối chiếu; bộ kiểm tra cấp S cần kiểm chứng các quan hệ này.
 
 Tài liệu ngoài phạm vi và tài liệu dân sự thiếu trong kho được xử lý theo UI-03. Lỗi retrieval được ghi là lỗi truy xuất; việc xác định thiếu nguồn hoặc phạm vi cần kiểm tra căn cứ độc lập.
+
+### 5.1. Phân biệt truy xuất và xác minh đồ thị
+
+Giữ riêng kết quả lập chỉ mục/truy xuất, đối chiếu nguồn đồ thị và dọn tài nguyên. Không gắn một nhãn xác minh toàn lượt chỉ vì retrieval tìm được đoạn kỳ vọng. Nếu nút/cạnh không ánh xạ được về registry thì loại khỏi phần bằng chứng đã xác minh, ghi vấn đề nguồn và giữ phần kết quả hợp lệ.
+
+Việc bước bắt buộc chưa hoàn tất ảnh hưởng báo cáo cấp S theo §1.8: có kết quả hữu ích nhưng còn lỗi/phần chưa kiểm tra thì PARTIAL; không có kết quả hữu ích thì FAILED. Không thay quy tắc SUCCESS/PARTIAL/FAILED của validator báo cáo cục bộ hoặc coi mọi mục cần review là lỗi thực thi. Hoàn thành xử lý và đúng về nghĩa/hiệu lực pháp lý là hai phép đánh giá khác nhau.
 
 ## 6. Yêu cầu vận hành
 
