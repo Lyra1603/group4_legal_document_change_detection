@@ -1,0 +1,18 @@
+{
+  "documents": [
+    {
+      "dataset_id": "26170",
+      "sha256": "619845a9b40c7517fde1ca84b41629b405f35dbbb90e745c43f44363b9413d4c",
+      "source_page_url": "https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=26170",
+      "index_refs": ["block:11"]
+    },
+    {
+      "dataset_id": "56666",
+      "sha256": "58d648c7707303a7ba3aad549e53fe1f7cc8ae450e098705a4f21e41515891d4",
+      "source_page_url": "https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=56666",
+      "index_refs": ["block:21", "block:22", "block:167"]
+    }
+  ],
+  "query": "Tìm nguyên văn Thông tư 08/2014/TT-BTP sửa đổi Thông tư 05/2011/TT-BTP và chỉ dẫn sửa khoản 2 Điều 2.",
+  "expected_evidence": {"document_id": "dataset:56666", "source_ref": "block:22"}
+}

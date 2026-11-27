@@ -286,6 +286,66 @@ def _convert_result(result, row, dry_run):
 
 
 
+
+DOWNLOAD_COLUMNS = ('download_status', 'download_result', 'download_path')
+
+
+class CandidateUpdateError(RuntimeError):
+    """Stop instead of overwriting a concurrently edited candidate CSV."""
+
+
+def relative_download_path(target):
+    return Path(os.path.relpath(Path(target).resolve(), REPO_ROOT.resolve())).as_posix() if target else ''
+
+
+class CandidateProgress:
+    def __init__(self, path):
+        self.path = Path(path)
+        self.expected = self.path.read_bytes()
+
+    def record(self, result):
+        try:
+            current = self.path.read_bytes()
+            if current != self.expected:
+                raise CandidateUpdateError('Candidate CSV changed during download; refusing to overwrite.')
+            reader = csv.DictReader(io.StringIO(current.decode('utf-8-sig')))
+            columns = list(reader.fieldnames or [])
+            rows = list(reader)
+            columns.extend(c for c in DOWNLOAD_COLUMNS if c not in columns)
+            matches = [r for r in rows if r['id'] == result['id']]
+            if len(matches) != 1:
+                raise CandidateUpdateError('Candidate ID is missing or duplicated.')
+            row = matches[0]
+            row['download_status'] = 'success' if result['status'] in {
+                'downloaded', 'converted', 'skipped_existing'} else 'failed'
+            row['download_result'] = result['status'] + ': ' + result.get('reason', '')
+            # Resolve against the checkout root when reading this CSV on another machine.
+            row['download_path'] = relative_download_path(result.get('path', ''))
+            text = io.StringIO(newline='')
+            writer = csv.DictWriter(text, fieldnames=columns, lineterminator='\n')
+            writer.writeheader()
+            writer.writerows(rows)
+            payload = text.getvalue().encode('utf-8-sig')
+            temporary = None
+            try:
+                with tempfile.NamedTemporaryFile(dir=self.path.parent, suffix='.tmp', delete=False) as handle:
+                    temporary = Path(handle.name)
+                    handle.write(payload)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                if self.path.read_bytes() != current:
+                    raise CandidateUpdateError('Candidate CSV changed during update; refusing to overwrite.')
+                os.replace(temporary, self.path)
+                self.expected = payload
+            finally:
+                if temporary is not None:
+                    temporary.unlink(missing_ok=True)
+        except CandidateUpdateError:
+            raise
+        except Exception as error:
+            raise CandidateUpdateError(f'Cannot save candidate status: {error}') from error
+
+
 def download_documents(ids=None, *, all_candidates=False, candidates_path=DEFAULT_CANDIDATES,
                        output_dir=None, limit=None, dry_run=False,
                        manifest_path=DEFAULT_MANIFEST, manifest_root=REPO_ROOT, stream_factory=None, convert_docx=False):
@@ -300,8 +360,17 @@ def download_documents(ids=None, *, all_candidates=False, candidates_path=DEFAUL
     if unknown:
         raise ValueError('ID không có trong danh sách ứng viên; không tải: ' + ', '.join(unknown))
     output = Path(output_dir).resolve() if output_dir is not None else SCRIPT_DIR / 'data'
+    relative_download_path(output)  # Reject cross-drive targets before downloading/writing.
     files = _scan_target(output)
     registered = _manifest_records(manifest_path, manifest_root, output)
+    progress = None if dry_run else CandidateProgress(candidates_path)
+
+    def finish(result):
+        if convert_docx:
+            _convert_result(result, candidates[result['id']], dry_run)
+        if progress is not None:
+            progress.record(result)
+
     results, pending = [], {}
     for identity in requested:
         row = candidates[identity]
@@ -309,6 +378,8 @@ def download_documents(ids=None, *, all_candidates=False, candidates_path=DEFAUL
         result = {'id': identity, 'so_ky_hieu': row.get('so_ky_hieu', ''), 'title': row.get('title', '')}
         if old:
             result.update(old)
+            if not dry_run:
+                finish(result)
         else:
             result.update(status='would_download' if dry_run else 'pending', path=str(output / f'vbpl-{identity}.html'))
             pending[identity] = result
@@ -347,13 +418,18 @@ def download_documents(ids=None, *, all_candidates=False, candidates_path=DEFAUL
                     result.update(status='skipped_unverified', reason='File xuất hiện trong lúc tải; không ghi đè, cần kiểm tra.')
                 except OSError as error:
                     result.update(status='write_error', reason=str(error))
+                finish(result)
                 if not pending:
                     break
             for result in pending.values():
                 result.update(status='not_found', reason='Không tìm thấy ID trong content của snapshot đã chọn.')
+                finish(result)
+        except CandidateUpdateError:
+            raise
         except Exception as error:
             for result in pending.values():
                 result.update(status='download_error', reason=f'{type(error).__name__}: {error}')
+                finish(result)
         finally:
             close = getattr(documents, 'close', None)
             if close:
@@ -361,7 +437,7 @@ def download_documents(ids=None, *, all_candidates=False, candidates_path=DEFAUL
                     close()
                 except Exception as error:
                     warnings.append(f'Đã kết thúc đọc nguồn nhưng đóng kết nối có cảnh báo: {type(error).__name__}')
-    if convert_docx:
+    if convert_docx and dry_run:
         for result in results:
             _convert_result(result, candidates[result['id']], dry_run)
     counts = dict(Counter(row['status'] for row in results))
@@ -401,7 +477,7 @@ def main():
             args.report.parent.mkdir(parents=True, exist_ok=True)
             with args.report.open('x', encoding='utf-8') as handle:
                 json.dump(result, handle, ensure_ascii=False, indent=2)
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError, CandidateUpdateError) as error:
         parser.exit(2, f'Thất bại: {error}\n')
     print(json.dumps({key: value for key, value in result.items() if key != 'results'}, ensure_ascii=False, indent=2))
     for row in result['results'][:20]:

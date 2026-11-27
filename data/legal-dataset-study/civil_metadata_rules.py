@@ -240,10 +240,11 @@ def expand_candidates(metadata_path, candidates_path, *, evidence_path=None, rep
         raise ValueError('Metadata phải có đúng 17 cột của snapshot đã chốt; cần review nếu schema thay đổi.')
     registry = {r['id']: r for r in metadata}
     existing_columns, existing = _load(candidates_path) if candidates_path.exists() else (columns, [])
-    if existing_columns != columns:
+    tracking_columns = ['download_status', 'download_result', 'download_path']
+    if [c for c in existing_columns if c not in tracking_columns] != columns:
         raise ValueError('Ứng viên cũ không cùng schema metadata; không tự bỏ cột hoặc ghi đè.')
     for row in existing:
-        if row['id'] not in registry or row != registry[row['id']]:
+        if row['id'] not in registry or {c: row[c] for c in columns} != registry[row['id']]:
             raise ValueError(f'Ứng viên {row["id"]} không khớp metadata hiện tại; kiểm tra nguồn/revision trước khi ghép.')
     existing_ids = {r['id'] for r in existing}
     selected, results, first_ids = [], {}, set()
@@ -256,6 +257,7 @@ def expand_candidates(metadata_path, candidates_path, *, evidence_path=None, rep
         if result['phase1'] or result['phase2'] or row['id'] in existing_ids:
             results[row['id']] = result
             selected.append(row)
+    candidate_columns = columns + [c for c in existing_columns if c in tracking_columns]
     # Preserve old row order/values, append new rows in the metadata source order.
     combined = existing + [r for r in selected if r['id'] not in existing_ids]
     evidence_rows = []
@@ -311,7 +313,7 @@ def expand_candidates(metadata_path, candidates_path, *, evidence_path=None, rep
         if candidate_now != candidate_before:
             raise RuntimeError('CSV ứng viên thay đổi trong lúc chạy; dừng để bảo toàn cập nhật của người khác.')
         evidence_columns = list(evidence_rows[0]) if evidence_rows else ['id', 'title', 'so_ky_hieu', 'selection_round', 'proposed_group', 'download_priority', 'review_status', 'rule_version', 'rule_ids', 'review_flags', 'legal_basis_ids', 'evidence_json', 'context_json']
-        _publish([(candidates_path, _csv_bytes(columns, combined)),
+        _publish([(candidates_path, _csv_bytes(candidate_columns, combined)),
                   (evidence_path, _csv_bytes(evidence_columns, evidence_rows)),
                   (report_path, json.dumps(report, ensure_ascii=False, indent=2).encode('utf-8'))])
     return report

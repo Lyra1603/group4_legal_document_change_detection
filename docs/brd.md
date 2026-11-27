@@ -2,7 +2,7 @@
 
 **Dự án:** Legal Document Change Detection
 **Nhóm:** Group 4
-**Phiên bản tài liệu:** 1.3.0
+**Phiên bản tài liệu:** 1.4.0
 **Phạm vi phiên bản đầu:** Người dùng nộp một văn bản sửa đổi (S). Hệ thống truy xuất văn bản bị sửa và phân tích thay đổi trực tiếp, tác động gián tiếp trong kho văn bản quy phạm pháp luật tiếng Việt thuộc lĩnh vực dân sự.
 
 **Trạng thái ngày 20/11/2026:** phạm vi chỉ S/kho dân sự là mục tiêu phát triển. Demo trên main sau PR #7 vẫn nhận V1 + S, chưa có truy xuất đích hoặc tác động gián tiếp thật. Tài liệu không xác nhận các chức năng này đã hoàn thành.
@@ -203,6 +203,13 @@ Tất cả yêu cầu trong bảng là yêu cầu của phiên bản đầu tron
 | BR-16 | Phát hiện tác động gián tiếp | Báo cáo chỉ rõ văn bản và quy định có thể chịu tác động, quy định bị sửa có liên quan, căn cứ nối hai quy định và tác động có thể xảy ra. B có thể được tìm thấy dù S và V1 không nhắc tên B. |
 | BR-17 | Thể hiện phạm vi truy xuất | Người dùng biết những văn bản hoặc phiên bản nào chưa tìm được, phần vượt phạm vi kho dân sự và phần chưa đủ căn cứ. |
 
+Bổ sung nghiệp vụ quan hệ ngày 27/11/2026:
+
+| Mã | Yêu cầu | Điều kiện đáp ứng từ góc nhìn người dùng |
+| --- | --- | --- |
+| BR-18 | Phân biệt hai loại quan hệ | Phân biệt quan hệ văn bản do A nhắc B và quan hệ ngữ nghĩa dựa trên nội dung. Hai loại cạnh có hướng độc lập, có thể cùng tồn tại giữa một cặp văn bản. |
+| BR-19 | Giải thích quan hệ và tình trạng nguồn | Mỗi quan hệ có căn cứ, trạng thái kiểm chứng và lý do còn thiếu. Người dùng phân biệt độ đầy đủ của nguồn ở nút, độ tin cậy của quan hệ ở cạnh và nhận định tác động do thay đổi cụ thể. |
+
 ## 8. Quy tắc nghiệp vụ
 
 ### 8.1. Thay đổi văn bản và thay đổi ý nghĩa
@@ -264,6 +271,18 @@ Với tác động gián tiếp, nếu quá trình rà soát chưa tìm thấy m
 - Tìm và rà soát quy định trong B có thể dựa vào quy định đã thay đổi trong V1, kể cả khi S và V1 không nhắc tên B. Một dẫn chiếu hoặc nội dung tương tự là căn cứ để rà soát. Khi nêu tác động, báo cáo cần giải thích phần thay đổi có liên quan đến cách B sử dụng quy định đó như thế nào.
 - Với mối liên hệ hoặc tác động chưa đủ căn cứ, báo cáo ghi rõ nội dung cần kiểm chứng và nguồn còn thiếu. Cách phát hiện và kiểm chứng các quan hệ gián tiếp là nội dung nghiên cứu cần hoàn thiện.
 - Trích thông tin hiệu lực và chuyển tiếp từ S, gắn với từng thay đổi khi có căn cứ. Báo cáo nêu giới hạn về khả năng xác minh hiệu lực.
+
+### 8.7. Hai loại quan hệ giữa các văn bản
+
+1. **Quan hệ văn bản:** A nhắc B thì ghi tham chiếu có hướng A → B cùng nguyên văn và vị trí trong A. Khi B được phân giải chắc chắn, nối tới định danh văn bản và phiên bản phù hợp; chưa rõ thì giữ tham chiếu chưa giải quyết hoặc nút chưa xác định, không ghép nhầm văn bản. S → V1 thuộc loại này. Nhãn nhắc tới, căn cứ, sửa đổi, bổ sung hoặc bãi bỏ phải dựa trên ngữ cảnh; có số hiệu không tự chứng minh S sửa B.
+2. **Quan hệ ngữ nghĩa:** Nội dung A và B có mối liên hệ có căn cứ dù không nhắc trực tiếp nhau. Căn cứ có thể liên quan chủ thể, đối tượng, hoạt động, quyền/nghĩa vụ, điều kiện, ngoại lệ và phạm vi áp dụng. Cùng chủ đề chỉ là dấu hiệu tìm ứng viên, chưa đủ xác nhận quan hệ phụ thuộc. Một chiều hoặc hai chiều đều cần giải thích riêng; không tự tạo chiều ngược lại.
+3. Hai loại quan hệ độc lập, không thay thế nhau. Giai đoạn đầu ưu tiên dựng quan hệ văn bản, sau đó bổ sung quan hệ ngữ nghĩa. Có quan hệ chưa đồng nghĩa có tác động: phải đối chiếu điều khoản thực sự thay đổi với quy định liên quan ở bên còn lại, trong đúng phiên bản và phạm vi áp dụng.
+4. Nút biểu diễn văn bản; thuộc tính ngữ nghĩa và căn cứ quan hệ phải truy về quy định cụ thể. Giữ riêng độ đầy đủ của toàn văn, xác minh định danh/phiên bản, xác minh quan hệ và kiểm chứng tác động. Hash xác nhận file, không xác nhận phiên bản pháp lý có hiệu lực.
+5. Giữ nút thiếu toàn văn để thể hiện phần kho còn thiếu. Cạnh văn bản vẫn có thể có căn cứ từ A khi chưa có toàn văn B, nhưng không được suy nội dung B hoặc kết luận tác động lên B từ dữ liệu thiếu. Nguồn không hợp lệ không được dùng làm bằng chứng đã xác minh.
+6. Khi hiển thị đồ thị, phân biệt tình trạng nút/cạnh bằng nhãn và lý do, không chỉ bằng màu. Hướng ưu tiên xử lý trên nguồn đủ căn cứ được giữ; quy tắc màu xanh/vàng/đỏ và tiêu chí chuyển màu chưa chốt. Nút xanh không tự làm các cạnh nối với nó đúng.
+7. Nội dung trích dẫn/thay thế phải được giữ và phân biệt với chỉ dẫn trực tiếp của S, kể cả qua nhiều đoạn và ngoặc kép lồng nhau. Khi chưa xác định được vai trò hoặc ranh giới thì giữ bằng chứng để rà soát; không tự gán hành động trong phần trích dẫn thành cạnh chỉ dẫn trực tiếp của S.
+
+**Cần chốt trước triển khai cạnh ngữ nghĩa:** A → B biểu diễn A phụ thuộc B hay A có thể tác động B. Từng cạnh phải diễn đạt ý nghĩa theo chiều rõ ràng; chưa có quyết định chung thì không mặc định hướng lan truyền tác động. Tham chiếu nghiệp vụ chi tiết tại [SRS §1.9](srs.md#19-đặc-tả-mục-tiêu-cho-nút-và-hai-loại-quan-hệ).
 
 ## 9. Yêu cầu đối với báo cáo và trải nghiệm sử dụng
 
@@ -330,6 +349,7 @@ Hai ngưỡng trên là mục tiêu dự tính cho phát hiện thay đổi tr�
 5. Có ca B có liên hệ nhưng thay đổi đang xét không ảnh hưởng đến quy định của B, và ca thiếu căn cứ để kết luận. Kiểm tra việc tránh kết luận sai và thể hiện sự chưa chắc chắn.
 6. Báo cáo thể hiện phần đã xử lý và phần còn thiếu khi truy xuất hoặc phân tích chỉ thành công một phần.
 7. Có báo cáo thực nghiệm, hướng dẫn sử dụng và phạm vi kho đã đánh giá.
+8. Phân biệt được hai loại quan hệ trên cùng cặp văn bản; có ca quan hệ ngữ nghĩa không có dẫn chiếu, ca chỉ cùng chủ đề nhưng không đủ căn cứ và ca có quan hệ nhưng phần sửa đổi không gây tác động. Nguồn chưa hợp lệ hoặc bước chưa chạy không được trình bày là đã xác minh.
 
 ## 11. Ngoài phạm vi phiên bản đầu
 
