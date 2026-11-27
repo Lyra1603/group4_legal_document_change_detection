@@ -1,0 +1,157 @@
+{
+  "mode": "REAL_LIGHTRAG_HTTP",
+  "session_id": "d6bc783e6ecc45ec8e8993ab06134dd8",
+  "generated_at": "2026-11-26T16:09:02.660293+00:00",
+  "upstream_commit": "28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c",
+  "docker_image_id": "sha256:d17b1170f6e7097c2c87532e1b206bc34dfe1002c476d48fa8de8f990262e630",
+  "provider": {
+    "provider": "groq-jina",
+    "model": "qwen/qwen3.8-27b",
+    "embedding_provider": "jina",
+    "embedding_model": "jina-embeddings-v4",
+    "embedding_dim": 2048
+  },
+  "index_ready": true,
+  "indexed_documents": [
+    {
+      "file_source": "pocs_28d37457044987d7d6d6affb8981af64fa78f78a213cedb6a9bf82d9b33a2898.txt",
+      "lightrag_document_id": "doc-56a5520661ec65cb36812f3fe859d937"
+    },
+    {
+      "file_source": "pocs_29027a04558cc3230a6aad5e63cb3c19b525f0fec55c0dc104a5a1931676d955.txt",
+      "lightrag_document_id": "doc-5be266b5392d02f2cc9cf9a573f23126"
+    },
+    {
+      "file_source": "pocs_b3112992f86b4a6f49bd69b2e3e963c22358fd7fd8730d2e9a743bbae92a58df.txt",
+      "lightrag_document_id": "doc-a8aca84d5106e9ad8926d2f3c78dead0"
+    }
+  ],
+  "query": "Tìm nguyên văn Thông tư 08/2014/TT-BTP sửa đổi Thông tư 05/2011/TT-BTP và chỉ dẫn sửa khoản 2 Điều 2.",
+  "expected_evidence": {
+    "document_id": "dataset:56666",
+    "source_ref": "block:22"
+  },
+  "expected_evidence_found": true,
+  "verified": true,
+  "failure": null,
+  "graph_issue": null,
+  "cleanup_issues": [],
+  "elapsed_seconds": 51.54,
+  "base_commit": "176e22e9e4b619bda8453673099c02233f43b89b",
+  "index_scope": "SELECTED_DOCX_BLOCKS_ONLY",
+  "environment": "Windows integration host with Docker Desktop",
+  "member_machine_reproduction": "PENDING",
+  "files": [
+    {
+      "document_id": "dataset:26170",
+      "path": "data/legal-dataset-study/data/lightrag/05_2011_TT-BTP.docx",
+      "sha256": "619845a9b40c7517fde1ca84b41629b405f35dbbb90e745c43f44363b9413d4c",
+      "parsed_blocks": 225,
+      "indexed_source_refs": [
+        "block:11"
+      ]
+    },
+    {
+      "document_id": "dataset:56666",
+      "path": "data/legal-dataset-study/data/lightrag/08_2014_TT-BTP.docx",
+      "sha256": "58d648c7707303a7ba3aad549e53fe1f7cc8ae450e098705a4f21e41515891d4",
+      "parsed_blocks": 250,
+      "indexed_source_refs": [
+        "block:21",
+        "block:22",
+        "block:167"
+      ]
+    }
+  ],
+  "lightrag_source_map": [
+    {
+      "file_source": "pocs_b3112992f86b4a6f49bd69b2e3e963c22358fd7fd8730d2e9a743bbae92a58df.txt",
+      "document_id": "dataset:26170",
+      "source_refs": [
+        "block:11"
+      ]
+    },
+    {
+      "file_source": "pocs_29027a04558cc3230a6aad5e63cb3c19b525f0fec55c0dc104a5a1931676d955.txt",
+      "document_id": "dataset:56666",
+      "source_refs": [
+        "block:21",
+        "block:22"
+      ]
+    },
+    {
+      "file_source": "pocs_28d37457044987d7d6d6affb8981af64fa78f78a213cedb6a9bf82d9b33a2898.txt",
+      "document_id": "dataset:56666",
+      "source_refs": [
+        "block:167"
+      ]
+    }
+  ],
+  "retrieval": {
+    "status": "CANDIDATES_ONLY",
+    "evidence": [
+      {
+        "document_id": "dataset:56666",
+        "source_refs": [
+          "block:21",
+          "block:22"
+        ],
+        "quote": "Điều 1. Sửa đổi, bổ sung một số điều của Thông tư số 05/2011/TT-BTP ngày 16 tháng 02 năm 2011 của Bộ Tư pháp hướng dẫn một số vấn đề về đăng ký, cung cấp thông tin về giao dịch bảo đảm, hợp đồng, thông báo việc kê biên tài sản thi hành án theo phương thức trực tiếp, bưu điện, fax, thư điện tử tại Trung tâm Đăng ký giao dịch, tài sản của Cục Đăng ký quốc gia giao dịch bảo đảm thuộc Bộ Tư pháp\n1. Sửa đổi khoản 2 Điều 2 như sau:"
+      },
+      {
+        "document_id": "dataset:56666",
+        "source_refs": [
+          "block:167"
+        ],
+        "quote": "Điều 2. Sửa đổi, bổ sung một số điều của Thông tư số 22/2010/TT- BTP ngày 06 tháng 12 năm 2010 của Bộ Tư pháp hướng dẫn về đăng ký, cung cấp thông tin trực tuyến giao dịch bảo đảm, hợp đồng, thông báo việc kê biên tài sản thi hành án"
+      },
+      {
+        "document_id": "dataset:26170",
+        "source_refs": [
+          "block:11"
+        ],
+        "quote": "Căn cứ Nghị định số 83/2010/NĐ-CP ngày 23 tháng 7 năm 2010 của Chính phủ về đăng ký giao dịch bảo đảm;"
+      }
+    ],
+    "issues": [],
+    "legal_impact_confirmed": false
+  },
+  "project_graph": {
+    "nodes": 10,
+    "edges": 45,
+    "node_statuses": {
+      "AVAILABLE_IN_PILOT": 2,
+      "MISSING_FULL_TEXT": 7,
+      "AVAILABLE_OUTSIDE_PILOT": 1
+    },
+    "relations": {
+      "BASIS": 10,
+      "CITES": 11,
+      "AMENDS": 12,
+      "SUPPLEMENTS": 10,
+      "REPEALS": 2
+    },
+    "needs_review": 33
+  },
+  "upstream_graph": {
+    "nodes": 11,
+    "edges": 9,
+    "nodes_with_known_source": 11,
+    "edges_with_known_source": 9,
+    "audit": {
+      "kind": "OBSERVED_KG_METADATA_AUDIT_NOT_LEGAL_VALIDATION",
+      "unknown_sources": [],
+      "possible_cross_document_unit_merges": [],
+      "duplicate_normalized_labels": [
+        [
+          "Bộ Tư pháp",
+          "Bộ Tư Pháp"
+        ]
+      ],
+      "canonical_identity_authority": "PROJECT_SOURCE_REGISTRY",
+      "legal_relations_verified": false,
+      "omitted_nodes_without_source": 0,
+      "omitted_edges": []
+    }
+  }
+}
