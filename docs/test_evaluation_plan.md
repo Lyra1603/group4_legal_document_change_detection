@@ -1,7 +1,7 @@
 # Kế hoạch kiểm thử và đánh giá
 
 **Dự án:** Legal Document Change Detection — POCS, Nhóm 4
-**Phiên bản:** 0.2 — Bổ sung ca Use Case theo ý kiến Dũng–Đức Anh ngày 20/11/2026
+**Phiên bản:** 0.3 — Bổ sung kiểm chứng hai loại quan hệ ngày 27/11/2026
 **Ngày tạo:** 08/11/2026
 **Trạng thái:** Khung kế hoạch đang hoàn thiện; Đức Anh điều phối. Hiện xác định cách đánh giá; tạm lấy Change F1 ≥ 90% và Critical Change Recall ≥ 95%. Đây là các ngưỡng dự tính và có thể thay đổi sau khi hoàn thiện test_evaluation_plan.md, chưa phải ngưỡng nghiệm thu chính thức; hợp đồng schema chung đã chốt, adapter/fixture nghiệp vụ và chi tiết phép đo còn chờ hoàn thiện.
 
@@ -143,6 +143,28 @@ Căn cứ quyết định trong Decision và SRS UI-01–UI-10. Mỗi ca ghi sna
 | UC-Q01 | Điều kiện thành công/thất bại; mục 12, 13 | Báo cáo chạy SUCCESS nhưng có kết luận sai hoặc trích dẫn sai trong bộ gold | Ghi lỗi chất lượng trong nghiệm thu, đối chiếu trạng thái chạy riêng. Báo cáo thiếu phần có thể là PARTIAL theo SRS; chỉ số chất lượng vẫn tính sai/bỏ sót. |
 
 Mục 16 của bảng trao đổi được đáp ứng bằng ánh xạ ca trên và việc bổ sung input/output cụ thể khi triển khai. Khi cả hai chưa có ý kiến, dùng khung DOCX làm tham chiếu cùng trạng thái đã chốt/đề xuất của nó. Mỗi fixture cần chỉ rõ kỳ vọng nào đã chốt; reviewer cập nhật ca nếu nhóm thay đổi quyết định.
+
+### Ca kiểm chứng hai loại quan hệ — 27/11/2026
+
+Căn cứ [BRD BR-18–BR-19 và §8.7](brd.md#87-hai-loại-quan-hệ-giữa-các-văn-bản), [SRS §1.9, FR-15–FR-17](srs.md#19-đặc-tả-mục-tiêu-cho-nút-và-hai-loại-quan-hệ) và [quy tắc gán nhãn §4.8](data-annotation-guide.md#48-thuộc-tính-và-hai-loại-quan-hệ-giữa-các-văn-bản). Đây là danh mục cần thực hiện, không phải các test mới đã chạy hoặc tuyên bố lỗi ở phiên code hiện tại.
+
+| Mã | Ca kiểm tra | Kết quả và bằng chứng cần có |
+| --- | --- | --- |
+| RG-01 | Chỉ nộp S, kho có nhiều văn bản/phiên bản | Tự tìm và kiểm tra V1, giữ căn cứ chọn phiên bản; không chỉ thử cặp DOCX chọn sẵn. |
+| RG-02 | A nhắc B, và A chỉ nhắc B mà không sửa B | Cạnh văn bản đúng chiều, đoạn nguồn từ A; không gán AMENDS/REPEALS chỉ vì có số hiệu. B mơ hồ giữ ứng viên; thiếu toàn văn B giữ giới hạn. |
+| RG-03 | A/B có cả tham chiếu và liên hệ ngữ nghĩa | Giữ độc lập hai loại quan hệ, nguồn và trạng thái; không ghi đè hoặc tự suy cạnh ngược. |
+| RG-04 | A/B không nhắc nhau, nhưng có quan hệ từ quy định | Tìm đúng ứng viên, thuộc tính và bằng chứng hai bên; kiểm tra vai trò/hướng theo quy ước đã được chốt cho phiên thử. |
+| RG-05 | Cùng chủ đề nhưng khác đối tượng/địa bàn/thời gian | Không xác nhận phụ thuộc chỉ từ similarity; giữ căn cứ loại hoặc chưa xác định. |
+| RG-06 | Đã có quan hệ, nhưng S sửa phần không liên quan B | Không lan truyền tác động mặc định; chỉ rõ phần đã đối chiếu và kết quả không thấy tác động trong phạm vi đó. |
+| RG-07 | Thay đổi giao với quy định B phụ thuộc | Có liên kết về thay đổi trực tiếp, quy định B, phiên bản, cạnh và giải thích có nguồn; thiếu chứng cứ giữ cần review. |
+| RG-08 | Trích dẫn/thay thế nhiều block, có ngoặc kép lồng nhau | Không nhận nhầm hành động trong trích dẫn thành chỉ dẫn trực tiếp của S. Giữ nguyên văn và đưa ranh giới/vai trò chưa rõ vào rà soát. |
+| RG-09 | Retrieval tìm đúng đoạn nhưng graph chứa nguồn ngoài registry | Retrieval có thể đạt riêng; phần graph không hợp lệ bị loại khỏi bằng chứng đã xác minh và được báo rõ. Không có nhãn xác minh toàn bộ đồ thị/lượt chạy chỉ do tìm được đoạn kỳ vọng; kiểm tra trạng thái cấp S khi bước bắt buộc còn lỗi. |
+| RG-10 | Nút đủ nguồn nhưng cạnh chưa có căn cứ; nút thiếu toàn văn có tham chiếu rõ từ A | Trạng thái nút/cạnh độc lập, không dùng màu thay kiểm chứng. Không suy nội dung B khi thiếu toàn văn; không mất tham chiếu có nguồn từ A. |
+| RG-11 | Thay phiên bản văn bản hoặc snapshot kho | Không tái dùng xác nhận thuộc tính/cạnh/tác động từ bản cũ như còn hợp lệ; giữ truy vết phiên bản trong báo cáo. |
+
+Đo riêng phát hiện tham chiếu và phân giải đích/phiên bản, chất lượng quan hệ ngữ nghĩa và chất lượng tác động của thay đổi. Gold quan hệ không được tự lấy từ graph của hệ thống. Matching cần xét loại quan hệ, vai trò/hướng, phiên bản, quy định và nguồn; matching tác động phải gắn thay đổi cụ thể. Ngưỡng, nhãn hướng ngữ nghĩa và quy tắc màu cần chốt trước khi tính/nghiệm thu phần tương ứng; không tự đặt ngưỡng mới.
+
+Kết quả nguồn, quan hệ và tác động phải được báo riêng, cùng ca đúng/sai/bỏ sót và ca chưa đủ căn cứ. Ca mô phỏng kiểm tra logic, ca DOCX thật kiểm tra parse/truy vết và dịch vụ thật kiểm tra HTTP/ingestion/retrieval phải ghi tách biệt. Giữ fixture lõi và schema hiện có để hồi quy; bộ thử pilot hai DOCX không thay nghiệm thu toàn kho.
 
 ## 7. Mẫu hoàn thiện từng ca kiểm tra
 

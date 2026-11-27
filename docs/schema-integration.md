@@ -1,5 +1,13 @@
 # Hợp đồng schema chung và hướng dẫn tích hợp
 
+## Đặc tả mở rộng quan hệ ngày 27/11/2026
+
+[SRS §1.9](srs.md#19-đặc-tả-mục-tiêu-cho-nút-và-hai-loại-quan-hệ) bổ sung dữ liệu mục tiêu cho nút văn bản, thuộc tính ngữ nghĩa, hai loại cạnh độc lập và kiểm chứng tác động. Mục này không sửa runtime schema, API hoặc validator hiện có; các mốc nhập schema dưới đây là lịch sử.
+
+Trước khi nối chức năng mới, bên giao/nhận cần review contract và fixture cho: định danh toàn kho/phiên bản/snapshot; ánh xạ nguồn của từng thuộc tính; loại/ý nghĩa theo chiều và căn cứ của từng cạnh; trạng thái nút/cạnh; liên kết cạnh → quy định V1/B → thay đổi trực tiếp → nhận định tác động. Có quan hệ không đồng nghĩa bị ảnh hưởng; cả hai chiều cần căn cứ riêng. Quy ước hướng ngữ nghĩa và tiêu chí màu còn mở.
+
+Không thêm khóa vào `ComparisonReport`, `AnalysisContext` hoặc `SemanticDiffResult` cũ để truyền đồ thị không qua kiểm tra. Lớp dữ liệu mới cần mapping về ID cục bộ từng đích theo SRS §1.8 và kiểm tra EvidenceRef đúng phiên bản. Tách kiểm tra nguồn đồ thị khỏi thành công retrieval; nguồn ngoài registry không thành bằng chứng đã xác minh. Dùng các ca RG trong [kế hoạch kiểm thử](test_evaluation_plan.md#ca-kiểm-chứng-hai-loại-quan-hệ--27112026) khi thiết kế fixture.
+
 ## Phạm vi hợp đồng sau cập nhật nghiệp vụ ngày 20/11/2026
 
 Hướng dẫn dưới áp dụng hợp đồng cục bộ cho từng V1, không phải báo cáo cấp S. Code căn cứ main `95e1d79` sau PR #7; không sửa schema/validator trong đợt tài liệu này. SRS §1.8 đặc tả lớp bao cần triển khai cho nhiều đích, kho/phiên bản, yêu cầu chưa giải quyết và tác động gián tiếp. Phải bổ sung kiểu dữ liệu, validator và fixture trước khi đổi API/UI.
