@@ -1,7 +1,7 @@
 # HƯỚNG DẪN TUYỂN CHỌN DỮ LIỆU VÀ GÁN NHÃN
 
 **Dự án:** Legal Document Change Detection
-**Phiên bản:** 1.2.0
+**Phiên bản:** 1.3.0
 **Trạng thái:** Hướng dẫn phục vụ pilot và review nhãn
 **Tài liệu liên quan:** [BRD](brd.md), [SRS](srs.md), [Architecture](architecture.md), [Workflow](workflow.md), [Kế hoạch kiểm thử và đánh giá](test_evaluation_plan.md)
 
@@ -203,6 +203,25 @@ Ghi nội dung hiệu lực/chuyển tiếp được nêu trong S, phạm vi áp
 Chưa rõ phạm vi áp dụng: ghi needs_review và lý do. Không thấy thông tin liên quan: effect_info rỗng kèm lý do và cảnh báo theo SRS. Đây là nhãn nội dung được nêu trong nguồn, không xác nhận hiệu lực pháp lý thực tế.
 
 Một ngày hiệu lực được nêu trong S không tự là thay đổi ngày hiệu lực của V1. Chỉ tạo aspect SCOPE_EFFECT_TRANSITION về thay đổi trước–sau khi có đủ bằng chứng đối chiếu; nếu chỉ là thông tin áp dụng của S thì giữ ở EffectInfo.
+
+### 4.8. Thuộc tính và hai loại quan hệ giữa các văn bản
+
+Áp dụng [BRD §8.7](brd.md#87-hai-loại-quan-hệ-giữa-các-văn-bản) và [SRS §1.9](srs.md#19-đặc-tả-mục-tiêu-cho-nút-và-hai-loại-quan-hệ). Nhãn tham chiếu được review độc lập với đầu ra KG/LLM; không đưa gold vào chỉ mục truy xuất.
+
+| Nội dung gán nhãn | Căn cứ cần giữ |
+| --- | --- |
+| Định danh nút | Văn bản/phiên bản/snapshot, nguồn, file/hash khi có và dấu hiệu chưa xác minh. Hash không chứng minh hiệu lực pháp lý. Nút chưa có toàn văn không được gán thuộc tính như đã đọc. |
+| Thuộc tính ngữ nghĩa | Chủ thể, đối tượng, hoạt động, quyền/nghĩa vụ, điều kiện/ngoại lệ, không gian và thời gian khi nguồn có. Ghi giá trị, nguyên văn và vị trí của từng thuộc tính; không tạo giá trị chỉ từ tên văn bản hoặc từ khóa. |
+| Quan hệ văn bản | A nhắc B: đoạn và vị trí trong A, dấu hiệu B và căn cứ phân giải đúng đích/phiên bản. Phân biệt nhắc tới/căn cứ với chỉ dẫn sửa đổi, bổ sung, bãi bỏ. Thiếu toàn văn B vẫn có thể gán tham chiếu từ A, nhưng ghi giới hạn. |
+| Quan hệ ngữ nghĩa | Quy định liên quan trong A/B, thuộc tính/phạm vi giao nhau và giải thích liên hệ. Giữ riêng hai loại cạnh nếu cùng tồn tại; hướng và ý nghĩa từng chiều phải rõ. Chưa chốt quy ước chiều chung thì giữ mô tả vai trò nguồn/đích để review, không tự gán nhãn hướng chính thức. |
+| Tác động của một thay đổi | Thay đổi trực tiếp, quy định B, cạnh/căn cứ liên quan, giải thích và bằng chứng. Phân biệt có quan hệ nhưng không bị ảnh hưởng, có tác động có căn cứ và chưa đủ căn cứ. |
+| Nguồn và review | Tách tình trạng toàn văn/định danh/phiên bản ở nút khỏi xác minh cạnh và kết luận tác động. Khi dùng màu, ghi cả trạng thái và lý do; chưa gán nhãn xanh/vàng/đỏ chính thức khi tiêu chí chưa chốt. |
+
+Quy trình gán nhãn: kiểm tra nguồn/phiên bản → gán thuộc tính có bằng chứng → ghi tham chiếu văn bản trước → tìm/review ứng viên ngữ nghĩa → đối chiếu thay đổi cụ thể để gán tác động. Không ép mọi cặp cùng chủ đề thành phụ thuộc; xét cả ca khác đối tượng, địa bàn hoặc thời gian áp dụng. Chỉ dẫn trong phần trích dẫn/thay thế cần xác định vai trò, không biến hành động trong ngoặc kép thành chỉ dẫn trực tiếp của S theo từ khóa. Giữ ca ngoặc kép lồng nhau/nhiều block để kiểm tra ranh giới.
+
+**Ví dụ giả định, không phải kết luận pháp luật:** A điều chỉnh sử dụng vỉa hè; B điều chỉnh sạp hàng di động. Chỉ cùng chủ đề chưa đủ nối thành phụ thuộc. Nếu nguồn B cho thấy hoạt động sử dụng vỉa hè trong phạm vi A thì giữ hai đoạn để giải thích liên hệ. A sửa phần không liên quan hoạt động đó là ca có quan hệ nhưng không đủ căn cứ kết luận B bị ảnh hưởng. Khi A sửa điều kiện đúng phần B sử dụng mới kiểm chứng tác động tương ứng. Dữ liệu dự án vẫn phải thuộc phạm vi dân sự đã xác định; ví dụ không tự mở rộng kho sang lĩnh vực khác.
+
+Mỗi nhãn giữ người review, nguồn/phiên bản và lý do đồng ý hoặc chưa xác định theo §6. Văn bản đổi phiên bản thì rà lại căn cứ quan hệ và thuộc tính, không sao chép xác nhận từ bản cũ.
 
 ## 5. Tiêu chí chọn nhãn tổng thể và mức độ
 

@@ -6,6 +6,17 @@ Tài liệu ghi các quyết định đã chốt và phạm vi áp dụng của 
 
 **Cập nhật phân công ngày 13/11/2026:** Đức Anh duyệt thay đổi từ `bachdung/docs` tại `ad4c272c7f5426bbc9c5891112c8e6cfe4f6f4b0`. Semantic Diff/Scorer chuyển sang Dũng + Đức Anh + Ngọc Anh; Tuấn Anh phụ trách UI/lỗi trả về. Giữ nguyên các quyết định schema, null/PARTIAL, HTTP và phạm vi demo đã chốt. Người làm chính và reviewer từng phần trong nhóm ba người còn cần xác nhận.
 
+## Bổ sung nghiệp vụ hai loại quan hệ — 27/11/2026
+
+Căn cứ yêu cầu Dũng đã chốt trong lần cập nhật tài liệu này; không ghi thành xác nhận mới của Đức Anh hoặc bằng chứng code đã hoàn thành. [BRD §8.7](brd.md#87-hai-loại-quan-hệ-giữa-các-văn-bản) quy định nghiệp vụ; [SRS §1.9](srs.md#19-đặc-tả-mục-tiêu-cho-nút-và-hai-loại-quan-hệ) quy định dữ liệu mục tiêu.
+
+- Giữ hai loại cạnh có hướng độc lập: quan hệ văn bản A nhắc B và quan hệ ngữ nghĩa dựa trên quy định/thuộc tính có nguồn của cả hai. Ưu tiên dựng quan hệ văn bản trước; một cặp nút có thể mang cả hai loại.
+- Nút vẫn là văn bản; thuộc tính ngữ nghĩa truy về quy định cụ thể. S → V1 là quan hệ văn bản, cần kiểm chứng đúng đích/phiên bản và thao tác. Có cạnh chưa chứng minh có tác động.
+- Tách trạng thái nguồn nút, xác minh cạnh, kiểm chứng tác động và hoàn tất lượt chạy. Giữ dữ liệu thiếu/chưa rõ để rà soát, không tự xác nhận từ similarity, màu hoặc hash.
+- Không thay `architecture.md`, phân công LK-01, code, runtime schema hoặc API trong PR tài liệu này. Pilot đồ thị từ hai DOCX và ba bản ghi index không chứng minh đã có kho quan hệ ngữ nghĩa hoặc luồng chỉ S tự tìm V1.
+
+**Còn mở, cần owner/nghiệp vụ chốt trước triển khai:** nghĩa thống nhất A → B ở cạnh ngữ nghĩa (phụ thuộc hay tác động), tiêu chí xanh/vàng/đỏ và chuyển màu, thuật toán/ngưỡng tìm liên hệ, contract/validator/fixture chi tiết. Không mặc định tạo cạnh ngược hoặc lan truyền tác động khi chưa có quy ước và căn cứ.
+
 ## Phạm vi cập nhật ngày 20/11/2026
 
 Căn cứ [ghi chú buổi học 17/11](https://docs.google.com/document/d/1MzAXePwcTFb18FKzVs5J4jh8rc9Qz1CwCf1u7wW2Mrw/edit), BRD/SRS của Dũng tại PR #9 (`e745237`) và xác nhận của Đức Anh. Các mốc 12–13/11 bên trên là lịch sử. Các quyết định dưới đây mở rộng nghiệp vụ; không xác nhận code đã hiện thực. Code căn cứ sau PR #7 là main `95e1d79`.

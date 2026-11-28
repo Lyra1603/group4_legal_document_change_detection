@@ -16,3 +16,7 @@ Luồng mục tiêu nhận S, bối cảnh/nguồn bổ sung tùy chọn và tr�
 Cấu trúc chuẩn lấy từ `main`. [Architecture §3](architecture.md#3-cấu-trúc-mã-nguồn-và-dữ-liệu) định vị code hiện có và phân biệt các chức năng mục tiêu chưa có file.
 
 Change F1 ≥ 90% và Critical Change Recall ≥ 95% là các ngưỡng dự tính. Xem [kế hoạch đánh giá](test_evaluation_plan.md#82-phép-đo-cần-đề-xuất-và-chốt) để tra phương pháp đo và mốc xác nhận.
+
+## Bổ sung nghiệp vụ quan hệ — 27/11/2026
+
+[BRD §8.7](brd.md#87-hai-loại-quan-hệ-giữa-các-văn-bản) và [SRS §1.9](srs.md#19-đặc-tả-mục-tiêu-cho-nút-và-hai-loại-quan-hệ) phân biệt quan hệ văn bản A nhắc B với quan hệ ngữ nghĩa dựa trên nội dung, cùng dữ liệu nguồn và quy tắc kiểm chứng tác động. Xem [quyết định và điểm còn mở](decision.md#bổ-sung-nghiệp-vụ-hai-loại-quan-hệ--27112026), [gán nhãn](data-annotation-guide.md#48-thuộc-tính-và-hai-loại-quan-hệ-giữa-các-văn-bản), [điểm nối schema](schema-integration.md#đặc-tả-mở-rộng-quan-hệ-ngày-27112026) và [ca kiểm chứng RG](test_evaluation_plan.md#ca-kiểm-chứng-hai-loại-quan-hệ--27112026). Đây là đặc tả mục tiêu, không xác nhận đã có code cho mọi yêu cầu; `architecture.md` giữ nguyên.
