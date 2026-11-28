@@ -7,6 +7,7 @@ from time import monotonic
 from uuid import uuid4
 
 from .app.context.case_runner import retrieve_candidates
+from .app.context.corpus_document_graph import GRAPH_FILENAME, build_corpus_graph
 from .app.context.document_graph import prepare_pilot
 from .app.context.lightrag_client import RetrievalError, UPSTREAM_COMMIT
 from .app.context.owned_server import OwnedLightRAG, read_provider_env
@@ -73,7 +74,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--selection', type=Path, default=DEFAULT_SELECTION)
     parser.add_argument('--output-dir', type=Path, required=True)
-    parser.add_argument('--mode', choices=['graph', 'real'], default='graph')
+    parser.add_argument('--mode', choices=['graph', 'corpus', 'real'], default='graph')
     parser.add_argument('--provider-env-file', type=Path)
     parser.add_argument('--runtime-dir', type=Path, default=ROOT / 'runtime/lightrag/document-graph-sessions')
     parser.add_argument('--budget', type=int, default=600)
@@ -82,6 +83,13 @@ def main():
         parser.error('--mode real requires --provider-env-file')
     if not 30 <= args.budget <= 1800:
         parser.error('--budget must be between 30 and 1800 seconds')
+    if args.mode == 'corpus':
+        graph, report = build_corpus_graph(ROOT)
+        args.output_dir.mkdir(parents=True, exist_ok=False)
+        _write_json(args.output_dir / GRAPH_FILENAME, graph)
+        _write_json(args.output_dir / 'build-report.json', report)
+        print(json.dumps(graph['summary'], ensure_ascii=False), flush=True)
+        return 0
     selection = json.loads(args.selection.read_text(encoding='utf-8-sig'))
     session = uuid4().hex
     graph, registry = prepare_pilot(ROOT, selection, session)

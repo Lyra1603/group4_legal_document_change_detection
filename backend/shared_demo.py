@@ -2,6 +2,7 @@
 import argparse
 import json
 from contextlib import asynccontextmanager
+from functools import lru_cache
 import logging
 import os
 from pathlib import Path
@@ -10,7 +11,7 @@ from tempfile import TemporaryDirectory
 from time import monotonic
 from typing import Annotated
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
@@ -19,6 +20,8 @@ from .main import DEADLINE_SECONDS, _save_upload
 from .app.pipeline import PipelineInputError, parse_documents
 from .app.document_processing.document_number import normalize_document_number
 from .app.document_processing.target_lookup import base_identity, discover_targets, load_catalog
+from .app.context.corpus_document_graph import GRAPH_FILENAME, RUN_DIRECTORY
+from .app.context.document_graph_view import DocumentGraphView
 from .app.context.owned_server import read_provider_env
 from .app.context.shared_service import SharedContextService
 from .app.context.lightrag_client import MAX_QUERY_CHARS, RetrievalError
@@ -57,7 +60,7 @@ def _inspect_upload(upload, document_id, role, inspect):
         upload.file.close()
 
 
-def create_app(*, settings=None, runtime=None, service=None):
+def create_app(*, settings=None, runtime=None, service=None, document_graph_path=None):
     service = service or SharedContextService(ROOT, runtime or ROOT / 'runtime/lightrag/shared',
         read_provider_env(os.getenv('POCS_PROVIDER_ENV_FILE')) if settings is None else settings)
 
@@ -124,6 +127,44 @@ def create_app(*, settings=None, runtime=None, service=None):
             raise HTTPException(422, detail=dict(code='V1_IDENTITY_MISMATCH', message=message))
         return dict(document_number=actual)
 
+    graph_path = document_graph_path or ROOT / RUN_DIRECTORY / GRAPH_FILENAME
+
+    @lru_cache(maxsize=1)
+    def document_graph():
+        return DocumentGraphView(graph_path)
+
+    def require_document_graph():
+        try:
+            return document_graph()
+        except FileNotFoundError:
+            raise HTTPException(503, detail=dict(code='DOCUMENT_GRAPH_NOT_BUILT',
+                                message='Chưa dựng đồ thị văn bản.')) from None
+        except (OSError, ValueError, TypeError, KeyError):
+            raise HTTPException(503, detail=dict(code='DOCUMENT_GRAPH_INVALID',
+                                message='Không đọc được dữ liệu đồ thị.')) from None
+
+    @app.get('/api/demo/document-graph/overview')
+    def document_graph_overview():
+        return require_document_graph().overview
+
+    @app.get('/api/demo/document-graph')
+    def browse_document_graph(
+        q: Annotated[str | None, Query(max_length=240)] = None,
+        node_id: Annotated[str | None, Query(max_length=240)] = None,
+        offset: Annotated[int, Query(ge=0)] = 0,
+        limit: Annotated[int, Query(ge=1, le=40)] = 12,
+    ):
+        graph = require_document_graph()
+        if q is not None:
+            return {**graph.summary, **graph.search(q, offset, limit)}
+        selected = node_id if node_id is not None else graph.default_id
+        if selected is None:
+            return {**graph.summary, 'node': None, 'edges': [], 'neighbors': [], 'total': 0}
+        if selected not in graph.nodes:
+            raise HTTPException(404, detail=dict(code='DOCUMENT_GRAPH_NODE_NOT_FOUND',
+                                message='Văn bản không có trong đồ thị.'))
+        return {**graph.summary, **graph.selection(selected, offset, limit)}
+
     @app.get('/api/demo/corpus')
     def corpus():
         return service.status()
@@ -161,7 +202,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=8000)
-    parser.add_argument('--provider-env-file', type=Path, required=True)
+    parser.add_argument('--provider-env-file', type=Path)
+    parser.add_argument('--document-graph-file', type=Path)
     parser.add_argument('--check-providers', action='store_true',
                         help='Run two small Groq/Jina requests without starting the web server')
     args = parser.parse_args()
@@ -170,6 +212,8 @@ def main():
     except (ValueError, OSError):
         parser.error('Cannot read provider configuration')
     if args.check_providers:
+        if args.provider_env_file is None:
+            parser.error('--check-providers requires --provider-env-file')
         try:
             result = check_groq_jina(settings)
         except RetrievalError as exc:
@@ -182,7 +226,7 @@ def main():
         if (location / 'docker.exe').exists():
             os.environ['PATH'] = str(location) + os.pathsep + os.environ.get('PATH', '')
     import uvicorn
-    uvicorn.run(create_app(settings=settings),
+    uvicorn.run(create_app(settings=settings, document_graph_path=args.document_graph_file),
                 host=args.host, port=args.port, workers=1)
 
 

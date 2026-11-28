@@ -60,13 +60,28 @@ def _evidence(document_id, block):
     return dict(document_id=document_id, source_refs=[block['source_ref']], quote=block['text'])
 
 
-def _relations(document_id, own_number, blocks):
+def _relations(document_id, own_number, blocks, *, track_inline_quotes=False):
     """Yield explicit references and numbered directives scoped by an article heading."""
     scope = None
     quote_closer = None
+    quote_stack = []
+    quote_start = None
     for block in blocks:
         raw = block['text']
         text = unicodedata.normalize('NFC', raw).strip()
+        if track_inline_quotes:
+            started_inside = bool(quote_stack)
+            for char in text:
+                if quote_stack and char == quote_stack[-1]:
+                    quote_stack.pop()
+                elif char in ('“', '"'):
+                    quote_stack.append('”' if char == '“' else '"')
+            if quote_stack and not started_inside:
+                quote_start = block
+            if not quote_stack:
+                quote_start = None
+            if started_inside or text.startswith(('“', '"')):
+                continue
         if quote_closer is not None:
             if quote_closer in text:
                 quote_closer = None
@@ -129,6 +144,10 @@ def _relations(document_id, own_number, blocks):
         yield dict(relation=relation, target_number=target, scope=locators or None,
                    evidence=[evidence, scoped_evidence] if scoped_evidence else [evidence],
                    basis='SCOPED_BY_HEADING' if scoped_evidence else 'EXPLICIT_TEXT')
+
+    if quote_start is not None:
+        yield dict(reason='UNCLOSED_QUOTATION', evidence=[_evidence(document_id, quote_start)],
+                   mentioned_numbers=[])
 
 
 def prepare_pilot(root, selection, session):
