@@ -1,7 +1,7 @@
 import {createGraphRenderer, relationStyles} from './document-graph-renderer.js';
 const spacing = 23;
 
-function arrange(nodes, edges) {
+export function arrange(nodes, edges) {
   const adjacency = nodes.map(() => new Set());
   for (const [from, to] of edges) {
     adjacency[from].add(to);
@@ -75,7 +75,7 @@ function arrange(nodes, edges) {
   return {positions, width:extentX * spacing, height:(top + shelfHeight + 1) * spacing};
 }
 
-function edgeGeometry(positions, edges) {
+export function edgeGeometry(positions, edges) {
   const parallel = new Map();
   const totals = new Map();
   const pair = (from, to) => Math.min(from, to) + ':' + Math.max(from, to);

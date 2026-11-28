@@ -73,3 +73,112 @@ jobs:
 
       - name: Check handoff fixtures
         run: python -m unittest discover -s test/handoff_suite -v
+
+  web-demo:
+    name: Web demo checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements-ci-web.txt
+            requirements-demo.txt
+            requirements.txt
+            requirements-lightrag-client.txt
+      - run: python -m pip install -r requirements-ci-web.txt
+      - run: python -m playwright install --with-deps --only-shell chromium
+      - name: Build a small graph from real DOCX
+        run: python -m backend.document_graph_cli --mode graph --output-dir "$RUNNER_TEMP/graph-pilot"
+      - name: Open web demo and verify graph and DOCX upload
+        run: >
+          python -m test.ci.web_smoke
+          --graph-file "$RUNNER_TEMP/graph-pilot/document-graph.json"
+          --output-dir "$RUNNER_TEMP/web-check"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: web-demo-checks
+          path: |
+            ${{ runner.temp }}/web-check/web-summary.json
+            ${{ runner.temp }}/web-check/failure.png
+            ${{ runner.temp }}/web-check/trace.zip
+
+  corpus:
+    name: Corpus integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check whether the corpus needs rebuilding
+        id: scope
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          if [[ "$EVENT" == workflow_dispatch ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          base="$PUSH_BEFORE"
+          if [[ "$EVENT" == pull_request ]]; then
+            base="$PR_BASE"
+          fi
+          if [[ -z "$base" || "$base" =~ ^0+$ ]] || ! git cat-file -e "$base^{commit}"; then
+            base="$(git merge-base origin/main HEAD)"
+          fi
+
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          if git diff --name-only "$base" HEAD | grep -E '^(data/legal-dataset-study/|backend/app/context/(document_graph|corpus_document_graph|document_graph_view)\.py$|backend/app/document_processing/|backend/document_graph_cli\.py$|backend/shared_demo\.py$|frontend/|test/ci/|requirements.*\.txt$|\.github/workflows/branch-checks\.yml$)' >/dev/null; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No corpus, graph, frontend or CI changes. Full rebuild not required."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-python@v5
+        if: steps.scope.outputs.run == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements-demo.txt
+            requirements.txt
+            requirements-lightrag-client.txt
+      - uses: actions/setup-node@v4
+        if: steps.scope.outputs.run == 'true'
+        with:
+          node-version: "24"
+      - if: steps.scope.outputs.run == 'true'
+        run: python -m pip install -r requirements-demo.txt
+      - name: Rebuild the full DOCX corpus
+        if: steps.scope.outputs.run == 'true'
+        run: python -m backend.document_graph_cli --mode corpus --output-dir "$RUNNER_TEMP/corpus-check"
+      - name: Check catalogue, source evidence and deleted files
+        if: steps.scope.outputs.run == 'true'
+        env:
+          BASE: ${{ steps.scope.outputs.base }}
+        run: |
+          args=()
+          if [[ -n "$BASE" ]]; then args=(--base "$BASE"); fi
+          python -m test.ci.corpus_integrity --graph-dir "$RUNNER_TEMP/corpus-check" "${args[@]}"
+      - name: Verify cached drawing on the full graph
+        if: steps.scope.outputs.run == 'true'
+        run: >
+          node test/ci/graph-performance.mjs
+          "$RUNNER_TEMP/corpus-check/document-graph.json"
+          "$RUNNER_TEMP/corpus-check/performance-summary.json"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.scope.outputs.run == 'true' }}
+        with:
+          name: corpus-checks
+          path: |
+            ${{ runner.temp }}/corpus-check/integrity-summary.json
+            ${{ runner.temp }}/corpus-check/performance-summary.json

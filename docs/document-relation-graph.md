@@ -58,3 +58,22 @@ tra ID, nguyên văn và vị trí nguồn. Xem [lệnh chạy thật](document-
 và [cách cấu hình web dùng chung](shared-web-demo.md). Kết quả truy xuất thật
 được lưu riêng với dữ liệu đồ thị. Cạnh ngữ nghĩa và phân tích tác động gián
 tiếp thuộc phạm vi đợt sau.
+
+## Kiểm tra tự động đồ thị trên GitHub
+
+Workflow Project checks giữ job **Python tests**. Hai job bổ sung chạy cùng
+workflow khi push hoặc mở PR hướng main.
+
+- **Web demo checks** dựng đồ thị nhỏ từ DOCX thật, mở Chromium, kiểm tra Canvas
+  có hình, lọc và tìm văn bản, đọc đúng block:22, rồi nộp S mẫu qua giao diện.
+  Báo cáo ghi thời gian vẽ lần đầu. Khi lỗi, tải ảnh và trace từ tab Actions.
+- **Corpus integrity** dựng lại toàn kho khi đổi dữ liệu, mã dựng đồ thị,
+  giao diện hoặc CI. Job kiểm tra ánh xạ ID/đường dẫn, hash DOCX và nguyên văn
+  cạnh. Với PR/push, job ghi file bị xóa và báo lỗi nếu bản ghi từng thành công
+  bị hạ trạng thái. Phần hiệu năng xác nhận 120 lượt kéo/zoom mô phỏng dùng lại
+  lớp đã vẽ. Báo cáo không đo tốc độ khung hình của trình duyệt.
+
+Lượt LightRAG thật chạy riêng trong Actions → **LightRAG live pilot** → **Run workflow**.
+Thiết lập secrets GROQ_API_KEY và JINA_API_KEY. Có thể đặt thêm các biến repository
+GROQ_MODEL, JINA_EMBEDDING_MODEL và JINA_EMBEDDING_DIM nếu dùng model khác
+cấu hình mẫu. Kết quả truy xuất thật nằm trong artifact lightrag-live-result.

@@ -1,0 +1,54 @@
+name: LightRAG live pilot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements-demo.txt
+            requirements.txt
+            requirements-lightrag-client.txt
+      - name: Install application dependencies
+        run: python -m pip install -r requirements-demo.txt
+      - name: Check provider configuration
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+        run: |
+          if [[ -z "$GROQ_API_KEY" || -z "$JINA_API_KEY" ]]; then
+            echo "::error::Configure GROQ_API_KEY and JINA_API_KEY to run the live pilot."
+            exit 1
+          fi
+      - name: Build the pinned LightRAG image
+        run: docker build -t pocs-lightrag:28ff1b05 https://github.com/HKUDS/LightRAG.git#28ff1b05f2ac3f3e6fa14dd2cd33656579bd0c9c
+      - name: Run the real retrieval pilot
+        env:
+          LEGAL_AI_PROVIDER: groq-jina
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+          GROQ_MODEL: ${{ vars.GROQ_MODEL || 'qwen/qwen3.8-27b' }}
+          JINA_EMBEDDING_MODEL: ${{ vars.JINA_EMBEDDING_MODEL || 'jina-embeddings-v4' }}
+          JINA_EMBEDDING_DIM: ${{ vars.JINA_EMBEDDING_DIM || '2048' }}
+        run: |
+          touch "$RUNNER_TEMP/provider.env"
+          python -m backend.document_graph_cli --mode real \
+            --provider-env-file "$RUNNER_TEMP/provider.env" \
+            --runtime-dir "$RUNNER_TEMP/lightrag-session" \
+            --output-dir "$RUNNER_TEMP/lightrag-result"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: lightrag-live-result
+          path: ${{ runner.temp }}/lightrag-result/lightrag-live.json
