@@ -1,6 +1,7 @@
 """Runtime checks at module boundaries; no legal inference lives here."""
 from pydantic import TypeAdapter
 
+from backend.app.change_analysis.text_diff import validate_text_diff
 from backend.app.schemas.contracts import AmendmentItem, ComparisonReport
 
 GROUPS = {'SUBJECT_OBJECT', 'RIGHTS_DUTIES_ACTIONS', 'CONDITIONS_EXCEPTIONS',
@@ -93,16 +94,10 @@ def validate_report(report: ComparisonReport):
             before, after = item['before_text'], item['after_text']
             if before is None and item['operation'] != 'ADD' or after is None and not (item['operation'] == 'REPEAL' and item['after_basis'] == 'ABSENT'):
                 raise ValueError('Cannot diff unknown content')
-            before, after = before or '', after or ''
-            for change in result['text_diff']['changes']:
-                if change['type'] == 'INSERT' and (change['old_text'] or change['old_start'] != change['old_end']):
-                    raise ValueError('INSERT must have an empty old span')
-                if change['type'] == 'DELETE' and (change['new_text'] or change['new_start'] != change['new_end']):
-                    raise ValueError('DELETE must have an empty new span')
-                for side, text in [('old', before), ('new', after)]:
-                    start, end = change[side + '_start'], change[side + '_end']
-                    if not 0 <= start <= end <= len(text) or text[start:end] != change[side + '_text']:
-                        raise ValueError('Text diff offset mismatch')
+            # The report contract explicitly represents known absence with None
+            # for ADD/REPEAL. The Text Diff entry points take literal strings.
+            known_sides = {**item, 'before_text': before or '', 'after_text': after or ''}
+            validate_text_diff(known_sides, result['text_diff'])
         semantic = result['semantic_diff']
         changes = semantic['changes'] if semantic else []
         change_ids = [c['change_id'] for c in changes]
